@@ -69,6 +69,7 @@ export default function Listings() {
     try {
       const params = new URLSearchParams();
       if (category) params.set('category', category);
+      if (subcategory) params.set('subcategory', subcategory);
       if (search) params.set('search', search);
       if (minPrice) params.set('min_price', minPrice);
       if (maxPrice) params.set('max_price', maxPrice);
@@ -101,6 +102,7 @@ export default function Listings() {
 
   const handleClearFilters = () => {
     setSearch('');
+    setSubcategory('');
     setMinPrice('');
     setMaxPrice('');
     setCondition('');
