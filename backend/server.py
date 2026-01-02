@@ -64,6 +64,7 @@ class ListingCreate(BaseModel):
     description: str
     price: float
     category: str  # pieces, voitures, motos, utilitaires, accessoires
+    subcategory: Optional[str] = None  # Sous-catégorie pour les pièces
     brand: Optional[str] = None
     model: Optional[str] = None
     year: Optional[int] = None
@@ -72,6 +73,41 @@ class ListingCreate(BaseModel):
     images: List[str] = []
     location: Optional[str] = None
     postal_code: Optional[str] = None
+
+# Sous-catégories de pièces détachées (style Opisto)
+PIECES_SUBCATEGORIES = {
+    "moteur": "Moteur et pièces moteur",
+    "boite_vitesse": "Boîte de vitesse",
+    "embrayage": "Embrayage",
+    "transmission": "Transmission",
+    "echappement": "Échappement",
+    "refroidissement": "Refroidissement",
+    "carrosserie": "Carrosserie",
+    "optique": "Optiques et éclairage",
+    "retroviseur": "Rétroviseurs",
+    "vitrage": "Vitrage",
+    "interieur": "Intérieur et sellerie",
+    "tableau_bord": "Tableau de bord",
+    "sieges": "Sièges",
+    "freinage": "Freinage",
+    "suspension": "Suspension et amortisseurs",
+    "direction": "Direction",
+    "roues_pneus": "Roues et pneus",
+    "electricite": "Électricité",
+    "demarreur": "Démarreur et alternateur",
+    "batterie": "Batterie",
+    "climatisation": "Climatisation",
+    "injection": "Injection et carburation",
+    "turbo": "Turbo",
+    "pompe": "Pompes (eau, huile, injection)",
+    "filtre": "Filtres",
+    "courroie": "Courroies et chaînes",
+    "joint": "Joints et kits",
+    "capteur": "Capteurs et sondes",
+    "calculateur": "Calculateurs et électronique",
+    "airbag": "Airbags et sécurité",
+    "autre": "Autres pièces"
+}
 
 class ListingResponse(BaseModel):
     id: str
