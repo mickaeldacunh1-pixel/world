@@ -168,21 +168,54 @@ export default function Listings() {
                   </div>
                 </div>
 
-                {/* Subcategory (only for pieces) */}
-                {category === 'pieces' && Object.keys(subcategories).length > 0 && (
+                {/* Subcategory (for pieces and accessoires) */}
+                {(category === 'pieces' || category === 'accessoires') && Object.keys(subcategories).length > 0 && (
                   <div>
-                    <label className="text-sm font-medium mb-2 block">Type de pièce</label>
+                    <label className="text-sm font-medium mb-2 block">
+                      {category === 'pieces' ? 'Type de pièce' : 'Type d\'accessoire'}
+                    </label>
                     <Select value={subcategory || "all"} onValueChange={(v) => setSubcategory(v === "all" ? "" : v)}>
                       <SelectTrigger data-testid="filter-subcategory">
-                        <SelectValue placeholder="Toutes les pièces" />
+                        <SelectValue placeholder={category === 'pieces' ? 'Toutes les pièces' : 'Tous les accessoires'} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Toutes les pièces</SelectItem>
+                        <SelectItem value="all">{category === 'pieces' ? 'Toutes les pièces' : 'Tous les accessoires'}</SelectItem>
                         {Object.entries(subcategories).map(([key, label]) => (
                           <SelectItem key={key} value={key}>{label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                  </div>
+                )}
+
+                {/* Compatible Brand - for pieces and accessoires */}
+                {showCompatibilityFilters && carBrands.length > 0 && (
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Marque compatible</label>
+                    <Select value={compatibleBrand || "all"} onValueChange={(v) => setCompatibleBrand(v === "all" ? "" : v)}>
+                      <SelectTrigger data-testid="filter-compatible-brand">
+                        <SelectValue placeholder="Toutes marques" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Toutes marques</SelectItem>
+                        {carBrands.map((brand) => (
+                          <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* OEM Reference - for pieces */}
+                {showCompatibilityFilters && (
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Référence OEM</label>
+                    <Input
+                      placeholder="Ex: 7701474426"
+                      value={oemReference}
+                      onChange={(e) => setOemReference(e.target.value)}
+                      data-testid="filter-oem"
+                    />
                   </div>
                 )}
 
