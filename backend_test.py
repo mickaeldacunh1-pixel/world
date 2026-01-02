@@ -241,6 +241,91 @@ class AutoPiecesAPITester:
         result = self.run_test("Professional Registration", "POST", "auth/register", 200, pro_user)
         return result is not None and 'token' in result
 
+    def test_pieces_subcategories(self):
+        """Test pieces subcategories endpoint"""
+        result = self.run_test("Pieces Subcategories", "GET", "subcategories/pieces", 200)
+        if result:
+            # Check if we have the expected number of subcategories (31 types)
+            if len(result) >= 30:  # Allow some flexibility
+                self.log_test("Pieces subcategories count", True, f"Found {len(result)} subcategories")
+                # Check for some expected keys
+                expected_keys = ["moteur", "boite_vitesse", "embrayage", "freinage", "suspension"]
+                for key in expected_keys:
+                    if key in result:
+                        self.log_test(f"Pieces subcategory {key}", True)
+                    else:
+                        self.log_test(f"Pieces subcategory {key}", False, "Key missing")
+                return True
+            else:
+                self.log_test("Pieces subcategories count", False, f"Expected ~31, got {len(result)}")
+        return False
+
+    def test_accessoires_subcategories(self):
+        """Test accessoires subcategories endpoint"""
+        result = self.run_test("Accessoires Subcategories", "GET", "subcategories/accessoires", 200)
+        if result:
+            # Check if we have the expected number of subcategories (25 types)
+            if len(result) >= 24:  # Allow some flexibility
+                self.log_test("Accessoires subcategories count", True, f"Found {len(result)} subcategories")
+                # Check for some expected keys
+                expected_keys = ["jantes", "gps_navigation", "autoradio", "alarme", "camera"]
+                for key in expected_keys:
+                    if key in result:
+                        self.log_test(f"Accessoires subcategory {key}", True)
+                    else:
+                        self.log_test(f"Accessoires subcategory {key}", False, "Key missing")
+                return True
+            else:
+                self.log_test("Accessoires subcategories count", False, f"Expected ~25, got {len(result)}")
+        return False
+
+    def test_car_brands(self):
+        """Test car brands endpoint"""
+        result = self.run_test("Car Brands", "GET", "brands", 200)
+        if result:
+            # Check if we have the expected number of brands (61 brands)
+            if len(result) >= 60:  # Allow some flexibility
+                self.log_test("Car brands count", True, f"Found {len(result)} brands")
+                # Check for some expected brands
+                expected_brands = ["BMW", "Mercedes-Benz", "Audi", "Volkswagen", "Renault", "Peugeot", "Citroën"]
+                for brand in expected_brands:
+                    if brand in result:
+                        self.log_test(f"Car brand {brand}", True)
+                    else:
+                        self.log_test(f"Car brand {brand}", False, "Brand missing")
+                return True
+            else:
+                self.log_test("Car brands count", False, f"Expected ~61, got {len(result)}")
+        return False
+
+    def test_listings_with_subcategory_filter(self):
+        """Test listings with subcategory filters"""
+        # Test pieces subcategory filter
+        result = self.run_test("Listings by Pieces Subcategory", "GET", "listings?category=pieces&subcategory=moteur", 200)
+        if not result:
+            return False
+        
+        # Test accessoires subcategory filter
+        result = self.run_test("Listings by Accessoires Subcategory", "GET", "listings?category=accessoires&subcategory=jantes", 200)
+        if not result:
+            return False
+        
+        return True
+
+    def test_listings_with_compatibility_filters(self):
+        """Test listings with vehicle compatibility filters"""
+        # Test compatible brand filter
+        result = self.run_test("Listings by Compatible Brand", "GET", "listings?compatible_brand=BMW", 200)
+        if not result:
+            return False
+        
+        # Test OEM reference filter
+        result = self.run_test("Listings by OEM Reference", "GET", "listings?oem_reference=7701474426", 200)
+        if not result:
+            return False
+        
+        return True
+
     def test_invalid_endpoints(self):
         """Test invalid endpoints return 404"""
         result = self.run_test("Invalid Endpoint", "GET", "invalid/endpoint", 404)
