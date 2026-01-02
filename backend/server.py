@@ -188,6 +188,12 @@ class ListingResponse(BaseModel):
     created_at: str
     status: str
     views: int = 0
+    # Compatibilité véhicule
+    compatible_brands: List[str] = []
+    compatible_models: List[str] = []
+    compatible_years: Optional[str] = None
+    oem_reference: Optional[str] = None
+    aftermarket_reference: Optional[str] = None
 
 class MessageCreate(BaseModel):
     listing_id: str
