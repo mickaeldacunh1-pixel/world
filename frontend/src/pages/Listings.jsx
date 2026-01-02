@@ -119,6 +119,8 @@ export default function Listings() {
   const handleClearFilters = () => {
     setSearch('');
     setSubcategory('');
+    setCompatibleBrand('');
+    setOemReference('');
     setMinPrice('');
     setMaxPrice('');
     setCondition('');
@@ -126,6 +128,8 @@ export default function Listings() {
     setPage(1);
     fetchListings(true);
   };
+
+  const showCompatibilityFilters = category === 'pieces' || category === 'accessoires';
 
   return (
     <div className="min-h-screen bg-background" data-testid="listings-page">
