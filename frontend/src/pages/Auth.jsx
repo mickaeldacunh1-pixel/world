@@ -8,7 +8,8 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Checkbox } from '../components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { Car, Mail, Lock, User, Phone, Building, FileText, MapPin } from 'lucide-react';
+import { Mail, Lock, User, Phone, Building, FileText } from 'lucide-react';
+import WorldAutoLogo from '../components/WorldAutoLogo';
 
 export default function Auth() {
   const navigate = useNavigate();
