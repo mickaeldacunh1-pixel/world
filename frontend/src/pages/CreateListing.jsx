@@ -130,11 +130,16 @@ export default function CreateListing() {
     setLoading(true);
     try {
       const images = imageUrls.filter(url => url.trim() !== '');
+      const compatible_models = formData.compatible_models 
+        ? formData.compatible_models.split(',').map(m => m.trim()).filter(m => m)
+        : [];
+      
       const response = await axios.post(`${API}/listings`, {
         ...formData,
         price: parseFloat(formData.price),
         year: formData.year ? parseInt(formData.year) : null,
         mileage: formData.mileage ? parseInt(formData.mileage) : null,
+        compatible_models,
         images,
       });
 
