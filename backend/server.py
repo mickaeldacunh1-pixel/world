@@ -486,6 +486,11 @@ async def get_messages(listing_id: str, other_user_id: str, current_user: dict =
 
 # ================== PAYMENT ROUTES ==================
 
+@api_router.get("/subcategories/pieces")
+async def get_pieces_subcategories():
+    """Retourne toutes les sous-catégories de pièces détachées (style Opisto)"""
+    return PIECES_SUBCATEGORIES
+
 @api_router.get("/pricing")
 async def get_pricing():
     return PRICING_PACKAGES
