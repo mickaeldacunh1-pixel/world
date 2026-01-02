@@ -47,6 +47,9 @@ function AppContent() {
           <Route path="/messages/:listingId/:userId" element={
             <ProtectedRoute><Messages /></ProtectedRoute>
           } />
+          <Route path="/commandes" element={
+            <ProtectedRoute><Orders /></ProtectedRoute>
+          } />
         </Routes>
       </main>
       <Footer />
