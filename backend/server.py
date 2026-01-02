@@ -561,6 +561,16 @@ async def get_pieces_subcategories():
     """Retourne toutes les sous-catégories de pièces détachées (style Opisto)"""
     return PIECES_SUBCATEGORIES
 
+@api_router.get("/subcategories/accessoires")
+async def get_accessoires_subcategories():
+    """Retourne toutes les sous-catégories d'accessoires"""
+    return ACCESSOIRES_SUBCATEGORIES
+
+@api_router.get("/brands")
+async def get_car_brands():
+    """Retourne la liste des marques automobiles"""
+    return CAR_BRANDS
+
 @api_router.get("/pricing")
 async def get_pricing():
     return PRICING_PACKAGES
