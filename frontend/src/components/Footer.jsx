@@ -10,9 +10,7 @@ export default function Footer() {
           {/* Logo & Description */}
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-                <Car className="w-6 h-6 text-accent-foreground" />
-              </div>
+              <WorldAutoLogo className="w-10 h-10" />
               <span className="font-heading font-bold text-xl">World Auto</span>
             </Link>
             <p className="text-primary-foreground/70 max-w-md">
