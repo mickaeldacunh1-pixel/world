@@ -272,6 +272,7 @@ async def create_listing(listing: ListingCreate, current_user: dict = Depends(ge
         "description": listing.description,
         "price": listing.price,
         "category": listing.category,
+        "subcategory": listing.subcategory,
         "brand": listing.brand,
         "model": listing.model,
         "year": listing.year,
