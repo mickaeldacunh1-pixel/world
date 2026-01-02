@@ -33,9 +33,11 @@ export default function Listings() {
   const [total, setTotal] = useState(0);
   const [pages, setPages] = useState(1);
   const [viewMode, setViewMode] = useState('grid');
+  const [subcategories, setSubcategories] = useState({});
   
   // Filters
   const [search, setSearch] = useState(searchParams.get('search') || '');
+  const [subcategory, setSubcategory] = useState(searchParams.get('subcategory') || '');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [condition, setCondition] = useState('');
@@ -44,8 +46,23 @@ export default function Listings() {
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
+    if (category === 'pieces') {
+      fetchSubcategories();
+    }
+  }, [category]);
+
+  useEffect(() => {
     fetchListings();
-  }, [category, page, sort]);
+  }, [category, page, sort, subcategory]);
+
+  const fetchSubcategories = async () => {
+    try {
+      const response = await axios.get(`${API}/subcategories/pieces`);
+      setSubcategories(response.data);
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+    }
+  };
 
   const fetchListings = async (resetPage = false) => {
     setLoading(true);
