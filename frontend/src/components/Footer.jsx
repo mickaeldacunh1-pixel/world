@@ -12,10 +12,10 @@ export default function Footer() {
               <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
                 <Car className="w-6 h-6 text-accent-foreground" />
               </div>
-              <span className="font-heading font-bold text-xl">AutoPièces</span>
+              <span className="font-heading font-bold text-xl">World Auto</span>
             </Link>
             <p className="text-primary-foreground/70 max-w-md">
-              La marketplace de référence pour les pièces détachées automobiles, 
+              La marketplace internationale pour les pièces détachées automobiles, 
               voitures d'occasion, motos et utilitaires. Pour particuliers et professionnels.
             </p>
           </div>
@@ -58,7 +58,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-primary-foreground/70">
                 <Mail className="w-4 h-4" />
-                contact@autopieces.fr
+                contact@worldauto.fr
               </li>
               <li className="flex items-center gap-2 text-primary-foreground/70">
                 <Phone className="w-4 h-4" />
@@ -74,7 +74,7 @@ export default function Footer() {
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-primary-foreground/50 text-sm">
-            © {new Date().getFullYear()} AutoPièces. Tous droits réservés.
+            © {new Date().getFullYear()} World Auto. Tous droits réservés.
           </p>
           <div className="flex gap-6 text-sm">
             <Link to="/tarifs" className="text-primary-foreground/50 hover:text-accent transition-colors">

@@ -28,7 +28,7 @@ JWT_ALGORITHM = "HS256"
 # Stripe Config
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
 
-app = FastAPI(title="AutoPièces Marketplace API")
+app = FastAPI(title="World Auto Marketplace API")
 api_router = APIRouter(prefix="/api")
 
 # ================== MODELS ==================
@@ -744,7 +744,7 @@ async def get_category_stats():
 
 @api_router.get("/")
 async def root():
-    return {"message": "AutoPièces Marketplace API", "version": "1.0.0"}
+    return {"message": "World Auto Marketplace API", "version": "1.0.0"}
 
 app.include_router(api_router)
 

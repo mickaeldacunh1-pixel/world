@@ -96,7 +96,7 @@ export default function Auth() {
             <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
               <Car className="w-7 h-7 text-primary-foreground" />
             </div>
-            <span className="font-heading font-bold text-2xl">AutoPièces</span>
+            <span className="font-heading font-bold text-2xl">World Auto</span>
           </Link>
         </div>
 
@@ -108,7 +108,7 @@ export default function Auth() {
             <CardDescription>
               {activeTab === 'login' 
                 ? 'Connectez-vous à votre compte'
-                : 'Rejoignez la communauté AutoPièces'
+                : 'Rejoignez la communauté World Auto'
               }
             </CardDescription>
           </CardHeader>
