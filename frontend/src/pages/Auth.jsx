@@ -94,9 +94,7 @@ export default function Auth() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
-            <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-              <Car className="w-7 h-7 text-primary-foreground" />
-            </div>
+            <WorldAutoLogo className="w-12 h-12" />
             <span className="font-heading font-bold text-2xl">World Auto</span>
           </Link>
         </div>
