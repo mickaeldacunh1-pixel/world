@@ -382,6 +382,8 @@ async def get_listings(
     condition: Optional[str] = None,
     postal_code: Optional[str] = None,
     search: Optional[str] = None,
+    compatible_brand: Optional[str] = None,
+    oem_reference: Optional[str] = None,
     sort: str = "recent",
     page: int = 1,
     limit: int = 20
@@ -408,11 +410,24 @@ async def get_listings(
         query["condition"] = condition
     if postal_code:
         query["postal_code"] = {"$regex": f"^{postal_code[:2]}"}
-    if search:
-        query["$or"] = [
-            {"title": {"$regex": search, "$options": "i"}},
-            {"description": {"$regex": search, "$options": "i"}}
+    if compatible_brand:
+        query["compatible_brands"] = compatible_brand
+    if oem_reference:
+        query["$or"] = query.get("$or", []) + [
+            {"oem_reference": {"$regex": oem_reference, "$options": "i"}},
+            {"aftermarket_reference": {"$regex": oem_reference, "$options": "i"}}
         ]
+    if search:
+        search_conditions = [
+            {"title": {"$regex": search, "$options": "i"}},
+            {"description": {"$regex": search, "$options": "i"}},
+            {"oem_reference": {"$regex": search, "$options": "i"}},
+            {"aftermarket_reference": {"$regex": search, "$options": "i"}}
+        ]
+        if "$or" in query:
+            query["$and"] = [{"$or": query.pop("$or")}, {"$or": search_conditions}]
+        else:
+            query["$or"] = search_conditions
     
     sort_options = {
         "recent": [("created_at", -1)],
