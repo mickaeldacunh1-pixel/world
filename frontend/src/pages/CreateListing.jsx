@@ -363,6 +363,96 @@ export default function CreateListing() {
                 </div>
               )}
 
+              {/* Compatibility Section - for pieces and accessoires */}
+              {(formData.category === 'pieces' || formData.category === 'accessoires') && (
+                <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg space-y-4">
+                  <h3 className="font-heading font-bold text-lg flex items-center gap-2">
+                    <span className="text-blue-600">🔧</span>
+                    Compatibilité véhicule
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Ces informations aident les acheteurs à trouver la bonne pièce pour leur véhicule
+                  </p>
+                  
+                  {/* Compatible Brands */}
+                  <div className="space-y-2">
+                    <Label>Marques compatibles</Label>
+                    <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 bg-white rounded border">
+                      {carBrands.slice(0, -1).map((brand) => (
+                        <button
+                          key={brand}
+                          type="button"
+                          onClick={() => toggleCompatibleBrand(brand)}
+                          className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                            formData.compatible_brands.includes(brand)
+                              ? 'bg-accent text-accent-foreground'
+                              : 'bg-secondary hover:bg-secondary/80'
+                          }`}
+                          data-testid={`brand-tag-${brand}`}
+                        >
+                          {brand}
+                        </button>
+                      ))}
+                    </div>
+                    {formData.compatible_brands.length > 0 && (
+                      <p className="text-sm text-accent">
+                        {formData.compatible_brands.length} marque(s) sélectionnée(s)
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Compatible Models */}
+                  <div className="space-y-2">
+                    <Label htmlFor="compatible_models">Modèles compatibles</Label>
+                    <Input
+                      id="compatible_models"
+                      placeholder="Ex: 308, 3008, 508 (séparés par des virgules)"
+                      value={formData.compatible_models}
+                      onChange={(e) => handleChange('compatible_models', e.target.value)}
+                      data-testid="compatible-models-input"
+                    />
+                  </div>
+
+                  {/* Compatible Years */}
+                  <div className="space-y-2">
+                    <Label htmlFor="compatible_years">Années compatibles</Label>
+                    <Input
+                      id="compatible_years"
+                      placeholder="Ex: 2015-2020"
+                      value={formData.compatible_years}
+                      onChange={(e) => handleChange('compatible_years', e.target.value)}
+                      data-testid="compatible-years-input"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* OEM Reference */}
+                    <div className="space-y-2">
+                      <Label htmlFor="oem_reference">Référence OEM (constructeur)</Label>
+                      <Input
+                        id="oem_reference"
+                        placeholder="Ex: 7701474426"
+                        value={formData.oem_reference}
+                        onChange={(e) => handleChange('oem_reference', e.target.value)}
+                        data-testid="oem-reference-input"
+                      />
+                    </div>
+
+                    {/* Aftermarket Reference */}
+                    <div className="space-y-2">
+                      <Label htmlFor="aftermarket_reference">Référence équipementier</Label>
+                      <Input
+                        id="aftermarket_reference"
+                        placeholder="Ex: VALEO 437389"
+                        value={formData.aftermarket_reference}
+                        onChange={(e) => handleChange('aftermarket_reference', e.target.value)}
+                        data-testid="aftermarket-reference-input"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Location */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
