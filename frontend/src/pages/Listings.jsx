@@ -34,10 +34,13 @@ export default function Listings() {
   const [pages, setPages] = useState(1);
   const [viewMode, setViewMode] = useState('grid');
   const [subcategories, setSubcategories] = useState({});
+  const [carBrands, setCarBrands] = useState([]);
   
   // Filters
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [subcategory, setSubcategory] = useState(searchParams.get('subcategory') || '');
+  const [compatibleBrand, setCompatibleBrand] = useState('');
+  const [oemReference, setOemReference] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [condition, setCondition] = useState('');
@@ -46,9 +49,10 @@ export default function Listings() {
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    if (category === 'pieces') {
+    if (category === 'pieces' || category === 'accessoires') {
       fetchSubcategories();
     }
+    fetchCarBrands();
   }, [category]);
 
   useEffect(() => {
@@ -57,10 +61,20 @@ export default function Listings() {
 
   const fetchSubcategories = async () => {
     try {
-      const response = await axios.get(`${API}/subcategories/pieces`);
+      const endpoint = category === 'accessoires' ? 'accessoires' : 'pieces';
+      const response = await axios.get(`${API}/subcategories/${endpoint}`);
       setSubcategories(response.data);
     } catch (error) {
       console.error('Error fetching subcategories:', error);
+    }
+  };
+
+  const fetchCarBrands = async () => {
+    try {
+      const response = await axios.get(`${API}/brands`);
+      setCarBrands(response.data);
+    } catch (error) {
+      console.error('Error fetching car brands:', error);
     }
   };
 
@@ -70,6 +84,8 @@ export default function Listings() {
       const params = new URLSearchParams();
       if (category) params.set('category', category);
       if (subcategory) params.set('subcategory', subcategory);
+      if (compatibleBrand) params.set('compatible_brand', compatibleBrand);
+      if (oemReference) params.set('oem_reference', oemReference);
       if (search) params.set('search', search);
       if (minPrice) params.set('min_price', minPrice);
       if (maxPrice) params.set('max_price', maxPrice);
