@@ -197,6 +197,37 @@ class ListingResponse(BaseModel):
     oem_reference: Optional[str] = None
     aftermarket_reference: Optional[str] = None
 
+# Modèles pour les commandes et bordereaux
+class OrderCreate(BaseModel):
+    listing_id: str
+    buyer_address: str
+    buyer_city: str
+    buyer_postal: str
+    buyer_phone: Optional[str] = None
+
+class OrderResponse(BaseModel):
+    id: str
+    listing_id: str
+    listing_title: str
+    price: float
+    seller_id: str
+    seller_name: str
+    buyer_id: str
+    buyer_name: str
+    buyer_address: str
+    buyer_city: str
+    buyer_postal: str
+    buyer_phone: Optional[str] = None
+    status: str  # pending, confirmed, shipped, delivered, returned
+    created_at: str
+    shipped_at: Optional[str] = None
+    delivered_at: Optional[str] = None
+
+class ReturnRequest(BaseModel):
+    order_id: str
+    reason: str
+    notes: Optional[str] = None
+
 class MessageCreate(BaseModel):
     listing_id: str
     receiver_id: str
