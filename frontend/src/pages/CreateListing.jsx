@@ -195,7 +195,7 @@ export default function CreateListing() {
               </div>
 
               {/* Subcategory for Pieces */}
-              {formData.category === 'pieces' && Object.keys(subcategories).length > 0 && (
+              {formData.category === 'pieces' && Object.keys(piecesSubcategories).length > 0 && (
                 <div className="space-y-2">
                   <Label>Type de pièce *</Label>
                   <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
@@ -203,7 +203,24 @@ export default function CreateListing() {
                       <SelectValue placeholder="Choisir un type de pièce" />
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.entries(subcategories).map(([key, label]) => (
+                      {Object.entries(piecesSubcategories).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Subcategory for Accessoires */}
+              {formData.category === 'accessoires' && Object.keys(accessoiresSubcategories).length > 0 && (
+                <div className="space-y-2">
+                  <Label>Type d'accessoire *</Label>
+                  <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
+                    <SelectTrigger data-testid="subcategory-select">
+                      <SelectValue placeholder="Choisir un type d'accessoire" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(accessoiresSubcategories).map(([key, label]) => (
                         <SelectItem key={key} value={key}>{label}</SelectItem>
                       ))}
                     </SelectContent>
