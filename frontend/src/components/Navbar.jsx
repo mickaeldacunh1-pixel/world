@@ -100,6 +100,12 @@ export default function Navbar() {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
+                      <Link to="/commandes" className="flex items-center gap-2 cursor-pointer">
+                        <Package className="w-4 h-4" />
+                        Mes Commandes
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                       <Link to="/messages" className="flex items-center gap-2 cursor-pointer">
                         <MessageSquare className="w-4 h-4" />
                         Messages
