@@ -302,6 +302,7 @@ async def create_listing(listing: ListingCreate, current_user: dict = Depends(ge
 @api_router.get("/listings")
 async def get_listings(
     category: Optional[str] = None,
+    subcategory: Optional[str] = None,
     brand: Optional[str] = None,
     model: Optional[str] = None,
     min_price: Optional[float] = None,
@@ -319,6 +320,8 @@ async def get_listings(
     
     if category:
         query["category"] = category
+    if subcategory:
+        query["subcategory"] = subcategory
     if brand:
         query["brand"] = {"$regex": brand, "$options": "i"}
     if model:
