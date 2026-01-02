@@ -148,6 +148,24 @@ export default function Listings() {
                   </div>
                 </div>
 
+                {/* Subcategory (only for pieces) */}
+                {category === 'pieces' && Object.keys(subcategories).length > 0 && (
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Type de pièce</label>
+                    <Select value={subcategory || "all"} onValueChange={(v) => setSubcategory(v === "all" ? "" : v)}>
+                      <SelectTrigger data-testid="filter-subcategory">
+                        <SelectValue placeholder="Toutes les pièces" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Toutes les pièces</SelectItem>
+                        {Object.entries(subcategories).map(([key, label]) => (
+                          <SelectItem key={key} value={key}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
                 {/* Price Range */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">Prix (€)</label>
