@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -32,12 +32,14 @@ export default function CreateListing() {
   const { user, refreshUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState(['']);
+  const [subcategories, setSubcategories] = useState({});
 
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     price: '',
     category: '',
+    subcategory: '',
     condition: 'occasion',
     brand: '',
     model: '',
@@ -46,6 +48,19 @@ export default function CreateListing() {
     location: '',
     postal_code: '',
   });
+
+  useEffect(() => {
+    fetchSubcategories();
+  }, []);
+
+  const fetchSubcategories = async () => {
+    try {
+      const response = await axios.get(`${API}/subcategories/pieces`);
+      setSubcategories(response.data);
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+    }
+  };
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
