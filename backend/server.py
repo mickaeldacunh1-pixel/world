@@ -115,6 +115,7 @@ class ListingResponse(BaseModel):
     description: str
     price: float
     category: str
+    subcategory: Optional[str] = None
     brand: Optional[str] = None
     model: Optional[str] = None
     year: Optional[int] = None
