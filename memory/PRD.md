@@ -64,8 +64,34 @@ Créer un site de mise en relation style Opisto pour particuliers et professionn
 - Fonts: Chivo (headings), Inter (body)
 - Colors: Primary #0F172A, Accent #F97316
 
+## What's Implemented - Phase 2 (Janvier 2025)
+### Sous-catégories Pièces Détachées (31 types)
+- Moteur, Boîte de vitesse, Embrayage, Transmission, Turbo
+- Carrosserie, Optiques, Rétroviseurs, Vitrage
+- Freinage, Suspension, Direction, Roues/Pneus
+- Électricité, Démarreur, Batterie, Climatisation, Capteurs, etc.
+
+### Sous-catégories Accessoires (25 types)
+- Jantes, Pneus, GPS/Navigation, Autoradio, Alarmes
+- Caméras, Éclairage LED, Tapis, Housses
+- Attelages, Porte-vélos, Accessoires bébé, etc.
+
+### Système de Compatibilité Véhicule
+- 61 marques automobiles (de Abarth à Volvo)
+- Sélection multiple de marques compatibles
+- Modèles compatibles (séparés par virgules)
+- Années compatibles (format: 2015-2020)
+- Référence OEM constructeur
+- Référence équipementier
+
+### Filtres Avancés
+- Filtre par sous-catégorie (pièces et accessoires)
+- Filtre par marque compatible
+- Recherche par référence OEM
+
 ## Next Tasks
 1. Ajouter l'upload d'images via un service cloud
 2. Finaliser l'intégration PayPal
 3. Ajouter les notifications par email
 4. Système de modération admin
+5. Recherche par immatriculation/VIN
