@@ -153,12 +153,12 @@ export default function Listings() {
                 {/* Condition */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">État</label>
-                  <Select value={condition} onValueChange={setCondition}>
+                  <Select value={condition || "all"} onValueChange={(v) => setCondition(v === "all" ? "" : v)}>
                     <SelectTrigger data-testid="filter-condition">
                       <SelectValue placeholder="Tous les états" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Tous les états</SelectItem>
+                      <SelectItem value="all">Tous les états</SelectItem>
                       <SelectItem value="neuf">Neuf</SelectItem>
                       <SelectItem value="occasion">Occasion</SelectItem>
                       <SelectItem value="reconditionne">Reconditionné</SelectItem>
