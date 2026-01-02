@@ -342,6 +342,11 @@ class AutoPiecesAPITester:
         self.test_pricing_endpoint()
         self.test_category_stats()
         
+        # NEW: Test subcategories and brands APIs (from review request)
+        self.test_pieces_subcategories()
+        self.test_accessoires_subcategories()
+        self.test_car_brands()
+        
         # Authentication tests
         self.test_user_registration()
         self.test_user_login()
@@ -351,6 +356,8 @@ class AutoPiecesAPITester:
         # Listings tests
         self.test_listings_endpoint()
         self.test_listings_with_filters()
+        self.test_listings_with_subcategory_filter()
+        self.test_listings_with_compatibility_filters()
         self.test_create_listing_without_credits()
         
         # Dashboard and messages
