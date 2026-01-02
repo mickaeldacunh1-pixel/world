@@ -350,7 +350,13 @@ async def create_listing(listing: ListingCreate, current_user: dict = Depends(ge
         "seller_is_pro": current_user.get("is_professional", False),
         "status": "active",
         "views": 0,
-        "created_at": datetime.now(timezone.utc).isoformat()
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        # Compatibilité véhicule
+        "compatible_brands": listing.compatible_brands,
+        "compatible_models": listing.compatible_models,
+        "compatible_years": listing.compatible_years,
+        "oem_reference": listing.oem_reference,
+        "aftermarket_reference": listing.aftermarket_reference
     }
     
     await db.listings.insert_one(listing_doc)
