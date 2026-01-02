@@ -146,7 +146,7 @@ export default function CreateListing() {
               {/* Category */}
               <div className="space-y-2">
                 <Label>Catégorie *</Label>
-                <Select value={formData.category} onValueChange={(v) => handleChange('category', v)}>
+                <Select value={formData.category} onValueChange={(v) => { handleChange('category', v); handleChange('subcategory', ''); }}>
                   <SelectTrigger data-testid="category-select">
                     <SelectValue placeholder="Choisir une catégorie" />
                   </SelectTrigger>
@@ -157,6 +157,23 @@ export default function CreateListing() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Subcategory for Pieces */}
+              {formData.category === 'pieces' && Object.keys(subcategories).length > 0 && (
+                <div className="space-y-2">
+                  <Label>Type de pièce *</Label>
+                  <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
+                    <SelectTrigger data-testid="subcategory-select">
+                      <SelectValue placeholder="Choisir un type de pièce" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(subcategories).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               {/* Title */}
               <div className="space-y-2">
