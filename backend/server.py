@@ -64,7 +64,7 @@ class ListingCreate(BaseModel):
     description: str
     price: float
     category: str  # pieces, voitures, motos, utilitaires, accessoires
-    subcategory: Optional[str] = None  # Sous-catégorie pour les pièces
+    subcategory: Optional[str] = None  # Sous-catégorie pour les pièces/accessoires
     brand: Optional[str] = None
     model: Optional[str] = None
     year: Optional[int] = None
@@ -73,6 +73,12 @@ class ListingCreate(BaseModel):
     images: List[str] = []
     location: Optional[str] = None
     postal_code: Optional[str] = None
+    # Compatibilité véhicule
+    compatible_brands: List[str] = []  # Marques compatibles
+    compatible_models: List[str] = []  # Modèles compatibles
+    compatible_years: Optional[str] = None  # Ex: "2015-2020"
+    oem_reference: Optional[str] = None  # Référence constructeur OEM
+    aftermarket_reference: Optional[str] = None  # Référence équipementier
 
 # Sous-catégories de pièces détachées (style Opisto)
 PIECES_SUBCATEGORIES = {
@@ -108,6 +114,58 @@ PIECES_SUBCATEGORIES = {
     "airbag": "Airbags et sécurité",
     "autre": "Autres pièces"
 }
+
+# Sous-catégories d'accessoires
+ACCESSOIRES_SUBCATEGORIES = {
+    "jantes": "Jantes et enjoliveurs",
+    "pneus": "Pneus",
+    "gps_navigation": "GPS et navigation",
+    "autoradio": "Autoradio et multimédia",
+    "alarme": "Alarmes et antivol",
+    "camera": "Caméras de recul et dashcam",
+    "eclairage_led": "Éclairage LED et tuning",
+    "tapis": "Tapis et protection",
+    "housse": "Housses et couvre-sièges",
+    "coffre": "Coffres de toit et barres",
+    "attelage": "Attelages et remorquage",
+    "outillage": "Outillage et équipement",
+    "entretien": "Produits d'entretien",
+    "huile": "Huiles et lubrifiants",
+    "batterie_accessoire": "Batteries et chargeurs",
+    "cable": "Câbles et connectique",
+    "volant": "Volants et pommeau",
+    "pedale": "Pédales et repose-pied",
+    "protection": "Protection carrosserie",
+    "antenne": "Antennes",
+    "porte_velo": "Porte-vélos et porte-ski",
+    "bebe": "Sièges bébé et accessoires enfant",
+    "animaux": "Accessoires animaux",
+    "camping": "Accessoires camping-car",
+    "autre_accessoire": "Autres accessoires"
+}
+
+# Marques automobiles principales
+CAR_BRANDS = [
+    "Abarth", "Alfa Romeo", "Alpine", "Aston Martin", "Audi",
+    "Bentley", "BMW", "Bugatti",
+    "Cadillac", "Chevrolet", "Chrysler", "Citroën", "Cupra",
+    "Dacia", "Daewoo", "Daihatsu", "DS",
+    "Ferrari", "Fiat", "Ford",
+    "Honda", "Hummer", "Hyundai",
+    "Infiniti", "Isuzu", "Iveco",
+    "Jaguar", "Jeep",
+    "Kia",
+    "Lada", "Lamborghini", "Lancia", "Land Rover", "Lexus", "Lotus",
+    "Maserati", "Mazda", "McLaren", "Mercedes-Benz", "MG", "Mini", "Mitsubishi",
+    "Nissan",
+    "Opel",
+    "Peugeot", "Porsche",
+    "Renault", "Rolls-Royce", "Rover",
+    "Saab", "Seat", "Skoda", "Smart", "SsangYong", "Subaru", "Suzuki",
+    "Tesla", "Toyota",
+    "Volkswagen", "Volvo",
+    "Autre"
+]
 
 class ListingResponse(BaseModel):
     id: str
