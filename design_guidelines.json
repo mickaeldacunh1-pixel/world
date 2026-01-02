@@ -1,0 +1,144 @@
+{
+  "design_system": {
+    "typography": {
+      "font_family": {
+        "heading": "Chivo, sans-serif",
+        "body": "Inter, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "scale": {
+        "h1": "text-4xl md:text-5xl font-black tracking-tight leading-none",
+        "h2": "text-3xl md:text-4xl font-bold tracking-tight",
+        "h3": "text-2xl font-bold tracking-tight",
+        "body_lg": "text-lg leading-relaxed",
+        "body_base": "text-base leading-relaxed",
+        "caption": "text-sm text-muted-foreground uppercase tracking-wider"
+      }
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "DEFAULT": "#0F172A",
+          "foreground": "#F8FAFC"
+        },
+        "secondary": {
+          "DEFAULT": "#F1F5F9",
+          "foreground": "#0F172A"
+        },
+        "accent": {
+          "DEFAULT": "#F97316",
+          "foreground": "#FFFFFF"
+        },
+        "background": "#F8FAFC",
+        "surface": "#FFFFFF",
+        "border": "#E2E8F0",
+        "muted": "#64748B"
+      },
+      "usage": {
+        "primary_action": "bg-primary text-primary-foreground hover:bg-primary/90",
+        "secondary_action": "bg-white border border-input hover:bg-accent hover:text-accent-foreground",
+        "accent_highlight": "text-accent font-medium",
+        "surface_card": "bg-white border border-border shadow-sm"
+      }
+    },
+    "visual_enhancers": {
+      "radius": "rounded-lg",
+      "shadows": {
+        "card": "shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
+        "hover": "shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
+      },
+      "glassmorphism": "bg-white/80 backdrop-blur-md border border-white/20",
+      "gradients": {
+        "subtle_fade": "bg-gradient-to-b from-white to-slate-50"
+      }
+    },
+    "layout": {
+      "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+      "section_spacing": "py-16 md:py-24",
+      "grid_gap": "gap-6 md:gap-8"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "h-11 px-8 rounded-md bg-primary text-primary-foreground font-medium transition-all hover:translate-y-[-1px] hover:shadow-lg",
+      "secondary": "h-11 px-8 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors",
+      "ghost": "hover:bg-accent hover:text-accent-foreground"
+    },
+    "cards": {
+      "listing": "group relative overflow-hidden rounded-xl border border-border bg-white transition-all hover:shadow-md hover:border-primary/20",
+      "feature": "p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-lg transition-all duration-300"
+    },
+    "inputs": {
+      "default": "h-11 rounded-md border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+    }
+  },
+  "assets": {
+    "images": {
+      "categories": {
+        "auto_parts": {
+          "url": "https://images.unsplash.com/photo-1767339736233-f4b02c41ee4a",
+          "alt": "Mechanic working on engine parts",
+          "usage": "Category card for Pièces Détachées"
+        },
+        "used_cars": {
+          "url": "https://images.unsplash.com/photo-1676288176820-a5a954d81e6e",
+          "alt": "Modern white car in showroom",
+          "usage": "Category card for Voitures d'Occasion"
+        },
+        "motorcycles": {
+          "url": "https://images.unsplash.com/photo-1563156400-283584bf1dde",
+          "alt": "Studio shot of motorcycle",
+          "usage": "Category card for Motos"
+        },
+        "utility_vehicles": {
+          "url": "https://images.unsplash.com/photo-1622153556915-1078632b7452",
+          "alt": "White utility van",
+          "usage": "Category card for Utilitaires"
+        },
+        "accessories": {
+          "url": "https://images.unsplash.com/photo-1745243996628-eccec80eb2d6",
+          "alt": "Premium car interior accessories",
+          "usage": "Category card for Accessoires"
+        }
+      },
+      "hero": {
+        "main": {
+          "url": "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
+          "alt": "Abstract automotive parts composition",
+          "usage": "Hero section background or side visual"
+        }
+      }
+    },
+    "icons": {
+      "library": "lucide-react",
+      "style": "stroke-width-1.5"
+    }
+  },
+  "instructions_to_main_agent": {
+    "general": [
+      "Implement a 'Professional Light' theme inspired by Swiss design: high contrast, strong typography, ample whitespace.",
+      "Use 'Chivo' font for all headings to give an industrial/automotive feel. Use 'Inter' for body text.",
+      "The primary color is a deep slate (#0F172A) for trust, with a vibrant orange (#F97316) accent for actions.",
+      "Avoid generic gradients. Use subtle borders and shadows to define depth.",
+      "Ensure all interactive elements have hover states that are clearly visible.",
+      "Use the 'Bento' grid layout for the category selection on the homepage.",
+      "For the 'Pièces Détachées' listing, use a dense, data-rich table or list view.",
+      "For vehicle listings (Cars, Motos), use a card-based layout with large images.",
+      "Implement a 'Seller Dashboard' that feels like a professional tool (dense, high contrast, clear metrics)."
+    ],
+    "specific_pages": {
+      "home": "Hero section should focus on search. Use a large search bar with category dropdowns. Below, show the 5 main categories using the provided images in a bento grid.",
+      "listing": "Sidebar for filters (sticky). Main content area for results. Use 'Skeleton' loading states.",
+      "product_detail": "Two-column layout. Left: Image gallery (sticky). Right: Details, Price, Seller Info, 'Add to Cart' or 'Contact'.",
+      "dashboard": "Sidebar navigation. Top stats cards. Recent listings table. Use 'Recharts' for any analytics."
+    }
+  },
+  "universal_guidelines": [
+    "Do not use generic centered layouts. Use asymmetry where appropriate.",
+    "Use 2-3x more spacing than typical designs (e.g., p-8, p-12).",
+    "Every interaction needs micro-animations (hover, focus, active).",
+    "Use 'sonner' for toast notifications.",
+    "Ensure all images have alt text for accessibility.",
+    "All interactive elements must have 'data-testid' attributes."
+  ]
+}
