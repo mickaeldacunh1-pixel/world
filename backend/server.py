@@ -602,6 +602,233 @@ async def get_messages(listing_id: str, other_user_id: str, current_user: dict =
     
     return messages
 
+# ================== ORDERS & SHIPPING ROUTES ==================
+
+bordereau_gen = BordereauGenerator()
+
+@api_router.post("/orders")
+async def create_order(order: OrderCreate, current_user: dict = Depends(get_current_user)):
+    """Créer une commande pour un article"""
+    # Get listing
+    listing = await db.listings.find_one({"id": order.listing_id, "status": "active"}, {"_id": 0})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée ou déjà vendue")
+    
+    if listing["seller_id"] == current_user["id"]:
+        raise HTTPException(status_code=400, detail="Vous ne pouvez pas acheter votre propre annonce")
+    
+    # Get seller info
+    seller = await db.users.find_one({"id": listing["seller_id"]}, {"_id": 0, "password": 0})
+    
+    order_doc = {
+        "id": str(uuid.uuid4()),
+        "listing_id": order.listing_id,
+        "listing_title": listing["title"],
+        "price": listing["price"],
+        "oem_reference": listing.get("oem_reference"),
+        "seller_id": listing["seller_id"],
+        "seller_name": listing["seller_name"],
+        "seller_address": seller.get("address", ""),
+        "seller_city": seller.get("city", ""),
+        "seller_postal": seller.get("postal_code", ""),
+        "seller_phone": seller.get("phone", ""),
+        "buyer_id": current_user["id"],
+        "buyer_name": current_user["name"],
+        "buyer_address": order.buyer_address,
+        "buyer_city": order.buyer_city,
+        "buyer_postal": order.buyer_postal,
+        "buyer_phone": order.buyer_phone or current_user.get("phone", ""),
+        "status": "confirmed",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "shipped_at": None,
+        "delivered_at": None
+    }
+    
+    await db.orders.insert_one(order_doc)
+    
+    # Mark listing as sold
+    await db.listings.update_one({"id": order.listing_id}, {"$set": {"status": "sold"}})
+    
+    return order_doc
+
+@api_router.get("/orders")
+async def get_my_orders(current_user: dict = Depends(get_current_user)):
+    """Récupérer mes commandes (achats et ventes)"""
+    cursor = db.orders.find(
+        {"$or": [{"buyer_id": current_user["id"]}, {"seller_id": current_user["id"]}]},
+        {"_id": 0}
+    ).sort("created_at", -1)
+    orders = await cursor.to_list(100)
+    
+    # Add role info
+    for order in orders:
+        order["role"] = "buyer" if order["buyer_id"] == current_user["id"] else "seller"
+    
+    return orders
+
+@api_router.get("/orders/{order_id}")
+async def get_order(order_id: str, current_user: dict = Depends(get_current_user)):
+    """Récupérer une commande spécifique"""
+    order = await db.orders.find_one(
+        {"id": order_id, "$or": [{"buyer_id": current_user["id"]}, {"seller_id": current_user["id"]}]},
+        {"_id": 0}
+    )
+    if not order:
+        raise HTTPException(status_code=404, detail="Commande non trouvée")
+    
+    order["role"] = "buyer" if order["buyer_id"] == current_user["id"] else "seller"
+    return order
+
+@api_router.put("/orders/{order_id}/status")
+async def update_order_status(order_id: str, status: str, current_user: dict = Depends(get_current_user)):
+    """Mettre à jour le statut d'une commande"""
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Commande non trouvée")
+    
+    # Seller can mark as shipped
+    if status == "shipped" and order["seller_id"] == current_user["id"]:
+        await db.orders.update_one(
+            {"id": order_id},
+            {"$set": {"status": "shipped", "shipped_at": datetime.now(timezone.utc).isoformat()}}
+        )
+    # Buyer can mark as delivered
+    elif status == "delivered" and order["buyer_id"] == current_user["id"]:
+        await db.orders.update_one(
+            {"id": order_id},
+            {"$set": {"status": "delivered", "delivered_at": datetime.now(timezone.utc).isoformat()}}
+        )
+    else:
+        raise HTTPException(status_code=403, detail="Action non autorisée")
+    
+    return {"message": "Statut mis à jour"}
+
+@api_router.get("/orders/{order_id}/shipping-slip")
+async def download_shipping_slip(order_id: str, current_user: dict = Depends(get_current_user)):
+    """Télécharger le bordereau d'expédition PDF"""
+    order = await db.orders.find_one(
+        {"id": order_id, "seller_id": current_user["id"]},
+        {"_id": 0}
+    )
+    if not order:
+        raise HTTPException(status_code=404, detail="Commande non trouvée ou accès refusé")
+    
+    pdf_buffer = bordereau_gen.generate_shipping_slip(
+        order_id=order["id"],
+        listing_title=order["listing_title"],
+        listing_id=order["listing_id"],
+        price=order["price"],
+        seller_name=order["seller_name"],
+        seller_address=order.get("seller_address", "Adresse non renseignée"),
+        seller_city=order.get("seller_city", ""),
+        seller_postal=order.get("seller_postal", ""),
+        seller_phone=order.get("seller_phone", ""),
+        buyer_name=order["buyer_name"],
+        buyer_address=order["buyer_address"],
+        buyer_city=order["buyer_city"],
+        buyer_postal=order["buyer_postal"],
+        buyer_phone=order.get("buyer_phone", ""),
+        oem_reference=order.get("oem_reference")
+    )
+    
+    filename = f"bordereau_expedition_WA-{order_id[:8].upper()}.pdf"
+    
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@api_router.post("/orders/{order_id}/return")
+async def request_return(order_id: str, return_req: ReturnRequest, current_user: dict = Depends(get_current_user)):
+    """Demander un retour pour une commande"""
+    order = await db.orders.find_one(
+        {"id": order_id, "buyer_id": current_user["id"]},
+        {"_id": 0}
+    )
+    if not order:
+        raise HTTPException(status_code=404, detail="Commande non trouvée")
+    
+    if order["status"] not in ["shipped", "delivered"]:
+        raise HTTPException(status_code=400, detail="Retour non possible pour cette commande")
+    
+    return_doc = {
+        "id": str(uuid.uuid4()),
+        "order_id": order_id,
+        "listing_id": order["listing_id"],
+        "listing_title": order["listing_title"],
+        "reason": return_req.reason,
+        "notes": return_req.notes,
+        "buyer_id": order["buyer_id"],
+        "buyer_name": order["buyer_name"],
+        "buyer_address": order["buyer_address"],
+        "buyer_city": order["buyer_city"],
+        "buyer_postal": order["buyer_postal"],
+        "buyer_phone": order.get("buyer_phone", ""),
+        "seller_id": order["seller_id"],
+        "seller_name": order["seller_name"],
+        "seller_address": order.get("seller_address", ""),
+        "seller_city": order.get("seller_city", ""),
+        "seller_postal": order.get("seller_postal", ""),
+        "seller_phone": order.get("seller_phone", ""),
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.returns.insert_one(return_doc)
+    
+    # Update order status
+    await db.orders.update_one({"id": order_id}, {"$set": {"status": "return_requested"}})
+    
+    return return_doc
+
+@api_router.get("/returns")
+async def get_my_returns(current_user: dict = Depends(get_current_user)):
+    """Récupérer mes retours"""
+    cursor = db.returns.find(
+        {"$or": [{"buyer_id": current_user["id"]}, {"seller_id": current_user["id"]}]},
+        {"_id": 0}
+    ).sort("created_at", -1)
+    returns = await cursor.to_list(100)
+    return returns
+
+@api_router.get("/returns/{return_id}/slip")
+async def download_return_slip(return_id: str, current_user: dict = Depends(get_current_user)):
+    """Télécharger le bordereau de retour PDF"""
+    return_doc = await db.returns.find_one(
+        {"id": return_id, "$or": [{"buyer_id": current_user["id"]}, {"seller_id": current_user["id"]}]},
+        {"_id": 0}
+    )
+    if not return_doc:
+        raise HTTPException(status_code=404, detail="Retour non trouvé")
+    
+    pdf_buffer = bordereau_gen.generate_return_slip(
+        return_id=return_doc["id"],
+        order_id=return_doc["order_id"],
+        listing_title=return_doc["listing_title"],
+        listing_id=return_doc["listing_id"],
+        reason=return_doc["reason"],
+        buyer_name=return_doc["buyer_name"],
+        buyer_address=return_doc["buyer_address"],
+        buyer_city=return_doc["buyer_city"],
+        buyer_postal=return_doc["buyer_postal"],
+        buyer_phone=return_doc.get("buyer_phone", ""),
+        seller_name=return_doc["seller_name"],
+        seller_address=return_doc.get("seller_address", "Adresse non renseignée"),
+        seller_city=return_doc.get("seller_city", ""),
+        seller_postal=return_doc.get("seller_postal", ""),
+        seller_phone=return_doc.get("seller_phone", ""),
+        notes=return_doc.get("notes")
+    )
+    
+    filename = f"bordereau_retour_RET-{return_id[:8].upper()}.pdf"
+    
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
 # ================== PAYMENT ROUTES ==================
 
 @api_router.get("/subcategories/pieces")
