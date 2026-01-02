@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { Car, Wrench, Bike, Truck, Settings, User, LogOut, MessageSquare, LayoutDashboard, Menu, X, Plus } from 'lucide-react';
+import WorldAutoLogo from './WorldAutoLogo';
 
 const categories = [
   { name: 'Pièces Détachées', slug: 'pieces', icon: Wrench },
