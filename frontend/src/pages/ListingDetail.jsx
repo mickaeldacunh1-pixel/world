@@ -265,6 +265,62 @@ export default function ListingDetail() {
               </Card>
             )}
 
+            {/* Compatibility Info */}
+            {(listing.compatible_brands?.length > 0 || listing.oem_reference || listing.aftermarket_reference || listing.compatible_years) && (
+              <Card className="p-6 border-blue-100 bg-blue-50/50">
+                <h2 className="font-heading font-bold text-lg mb-4 flex items-center gap-2">
+                  <span className="text-blue-600">🔧</span>
+                  Compatibilité véhicule
+                </h2>
+                <div className="space-y-4">
+                  {listing.compatible_brands?.length > 0 && (
+                    <div>
+                      <span className="text-muted-foreground text-sm block mb-2">Marques compatibles</span>
+                      <div className="flex flex-wrap gap-2">
+                        {listing.compatible_brands.map((brand) => (
+                          <span key={brand} className="bg-white px-3 py-1 rounded-full text-sm font-medium border">
+                            {brand}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {listing.compatible_models?.length > 0 && (
+                    <div>
+                      <span className="text-muted-foreground text-sm block mb-2">Modèles compatibles</span>
+                      <div className="flex flex-wrap gap-2">
+                        {listing.compatible_models.map((model) => (
+                          <span key={model} className="bg-white px-3 py-1 rounded-full text-sm font-medium border">
+                            {model}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {listing.compatible_years && (
+                    <div>
+                      <span className="text-muted-foreground text-sm">Années compatibles</span>
+                      <p className="font-medium">{listing.compatible_years}</p>
+                    </div>
+                  )}
+                  <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+                    {listing.oem_reference && (
+                      <div>
+                        <span className="text-muted-foreground text-sm">Réf. OEM (constructeur)</span>
+                        <p className="font-mono font-bold text-blue-600">{listing.oem_reference}</p>
+                      </div>
+                    )}
+                    {listing.aftermarket_reference && (
+                      <div>
+                        <span className="text-muted-foreground text-sm">Réf. équipementier</span>
+                        <p className="font-mono font-bold">{listing.aftermarket_reference}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            )}
+
             {/* Seller Info */}
             <Card className="p-6">
               <h2 className="font-heading font-bold text-lg mb-4">Vendeur</h2>
