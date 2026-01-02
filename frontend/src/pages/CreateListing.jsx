@@ -32,7 +32,9 @@ export default function CreateListing() {
   const { user, refreshUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState(['']);
-  const [subcategories, setSubcategories] = useState({});
+  const [piecesSubcategories, setPiecesSubcategories] = useState({});
+  const [accessoiresSubcategories, setAccessoiresSubcategories] = useState({});
+  const [carBrands, setCarBrands] = useState([]);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -47,23 +49,52 @@ export default function CreateListing() {
     mileage: '',
     location: '',
     postal_code: '',
+    // Compatibilité
+    compatible_brands: [],
+    compatible_models: '',
+    compatible_years: '',
+    oem_reference: '',
+    aftermarket_reference: '',
   });
 
   useEffect(() => {
     fetchSubcategories();
+    fetchCarBrands();
   }, []);
 
   const fetchSubcategories = async () => {
     try {
-      const response = await axios.get(`${API}/subcategories/pieces`);
-      setSubcategories(response.data);
+      const [piecesRes, accessoiresRes] = await Promise.all([
+        axios.get(`${API}/subcategories/pieces`),
+        axios.get(`${API}/subcategories/accessoires`)
+      ]);
+      setPiecesSubcategories(piecesRes.data);
+      setAccessoiresSubcategories(accessoiresRes.data);
     } catch (error) {
       console.error('Error fetching subcategories:', error);
     }
   };
 
+  const fetchCarBrands = async () => {
+    try {
+      const response = await axios.get(`${API}/brands`);
+      setCarBrands(response.data);
+    } catch (error) {
+      console.error('Error fetching car brands:', error);
+    }
+  };
+
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const toggleCompatibleBrand = (brand) => {
+    setFormData(prev => {
+      const brands = prev.compatible_brands.includes(brand)
+        ? prev.compatible_brands.filter(b => b !== brand)
+        : [...prev.compatible_brands, brand];
+      return { ...prev, compatible_brands: brands };
+    });
   };
 
   const addImageUrl = () => {
