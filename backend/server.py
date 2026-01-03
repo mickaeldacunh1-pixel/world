@@ -1047,6 +1047,153 @@ async def stripe_webhook(request: Request):
         logging.error(f"Webhook error: {e}")
         return {"status": "error"}
 
+# ================== PAYPAL PAYMENT ==================
+
+async def get_paypal_access_token():
+    """Get PayPal access token"""
+    auth = base64.b64encode(f"{PAYPAL_CLIENT_ID}:{PAYPAL_CLIENT_SECRET}".encode()).decode()
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"{PAYPAL_BASE_URL}/v1/oauth2/token",
+            headers={
+                "Authorization": f"Basic {auth}",
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            data="grant_type=client_credentials"
+        )
+        if response.status_code != 200:
+            raise HTTPException(status_code=500, detail="Erreur d'authentification PayPal")
+        return response.json()["access_token"]
+
+@api_router.post("/payments/paypal/create/{package_id}")
+async def create_paypal_order(package_id: str, request: Request, current_user: dict = Depends(get_current_user)):
+    """Create a PayPal order"""
+    packages = {
+        "starter": {"name": "Pack Starter", "listings": 5, "price": 9.99},
+        "pro": {"name": "Pack Pro", "listings": 20, "price": 29.99},
+        "business": {"name": "Pack Business", "listings": 50, "price": 59.99}
+    }
+    
+    package = packages.get(package_id)
+    if not package:
+        raise HTTPException(status_code=404, detail="Pack non trouvé")
+    
+    try:
+        access_token = await get_paypal_access_token()
+        
+        origin = request.headers.get("origin", "https://worldautofrance.com")
+        
+        order_data = {
+            "intent": "CAPTURE",
+            "purchase_units": [{
+                "amount": {
+                    "currency_code": "EUR",
+                    "value": str(package["price"])
+                },
+                "description": f"{package['name']} - {package['listings']} annonces"
+            }],
+            "application_context": {
+                "return_url": f"{origin}/payment/success?method=paypal",
+                "cancel_url": f"{origin}/tarifs",
+                "brand_name": "World Auto",
+                "landing_page": "LOGIN",
+                "user_action": "PAY_NOW"
+            }
+        }
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{PAYPAL_BASE_URL}/v2/checkout/orders",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "application/json"
+                },
+                json=order_data
+            )
+            
+            if response.status_code not in [200, 201]:
+                logging.error(f"PayPal create order error: {response.text}")
+                raise HTTPException(status_code=500, detail="Erreur lors de la création de la commande PayPal")
+            
+            order = response.json()
+            
+            # Save transaction
+            transaction_doc = {
+                "id": str(uuid.uuid4()),
+                "paypal_order_id": order["id"],
+                "user_id": current_user["id"],
+                "package_id": package_id,
+                "amount": package["price"],
+                "currency": "eur",
+                "listings_count": package["listings"],
+                "payment_status": "pending",
+                "payment_method": "paypal",
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.payment_transactions.insert_one(transaction_doc)
+            
+            # Find approval URL
+            approval_url = next(
+                (link["href"] for link in order["links"] if link["rel"] == "approve"),
+                None
+            )
+            
+            return {
+                "order_id": order["id"],
+                "approval_url": approval_url
+            }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"PayPal error: {e}")
+        raise HTTPException(status_code=500, detail="Erreur PayPal")
+
+@api_router.post("/payments/paypal/capture/{order_id}")
+async def capture_paypal_order(order_id: str, current_user: dict = Depends(get_current_user)):
+    """Capture a PayPal order after approval"""
+    try:
+        access_token = await get_paypal_access_token()
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{PAYPAL_BASE_URL}/v2/checkout/orders/{order_id}/capture",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "application/json"
+                }
+            )
+            
+            if response.status_code not in [200, 201]:
+                logging.error(f"PayPal capture error: {response.text}")
+                raise HTTPException(status_code=500, detail="Erreur lors de la capture du paiement")
+            
+            capture_data = response.json()
+            
+            if capture_data["status"] == "COMPLETED":
+                # Update transaction
+                transaction = await db.payment_transactions.find_one({"paypal_order_id": order_id})
+                if transaction:
+                    await db.payment_transactions.update_one(
+                        {"paypal_order_id": order_id},
+                        {"$set": {"payment_status": "paid", "paid_at": datetime.now(timezone.utc).isoformat()}}
+                    )
+                    
+                    # Add credits to user
+                    await db.users.update_one(
+                        {"id": transaction["user_id"]},
+                        {"$inc": {"credits": transaction["listings_count"]}}
+                    )
+                
+                return {"status": "success", "message": "Paiement réussi ! Crédits ajoutés."}
+            else:
+                return {"status": "pending", "message": "Paiement en attente"}
+                
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"PayPal capture error: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la capture")
+
 # ================== STATS ROUTES ==================
 
 @api_router.get("/stats/dashboard")
