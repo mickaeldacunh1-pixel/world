@@ -225,6 +225,29 @@ def send_return_request_email(seller_email: str, seller_name: str, return_doc: d
     """
     send_email(seller_email, f"Demande de retour - {return_doc['listing_title']}", html)
 
+def send_password_reset_email(user_email: str, user_name: str, reset_token: str):
+    """Email de réinitialisation de mot de passe"""
+    reset_link = f"{SITE_URL}/reset-password?token={reset_token}"
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #f97316; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">World Auto</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2>Réinitialisation de mot de passe</h2>
+            <p>Bonjour {user_name},</p>
+            <p>Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le bouton ci-dessous :</p>
+            <a href="{reset_link}" style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0;">Réinitialiser mon mot de passe</a>
+            <p style="color: #666; font-size: 14px;">Ce lien est valable pendant 1 heure.</p>
+            <p style="color: #666; font-size: 14px;">Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.</p>
+        </div>
+        <div style="padding: 20px; background: #f3f4f6; text-align: center; font-size: 12px; color: #666;">
+            <p>World Auto - La marketplace auto pour tous</p>
+        </div>
+    </div>
+    """
+    send_email(user_email, "Réinitialisation de votre mot de passe - World Auto", html)
+
 app = FastAPI(title="World Auto Marketplace API")
 api_router = APIRouter(prefix="/api")
 
