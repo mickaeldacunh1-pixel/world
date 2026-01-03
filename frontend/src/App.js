@@ -17,6 +17,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Favorites from "./pages/Favorites";
 import Alerts from "./pages/Alerts";
+import SellerStats from "./pages/SellerStats";
 import "./App.css";
 
 const ProtectedRoute = ({ children }) => {
