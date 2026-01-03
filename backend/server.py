@@ -918,13 +918,13 @@ async def get_payment_status(session_id: str, current_user: dict = Depends(get_c
         return {"status": "complete", "payment_status": "paid", "message": "Paiement déjà traité"}
     
     # Get status from Stripe
-    host_url = "https://example.com"  # Not used for status check
-    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=f"{host_url}/api/webhook/stripe")
+    stripe.api_key = STRIPE_API_KEY
     
     try:
-        status: CheckoutStatusResponse = await stripe_checkout.get_checkout_status(session_id)
+        session = stripe.checkout.Session.retrieve(session_id)
+        payment_status = session.payment_status
         
-        if status.payment_status == "paid":
+        if payment_status == "paid":
             # Update transaction
             await db.payment_transactions.update_one(
                 {"session_id": session_id},
@@ -937,9 +937,9 @@ async def get_payment_status(session_id: str, current_user: dict = Depends(get_c
                 {"$inc": {"credits": transaction["listings_count"]}}
             )
             
-            return {"status": status.status, "payment_status": "paid", "message": "Crédits ajoutés avec succès"}
+            return {"status": session.status, "payment_status": "paid", "message": "Crédits ajoutés avec succès"}
         
-        return {"status": status.status, "payment_status": status.payment_status}
+        return {"status": session.status, "payment_status": payment_status}
     except Exception as e:
         logging.error(f"Error checking payment status: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la vérification du paiement")
