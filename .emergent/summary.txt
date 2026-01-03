@@ -4,146 +4,93 @@ L'utilisateur a demandé la création d'un site de mise en relation de type Opis
 **PRODUCT REQUIREMENTS:**
 -   **Fonctionnalité principale:** Marketplace pour pièces et véhicules.
 -   **Types d'utilisateurs:** Particuliers et Professionnels.
--   **Tarification:** Structure de tarification par annonce.
+-   **Tarification:** Structure de tarification par annonce via un système de crédits.
 -   **Catégories:** Pièces détachées, voitures d'occasion, etc.
 -   **Compatibilité des véhicules:** Lier des pièces à des véhicules spécifiques.
 -   **Authentification:** JWT (email/mot de passe).
 -   **Paiements:** Stripe.
 -   **Livraison:** Génération de bordereaux d'expédition PDF simples.
--   **Design:** Thème clair avec logo World Auto.
+-   **Design:** Thème clair avec logo World Auto, améliorations de design modernes.
 -   **Fonctionnalités sociales:** Profils vendeurs, favoris, alertes email, notes et avis.
 -   **Administration:** Interface pour gérer le contenu de la page d'accueil.
+-   **Pages de contenu:** Pages légales (CGV, Mentions Légales), À Propos, Contact, FAQ.
 
 **User's preferred language**: français
 
 **what currently exists?**
-Une application full-stack (React, FastAPI, MongoDB) a été développée et déployée sur le VPS Hostinger externe de l'utilisateur. Le site est en ligne sur .
+Une application full-stack (React, FastAPI, MongoDB) a été développée et déployée sur le VPS Hostinger externe de l'utilisateur. Le site est en ligne.
 Les fonctionnalités suivantes sont implémentées et fonctionnelles :
 -   Authentification des utilisateurs (JWT) et réinitialisation de mot de passe.
 -   Gestion complète des annonces avec upload d'images sur Cloudinary.
 -   Système de crédits avec paiement via Stripe (en mode Live).
--   Système de suivi des commandes avec statuts.
--   Notifications par email (SMTP Hostinger) pour l'inscription, les commandes, et les alertes.
--   Système de favoris pour les annonces.
--   Système d'alertes par email pour les pièces recherchées.
--   Page de statistiques pour les vendeurs.
--   Système de notation et d'avis des vendeurs par les acheteurs.
-
-Le déploiement est géré via un dépôt GitHub, mais le processus est extrêmement fragile car les fichiers de configuration Docker ne sont pas versionnés.
+-   Système de suivi des commandes avec statuts et génération de bordereaux PDF.
+-   Notifications par email (SMTP Hostinger).
+-   Système de favoris et d'alertes par email.
+-   Page de statistiques, de profil public et système d'avis pour les vendeurs.
+-   Page d'administration pour modifier la section hero de l'accueil.
+-   Un pack design moderne (nouvelle page d'accueil, nouvelles cartes d'annonces, footer, animations).
+-   Pages légales (CGV, Mentions Légales, A Propos, Contact) et une page FAQ.
+Le processus de déploiement, auparavant très fragile, a été stabilisé en versionnant les fichiers de configuration Docker dans Git.
 
 **Last working item**:
-L'agent a commencé à implémenter trois nouvelles fonctionnalités demandées par l'utilisateur : un système de bordereaux de transport, une page de profil vendeur public, et une page d'administration pour modifier la section hero de la page d'accueil.
+L'agent aidait l'utilisateur à trouver un moyen de poster des annonces de test sur son site sans avoir à payer, car le système de crédits est actif. L'utilisateur a confirmé qu'il parlait des crédits de son site World Auto et non des crédits Emergent.
 
--   **Last item agent was working**: L'agent a créé les fichiers de base pour les nouvelles pages frontend (, ) et commençait à ajouter les endpoints et la logique backend nécessaires dans .
+-   **Last item agent was working**: L'agent a proposé d'ajouter manuellement des crédits au compte de l'utilisateur directement dans la base de données et a demandé son adresse email pour procéder.
 -   **Status**: IN PROGRESS
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: backend testing agent pour les nouveaux endpoints, puis frontend testing agent pour tester les nouvelles pages et le flux complet.
+-   **Which testing method agent to use?**: Mise à jour manuelle de la base de données via une commande . Aucune suite de tests n'est requise.
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1**: Le processus de déploiement sur le VPS externe est extrêmement fragile et est la cause de la majorité des problèmes. (Priority: P0 - BLOCKER)
--   **Issue 2**: Le build frontend sur le VPS utilise souvent le cache, cachant les nouvelles modifications. (Priority: P1)
--   **Issue 3**: La page Alertes a été simplifiée pour contourner un bug, sa fonctionnalité complète n'est pas restaurée. (Priority P2)
+-   **Issue 1**: L'utilisateur ne peut pas poster d'annonces de test sans payer. (Priority: P0)
 
 **Issues Detail:**
--   **Issue 1**: Processus de déploiement fragile
-    -   **Description**: Le principal problème de ce projet est que les fichiers de configuration Docker (, , , ) ne sont **pas versionnés dans le dépôt Git**. À chaque fois que l'utilisateur exécute une commande  ou  sur son VPS, ces fichiers sont supprimés, ce qui casse complètement l'application. L'agent a dû guider l'utilisateur à les recréer manuellement à de multiples reprises, causant une énorme frustration et perte de temps.
-    -   **Attempted fixes**: Guidage manuel de l'utilisateur pour recréer les fichiers à chaque fois. C'est une solution temporaire, pas une correction.
+-   **Issue 1**: Impossibilité de poster des annonces de test gratuitement.
+    -   **Description**: L'utilisateur souhaite tester la création d'annonces sur son site en production mais est bloqué par le système de paiement par crédit.
+    -   **Attempted fixes**: L'agent a identifié qu'il ne s'agissait pas des crédits Emergent mais bien des crédits du site de l'utilisateur. Il a proposé d'intervenir directement dans la base de données.
     -   **Next debug checklist**:
-        1.  **ACTION LA PLUS IMPORTANTE :** Ajouter les fichiers , ,  et  au suivi Git ().
-        2.  Faire un On branch main
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	frontend/yarn.lock
-	yarn.lock
-
-nothing added to commit but untracked files present (use "git add" to track) avec ces fichiers.
-        3.  Demander à l'utilisateur de cliquer sur Save to GitHub pour pousser ces fichiers cruciaux sur le dépôt.
-        4.  Cela stabilisera définitivement le processus de déploiement.
-    -   **Why fix this issue and what will be achieved with the fix?**: Cela résoudra la cause profonde de 90% des erreurs de déploiement, stabilisera le projet et arrêtera la frustration de l'utilisateur. C'est un prérequis absolu pour continuer à développer sereinement.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: N/A (Process issue)
-    -   **Blocked on other issue**: Non, ce problème bloque tout le reste.
-
--   **Issue 2**: Problèmes de cache du build frontend
-    -   **Description**: Lors des déploiements, les modifications du frontend ne sont souvent pas visibles car Docker utilise une version buildée en cache.
-    -   **Attempted fixes**: Forcer la reconstruction sans cache avec .
-    -   **Next debug checklist**: Continuer à utiliser la commande  lors de la reconstruction du frontend après des modifications.
-    -   **Why fix this issue and what will be achieved with the fix?**: Pour s'assurer que les dernières modifications du code sont bien déployées sur le site.
-    -   **Status**: IN PROGRESS (mitigation)
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend
-
--   **Issue 3**: Page Alertes simplifiée
-    -   **Description**: La page d'alertes affichait une page blanche. Pour corriger rapidement, l'agent a retiré le composant  qui semblait causer le problème. La cause racine (probablement une dépendance manquante ou une erreur d'import) n'a pas été diagnostiquée.
-    -   **Attempted fixes**: Simplification du code de .
-    -   **Next debug checklist**:
-        1.  Vérifier que  est bien dans .
-        2.  Si non, l'ajouter avec yarn add v1.22.22
-[1/4] Resolving packages...
-[2/4] Fetching packages...
-[3/4] Linking dependencies...
-[4/4] Building fresh packages...
-success Saved lockfile.
-success Saved 9 new dependencies.
-info Direct dependencies
-└─ @radix-ui/react-switch@1.2.6
-info All dependencies
-├─ @radix-ui/primitive@1.1.3
-├─ @radix-ui/react-context@1.1.2
-├─ @radix-ui/react-primitive@2.1.3
-├─ @radix-ui/react-slot@1.2.3
-├─ @radix-ui/react-switch@1.2.6
-├─ @radix-ui/react-use-controllable-state@1.2.2
-├─ @radix-ui/react-use-effect-event@0.0.2
-├─ @radix-ui/react-use-previous@1.1.1
-└─ @radix-ui/react-use-size@1.1.1
-Done in 0.88s..
-        3.  Réintroduire le code du  dans  pour restaurer la fonctionnalité complète (activer/désactiver une alerte).
-    -   **Why fix this issue and what will be achieved with the fix?**: Pour fournir la fonctionnalité complète initialement prévue.
-    -   **Status**: NOT STARTED
+        1.  Obtenir l'adresse email du compte utilisateur sur .
+        2.  Se connecter à la base de données via .
+        3.  Exécuter une commande  pour ajouter des crédits (par exemple, 100).
+        4.  Confirmer avec l'utilisateur que les crédits ont bien été ajoutés.
+    -   **Why fix this issue and what will be achieved with the fix?**: Permettre à l'utilisateur de tester et de peupler son site en annonces sans encourir de frais réels, ce qui est essentiel pour le lancement.
+    -   **Status**: IN PROGRESS
     -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend
+    -   **Should Test frontend/backend/both after fix?**: Non, une vérification manuelle par l'utilisateur suffira.
+    -   **Blocked on other issue**: Non.
 
 **In progress Task List**:
--   **Task 1**: Intégration des transporteurs, profil vendeur et admin hero (P0)
-    -   **Where to resume**:
-        1.  **Backend ():**
-            -   Ajouter l'endpoint  pour récupérer les infos d'un vendeur et ses annonces.
-            -   Ajouter les endpoints  et  pour la gestion du contenu de la page d'accueil.
-            -   Modifier le modèle de commande pour inclure un choix de transporteur et implémenter la génération de bordereaux PDF.
-        2.  **Frontend:**
-            -   Finaliser la page  pour afficher le profil public.
-            -   Finaliser la page  avec un formulaire pour modifier le texte/image du hero.
-            -   Mettre à jour  pour charger dynamiquement le contenu du hero.
-    -   **What will be achieved with this?**: Implémentation des dernières fonctionnalités demandées par l'utilisateur.
-    -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?**: Both
-    -   **Blocked on something**: Le déploiement de ces fonctionnalités sera très problématique sans résoudre l'Issue 1.
+-   Aucune.
 
 **Upcoming and Future Tasks**
+-   **Upcoming Tasks**:
+    -   **(P0) Implémenter le SEO (Référencement Naturel)**: L'utilisateur a demandé à ce que son site soit visible sur les moteurs de recherche. L'agent a conseillé d'attendre que du contenu (annonces) soit ajouté.
+        -   **Actions**: Ajouter les balises meta (title, description) sur toutes les pages, créer et soumettre un , créer un fichier , et ajouter des données structurées (Schema.org).
 -   **Future Tasks**:
-    -   (P2) Amélioration du design général du site.
-    -   (P2) Intégration avancée avec les API des transporteurs (Colissimo, Mondial Relay) pour générer des étiquettes prépayées automatiquement.
+    -   **(P1) Intégration avancée avec les API des transporteurs**: (Ex: Colissimo, Mondial Relay) pour générer automatiquement des étiquettes d'expédition prépayées.
+    -   **(P2) Améliorations de design supplémentaires**: Bien qu'une refonte ait été faite, des améliorations futures sont toujours possibles.
 
 **Completed work in this session**
--   **Suppression de PayPal**: Tout le code lié à PayPal a été retiré à la demande de l'utilisateur.
--   **Paiement Stripe Réparé**: Résolution des problèmes complexes et récurrents de configuration de la clé API Stripe sur le VPS de l'utilisateur. Les paiements sont maintenant fonctionnels en mode Live.
--   **Notifications par Email**: Implémentation des emails pour : l'accueil, nouvelle commande, commande expédiée/livrée et demande de retour, via le SMTP Hostinger de l'utilisateur.
--   **Réinitialisation de mot de passe**: Ajout d'un flux complet mot de passe oublié.
--   **Système de Favoris et Alertes**: Les utilisateurs peuvent désormais mettre des annonces en favoris et créer des alertes par email pour des pièces spécifiques.
--   **Statistiques et Avis Vendeurs**: Ajout d'une page de statistiques pour les vendeurs et d'un système de notation/avis pour les acheteurs.
--   **Débogage de Déploiement Intensif**: Une grande partie du temps a été consacrée à guider l'utilisateur pour réparer son environnement de déploiement cassé à cause des fichiers de configuration non versionnés.
+-   **Stabilisation Critique du Déploiement**: Le problème majeur et récurrent de déploiement a été résolu en ajoutant les fichiers , ,  et  au versioning Git.
+-   **Restauration des Données Utilisateur**: Un problème de perte de données a été diagnostiqué et résolu en corrigeant le  pour pointer vers le volume MongoDB correct (), restaurant ainsi tous les utilisateurs et données existantes.
+-   **Résolution des Erreurs de Connexion**: Correction de multiples erreurs 502 et 500 en :
+    -   Configurant  et  pour gérer correctement les certificats SSL Let's Encrypt.
+    -   Corrigeant la variable d'environnement  pour utiliser le bon nom de service Docker ().
+-   **Pack Design Moderne**: Implémentation d'une refonte visuelle complète incluant :
+    -   Nouvelle section hero sur la page d'accueil.
+    -   Cartes d'annonces modernisées avec effets au survol.
+    -   Animations CSS et transitions fluides.
+    -   Création d'un footer complet et personnalisé.
+-   **Création des Pages de Contenu**: Ajout de 5 nouvelles pages entièrement fonctionnelles : ,  (Conditions Générales de Vente), ,  (avec formulaire), et  (avec un composant accordéon).
+-   **Vérification de la Page Alertes**: Confirmation que la fonctionnalité est complète et fonctionnelle, utilisant des icônes au lieu du composant  initialement prévu.
 
 **Earlier issues found/mentioned but not fixed**
--   La cause racine du **processus de déploiement fragile** (fichiers Docker non versionnés) n'a jamais été corrigée.
--   Le **bug de la page Alertes** a été contourné en simplifiant la page, mais pas résolu.
+-   Aucun. Tous les problèmes mentionnés dans la session ou dans le handoff précédent ont été soit résolus, soit confirmés comme étant déjà fonctionnels.
 
 **Known issue recurrence from previous fork**
 -   **Issue recurrence in previous fork**: Erreurs de déploiement constantes sur le VPS externe.
--   **Recurrence count**: Très élevé. C'est le problème majeur de ce projet.
--   **Status**: BLOCKED (l'agent doit d'abord ajouter les fichiers de configuration à Git).
+-   **Recurrence count**: Très élevé.
+-   **Status**: RESOLVED. La cause principale (fichiers de configuration non versionnés) a été corrigée. L'agent a également guidé l'utilisateur à travers des problèmes de cache Docker et de conflits Git locaux, fournissant des procédures de nettoyage robustes.
 
 **Code Architecture**
 
@@ -161,73 +108,66 @@ Done in 0.88s..
 **key DB schema**
 -   **users**: 
 -   **listings**: 
--   **alerts**:  (nouveau)
--   **reviews**:  (nouveau)
--   **settings**:  (nouveau)
+-   **orders**: 
+-   **alerts**: 
+-   **reviews**: 
+-   **settings**: 
 
 **changes in tech stack**
 -   Aucun.
 
 **All files of reference**
--   : Fichier principal de l'API, massivement étendu.
--   : , , , , , ,  (nouveaux).
--   : , ,  (modifiés).
--   : Modifié pour ajouter les nouveaux liens.
--   : Modifié pour les nouvelles routes.
--   **Fichiers critiques non versionnés :** , , , .
+-   **Fichiers de configuration critiques (créés/corrigés)**: , , , .
+-   **Fichiers de page frontend (créés)**: , , , , .
+-   **Fichiers de design (fortement modifiés)**: , , .
+-   **Fichiers de routage (modifiés)**: .
+-   **Fichier backend (monolithique)**: .
 
 **Areas that need refactoring**:
--    est devenu très volumineux (plus de 1700 lignes). Il doit être décomposé en plusieurs  (par exemple, , , ).
--   Le processus de déploiement a besoin d'une refonte complète en versionnant les fichiers de configuration Docker.
+-    est un monolithe de plus de 1700 lignes. Il devrait être décomposé en plusieurs  (ex: , , ) pour améliorer la maintenabilité.
 
 **key api endpoints**
--   , 
--    (GET, POST),  (DELETE)
--    (GET, POST),  (DELETE)
--    (GET)
--    (POST),  (GET)
--    (GET),  (POST) (à implémenter)
--    (à implémenter)
+-   Tous les endpoints nécessaires aux fonctionnalités existantes sont implémentés dans  et ont été vérifiés. Les principaux points d'accès sont , , , , .
 
 **Critical Info for New Agent**
--   **RÉGLE N°1 : CORRIGEZ LE DÉPLOIEMENT.** Votre première action doit être de **versionner les fichiers de configuration Docker** ( et les Dockerfiles) dans Git. C'est la seule façon de stopper le cycle infernal des erreurs de déploiement et la frustration de l'utilisateur. N'écrivez aucune nouvelle ligne de code de fonctionnalité avant d'avoir fait cela.
--   Vous n'avez **pas d'accès SSH** au VPS de l'utilisateur. Vous devez le guider avec des commandes . Vos instructions doivent être claires et précises.
--   Après avoir ajouté les fichiers de configuration à Git, demandez à l'utilisateur de faire Save to GitHub, puis guidez-le pour faire un  et reconstruire son environnement. Cela devrait être beaucoup plus stable.
--   Les identifiants Stripe, Cloudinary et SMTP sont configurés sur le VPS dans  et sont fonctionnels.
+-   Le problème le plus critique du projet (le déploiement fragile) est maintenant résolu. Les fichiers de configuration Docker sont dans Git. Cependant, l'utilisateur n'est pas technique. Les instructions de déploiement doivent rester simples et claires : , , .
+-   L'utilisateur a parfois des problèmes de copier-coller dans son terminal SSH qui créent des erreurs. Il faut lui conseiller de taper les commandes manuellement si des erreurs étranges apparaissent.
+-   Le volume de base de données correct est . Le  est configuré pour l'utiliser. Ne pas changer cette configuration pour éviter une nouvelle perte de données.
+-   La configuration Nginx est faite pour SSL avec des certificats Let's Encrypt montés depuis l'hôte du VPS. C'est configuré dans  et .
 
 **documents and test reports created in this job**
--   : mis à jour plusieurs fois pour les tests.
+-    a été mis à jour pour les tests backend et frontend.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: go pour les 3 [transporteurs, profil public, hero modifiable]
-2.  **Agent**: Demande des précisions.
-3.  **User**: Donne ses préférences (Bordereau PDF, profil public ok, hero modifiable).
-4.  **Agent**: Commence l'implémentation.
-5.  ... (messages d'implémentation) ...
-6.  **User**: ok super ca marche :) je sauvegarde sur github de suite [après la correction de la page blanche sur /alertes]
-7.  **Agent**: Demande de tester les favoris.
-8.  **User**: Dit qu'il n'y a pas d'annonces pour tester et qu'il verra plus tard.
-9.  **Agent**: Propose les prochaines étapes.
-10. **User**: statistiques vendeur et note des acheteurs avec commentaire si pas deja fait.
-    (Agent a ensuite implémenté cela, le dernier vrai message de l'utilisateur est le #520)
+1.  **User**: Me demande si je peux l'aider à faire de la publicité Google pour son site.
+2.  **Agent**: Propose de l'aide pour le SEO (gratuit) et/ou Google Ads (payant).
+3.  **User**: Demande combien coûte Google Ads.
+4.  **Agent**: Explique le budget et recommande de commencer par le SEO.
+5.  **User**: Choisit le SEO pour ne pas payer pour l'instant.
+6.  **Agent**: Explique ce que le SEO implique et que cela prendra du temps pour voir les résultats.
+7.  **User**: S'inquiète que les modifications pour le SEO causent de nouveaux problèmes de connexion.
+8.  **Agent**: Recommande de créer d'abord du contenu (annonces) et de faire le SEO plus tard.
+9.  **User**: Accepte la proposition.
+10. **User**: A changé la page d'accueil et demande comment poster des annonces de test sans payer.
+11. **Agent**: Propose d'ajouter des crédits à son compte sur le site et demande son email. (EN ATTENTE DE L'EMAIL)
 
 **Project Health Check:**
--   **Broken**: Le processus de déploiement est fondamentalement cassé à cause des fichiers de configuration non versionnés. C'est une bombe à retardement pour toute nouvelle modification.
--   **Mocked**: N/A
+-   **Broken**: Aucun service n'est actuellement cassé.
+-   **Mocked**: N/A.
 
 **3rd Party Integrations**
--   **Stripe (Payments)** — Intégration Live, utilise une clé API fournie par l'utilisateur.
--   **Cloudinary (Image Storage)** — Intégration Live, utilise des clés API fournies par l'utilisateur.
--   **Hostinger SMTP (Emailing)** — Intégration Live, utilise des identifiants fournis par l'utilisateur.
+-   **Stripe (Payments)** — Intégration Live, utilise une clé API fournie par l'utilisateur via  sur le VPS.
+-   **Cloudinary (Image Storage)** — Intégration Live, utilise des clés API fournies par l'utilisateur via  sur le VPS.
+-   **Hostinger SMTP (Emailing)** — Intégration Live, utilise des identifiants fournis par l'utilisateur via  sur le VPS.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES, pour valider les endpoints après suppression de PayPal et ajout des emails.
--   **Troubleshoot agent used after agent stuck in loop**: NO, mais l'agent a passé un temps considérable à résoudre des problèmes de déploiement manuellement.
+-   **Testing agent used after significant changes**: YES. Le  et le  ont été utilisés pour valider la stabilité après les corrections majeures.
+-   **Troubleshoot agent used after agent stuck in loop**: YES, un agent de dépannage a été invoqué pour diagnostiquer le problème de la base de données vide.
 -   **Test files created**: []
--   **Known regressions**: Aucune.
+-   **Known regressions**: Aucune. La régression de perte de données a été identifiée et corrigée.
 
 **Credentials to test flow:**
-N/A. Tous les identifiants sont sur le VPS de l'utilisateur et ne sont pas accessibles. Les tests doivent être faits avec des clés de test dans l'environnement de l'agent.
+-   N/A. L'authentification se fait sur le site de production. Les crédits pour les tests sont en cours d'ajout manuellement.
 
 **What agent forgot to execute**
--   L'agent a constamment oublié de versionner les fichiers de configuration Docker (, Dockerfiles, ) dans le dépôt Git, ce qui est la cause principale et récurrente de tous les problèmes de déploiement. C'est une erreur critique qui doit être corrigée en priorité.</analysis>
+-   L'agent a correctement traité toutes les demandes de l'utilisateur et les problèmes soulevés dans le handoff précédent. Aucune tâche oubliée n'a été identifiée.</analysis>
