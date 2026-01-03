@@ -99,20 +99,54 @@ export default function CreateListing() {
     });
   };
 
-  const addImageUrl = () => {
-    if (imageUrls.length < 6) {
-      setImageUrls([...imageUrls, '']);
+  const handleImageUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (images.length + files.length > 6) {
+      toast.error('Maximum 6 images par annonce');
+      return;
+    }
+
+    setUploadingImages(true);
+    const token = localStorage.getItem('token');
+
+    for (const file of files) {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await axios.post(`${API}/upload/image`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        setImages(prev => [...prev, {
+          url: response.data.url,
+          public_id: response.data.public_id
+        }]);
+      } catch (error) {
+        toast.error(`Erreur lors de l'upload: ${file.name}`);
+        console.error('Upload error:', error);
+      }
+    }
+    setUploadingImages(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
-  const updateImageUrl = (index, value) => {
-    const newUrls = [...imageUrls];
-    newUrls[index] = value;
-    setImageUrls(newUrls);
-  };
-
-  const removeImageUrl = (index) => {
-    setImageUrls(imageUrls.filter((_, i) => i !== index));
+  const removeImage = async (index) => {
+    const image = images[index];
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/upload/image/${encodeURIComponent(image.public_id)}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+    } catch (error) {
+      console.error('Delete error:', error);
+    }
+    setImages(images.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
