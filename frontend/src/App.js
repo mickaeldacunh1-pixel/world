@@ -56,6 +56,12 @@ function AppContent() {
           <Route path="/commandes" element={
             <ProtectedRoute><Orders /></ProtectedRoute>
           } />
+          <Route path="/favoris" element={
+            <ProtectedRoute><Favorites /></ProtectedRoute>
+          } />
+          <Route path="/alertes" element={
+            <ProtectedRoute><Alerts /></ProtectedRoute>
+          } />
         </Routes>
       </main>
       <Footer />
