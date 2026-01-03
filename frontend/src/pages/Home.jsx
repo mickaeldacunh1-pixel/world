@@ -92,6 +92,13 @@ export default function Home() {
 
   return (
     <div className="animate-fade-in" data-testid="home-page">
+      <SEO
+        title="Accueil"
+        description="World Auto France - La marketplace automobile pour acheter et vendre des pièces détachées, voitures, motos et utilitaires d'occasion. Particuliers et professionnels."
+        keywords="pièces détachées auto, voiture occasion, moto occasion, utilitaire occasion, marketplace automobile, France"
+        url="/"
+        structuredData={[createOrganizationSchema(), createWebsiteSchema()]}
+      />
       {/* Hero Section - Improved */}
       <section className="relative min-h-[600px] md:min-h-[700px] flex items-center overflow-hidden">
         {/* Background Image */}
