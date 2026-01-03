@@ -101,3 +101,109 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Site de mise en relation type Opisto pour la vente de pièces détachées et véhicules d'occasion. Suppression de l'intégration PayPal et maintien de Stripe uniquement."
+
+backend:
+  - task: "API Root endpoint"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Tested via curl - returns API info correctly"
+
+  - task: "Pricing endpoint"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Returns all pricing packages correctly"
+
+  - task: "Stripe payment checkout"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "PayPal code removed, Stripe should still work. Needs testing."
+
+  - task: "User authentication (register/login)"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Auth endpoints exist, needs verification"
+
+  - task: "Listings CRUD"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Listings endpoints exist, needs verification"
+
+frontend:
+  - task: "Pricing page"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/Pricing.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "PayPal buttons removed, page displays correctly with Stripe-only checkout"
+
+  - task: "Homepage"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/Home.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Homepage loads correctly with all sections"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Stripe payment checkout"
+    - "User authentication"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "main"
+    - message: "Removed PayPal integration completely (backend code, config, frontend buttons). Stripe remains as the only payment method. Need to verify that the Stripe checkout flow still works correctly. Also need basic verification that auth and listings endpoints are functional."
