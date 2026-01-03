@@ -326,6 +326,39 @@ class AutoPiecesAPITester:
         
         return True
 
+    def test_stripe_checkout_creation(self):
+        """Test Stripe checkout session creation"""
+        if not self.token:
+            self.log_test("Stripe Checkout Creation", False, "No token available")
+            return False
+        
+        # Test creating checkout for each package
+        packages = ["single", "pack5", "pack20", "unlimited"]
+        for package in packages:
+            result = self.run_test(f"Stripe Checkout {package}", "POST", f"payments/checkout?package_id={package}", 200)
+            if result and 'url' in result and 'session_id' in result:
+                # Verify the URL contains stripe.com
+                if 'stripe.com' in result['url']:
+                    self.log_test(f"Stripe URL for {package}", True)
+                else:
+                    self.log_test(f"Stripe URL for {package}", False, f"Invalid URL: {result['url']}")
+                    return False
+            else:
+                return False
+        return True
+
+    def test_paypal_endpoints_removed(self):
+        """Test that PayPal endpoints are removed and return 404"""
+        # Test PayPal create endpoint
+        result = self.run_test("PayPal Create (Should be 404)", "POST", "payments/paypal/create/single", 404)
+        paypal_create_removed = result is None
+        
+        # Test PayPal capture endpoint  
+        result = self.run_test("PayPal Capture (Should be 404)", "POST", "payments/paypal/capture/test_order_id", 404)
+        paypal_capture_removed = result is None
+        
+        return paypal_create_removed and paypal_capture_removed
+
     def test_invalid_endpoints(self):
         """Test invalid endpoints return 404"""
         result = self.run_test("Invalid Endpoint", "GET", "invalid/endpoint", 404)
