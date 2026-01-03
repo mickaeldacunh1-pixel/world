@@ -492,7 +492,7 @@ async def get_current_user(request: Request) -> dict:
 # ================== AUTH ROUTES ==================
 
 @api_router.post("/auth/register")
-async def register(user: UserCreate):
+async def register(user: UserCreate, background_tasks: BackgroundTasks):
     existing = await db.users.find_one({"email": user.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email déjà utilisé")
@@ -515,6 +515,9 @@ async def register(user: UserCreate):
     
     await db.users.insert_one(user_doc)
     token = create_token(user_doc["id"], user_doc["email"])
+    
+    # Send welcome email in background
+    background_tasks.add_task(send_welcome_email, user_doc["email"], user_doc["name"])
     
     return {
         "token": token,
