@@ -855,7 +855,7 @@ async def get_messages(listing_id: str, other_user_id: str, current_user: dict =
 bordereau_gen = BordereauGenerator()
 
 @api_router.post("/orders")
-async def create_order(order: OrderCreate, current_user: dict = Depends(get_current_user)):
+async def create_order(order: OrderCreate, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
     """Créer une commande pour un article"""
     # Get listing
     listing = await db.listings.find_one({"id": order.listing_id, "status": "active"}, {"_id": 0})
@@ -896,6 +896,10 @@ async def create_order(order: OrderCreate, current_user: dict = Depends(get_curr
     
     # Mark listing as sold
     await db.listings.update_one({"id": order.listing_id}, {"$set": {"status": "sold"}})
+    
+    # Send notification emails
+    background_tasks.add_task(send_new_order_seller_email, seller.get("email"), seller.get("name"), order_doc)
+    background_tasks.add_task(send_new_order_buyer_email, current_user.get("email"), current_user.get("name"), order_doc)
     
     return order_doc
 
