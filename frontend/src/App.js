@@ -18,6 +18,8 @@ import ResetPassword from "./pages/ResetPassword";
 import Favorites from "./pages/Favorites";
 import Alerts from "./pages/Alerts";
 import SellerStats from "./pages/SellerStats";
+import SellerProfile from "./pages/SellerProfile";
+import AdminSettings from "./pages/AdminSettings";
 import "./App.css";
 
 const ProtectedRoute = ({ children }) => {
