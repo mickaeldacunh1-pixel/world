@@ -5,29 +5,29 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Card } from '../components/ui/card';
-import { Search, Car, Wrench, Bike, Truck, Settings, ArrowRight, Shield, Users, Clock } from 'lucide-react';
+import { Search, Car, Wrench, Bike, Truck, Settings, ArrowRight, Shield, Users, Clock, MapPin, Eye, Sparkles } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const categories = [
-  { name: 'Pièces Détachées', slug: 'pieces', icon: Wrench, image: 'https://images.unsplash.com/photo-1767339736233-f4b02c41ee4a?w=600&h=400&fit=crop', count: 0 },
-  { name: 'Voitures', slug: 'voitures', icon: Car, image: 'https://images.unsplash.com/photo-1676288176820-a5a954d81e6e?w=600&h=400&fit=crop', count: 0 },
-  { name: 'Motos', slug: 'motos', icon: Bike, image: 'https://images.unsplash.com/photo-1563156400-283584bf1dde?w=600&h=400&fit=crop', count: 0 },
-  { name: 'Utilitaires', slug: 'utilitaires', icon: Truck, image: 'https://images.unsplash.com/photo-1622153556915-1078632b7452?w=600&h=400&fit=crop', count: 0 },
-  { name: 'Accessoires', slug: 'accessoires', icon: Settings, image: 'https://images.unsplash.com/photo-1745243996628-eccec80eb2d6?w=600&h=400&fit=crop', count: 0 },
+  { name: 'Pièces Détachées', slug: 'pieces', icon: Wrench, image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=400&fit=crop', count: 0, color: 'from-orange-500 to-red-500' },
+  { name: 'Voitures', slug: 'voitures', icon: Car, image: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop', count: 0, color: 'from-blue-500 to-indigo-500' },
+  { name: 'Motos', slug: 'motos', icon: Bike, image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&h=400&fit=crop', count: 0, color: 'from-green-500 to-teal-500' },
+  { name: 'Utilitaires', slug: 'utilitaires', icon: Truck, image: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&h=400&fit=crop', count: 0, color: 'from-purple-500 to-pink-500' },
+  { name: 'Accessoires', slug: 'accessoires', icon: Settings, image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&h=400&fit=crop', count: 0, color: 'from-yellow-500 to-orange-500' },
 ];
 
 const features = [
-  { icon: Shield, title: 'Transactions Sécurisées', description: 'Paiements sécurisés et messagerie intégrée' },
-  { icon: Users, title: 'Pro & Particuliers', description: 'Vendeurs vérifiés, particuliers et professionnels' },
-  { icon: Clock, title: 'Annonces 30 jours', description: 'Vos annonces restent visibles pendant 30 jours' },
+  { icon: Shield, title: 'Transactions Sécurisées', description: 'Paiements sécurisés via Stripe et messagerie intégrée pour des échanges en toute confiance.' },
+  { icon: Users, title: 'Pro & Particuliers', description: 'Une communauté de vendeurs vérifiés, particuliers comme professionnels du secteur.' },
+  { icon: Clock, title: 'Annonces 30 jours', description: 'Vos annonces restent visibles pendant 30 jours avec possibilité de renouvellement.' },
 ];
 
 const DEFAULT_HERO = {
   hero_title_line1: "La marketplace auto",
   hero_title_line2: "pour tous",
   hero_description: "Achetez et vendez des pièces détachées, voitures, motos et utilitaires. Pour particuliers et professionnels.",
-  hero_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
+  hero_image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2832&auto=format&fit=crop",
   hero_cta_text: "Déposer une annonce",
   hero_cta_link: "/deposer"
 };
@@ -83,40 +83,63 @@ export default function Home() {
     navigate(`/annonces?${params.toString()}`);
   };
 
+  const conditionLabels = {
+    neuf: 'Neuf',
+    occasion: 'Occasion',
+    reconditionne: 'Reconditionné',
+  };
+
   return (
     <div className="animate-fade-in" data-testid="home-page">
-      {/* Hero Section */}
-      <section className="relative bg-primary overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div 
-            className="absolute inset-0 bg-cover bg-center" 
-            style={{ backgroundImage: `url('${heroSettings.hero_image}')` }}
+      {/* Hero Section - Improved */}
+      <section className="relative min-h-[600px] md:min-h-[700px] flex items-center overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img 
+            src={heroSettings.hero_image} 
+            alt="Hero background" 
+            className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 hero-gradient" />
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-          <div className="max-w-3xl">
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-primary-foreground tracking-tight leading-none mb-6">
+        
+        {/* Content */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 w-full">
+          <div className="max-w-3xl animate-fade-in-up">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-6 animate-fade-in-up stagger-1">
+              <Sparkles className="w-4 h-4 text-accent" />
+              <span className="text-sm font-medium">La référence automobile en France</span>
+            </div>
+            
+            <h1 className="font-heading text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tight leading-none mb-6 animate-fade-in-up stagger-2">
               {heroSettings.hero_title_line1}<br />
-              <span className="text-accent">{heroSettings.hero_title_line2}</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-orange-400">
+                {heroSettings.hero_title_line2}
+              </span>
             </h1>
-            <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-xl">
+            <p className="text-lg md:text-xl text-white/80 mb-10 max-w-xl animate-fade-in-up stagger-3">
               {heroSettings.hero_description}
             </p>
 
-            {/* Search Form */}
-            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3" data-testid="search-form">
+            {/* Search Form - Glass effect */}
+            <form 
+              onSubmit={handleSearch} 
+              className="flex flex-col sm:flex-row gap-3 animate-fade-in-up stagger-4 glass p-2 rounded-2xl"
+              data-testid="search-form"
+            >
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   placeholder="Rechercher une pièce, un véhicule..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-10 h-12 bg-white border-0"
+                  className="pl-12 h-14 bg-transparent border-0 text-lg focus-ring rounded-xl"
                   data-testid="search-input"
                 />
               </div>
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-full sm:w-48 h-12 bg-white border-0" data-testid="category-select">
+                <SelectTrigger className="w-full sm:w-52 h-14 bg-transparent border-0 text-base rounded-xl focus-ring" data-testid="category-select">
                   <SelectValue placeholder="Catégorie" />
                 </SelectTrigger>
                 <SelectContent>
@@ -127,23 +150,40 @@ export default function Home() {
                   <SelectItem value="accessoires">Accessoires</SelectItem>
                 </SelectContent>
               </Select>
-              <Button type="submit" className="h-12 px-8 bg-accent hover:bg-accent/90 text-accent-foreground btn-primary" data-testid="search-btn">
+              <Button 
+                type="submit" 
+                className="h-14 px-8 btn-primary rounded-xl text-base font-semibold" 
+                data-testid="search-btn"
+              >
+                <Search className="w-5 h-5 mr-2" />
                 Rechercher
               </Button>
             </form>
+
+            {/* Quick stats */}
+            <div className="flex flex-wrap gap-6 mt-10 animate-fade-in-up stagger-5">
+              <div className="text-white/70">
+                <span className="text-2xl font-bold text-white">{Object.values(categoryStats).reduce((a, b) => a + b, 0) || '100+'}+</span>
+                <span className="ml-2 text-sm">annonces actives</span>
+              </div>
+              <div className="text-white/70">
+                <span className="text-2xl font-bold text-white">5</span>
+                <span className="ml-2 text-sm">catégories</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Categories Bento Grid */}
-      <section className="py-16 md:py-24 bg-secondary/30">
+      {/* Categories Bento Grid - Improved */}
+      <section className="py-16 md:py-24 bg-gradient-to-b from-secondary/50 to-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-fade-in-up">
             <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4">
               Explorez nos catégories
             </h2>
-            <p className="text-muted-foreground text-lg">
-              Trouvez exactement ce que vous cherchez parmi des milliers d'annonces
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Trouvez exactement ce que vous cherchez parmi des milliers d'annonces vérifiées
             </p>
           </div>
 
@@ -152,26 +192,31 @@ export default function Home() {
               <Link
                 key={cat.slug}
                 to={`/annonces/${cat.slug}`}
-                className={`group relative overflow-hidden rounded-2xl card-hover ${
+                className={`group relative overflow-hidden rounded-2xl hover-lift animate-fade-in-up stagger-${index + 1} ${
                   index === 0 ? 'col-span-2 row-span-2' : ''
                 }`}
                 data-testid={`category-${cat.slug}`}
               >
-                <div className={`relative ${index === 0 ? 'h-80 md:h-96' : 'h-40 md:h-48'}`}>
+                <div className={`relative ${index === 0 ? 'h-80 md:h-[420px]' : 'h-44 md:h-52'}`}>
                   <img
                     src={cat.image}
                     alt={cat.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="absolute inset-0 w-full h-full object-cover img-zoom"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
+                  
+                  {/* Content */}
                   <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
-                    <div className="flex items-center gap-2 mb-2">
-                      <cat.icon className="w-5 h-5 text-accent" />
-                      <span className="text-white font-heading font-bold text-lg md:text-xl">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-lg`}>
+                        <cat.icon className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="text-white font-heading font-bold text-lg md:text-xl drop-shadow-lg">
                         {cat.name}
                       </span>
                     </div>
-                    <p className="text-white/70 text-sm">
+                    <p className="text-white/80 text-sm font-medium">
                       {categoryStats[cat.slug] || 0} annonces
                     </p>
                   </div>
@@ -182,12 +227,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Recent Listings */}
+      {/* Recent Listings - Improved cards */}
       {recentListings.length > 0 && (
         <section className="py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-12">
-              <div>
+              <div className="animate-slide-in-left">
                 <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-2">
                   Annonces récentes
                 </h2>
@@ -195,8 +240,8 @@ export default function Home() {
                   Découvrez les dernières annonces publiées
                 </p>
               </div>
-              <Link to="/annonces">
-                <Button variant="outline" className="hidden sm:flex items-center gap-2" data-testid="view-all-btn">
+              <Link to="/annonces" className="animate-slide-in-right">
+                <Button variant="outline" className="hidden sm:flex items-center gap-2 hover:bg-accent hover:text-white hover:border-accent transition-all" data-testid="view-all-btn">
                   Voir tout
                   <ArrowRight className="w-4 h-4" />
                 </Button>
@@ -204,38 +249,63 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {recentListings.map((listing) => (
+              {recentListings.map((listing, index) => (
                 <Link
                   key={listing.id}
                   to={`/annonce/${listing.id}`}
-                  className="group"
+                  className={`group animate-fade-in-up stagger-${(index % 5) + 1}`}
                   data-testid={`listing-card-${listing.id}`}
                 >
-                  <Card className="overflow-hidden card-hover">
-                    <div className="relative h-48">
+                  <Card className="overflow-hidden card-hover border-0 shadow-md">
+                    <div className="relative h-52 overflow-hidden">
                       <img
-                        src={listing.images?.[0] || 'https://images.unsplash.com/photo-1767339736233-f4b02c41ee4a?w=400&h=300&fit=crop'}
+                        src={listing.images?.[0] || 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=300&fit=crop'}
                         alt={listing.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover img-zoom"
                       />
-                      {listing.seller_is_pro && (
-                        <span className="absolute top-3 left-3 badge-pro">PRO</span>
-                      )}
+                      {/* Overlay gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      
+                      {/* Badges */}
+                      <div className="absolute top-3 left-3 flex gap-2">
+                        {listing.seller_is_pro && (
+                          <span className="badge-pro">PRO</span>
+                        )}
+                      </div>
+                      <span className="absolute top-3 right-3 badge-condition">
+                        {conditionLabels[listing.condition] || listing.condition}
+                      </span>
+                      
+                      {/* Quick view button */}
+                      <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                        <span className="bg-white/95 backdrop-blur-sm text-primary px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
+                          Voir l'annonce →
+                        </span>
+                      </div>
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-heading font-bold text-lg mb-1 line-clamp-1 group-hover:text-accent transition-colors">
+                    <div className="p-5">
+                      <h3 className="font-heading font-bold text-lg mb-2 line-clamp-1 group-hover:text-accent transition-colors">
                         {listing.title}
                       </h3>
-                      <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+                      <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                         {listing.description}
                       </p>
-                      <div className="flex items-center justify-between">
-                        <span className="font-heading font-bold text-xl text-accent">
+                      <div className="flex items-center justify-between pt-3 border-t border-border/50">
+                        <span className="font-heading font-bold text-2xl price-tag">
                           {listing.price?.toLocaleString('fr-FR')} €
                         </span>
-                        <span className="text-sm text-muted-foreground">
-                          {listing.location || 'France'}
-                        </span>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          {listing.location && (
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              {listing.location}
+                            </span>
+                          )}
+                          <span className="flex items-center gap-1">
+                            <Eye className="w-3 h-3" />
+                            {listing.views || 0}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </Card>
@@ -254,43 +324,60 @@ export default function Home() {
         </section>
       )}
 
-      {/* Features */}
-      <section className="py-16 md:py-24 bg-secondary/30">
+      {/* Features - Improved */}
+      <section className="py-16 md:py-24 bg-gradient-to-b from-background to-secondary/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 animate-fade-in-up">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4">
+              Pourquoi choisir World Auto ?
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              La plateforme de confiance pour vos transactions automobiles
+            </p>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature) => (
-              <Card key={feature.title} className="p-8 text-center card-hover">
-                <div className="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <feature.icon className="w-7 h-7 text-accent" />
+            {features.map((feature, index) => (
+              <Card key={feature.title} className={`p-8 text-center card-hover border-0 shadow-md animate-fade-in-up stagger-${index + 1}`}>
+                <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-orange-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                  <feature.icon className="w-8 h-8 text-accent" />
                 </div>
                 <h3 className="font-heading font-bold text-xl mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 md:py-24 bg-primary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
-            Prêt à vendre ?
-          </h2>
-          <p className="text-primary-foreground/70 text-lg mb-8 max-w-xl mx-auto">
-            Déposez votre annonce en quelques minutes et touchez des milliers d'acheteurs potentiels.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/deposer">
-              <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground btn-primary" data-testid="cta-create-listing">
-                Déposer une annonce
-              </Button>
-            </Link>
-            <Link to="/tarifs">
-              <Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10" data-testid="cta-pricing">
-                Voir les tarifs
-              </Button>
-            </Link>
+      {/* CTA Section - Improved */}
+      <section className="py-20 md:py-28 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary to-slate-800" />
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920')] bg-cover bg-center" />
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="animate-fade-in-up">
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-6">
+              Prêt à vendre votre véhicule ?
+            </h2>
+            <p className="text-white/70 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+              Déposez votre annonce en quelques minutes et touchez des milliers d'acheteurs potentiels dans toute la France.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/deposer">
+                <Button size="lg" className="btn-primary text-lg h-14 px-10" data-testid="cta-create-listing">
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Déposer une annonce
+                </Button>
+              </Link>
+              <Link to="/tarifs">
+                <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 h-14 px-10 text-lg" data-testid="cta-pricing">
+                  Voir les tarifs
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
