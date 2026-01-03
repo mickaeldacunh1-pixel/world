@@ -411,6 +411,56 @@ async def create_listing(listing: ListingCreate, current_user: dict = Depends(ge
     
     return ListingResponse(**listing_doc)
 
+# ================== IMAGE UPLOAD ==================
+
+@api_router.post("/upload/image")
+async def upload_image(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    """Upload an image to Cloudinary"""
+    try:
+        # Validate file type
+        allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
+        if file.content_type not in allowed_types:
+            raise HTTPException(status_code=400, detail="Type de fichier non supporté. Utilisez JPG, PNG, WebP ou GIF.")
+        
+        # Read file content
+        contents = await file.read()
+        
+        # Check file size (max 10MB)
+        if len(contents) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="L'image est trop volumineuse. Maximum 10MB.")
+        
+        # Upload to Cloudinary
+        result = cloudinary.uploader.upload(
+            contents,
+            folder="worldauto",
+            resource_type="image",
+            transformation=[
+                {"width": 1200, "height": 900, "crop": "limit"},
+                {"quality": "auto:good"},
+                {"fetch_format": "auto"}
+            ]
+        )
+        
+        return {
+            "url": result["secure_url"],
+            "public_id": result["public_id"],
+            "width": result.get("width"),
+            "height": result.get("height")
+        }
+    except cloudinary.exceptions.Error as e:
+        logging.error(f"Cloudinary upload error: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'upload de l'image")
+
+@api_router.delete("/upload/image/{public_id:path}")
+async def delete_image(public_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete an image from Cloudinary"""
+    try:
+        result = cloudinary.uploader.destroy(public_id)
+        return {"status": "success", "result": result}
+    except cloudinary.exceptions.Error as e:
+        logging.error(f"Cloudinary delete error: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la suppression de l'image")
+
 @api_router.get("/listings")
 async def get_listings(
     category: Optional[str] = None,
