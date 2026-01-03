@@ -77,36 +77,137 @@
 
 /* Animation classes */
 .animate-fade-in {
-    animation: fadeIn 0.3s ease-in-out;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.4s ease-out;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.5s ease-out;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.5s ease-out;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Staggered animations */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
 .hover-lift {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .hover-lift:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
 
 /* Card styles */
 .card-hover {
-    @apply transition-all duration-300 hover:shadow-lg hover:border-primary/20;
+    @apply transition-all duration-300 hover:shadow-xl hover:border-accent/30;
+    transform: translateY(0);
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+}
+
+/* Image zoom effect */
+.img-zoom {
+    @apply transition-transform duration-500 ease-out;
+}
+
+.group:hover .img-zoom {
+    transform: scale(1.08);
 }
 
 /* Badge styles */
 .badge-pro {
-    @apply bg-accent text-accent-foreground px-2 py-0.5 rounded text-xs font-medium;
+    @apply bg-gradient-to-r from-accent to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide shadow-lg;
+}
+
+.badge-condition {
+    @apply bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold shadow-md border border-gray-100;
 }
 
 /* Button hover effect */
 .btn-primary {
-    @apply transition-all hover:translate-y-[-1px] hover:shadow-lg;
+    @apply transition-all duration-300 hover:translate-y-[-2px] hover:shadow-xl;
+    background: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(24 95% 45%) 100%);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, hsl(24 95% 45%) 0%, hsl(var(--accent)) 100%);
+}
+
+/* Price tag styling */
+.price-tag {
+    @apply font-heading font-bold text-accent;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Hero overlay gradient */
+.hero-gradient {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(30, 41, 59, 0.7) 50%, rgba(30, 41, 59, 0.4) 100%);
+}
+
+/* Glass effect */
+.glass {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Shimmer effect for loading */
+.shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Focus ring */
+.focus-ring {
+    @apply focus:ring-2 focus:ring-accent/50 focus:ring-offset-2 focus:outline-none;
 }
 
 @layer base {
