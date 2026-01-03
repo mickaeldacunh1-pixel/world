@@ -585,6 +585,13 @@ class AutoPiecesAPITester:
         self.test_order_status_update_delivered()
         self.test_return_request_with_email()
         
+        # NEW FEATURES TESTING (from review request)
+        print("\n🆕 Testing New Features...")
+        self.test_seller_public_profile()
+        self.test_hero_settings_api()
+        self.test_shipping_slip_pdf_generation()
+        self.test_carriers_list_api()
+        
         # Payment tests (Stripe and PayPal removal verification)
         self.test_stripe_checkout_creation()
         self.test_paypal_endpoints_removed()
