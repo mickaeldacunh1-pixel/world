@@ -294,6 +294,72 @@ frontend:
         - working: true
         - agent: "main"
         - comment: "Homepage loads correctly with all sections"
+        - working: true
+        - agent: "testing"
+        - comment: "Homepage working correctly. Page loads successfully with title 'World Auto - Marketplace Automobile', hero section displays with dynamic content 'Test Title Line 1Test Title Line 2', navigation with 5 links found. Minor: No category cards or recent listings found but page structure is functional."
+
+  - task: "Listings Page"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/Listings.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "testing"
+        - comment: "Listings page working correctly. Page accessible at /annonces, displays filter sidebar (1 filter element found) and listings grid (2 listing grid elements found). Shows 1 listing available. Page renders without errors."
+
+  - task: "Auth Page"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/Auth.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "testing"
+        - comment: "Auth page working correctly. Page accessible at /auth, displays both login and registration forms with proper data-testid attributes. Registration form includes all required fields: name, email, password, confirm password, phone. Form validation and toggle between login/registration working properly."
+
+  - task: "Pricing Page"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/Pricing.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "PayPal buttons removed, page displays correctly with Stripe-only checkout"
+        - working: true
+        - agent: "testing"
+        - comment: "Pricing page working correctly. Page accessible at /tarifs, displays pricing structure with 4 pricing packages (Annonce Unique 2€, Pack 5 8€, Pack 20 25€, Pro Illimité 49€/mois). Stripe checkout buttons present and functional. Page renders without errors."
+
+  - task: "Protected Routes Authentication"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "testing"
+        - comment: "Protected routes working correctly. All protected pages (/favoris, /alertes, /statistiques, /commandes, /admin/parametres) properly redirect to /auth when not authenticated. ProtectedRoute component functioning as expected."
+
+  - task: "Navigation and Mobile Responsiveness"
+    implemented: true
+    working: true
+    file: "frontend/src/components/Navbar.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "testing"
+        - comment: "Navigation working correctly. Navbar displays with 5 navigation links, responsive design works on mobile (390x844). Mobile layout adapts properly with navigation elements visible. No critical mobile menu issues found."
 
   - task: "Seller Profile Page"
     implemented: true
