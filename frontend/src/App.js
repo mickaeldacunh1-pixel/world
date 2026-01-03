@@ -13,6 +13,8 @@ import Orders from "./pages/Orders";
 import Auth from "./pages/Auth";
 import Pricing from "./pages/Pricing";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import "./App.css";
 
 const ProtectedRoute = ({ children }) => {
