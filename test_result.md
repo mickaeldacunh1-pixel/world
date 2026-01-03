@@ -429,9 +429,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Seller Profile Page"
-    - "Admin Settings Page"
-    - "Orders Page with shipping slips"
+    - "Stripe payment checkout"
   stuck_tasks: 
     - "Stripe payment checkout"
   test_all: false
