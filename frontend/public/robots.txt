@@ -1,0 +1,29 @@
+# World Auto France - robots.txt
+User-agent: *
+Allow: /
+
+# Disallow private/admin pages
+Disallow: /tableau-de-bord
+Disallow: /messages
+Disallow: /commandes
+Disallow: /favoris
+Disallow: /alertes
+Disallow: /statistiques
+Disallow: /admin/
+Disallow: /payment/
+Disallow: /reset-password
+Disallow: /mot-de-passe-oublie
+
+# Allow search engines to access important pages
+Allow: /annonces
+Allow: /annonce/
+Allow: /vendeur/
+Allow: /tarifs
+Allow: /a-propos
+Allow: /contact
+Allow: /faq
+Allow: /cgv
+Allow: /mentions-legales
+
+# Sitemap location
+Sitemap: https://worldautofrance.com/sitemap.xml
