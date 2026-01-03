@@ -23,17 +23,39 @@ const features = [
   { icon: Clock, title: 'Annonces 30 jours', description: 'Vos annonces restent visibles pendant 30 jours' },
 ];
 
+const DEFAULT_HERO = {
+  hero_title_line1: "La marketplace auto",
+  hero_title_line2: "pour tous",
+  hero_description: "Achetez et vendez des pièces détachées, voitures, motos et utilitaires. Pour particuliers et professionnels.",
+  hero_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
+  hero_cta_text: "Déposer une annonce",
+  hero_cta_link: "/deposer"
+};
+
 export default function Home() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [categoryStats, setCategoryStats] = useState({});
   const [recentListings, setRecentListings] = useState([]);
+  const [heroSettings, setHeroSettings] = useState(DEFAULT_HERO);
 
   useEffect(() => {
     fetchCategoryStats();
     fetchRecentListings();
+    fetchHeroSettings();
   }, []);
+
+  const fetchHeroSettings = async () => {
+    try {
+      const response = await axios.get(`${API}/settings/hero`);
+      if (response.data) {
+        setHeroSettings({ ...DEFAULT_HERO, ...response.data });
+      }
+    } catch (error) {
+      console.error('Error fetching hero settings:', error);
+    }
+  };
 
   const fetchCategoryStats = async () => {
     try {
@@ -66,17 +88,19 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative bg-primary overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop')] bg-cover bg-center" />
+          <div 
+            className="absolute inset-0 bg-cover bg-center" 
+            style={{ backgroundImage: `url('${heroSettings.hero_image}')` }}
+          />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
           <div className="max-w-3xl">
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-primary-foreground tracking-tight leading-none mb-6">
-              La marketplace auto<br />
-              <span className="text-accent">pour tous</span>
+              {heroSettings.hero_title_line1}<br />
+              <span className="text-accent">{heroSettings.hero_title_line2}</span>
             </h1>
             <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-xl">
-              Achetez et vendez des pièces détachées, voitures, motos et utilitaires. 
-              Pour particuliers et professionnels.
+              {heroSettings.hero_description}
             </p>
 
             {/* Search Form */}
