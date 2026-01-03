@@ -8,9 +8,8 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Switch } from '../components/ui/switch';
 import { Badge } from '../components/ui/badge';
-import { Bell, BellOff, Plus, Trash2, X } from 'lucide-react';
+import { Bell, BellOff, Plus, Trash2, X, Power } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
