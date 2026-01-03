@@ -1,9 +1,16 @@
 import { Card } from '../components/ui/card';
 import { Users, Target, Shield, Award } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function About() {
   return (
     <div className="min-h-screen bg-secondary/30 py-12">
+      <SEO
+        title="À propos"
+        description="Découvrez World Auto France, la marketplace automobile de référence pour l'achat et la vente de pièces détachées et véhicules d'occasion."
+        keywords="à propos world auto, marketplace automobile France, qui sommes-nous"
+        url="/a-propos"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in-up">

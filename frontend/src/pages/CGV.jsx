@@ -1,8 +1,15 @@
 import { Card } from '../components/ui/card';
+import SEO from '../components/SEO';
 
 export default function CGV() {
   return (
     <div className="min-h-screen bg-secondary/30 py-12">
+      <SEO
+        title="Conditions Générales de Vente"
+        description="Consultez les Conditions Générales de Vente de World Auto France. Informations sur les services, inscriptions, tarifs et responsabilités."
+        keywords="CGV world auto, conditions générales de vente, tarifs annonces"
+        url="/cgv"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-fade-in-up">
           <h1 className="font-heading text-4xl font-bold mb-4">Conditions Générales de Vente</h1>

@@ -6,6 +6,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { toast } from 'sonner';
 import { Mail, MessageSquare, Send, Clock, CheckCircle } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -38,6 +39,12 @@ export default function Contact() {
   if (sent) {
     return (
       <div className="min-h-screen bg-secondary/30 py-12">
+        <SEO
+          title="Contact"
+          description="Contactez l'équipe World Auto France. Nous sommes là pour répondre à vos questions sur les annonces, paiements et support."
+          keywords="contact world auto, support, aide, question"
+          url="/contact"
+        />
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="p-12 text-center animate-scale-in">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
