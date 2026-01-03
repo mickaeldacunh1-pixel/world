@@ -1377,6 +1377,159 @@ async def download_return_slip(return_id: str, current_user: dict = Depends(get_
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
+# ================== SELLER STATS ROUTES ==================
+
+@api_router.get("/seller/stats")
+async def get_seller_stats(current_user: dict = Depends(get_current_user)):
+    """Récupérer les statistiques du vendeur"""
+    user_id = current_user["id"]
+    
+    # Get all listings
+    listings = await db.listings.find({"seller_id": user_id}, {"_id": 0}).to_list(1000)
+    total_listings = len(listings)
+    active_listings = len([l for l in listings if l.get("status") == "active"])
+    sold_listings = len([l for l in listings if l.get("status") == "sold"])
+    total_views = sum(l.get("views", 0) for l in listings)
+    
+    # Get all orders as seller
+    orders = await db.orders.find({"seller_id": user_id}, {"_id": 0}).to_list(1000)
+    total_orders = len(orders)
+    completed_orders = len([o for o in orders if o.get("status") == "delivered"])
+    total_revenue = sum(o.get("price", 0) for o in orders if o.get("status") == "delivered")
+    
+    # Get reviews
+    reviews = await db.reviews.find({"seller_id": user_id}, {"_id": 0}).to_list(1000)
+    total_reviews = len(reviews)
+    average_rating = round(sum(r.get("rating", 0) for r in reviews) / total_reviews, 1) if total_reviews > 0 else 0
+    
+    return {
+        "total_listings": total_listings,
+        "active_listings": active_listings,
+        "sold_listings": sold_listings,
+        "total_views": total_views,
+        "total_orders": total_orders,
+        "completed_orders": completed_orders,
+        "total_revenue": total_revenue,
+        "total_reviews": total_reviews,
+        "average_rating": average_rating
+    }
+
+@api_router.get("/seller/{seller_id}/profile")
+async def get_seller_profile(seller_id: str):
+    """Récupérer le profil public d'un vendeur"""
+    seller = await db.users.find_one({"id": seller_id}, {"_id": 0, "password": 0, "email": 0})
+    if not seller:
+        raise HTTPException(status_code=404, detail="Vendeur non trouvé")
+    
+    # Get seller stats
+    listings = await db.listings.find({"seller_id": seller_id, "status": "active"}, {"_id": 0}).to_list(100)
+    sold_count = await db.listings.count_documents({"seller_id": seller_id, "status": "sold"})
+    
+    # Get reviews
+    reviews = await db.reviews.find({"seller_id": seller_id}, {"_id": 0}).to_list(100)
+    total_reviews = len(reviews)
+    average_rating = round(sum(r.get("rating", 0) for r in reviews) / total_reviews, 1) if total_reviews > 0 else 0
+    
+    return {
+        "id": seller["id"],
+        "name": seller["name"],
+        "is_professional": seller.get("is_professional", False),
+        "company_name": seller.get("company_name"),
+        "city": seller.get("city"),
+        "created_at": seller.get("created_at"),
+        "active_listings": len(listings),
+        "sold_count": sold_count,
+        "total_reviews": total_reviews,
+        "average_rating": average_rating,
+        "reviews": reviews[:10]  # 10 derniers avis
+    }
+
+# ================== REVIEWS ROUTES ==================
+
+class ReviewCreate(BaseModel):
+    order_id: str
+    rating: int = Field(..., ge=1, le=5)
+    comment: Optional[str] = None
+
+@api_router.post("/reviews")
+async def create_review(review: ReviewCreate, current_user: dict = Depends(get_current_user)):
+    """Créer un avis après une commande livrée"""
+    # Verify order exists and belongs to buyer
+    order = await db.orders.find_one({
+        "id": review.order_id,
+        "buyer_id": current_user["id"],
+        "status": "delivered"
+    }, {"_id": 0})
+    
+    if not order:
+        raise HTTPException(status_code=400, detail="Commande non trouvée ou non livrée")
+    
+    # Check if already reviewed
+    existing = await db.reviews.find_one({"order_id": review.order_id})
+    if existing:
+        raise HTTPException(status_code=400, detail="Vous avez déjà laissé un avis pour cette commande")
+    
+    review_doc = {
+        "id": str(uuid.uuid4()),
+        "order_id": review.order_id,
+        "listing_id": order["listing_id"],
+        "listing_title": order["listing_title"],
+        "seller_id": order["seller_id"],
+        "seller_name": order["seller_name"],
+        "buyer_id": current_user["id"],
+        "buyer_name": current_user["name"],
+        "rating": review.rating,
+        "comment": review.comment,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.reviews.insert_one(review_doc)
+    
+    return {"message": "Avis publié", "review": review_doc}
+
+@api_router.get("/reviews/seller/{seller_id}")
+async def get_seller_reviews(seller_id: str, limit: int = 20):
+    """Récupérer les avis d'un vendeur"""
+    reviews = await db.reviews.find(
+        {"seller_id": seller_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    # Calculate stats
+    total = len(reviews)
+    average = round(sum(r["rating"] for r in reviews) / total, 1) if total > 0 else 0
+    
+    # Rating distribution
+    distribution = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+    for r in reviews:
+        distribution[r["rating"]] += 1
+    
+    return {
+        "reviews": reviews,
+        "total": total,
+        "average": average,
+        "distribution": distribution
+    }
+
+@api_router.get("/reviews/pending")
+async def get_pending_reviews(current_user: dict = Depends(get_current_user)):
+    """Récupérer les commandes livrées sans avis"""
+    # Get delivered orders
+    orders = await db.orders.find({
+        "buyer_id": current_user["id"],
+        "status": "delivered"
+    }, {"_id": 0}).to_list(100)
+    
+    # Get existing reviews
+    order_ids = [o["id"] for o in orders]
+    reviewed = await db.reviews.find({"order_id": {"$in": order_ids}}, {"order_id": 1}).to_list(100)
+    reviewed_ids = [r["order_id"] for r in reviewed]
+    
+    # Filter out reviewed orders
+    pending = [o for o in orders if o["id"] not in reviewed_ids]
+    
+    return pending
+
 # ================== PAYMENT ROUTES ==================
 
 @api_router.get("/subcategories/pieces")
