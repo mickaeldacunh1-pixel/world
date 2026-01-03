@@ -710,6 +710,9 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
         {"$inc": {"credits": -1}}
     )
     
+    # Check alerts and send notifications
+    await check_and_send_alerts(listing_doc, background_tasks)
+    
     return ListingResponse(**listing_doc)
 
 # ================== IMAGE UPLOAD ==================
