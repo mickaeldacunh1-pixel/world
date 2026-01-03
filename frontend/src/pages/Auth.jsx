@@ -163,6 +163,15 @@ export default function Auth() {
                   >
                     {loading ? 'Connexion...' : 'Se connecter'}
                   </Button>
+
+                  <div className="text-center">
+                    <Link 
+                      to="/mot-de-passe-oublie" 
+                      className="text-sm text-muted-foreground hover:text-accent"
+                    >
+                      Mot de passe oublié ?
+                    </Link>
+                  </div>
                 </form>
               </TabsContent>
 
