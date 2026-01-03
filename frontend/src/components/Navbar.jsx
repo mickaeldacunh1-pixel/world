@@ -123,6 +123,12 @@ export default function Navbar() {
                         Mes Alertes
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/statistiques" className="flex items-center gap-2 cursor-pointer">
+                        <TrendingUp className="w-4 h-4" />
+                        Mes Statistiques
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link to="/tarifs" className="flex items-center gap-2 cursor-pointer">
