@@ -297,15 +297,18 @@ frontend:
 
   - task: "Seller Profile Page"
     implemented: true
-    working: "NA"
+    working: true
     file: "frontend/src/pages/SellerProfile.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Created SellerProfile.jsx page accessible at /vendeur/:sellerId. Displays seller info, stats, active listings and reviews."
+        - working: true
+        - agent: "testing"
+        - comment: "Seller Profile page working correctly. Page accessible at /vendeur/:sellerId, displays seller profile elements and listing information. Found 3 seller profile elements and 1 listing element. Page renders without errors."
 
   - task: "Admin Settings Page"
     implemented: true
