@@ -63,6 +63,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/faq" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                  FAQ
+                </Link>
+              </li>
+              <li>
                 <Link to="/cgv" className="text-primary-foreground/70 hover:text-accent transition-colors">
                   CGV
                 </Link>
