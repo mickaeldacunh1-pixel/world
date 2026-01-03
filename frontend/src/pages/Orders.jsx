@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Package, Download, Truck, CheckCircle, RotateCcw, Clock, AlertCircle } from 'lucide-react';
+import { Package, Download, Truck, CheckCircle, RotateCcw, Clock, AlertCircle, Star } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -42,6 +42,12 @@ export default function Orders() {
   const [returnReason, setReturnReason] = useState('');
   const [returnNotes, setReturnNotes] = useState('');
   const [submittingReturn, setSubmittingReturn] = useState(false);
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [reviewOrder, setReviewOrder] = useState(null);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewedOrders, setReviewedOrders] = useState([]);
 
   useEffect(() => {
     fetchData();
