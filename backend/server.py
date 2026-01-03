@@ -668,7 +668,7 @@ async def reset_password(request: PasswordResetConfirm):
 # ================== LISTINGS ROUTES ==================
 
 @api_router.post("/listings", response_model=ListingResponse)
-async def create_listing(listing: ListingCreate, current_user: dict = Depends(get_current_user)):
+async def create_listing(listing: ListingCreate, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
     # Check credits
     if current_user.get("credits", 0) <= 0:
         raise HTTPException(status_code=402, detail="Crédits insuffisants. Veuillez acheter un pack d'annonces.")
