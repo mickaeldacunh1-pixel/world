@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime, timezone
 import bcrypt
 import jwt
-from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
+import stripe
 from bordereau_generator import BordereauGenerator
 
 ROOT_DIR = Path(__file__).parent
