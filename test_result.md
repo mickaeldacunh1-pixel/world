@@ -131,39 +131,60 @@ backend:
 
   - task: "Stripe payment checkout"
     implemented: true
-    working: true
+    working: false
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "PayPal code removed, Stripe should still work. Needs testing."
+        - working: false
+        - agent: "testing"
+        - comment: "Stripe checkout endpoint implemented correctly but fails due to invalid API key 'sk_test_emergent'. Code structure is correct, needs valid Stripe API key configuration."
 
   - task: "User authentication (register/login)"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Auth endpoints exist, needs verification"
+        - working: true
+        - agent: "testing"
+        - comment: "All auth endpoints working correctly: register, login, get current user. JWT token generation and validation working properly."
 
   - task: "Listings CRUD"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Listings endpoints exist, needs verification"
+        - working: true
+        - agent: "testing"
+        - comment: "All listings endpoints working: GET /listings with filters, create listing (requires credits), dashboard stats, subcategories, brands. Credit system working correctly."
+
+  - task: "PayPal endpoints removal"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "testing"
+        - comment: "PayPal endpoints successfully removed. Both /api/payments/paypal/create/{package_id} and /api/payments/paypal/capture/{order_id} return 404 as expected."
 
 frontend:
   - task: "Pricing page"
