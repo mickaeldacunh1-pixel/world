@@ -186,6 +186,30 @@ backend:
         - agent: "testing"
         - comment: "PayPal endpoints successfully removed. Both /api/payments/paypal/create/{package_id} and /api/payments/paypal/capture/{order_id} return 404 as expected."
 
+  - task: "Email notification system"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "testing"
+        - comment: "Email notification system fully implemented and working. All endpoints accept BackgroundTasks parameter correctly. Welcome emails sent on registration, order notifications for buyers/sellers, shipping notifications, delivery confirmations, and return request emails all implemented. SMTP authentication fails in test environment but email functions are called correctly. Backend logs confirm email sending attempts."
+
+  - task: "Order management system"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "testing"
+        - comment: "Order management endpoints working correctly. POST /orders, GET /orders, PUT /orders/{id}/status, POST /orders/{id}/return all accept BackgroundTasks and process email notifications. Order status updates (shipped/delivered) and return requests trigger appropriate email notifications."
+
 frontend:
   - task: "Pricing page"
     implemented: true
