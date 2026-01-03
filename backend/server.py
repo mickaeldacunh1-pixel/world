@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, File, UploadFile
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -13,6 +13,8 @@ from datetime import datetime, timezone
 import bcrypt
 import jwt
 import stripe
+import cloudinary
+import cloudinary.uploader
 from bordereau_generator import BordereauGenerator
 
 ROOT_DIR = Path(__file__).parent
