@@ -9,7 +9,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
 import { Skeleton } from '../components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2 } from 'lucide-react';
+import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2, Heart } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -38,10 +38,18 @@ export default function ListingDetail() {
   const [message, setMessage] = useState('');
   const [sendingMessage, setSendingMessage] = useState(false);
   const [messageDialogOpen, setMessageDialogOpen] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
 
   useEffect(() => {
     fetchListing();
   }, [id]);
+
+  useEffect(() => {
+    if (user && listing) {
+      checkFavorite();
+    }
+  }, [user, listing]);
 
   const fetchListing = async () => {
     try {
@@ -53,6 +61,40 @@ export default function ListingDetail() {
       navigate('/annonces');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkFavorite = async () => {
+    try {
+      const response = await axios.get(`${API}/favorites/check/${id}`);
+      setIsFavorite(response.data.is_favorite);
+    } catch (error) {
+      console.error('Error checking favorite:', error);
+    }
+  };
+
+  const toggleFavorite = async () => {
+    if (!user) {
+      toast.error('Connectez-vous pour ajouter aux favoris');
+      navigate('/auth');
+      return;
+    }
+
+    setFavoriteLoading(true);
+    try {
+      if (isFavorite) {
+        await axios.delete(`${API}/favorites/${id}`);
+        setIsFavorite(false);
+        toast.success('Retiré des favoris');
+      } else {
+        await axios.post(`${API}/favorites/${id}`);
+        setIsFavorite(true);
+        toast.success('Ajouté aux favoris');
+      }
+    } catch (error) {
+      toast.error('Erreur');
+    } finally {
+      setFavoriteLoading(false);
     }
   };
 
