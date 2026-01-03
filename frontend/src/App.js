@@ -24,6 +24,7 @@ import About from "./pages/About";
 import CGV from "./pages/CGV";
 import LegalNotice from "./pages/LegalNotice";
 import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
 import "./App.css";
 
 const ProtectedRoute = ({ children }) => {
