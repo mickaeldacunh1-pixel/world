@@ -932,7 +932,7 @@ async def get_order(order_id: str, current_user: dict = Depends(get_current_user
     return order
 
 @api_router.put("/orders/{order_id}/status")
-async def update_order_status(order_id: str, status: str, current_user: dict = Depends(get_current_user)):
+async def update_order_status(order_id: str, status: str, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
     """Mettre à jour le statut d'une commande"""
     order = await db.orders.find_one({"id": order_id}, {"_id": 0})
     if not order:
@@ -944,12 +944,21 @@ async def update_order_status(order_id: str, status: str, current_user: dict = D
             {"id": order_id},
             {"$set": {"status": "shipped", "shipped_at": datetime.now(timezone.utc).isoformat()}}
         )
+        # Get buyer info and send email
+        buyer = await db.users.find_one({"id": order["buyer_id"]}, {"_id": 0, "password": 0})
+        if buyer:
+            background_tasks.add_task(send_order_shipped_email, buyer.get("email"), buyer.get("name"), order)
+    
     # Buyer can mark as delivered
     elif status == "delivered" and order["buyer_id"] == current_user["id"]:
         await db.orders.update_one(
             {"id": order_id},
             {"$set": {"status": "delivered", "delivered_at": datetime.now(timezone.utc).isoformat()}}
         )
+        # Get seller info and send email
+        seller = await db.users.find_one({"id": order["seller_id"]}, {"_id": 0, "password": 0})
+        if seller:
+            background_tasks.add_task(send_order_delivered_email, seller.get("email"), seller.get("name"), order)
     else:
         raise HTTPException(status_code=403, detail="Action non autorisée")
     
