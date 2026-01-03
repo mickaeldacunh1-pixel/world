@@ -390,6 +390,19 @@ export default function Orders() {
                                   </DialogContent>
                                 </Dialog>
                               )}
+
+                              {/* Laisser un avis */}
+                              {order.status === 'delivered' && !reviewedOrders.includes(order.id) && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => openReviewDialog(order)}
+                                  className="border-yellow-500 text-yellow-600 hover:bg-yellow-50"
+                                >
+                                  <Star className="w-4 h-4 mr-1" />
+                                  Laisser un avis
+                                </Button>
+                              )}
                             </div>
                           </div>
                           <p className="text-xs text-muted-foreground mt-2">
