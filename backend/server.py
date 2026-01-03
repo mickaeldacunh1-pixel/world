@@ -576,6 +576,69 @@ async def login(credentials: UserLogin):
 async def get_me(current_user: dict = Depends(get_current_user)):
     return current_user
 
+# ================== PASSWORD RESET ==================
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: str
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(request: PasswordResetRequest, background_tasks: BackgroundTasks):
+    """Demander une réinitialisation de mot de passe"""
+    user = await db.users.find_one({"email": request.email}, {"_id": 0})
+    
+    # Always return success to prevent email enumeration
+    if not user:
+        return {"message": "Si cette adresse existe, un email a été envoyé."}
+    
+    # Generate reset token (valid for 1 hour)
+    reset_token = str(uuid.uuid4())
+    expires_at = datetime.now(timezone.utc).timestamp() + 3600  # 1 hour
+    
+    # Store reset token
+    await db.password_resets.delete_many({"user_id": user["id"]})  # Remove old tokens
+    await db.password_resets.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "token": reset_token,
+        "expires_at": expires_at,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    # Send email
+    background_tasks.add_task(send_password_reset_email, user["email"], user["name"], reset_token)
+    
+    return {"message": "Si cette adresse existe, un email a été envoyé."}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(request: PasswordResetConfirm):
+    """Réinitialiser le mot de passe avec le token"""
+    # Find valid token
+    reset_doc = await db.password_resets.find_one({"token": request.token}, {"_id": 0})
+    
+    if not reset_doc:
+        raise HTTPException(status_code=400, detail="Lien invalide ou expiré")
+    
+    # Check expiration
+    if datetime.now(timezone.utc).timestamp() > reset_doc["expires_at"]:
+        await db.password_resets.delete_one({"token": request.token})
+        raise HTTPException(status_code=400, detail="Lien expiré. Veuillez refaire une demande.")
+    
+    # Update password
+    hashed_password = hash_password(request.new_password)
+    await db.users.update_one(
+        {"id": reset_doc["user_id"]},
+        {"$set": {"password": hashed_password}}
+    )
+    
+    # Delete used token
+    await db.password_resets.delete_one({"token": request.token})
+    
+    return {"message": "Mot de passe modifié avec succès"}
+
 # ================== LISTINGS ROUTES ==================
 
 @api_router.post("/listings", response_model=ListingResponse)
