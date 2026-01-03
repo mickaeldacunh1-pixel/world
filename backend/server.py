@@ -879,6 +879,173 @@ async def delete_listing(listing_id: str, current_user: dict = Depends(get_curre
         raise HTTPException(status_code=404, detail="Annonce non trouvée")
     return {"message": "Annonce supprimée"}
 
+# ================== FAVORITES ROUTES ==================
+
+@api_router.post("/favorites/{listing_id}")
+async def add_favorite(listing_id: str, current_user: dict = Depends(get_current_user)):
+    """Ajouter une annonce aux favoris"""
+    # Check if listing exists
+    listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    # Check if already favorited
+    existing = await db.favorites.find_one({"user_id": current_user["id"], "listing_id": listing_id})
+    if existing:
+        return {"message": "Déjà dans les favoris"}
+    
+    favorite_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "listing_id": listing_id,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.favorites.insert_one(favorite_doc)
+    
+    return {"message": "Ajouté aux favoris"}
+
+@api_router.delete("/favorites/{listing_id}")
+async def remove_favorite(listing_id: str, current_user: dict = Depends(get_current_user)):
+    """Retirer une annonce des favoris"""
+    result = await db.favorites.delete_one({"user_id": current_user["id"], "listing_id": listing_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Favori non trouvé")
+    return {"message": "Retiré des favoris"}
+
+@api_router.get("/favorites")
+async def get_favorites(current_user: dict = Depends(get_current_user)):
+    """Récupérer les annonces favorites de l'utilisateur"""
+    favorites = await db.favorites.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(100)
+    
+    # Get listing details for each favorite
+    listing_ids = [f["listing_id"] for f in favorites]
+    listings = await db.listings.find({"id": {"$in": listing_ids}}, {"_id": 0}).to_list(100)
+    
+    return listings
+
+@api_router.get("/favorites/check/{listing_id}")
+async def check_favorite(listing_id: str, current_user: dict = Depends(get_current_user)):
+    """Vérifier si une annonce est dans les favoris"""
+    favorite = await db.favorites.find_one({"user_id": current_user["id"], "listing_id": listing_id})
+    return {"is_favorite": favorite is not None}
+
+# ================== SEARCH ALERTS ROUTES ==================
+
+class SearchAlertCreate(BaseModel):
+    name: str
+    category: Optional[str] = None
+    subcategory: Optional[str] = None
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    min_price: Optional[float] = None
+    max_price: Optional[float] = None
+    min_year: Optional[int] = None
+    max_year: Optional[int] = None
+    postal_code: Optional[str] = None
+    keywords: Optional[str] = None
+
+@api_router.post("/alerts")
+async def create_alert(alert: SearchAlertCreate, current_user: dict = Depends(get_current_user)):
+    """Créer une alerte de recherche"""
+    # Limit alerts per user
+    count = await db.search_alerts.count_documents({"user_id": current_user["id"]})
+    if count >= 10:
+        raise HTTPException(status_code=400, detail="Maximum 10 alertes par utilisateur")
+    
+    alert_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "user_email": current_user["email"],
+        "user_name": current_user["name"],
+        "name": alert.name,
+        "category": alert.category,
+        "subcategory": alert.subcategory,
+        "brand": alert.brand,
+        "model": alert.model,
+        "min_price": alert.min_price,
+        "max_price": alert.max_price,
+        "min_year": alert.min_year,
+        "max_year": alert.max_year,
+        "postal_code": alert.postal_code,
+        "keywords": alert.keywords,
+        "active": True,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.search_alerts.insert_one(alert_doc)
+    
+    return {"id": alert_doc["id"], "message": "Alerte créée"}
+
+@api_router.get("/alerts")
+async def get_alerts(current_user: dict = Depends(get_current_user)):
+    """Récupérer les alertes de l'utilisateur"""
+    alerts = await db.search_alerts.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(20)
+    return alerts
+
+@api_router.delete("/alerts/{alert_id}")
+async def delete_alert(alert_id: str, current_user: dict = Depends(get_current_user)):
+    """Supprimer une alerte"""
+    result = await db.search_alerts.delete_one({"id": alert_id, "user_id": current_user["id"]})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Alerte non trouvée")
+    return {"message": "Alerte supprimée"}
+
+@api_router.put("/alerts/{alert_id}/toggle")
+async def toggle_alert(alert_id: str, current_user: dict = Depends(get_current_user)):
+    """Activer/désactiver une alerte"""
+    alert = await db.search_alerts.find_one({"id": alert_id, "user_id": current_user["id"]})
+    if not alert:
+        raise HTTPException(status_code=404, detail="Alerte non trouvée")
+    
+    new_status = not alert.get("active", True)
+    await db.search_alerts.update_one({"id": alert_id}, {"$set": {"active": new_status}})
+    
+    return {"active": new_status}
+
+async def check_and_send_alerts(listing: dict, background_tasks: BackgroundTasks):
+    """Vérifie les alertes et envoie des emails pour les correspondances"""
+    # Get all active alerts
+    alerts = await db.search_alerts.find({"active": True}, {"_id": 0}).to_list(1000)
+    
+    for alert in alerts:
+        # Skip if same user (don't alert for own listings)
+        if alert["user_id"] == listing["seller_id"]:
+            continue
+        
+        # Check if listing matches alert criteria
+        if alert.get("category") and alert["category"] != listing.get("category"):
+            continue
+        if alert.get("subcategory") and alert["subcategory"] != listing.get("subcategory"):
+            continue
+        if alert.get("brand") and alert["brand"].lower() not in listing.get("brand", "").lower():
+            continue
+        if alert.get("model") and alert["model"].lower() not in listing.get("model", "").lower():
+            continue
+        if alert.get("min_price") and listing.get("price", 0) < alert["min_price"]:
+            continue
+        if alert.get("max_price") and listing.get("price", 0) > alert["max_price"]:
+            continue
+        if alert.get("min_year") and listing.get("year", 0) < alert["min_year"]:
+            continue
+        if alert.get("max_year") and listing.get("year", 9999) > alert["max_year"]:
+            continue
+        if alert.get("postal_code") and not listing.get("postal_code", "").startswith(alert["postal_code"][:2]):
+            continue
+        if alert.get("keywords"):
+            keywords = alert["keywords"].lower()
+            title = listing.get("title", "").lower()
+            desc = listing.get("description", "").lower()
+            if keywords not in title and keywords not in desc:
+                continue
+        
+        # Match found - send email
+        background_tasks.add_task(
+            send_search_alert_email,
+            alert["user_email"],
+            alert["user_name"],
+            alert,
+            listing
+        )
+
 # ================== MESSAGES ROUTES ==================
 
 @api_router.post("/messages")
