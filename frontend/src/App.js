@@ -63,6 +63,9 @@ function AppContent() {
           <Route path="/alertes" element={
             <ProtectedRoute><Alerts /></ProtectedRoute>
           } />
+          <Route path="/statistiques" element={
+            <ProtectedRoute><SellerStats /></ProtectedRoute>
+          } />
         </Routes>
       </main>
       <Footer />
