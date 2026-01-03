@@ -342,15 +342,18 @@ frontend:
 
   - task: "ListingDetail with seller profile link"
     implemented: true
-    working: "NA"
+    working: true
     file: "frontend/src/pages/ListingDetail.jsx"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Added clickable link to seller profile in listing detail page. Users can now click on seller name to view public profile."
+        - working: true
+        - agent: "testing"
+        - comment: "ListingDetail page working correctly. Page accessible at /annonce/:id, displays listing information with seller section. Found seller information including 'Test Compal' seller and 'Cliquez pour voir le profil vendeur' link, indicating seller profile link functionality is implemented."
 
 metadata:
   created_by: "main_agent"
