@@ -42,6 +42,189 @@ cloudinary.config(
     api_secret=os.environ.get('CLOUDINARY_API_SECRET', 'S9L4owos6Okd_9bFqo5R2keEbcU')
 )
 
+# Email Config
+SMTP_HOST = os.environ.get('SMTP_HOST', 'smtp.hostinger.com')
+SMTP_PORT = int(os.environ.get('SMTP_PORT', '465'))
+SMTP_USER = os.environ.get('SMTP_USER', 'contact@worldautofrance.com')
+SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
+SITE_URL = os.environ.get('SITE_URL', 'https://worldautofrance.com')
+
+# ================== EMAIL SERVICE ==================
+
+def send_email(to_email: str, subject: str, html_content: str):
+    """Send email via SMTP"""
+    try:
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = f"World Auto <{SMTP_USER}>"
+        msg['To'] = to_email
+        
+        html_part = MIMEText(html_content, 'html')
+        msg.attach(html_part)
+        
+        with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.sendmail(SMTP_USER, to_email, msg.as_string())
+        
+        logging.info(f"Email sent to {to_email}: {subject}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send email to {to_email}: {e}")
+        return False
+
+def send_welcome_email(user_email: str, user_name: str):
+    """Email de bienvenue"""
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #f97316; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">World Auto</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2>Bienvenue {user_name} !</h2>
+            <p>Merci de vous être inscrit sur World Auto, la marketplace de pièces détachées et véhicules d'occasion.</p>
+            <p>Vous pouvez maintenant :</p>
+            <ul>
+                <li>Parcourir les annonces</li>
+                <li>Publier vos propres annonces</li>
+                <li>Contacter les vendeurs</li>
+            </ul>
+            <a href="{SITE_URL}/annonces" style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 20px;">Voir les annonces</a>
+        </div>
+        <div style="padding: 20px; background: #f3f4f6; text-align: center; font-size: 12px; color: #666;">
+            <p>World Auto - La marketplace auto pour tous</p>
+            <p><a href="{SITE_URL}" style="color: #f97316;">worldautofrance.com</a></p>
+        </div>
+    </div>
+    """
+    send_email(user_email, "Bienvenue sur World Auto !", html)
+
+def send_new_order_seller_email(seller_email: str, seller_name: str, order: dict):
+    """Email au vendeur : nouvelle commande"""
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #f97316; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">World Auto</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2>Nouvelle commande !</h2>
+            <p>Bonjour {seller_name},</p>
+            <p>Vous avez reçu une nouvelle commande pour :</p>
+            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <p style="margin: 0;"><strong>{order['listing_title']}</strong></p>
+                <p style="margin: 5px 0; font-size: 24px; color: #f97316; font-weight: bold;">{order['price']} €</p>
+                <p style="margin: 5px 0;">Commande : WA-{order['id'][:8].upper()}</p>
+            </div>
+            <h3>Adresse de livraison :</h3>
+            <p style="background: #f3f4f6; padding: 15px; border-radius: 8px;">
+                {order['buyer_name']}<br>
+                {order['buyer_address']}<br>
+                {order['buyer_postal']} {order['buyer_city']}<br>
+                {order.get('buyer_phone', '')}
+            </p>
+            <a href="{SITE_URL}/commandes" style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 20px;">Gérer mes commandes</a>
+        </div>
+        <div style="padding: 20px; background: #f3f4f6; text-align: center; font-size: 12px; color: #666;">
+            <p>N'oubliez pas de télécharger le bordereau d'expédition et de marquer la commande comme expédiée.</p>
+        </div>
+    </div>
+    """
+    send_email(seller_email, f"Nouvelle commande - {order['listing_title']}", html)
+
+def send_new_order_buyer_email(buyer_email: str, buyer_name: str, order: dict):
+    """Email à l'acheteur : confirmation de commande"""
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #f97316; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">World Auto</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2>Commande confirmée !</h2>
+            <p>Bonjour {buyer_name},</p>
+            <p>Votre commande a bien été enregistrée :</p>
+            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <p style="margin: 0;"><strong>{order['listing_title']}</strong></p>
+                <p style="margin: 5px 0; font-size: 24px; color: #f97316; font-weight: bold;">{order['price']} €</p>
+                <p style="margin: 5px 0;">Commande : WA-{order['id'][:8].upper()}</p>
+                <p style="margin: 5px 0;">Vendeur : {order['seller_name']}</p>
+            </div>
+            <p>Le vendeur va préparer votre colis et vous recevrez un email dès l'expédition.</p>
+            <a href="{SITE_URL}/commandes" style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 20px;">Suivre ma commande</a>
+        </div>
+        <div style="padding: 20px; background: #f3f4f6; text-align: center; font-size: 12px; color: #666;">
+            <p>Merci pour votre confiance !</p>
+        </div>
+    </div>
+    """
+    send_email(buyer_email, f"Commande confirmée - WA-{order['id'][:8].upper()}", html)
+
+def send_order_shipped_email(buyer_email: str, buyer_name: str, order: dict):
+    """Email à l'acheteur : commande expédiée"""
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #f97316; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">World Auto</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2>🚚 Votre commande est expédiée !</h2>
+            <p>Bonjour {buyer_name},</p>
+            <p>Bonne nouvelle ! Votre commande a été expédiée :</p>
+            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <p style="margin: 0;"><strong>{order['listing_title']}</strong></p>
+                <p style="margin: 5px 0;">Commande : WA-{order['id'][:8].upper()}</p>
+            </div>
+            <p>Vous recevrez votre colis dans les prochains jours. Pensez à confirmer la réception une fois le colis reçu.</p>
+            <a href="{SITE_URL}/commandes" style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 20px;">Suivre ma commande</a>
+        </div>
+    </div>
+    """
+    send_email(buyer_email, f"Votre commande est expédiée - WA-{order['id'][:8].upper()}", html)
+
+def send_order_delivered_email(seller_email: str, seller_name: str, order: dict):
+    """Email au vendeur : commande livrée"""
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #f97316; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">World Auto</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2>✅ Commande livrée !</h2>
+            <p>Bonjour {seller_name},</p>
+            <p>L'acheteur a confirmé la réception de sa commande :</p>
+            <div style="background: #d1fae5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <p style="margin: 0;"><strong>{order['listing_title']}</strong></p>
+                <p style="margin: 5px 0; font-size: 24px; color: #059669; font-weight: bold;">{order['price']} €</p>
+                <p style="margin: 5px 0;">Commande : WA-{order['id'][:8].upper()}</p>
+            </div>
+            <p>Merci d'utiliser World Auto !</p>
+        </div>
+    </div>
+    """
+    send_email(seller_email, f"Commande livrée - WA-{order['id'][:8].upper()}", html)
+
+def send_return_request_email(seller_email: str, seller_name: str, return_doc: dict):
+    """Email au vendeur : demande de retour"""
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #ef4444; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">World Auto</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2>⚠️ Demande de retour</h2>
+            <p>Bonjour {seller_name},</p>
+            <p>Un acheteur a demandé un retour :</p>
+            <div style="background: #fef2f2; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444;">
+                <p style="margin: 0;"><strong>{return_doc['listing_title']}</strong></p>
+                <p style="margin: 5px 0;">Retour : RET-{return_doc['id'][:8].upper()}</p>
+                <p style="margin: 10px 0;"><strong>Motif :</strong> {return_doc['reason']}</p>
+                {f"<p style='margin: 5px 0;'><strong>Commentaire :</strong> {return_doc['notes']}</p>" if return_doc.get('notes') else ""}
+            </div>
+            <p>Acheteur : {return_doc['buyer_name']}</p>
+            <a href="{SITE_URL}/commandes" style="display: inline-block; background: #ef4444; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 20px;">Voir les détails</a>
+        </div>
+    </div>
+    """
+    send_email(seller_email, f"Demande de retour - {return_doc['listing_title']}", html)
+
 app = FastAPI(title="World Auto Marketplace API")
 api_router = APIRouter(prefix="/api")
 
