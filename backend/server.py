@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, File, UploadFile
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, File, UploadFile, BackgroundTasks
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -15,6 +15,9 @@ import jwt
 import stripe
 import cloudinary
 import cloudinary.uploader
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from bordereau_generator import BordereauGenerator
 
 ROOT_DIR = Path(__file__).parent
