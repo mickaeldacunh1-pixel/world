@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { Car, Wrench, Bike, Truck, Settings, User, LogOut, MessageSquare, LayoutDashboard, Menu, X, Plus, Package, Heart, Bell, TrendingUp } from 'lucide-react';
+import { Car, Wrench, Bike, Truck, Settings, User, LogOut, MessageSquare, LayoutDashboard, Menu, X, Plus, Package, Heart, Bell, TrendingUp, Palette } from 'lucide-react';
 import WorldAutoLogo from './WorldAutoLogo';
 
 const categories = [
@@ -129,6 +129,17 @@ export default function Navbar() {
                         Mes Statistiques
                       </Link>
                     </DropdownMenuItem>
+                    {(user.email === 'admin@worldautofrance.com' || user.is_professional) && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin/parametres" className="flex items-center gap-2 cursor-pointer text-accent">
+                            <Palette className="w-4 h-4" />
+                            Personnalisation site
+                          </Link>
+                        </DropdownMenuItem>
+                      </>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link to="/tarifs" className="flex items-center gap-2 cursor-pointer">
