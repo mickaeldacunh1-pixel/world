@@ -28,20 +28,25 @@ export default function Pricing() {
     }
   };
 
-  const handleBuyPackage = async (packageId) => {
+  const handleBuyPackage = async (packageId, method = 'stripe') => {
     if (!user) {
       toast.error('Connectez-vous pour acheter un pack');
       return;
     }
 
-    setLoading(prev => ({ ...prev, [packageId]: true }));
+    setLoading(prev => ({ ...prev, [`${packageId}_${method}`]: true }));
     try {
-      const response = await axios.post(`${API}/payments/checkout?package_id=${packageId}`);
-      window.location.href = response.data.url;
+      if (method === 'paypal') {
+        const response = await axios.post(`${API}/payments/paypal/create/${packageId}`);
+        window.location.href = response.data.approval_url;
+      } else {
+        const response = await axios.post(`${API}/payments/checkout?package_id=${packageId}`);
+        window.location.href = response.data.url;
+      }
     } catch (error) {
       toast.error('Erreur lors de l\'initialisation du paiement');
     } finally {
-      setLoading(prev => ({ ...prev, [packageId]: false }));
+      setLoading(prev => ({ ...prev, [`${packageId}_${method}`]: false }));
     }
   };
 
