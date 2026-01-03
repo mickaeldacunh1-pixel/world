@@ -68,6 +68,10 @@ function AppContent() {
           <Route path="/statistiques" element={
             <ProtectedRoute><SellerStats /></ProtectedRoute>
           } />
+          <Route path="/vendeur/:sellerId" element={<SellerProfile />} />
+          <Route path="/admin/parametres" element={
+            <ProtectedRoute><AdminSettings /></ProtectedRoute>
+          } />
         </Routes>
       </main>
       <Footer />
