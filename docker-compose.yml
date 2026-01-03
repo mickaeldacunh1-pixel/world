@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: worldauto-backend
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    networks:
+      - worldauto-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: worldauto-frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - worldauto-network
+
+  mongodb:
+    image: mongo:6.0
+    container_name: worldauto-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+    networks:
+      - worldauto-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  worldauto-network:
+    driver: bridge
