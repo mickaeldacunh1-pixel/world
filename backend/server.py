@@ -1001,7 +1001,7 @@ async def download_shipping_slip(order_id: str, current_user: dict = Depends(get
     )
 
 @api_router.post("/orders/{order_id}/return")
-async def request_return(order_id: str, return_req: ReturnRequest, current_user: dict = Depends(get_current_user)):
+async def request_return(order_id: str, return_req: ReturnRequest, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
     """Demander un retour pour une commande"""
     order = await db.orders.find_one(
         {"id": order_id, "buyer_id": current_user["id"]},
@@ -1040,6 +1040,11 @@ async def request_return(order_id: str, return_req: ReturnRequest, current_user:
     
     # Update order status
     await db.orders.update_one({"id": order_id}, {"$set": {"status": "return_requested"}})
+    
+    # Send email to seller
+    seller = await db.users.find_one({"id": order["seller_id"]}, {"_id": 0, "password": 0})
+    if seller:
+        background_tasks.add_task(send_return_request_email, seller.get("email"), seller.get("name"), return_doc)
     
     return return_doc
 
