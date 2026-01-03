@@ -238,9 +238,20 @@ export default function ListingDetail() {
           {/* Details */}
           <div className="space-y-6">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Badge variant="secondary">{categoryLabels[listing.category]}</Badge>
-                <Badge variant="outline">{conditionLabels[listing.condition]}</Badge>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">{categoryLabels[listing.category]}</Badge>
+                  <Badge variant="outline">{conditionLabels[listing.condition]}</Badge>
+                </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={toggleFavorite}
+                  disabled={favoriteLoading}
+                  className={isFavorite ? 'text-red-500 border-red-500 hover:bg-red-50' : ''}
+                >
+                  <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
+                </Button>
               </div>
               <h1 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-2" data-testid="listing-title">
                 {listing.title}
