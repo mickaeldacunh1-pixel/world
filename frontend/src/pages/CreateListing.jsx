@@ -31,10 +31,12 @@ export default function CreateListing() {
   const navigate = useNavigate();
   const { user, refreshUser } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [imageUrls, setImageUrls] = useState(['']);
+  const [uploadingImages, setUploadingImages] = useState(false);
+  const [images, setImages] = useState([]);
   const [piecesSubcategories, setPiecesSubcategories] = useState({});
   const [accessoiresSubcategories, setAccessoiresSubcategories] = useState({});
   const [carBrands, setCarBrands] = useState([]);
+  const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     title: '',
