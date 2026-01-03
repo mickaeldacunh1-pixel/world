@@ -242,15 +242,18 @@ backend:
 
   - task: "Shipping slip PDF generation"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/bordereau_generator.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Implemented GET /api/orders/{order_id}/shipping-slip and GET /api/returns/{return_id}/slip endpoints. Uses BordereauGenerator class to create PDF documents."
+        - working: true
+        - agent: "testing"
+        - comment: "Shipping slip PDF generation working correctly. Both endpoints are accessible and properly configured: GET /api/orders/{order_id}/shipping-slip for order shipping slips and GET /api/returns/{return_id}/slip for return slips. BordereauGenerator class properly implemented with PDF generation capabilities using reportlab."
 
   - task: "Carriers list"
     implemented: true
