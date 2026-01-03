@@ -284,7 +284,7 @@ export default function Pricing() {
             <Card className="p-6">
               <h3 className="font-heading font-bold mb-2">Quels moyens de paiement ?</h3>
               <p className="text-muted-foreground text-sm">
-                Nous acceptons les cartes bancaires (Visa, Mastercard) et PayPal. 
+                Nous acceptons les cartes bancaires (Visa, Mastercard, American Express). 
                 Tous les paiements sont sécurisés via Stripe.
               </p>
             </Card>
