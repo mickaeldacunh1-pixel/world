@@ -515,35 +515,69 @@ export default function CreateListing() {
 
               {/* Images */}
               <div className="space-y-4">
-                <Label>Photos (URLs)</Label>
+                <Label>Photos de l'annonce</Label>
                 <p className="text-sm text-muted-foreground">
-                  Ajoutez jusqu'à 6 photos via leurs URLs
+                  Ajoutez jusqu'à 6 photos (JPG, PNG, WebP - max 10MB chacune)
                 </p>
-                {imageUrls.map((url, index) => (
-                  <div key={index} className="flex gap-2">
-                    <Input
-                      placeholder="https://exemple.com/image.jpg"
-                      value={url}
-                      onChange={(e) => updateImageUrl(index, e.target.value)}
-                      data-testid={`image-url-${index}`}
-                    />
-                    {imageUrls.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => removeImageUrl(index)}
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    )}
+                
+                {/* Image Preview Grid */}
+                {images.length > 0 && (
+                  <div className="grid grid-cols-3 gap-4">
+                    {images.map((image, index) => (
+                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden border">
+                        <img
+                          src={image.url}
+                          alt={`Photo ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-2 right-2 w-6 h-6"
+                          onClick={() => removeImage(index)}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                        {index === 0 && (
+                          <span className="absolute bottom-2 left-2 bg-accent text-white text-xs px-2 py-1 rounded">
+                            Photo principale
+                          </span>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                ))}
-                {imageUrls.length < 6 && (
-                  <Button type="button" variant="outline" onClick={addImageUrl} className="w-full">
-                    <ImagePlus className="w-4 h-4 mr-2" />
-                    Ajouter une image
-                  </Button>
+                )}
+
+                {/* Upload Button */}
+                {images.length < 6 && (
+                  <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-accent transition-colors">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      multiple
+                      className="hidden"
+                      id="image-upload"
+                    />
+                    <label htmlFor="image-upload" className="cursor-pointer">
+                      {uploadingImages ? (
+                        <div className="flex flex-col items-center gap-2">
+                          <Loader2 className="w-8 h-8 animate-spin text-accent" />
+                          <span className="text-sm text-muted-foreground">Upload en cours...</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-2">
+                          <Upload className="w-8 h-8 text-muted-foreground" />
+                          <span className="text-sm font-medium">Cliquez pour ajouter des photos</span>
+                          <span className="text-xs text-muted-foreground">
+                            {images.length}/6 photos ajoutées
+                          </span>
+                        </div>
+                      )}
+                    </label>
+                  </div>
                 )}
               </div>
 
@@ -552,7 +586,7 @@ export default function CreateListing() {
                 <Button
                   type="submit"
                   className="flex-1 h-12 bg-accent hover:bg-accent/90 btn-primary"
-                  disabled={loading || user?.credits <= 0}
+                  disabled={loading || uploadingImages || user?.credits <= 0}
                   data-testid="submit-listing-btn"
                 >
                   {loading ? 'Publication...' : 'Publier l\'annonce (1 crédit)'}
