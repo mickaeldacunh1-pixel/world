@@ -227,15 +227,18 @@ backend:
 
   - task: "Hero settings API"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Implemented GET /api/settings/hero and POST /api/settings/hero endpoints. Returns/saves hero section content (title, description, image, CTA)."
+        - working: true
+        - agent: "testing"
+        - comment: "Hero settings API working correctly. GET endpoint returns default hero settings with all required fields: hero_title_line1, hero_title_line2, hero_description, hero_image, hero_cta_text, hero_cta_link. POST endpoint successfully saves new settings with authentication required."
 
   - task: "Shipping slip PDF generation"
     implemented: true
