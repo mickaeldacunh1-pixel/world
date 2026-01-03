@@ -165,7 +165,7 @@ export default function CreateListing() {
 
     setLoading(true);
     try {
-      const images = imageUrls.filter(url => url.trim() !== '');
+      const imageUrls = images.map(img => img.url);
       const compatible_models = formData.compatible_models 
         ? formData.compatible_models.split(',').map(m => m.trim()).filter(m => m)
         : [];
@@ -176,7 +176,7 @@ export default function CreateListing() {
         year: formData.year ? parseInt(formData.year) : null,
         mileage: formData.mileage ? parseInt(formData.mileage) : null,
         compatible_models,
-        images,
+        images: imageUrls,
       });
 
       await refreshUser();
