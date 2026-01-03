@@ -15,8 +15,6 @@ import jwt
 import stripe
 import cloudinary
 import cloudinary.uploader
-import httpx
-import base64
 from bordereau_generator import BordereauGenerator
 
 ROOT_DIR = Path(__file__).parent
@@ -33,11 +31,6 @@ JWT_ALGORITHM = "HS256"
 
 # Stripe Config
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
-
-# PayPal Config
-PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID', 'AcwFhKpmHq2rl9o-yA3QuPzIBIIZcNKWf8hicAGA0yBPDs_FuQH-rUQIRenvQlcuFlQ2Y_7EWnLpPvHu')
-PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET', 'EEcKt9QS9F-n2ppc8e4_2jfD1snDa5MbeD8aSIw-t9VhYYfocVCTlNe19PGNZp-HhbevRQCEMCflm7G')
-PAYPAL_BASE_URL = os.environ.get('PAYPAL_BASE_URL', 'https://api-m.sandbox.paypal.com')
 
 # Cloudinary Config
 cloudinary.config(
