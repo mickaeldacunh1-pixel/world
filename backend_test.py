@@ -481,6 +481,15 @@ class AutoPiecesAPITester:
         self.test_get_current_user()
         self.test_professional_registration()
         
+        # EMAIL NOTIFICATION SYSTEM TESTS
+        print("\n📧 Testing Email Notification System...")
+        self.test_user_registration_with_email()
+        self.test_orders_endpoint_access()
+        self.test_order_creation_with_email()
+        self.test_order_status_update_shipped()
+        self.test_order_status_update_delivered()
+        self.test_return_request_with_email()
+        
         # Payment tests (Stripe and PayPal removal verification)
         self.test_stripe_checkout_creation()
         self.test_paypal_endpoints_removed()
