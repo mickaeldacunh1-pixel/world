@@ -355,17 +355,24 @@ export default function Alerts() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2">
-                        <Switch
-                          checked={alert.active}
-                          onCheckedChange={() => toggleAlert(alert.id)}
-                        />
+                      <Button
+                        variant={alert.active ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => toggleAlert(alert.id)}
+                        className={alert.active ? 'bg-accent hover:bg-accent/90' : ''}
+                      >
                         {alert.active ? (
-                          <Bell className="w-4 h-4 text-accent" />
+                          <>
+                            <Bell className="w-4 h-4 mr-1" />
+                            Active
+                          </>
                         ) : (
-                          <BellOff className="w-4 h-4 text-muted-foreground" />
+                          <>
+                            <BellOff className="w-4 h-4 mr-1" />
+                            Inactive
+                          </>
                         )}
-                      </div>
+                      </Button>
                       <Button
                         variant="ghost"
                         size="sm"
