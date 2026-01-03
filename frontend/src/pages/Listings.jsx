@@ -7,6 +7,7 @@ import { Card } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Skeleton } from '../components/ui/skeleton';
 import { Search, Filter, Grid3X3, List, MapPin, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import SEO, { createBreadcrumbSchema } from '../components/SEO';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -16,6 +17,14 @@ const categoryNames = {
   motos: 'Motos',
   utilitaires: 'Utilitaires',
   accessoires: 'Accessoires',
+};
+
+const categoryDescriptions = {
+  pieces: 'Trouvez des pièces détachées automobiles neuves et d\'occasion. Moteurs, carrosserie, électronique et plus.',
+  voitures: 'Découvrez notre sélection de voitures d\'occasion vérifiées par des particuliers et professionnels.',
+  motos: 'Achetez ou vendez des motos d\'occasion. Large choix de marques et modèles.',
+  utilitaires: 'Utilitaires, camionnettes et véhicules commerciaux d\'occasion à vendre.',
+  accessoires: 'Accessoires automobiles, équipements et tuning pour personnaliser votre véhicule.',
 };
 
 const conditionLabels = {
