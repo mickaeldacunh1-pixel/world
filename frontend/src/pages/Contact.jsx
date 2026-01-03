@@ -104,9 +104,12 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-heading font-bold mb-1">FAQ</h3>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-muted-foreground text-sm mb-2">
                     Consultez notre FAQ pour des réponses rapides aux questions fréquentes.
                   </p>
+                  <a href="/faq" className="text-accent text-sm hover:underline">
+                    Voir la FAQ →
+                  </a>
                 </div>
               </div>
             </Card>
