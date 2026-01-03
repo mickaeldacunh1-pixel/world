@@ -15,6 +15,8 @@ import Pricing from "./pages/Pricing";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Favorites from "./pages/Favorites";
+import Alerts from "./pages/Alerts";
 import "./App.css";
 
 const ProtectedRoute = ({ children }) => {
