@@ -140,6 +140,34 @@ export default function Orders() {
     }
   };
 
+  const handleSubmitReview = async () => {
+    setSubmittingReview(true);
+    try {
+      await axios.post(`${API}/reviews`, {
+        order_id: reviewOrder.id,
+        rating: reviewRating,
+        comment: reviewComment || null
+      });
+      toast.success('Avis publié ! Merci pour votre retour.');
+      setReviewDialogOpen(false);
+      setReviewOrder(null);
+      setReviewRating(5);
+      setReviewComment('');
+      setReviewedOrders([...reviewedOrders, reviewOrder.id]);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la publication');
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  const openReviewDialog = (order) => {
+    setReviewOrder(order);
+    setReviewRating(5);
+    setReviewComment('');
+    setReviewDialogOpen(true);
+  };
+
   const sellerOrders = orders.filter(o => o.role === 'seller');
   const buyerOrders = orders.filter(o => o.role === 'buyer');
 
