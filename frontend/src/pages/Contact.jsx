@@ -65,6 +65,12 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-secondary/30 py-12">
+      <SEO
+        title="Contact"
+        description="Contactez l'équipe World Auto France. Nous sommes là pour répondre à vos questions sur les annonces, paiements et support."
+        keywords="contact world auto, support, aide, question"
+        url="/contact"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-fade-in-up">
           <h1 className="font-heading text-4xl font-bold mb-4">Contactez-nous</h1>
