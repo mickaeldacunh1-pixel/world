@@ -1530,6 +1530,54 @@ async def get_pending_reviews(current_user: dict = Depends(get_current_user)):
     
     return pending
 
+# ================== SETTINGS ROUTES ==================
+
+DEFAULT_HERO_SETTINGS = {
+    "hero_title_line1": "La marketplace auto",
+    "hero_title_line2": "pour tous",
+    "hero_description": "Achetez et vendez des pièces détachées, voitures, motos et utilitaires. Pour particuliers et professionnels.",
+    "hero_image": "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
+    "hero_cta_text": "Déposer une annonce",
+    "hero_cta_link": "/deposer"
+}
+
+@api_router.get("/settings/hero")
+async def get_hero_settings():
+    """Récupérer les paramètres du hero"""
+    settings = await db.settings.find_one({"type": "hero"}, {"_id": 0})
+    if settings:
+        return settings
+    return DEFAULT_HERO_SETTINGS
+
+@api_router.post("/settings/hero")
+async def save_hero_settings(settings: dict, current_user: dict = Depends(get_current_user)):
+    """Sauvegarder les paramètres du hero"""
+    settings["type"] = "hero"
+    settings["updated_at"] = datetime.now(timezone.utc).isoformat()
+    settings["updated_by"] = current_user["id"]
+    
+    await db.settings.update_one(
+        {"type": "hero"},
+        {"$set": settings},
+        upsert=True
+    )
+    
+    return {"message": "Paramètres sauvegardés"}
+
+# ================== SHIPPING ROUTES ==================
+
+CARRIERS = {
+    "colissimo": {"name": "Colissimo", "logo": "📦"},
+    "mondial_relay": {"name": "Mondial Relay", "logo": "🏪"},
+    "chronopost": {"name": "Chronopost", "logo": "⚡"},
+    "lettre_suivie": {"name": "Lettre Suivie", "logo": "✉️"}
+}
+
+@api_router.get("/carriers")
+async def get_carriers():
+    """Liste des transporteurs disponibles"""
+    return CARRIERS
+
 # ================== PAYMENT ROUTES ==================
 
 @api_router.get("/subcategories/pieces")
