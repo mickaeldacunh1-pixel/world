@@ -248,6 +248,32 @@ def send_password_reset_email(user_email: str, user_name: str, reset_token: str)
     """
     send_email(user_email, "Réinitialisation de votre mot de passe - World Auto", html)
 
+def send_search_alert_email(user_email: str, user_name: str, alert: dict, listing: dict):
+    """Email d'alerte pour une nouvelle annonce correspondant à une recherche"""
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #f97316; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">World Auto</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2>🔔 Nouvelle annonce correspondant à votre recherche !</h2>
+            <p>Bonjour {user_name},</p>
+            <p>Une nouvelle annonce correspond à votre alerte "{alert['name']}" :</p>
+            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <p style="margin: 0; font-size: 18px;"><strong>{listing['title']}</strong></p>
+                <p style="margin: 5px 0; font-size: 24px; color: #f97316; font-weight: bold;">{listing['price']} €</p>
+                <p style="margin: 5px 0; color: #666;">{listing.get('brand', '')} {listing.get('model', '')} {listing.get('year', '')}</p>
+                <p style="margin: 5px 0; color: #666;">📍 {listing.get('location', '')} ({listing.get('postal_code', '')})</p>
+            </div>
+            <a href="{SITE_URL}/annonce/{listing['id']}" style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 10px;">Voir l'annonce</a>
+        </div>
+        <div style="padding: 20px; background: #f3f4f6; text-align: center; font-size: 12px; color: #666;">
+            <p><a href="{SITE_URL}/alertes" style="color: #666;">Gérer mes alertes</a></p>
+        </div>
+    </div>
+    """
+    send_email(user_email, f"Nouvelle annonce : {listing['title']}", html)
+
 app = FastAPI(title="World Auto Marketplace API")
 api_router = APIRouter(prefix="/api")
 
