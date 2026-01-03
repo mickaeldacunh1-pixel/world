@@ -140,8 +140,26 @@ export default function Listings() {
 
   const showCompatibilityFilters = category === 'pieces' || category === 'accessoires';
 
+  // SEO: Build breadcrumb and page title
+  const pageTitle = category ? categoryNames[category] : 'Toutes les annonces';
+  const pageDescription = category 
+    ? categoryDescriptions[category] 
+    : 'Parcourez toutes les annonces de pièces détachées et véhicules d\'occasion sur World Auto France.';
+  const breadcrumbItems = [
+    { name: 'Accueil', url: '/' },
+    { name: 'Annonces', url: '/annonces' },
+    ...(category ? [{ name: categoryNames[category], url: `/annonces/${category}` }] : [])
+  ];
+
   return (
     <div className="min-h-screen bg-background" data-testid="listings-page">
+      <SEO
+        title={pageTitle}
+        description={pageDescription}
+        keywords={`${pageTitle}, annonces auto, ${category || 'pièces véhicules'}, occasion France`}
+        url={category ? `/annonces/${category}` : '/annonces'}
+        structuredData={createBreadcrumbSchema(breadcrumbItems)}
+      />
       {/* Header */}
       <div className="bg-primary py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

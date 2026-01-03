@@ -163,8 +163,25 @@ export default function ListingDetail() {
 
   if (!listing) return null;
 
+  // SEO: Build breadcrumb items
+  const breadcrumbItems = [
+    { name: 'Accueil', url: '/' },
+    { name: 'Annonces', url: '/annonces' },
+    { name: categoryLabels[listing.category], url: `/annonces/${listing.category}` },
+    { name: listing.title, url: `/annonce/${listing.id}` }
+  ];
+
   return (
     <div className="min-h-screen bg-background" data-testid="listing-detail-page">
+      <SEO
+        title={listing.title}
+        description={`${listing.title} - ${listing.price?.toLocaleString('fr-FR')} € - ${conditionLabels[listing.condition] || listing.condition}. ${listing.description?.substring(0, 150)}...`}
+        keywords={`${listing.title}, ${listing.category}, ${listing.brand || ''}, pièce auto, occasion`}
+        url={`/annonce/${listing.id}`}
+        image={listing.images?.[0]}
+        type="product"
+        structuredData={[createProductSchema(listing), createBreadcrumbSchema(breadcrumbItems)]}
+      />
       {/* Breadcrumb */}
       <div className="bg-secondary/30 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
