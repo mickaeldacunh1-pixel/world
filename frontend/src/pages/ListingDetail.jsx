@@ -377,20 +377,20 @@ export default function ListingDetail() {
             {/* Seller Info */}
             <Card className="p-6">
               <h2 className="font-heading font-bold text-lg mb-4">Vendeur</h2>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center">
-                  <User className="w-6 h-6 text-muted-foreground" />
+              <Link to={`/vendeur/${listing.seller_id}`} className="flex items-center gap-4 group">
+                <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                  <User className="w-6 h-6 text-muted-foreground group-hover:text-accent" />
                 </div>
-                <div>
-                  <p className="font-medium flex items-center gap-2">
+                <div className="flex-1">
+                  <p className="font-medium flex items-center gap-2 group-hover:text-accent transition-colors">
                     {listing.seller_name}
                     {listing.seller_is_pro && <span className="badge-pro">PRO</span>}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Membre depuis {new Date(listing.created_at).getFullYear()}
+                    Cliquez pour voir le profil vendeur
                   </p>
                 </div>
-              </div>
+              </Link>
             </Card>
 
             {/* Action Buttons */}
