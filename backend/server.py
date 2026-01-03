@@ -859,18 +859,29 @@ async def create_checkout(package_id: str, request: Request, current_user: dict 
     
     # Get host URL from request
     host_url = str(request.base_url).rstrip('/')
-    webhook_url = f"{host_url}/api/webhook/stripe"
     
     # Get frontend URL from origin header or construct from backend URL
     origin = request.headers.get("origin", host_url)
     success_url = f"{origin}/payment/success?session_id={{CHECKOUT_SESSION_ID}}"
-    cancel_url = f"{origin}/pricing"
+    cancel_url = f"{origin}/tarifs"
     
-    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    # Initialize Stripe
+    stripe.api_key = STRIPE_API_KEY
     
-    checkout_request = CheckoutSessionRequest(
-        amount=package["price"],
-        currency="eur",
+    # Create Stripe checkout session
+    session = stripe.checkout.Session.create(
+        payment_method_types=["card"],
+        line_items=[{
+            "price_data": {
+                "currency": "eur",
+                "product_data": {
+                    "name": f"Pack {package['listings']} annonces - World Auto",
+                },
+                "unit_amount": int(package["price"] * 100),  # Stripe uses cents
+            },
+            "quantity": 1,
+        }],
+        mode="payment",
         success_url=success_url,
         cancel_url=cancel_url,
         metadata={
@@ -879,8 +890,6 @@ async def create_checkout(package_id: str, request: Request, current_user: dict 
             "listings": str(package["listings"])
         }
     )
-    
-    session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_request)
     
     # Create payment transaction record
     transaction_doc = {
