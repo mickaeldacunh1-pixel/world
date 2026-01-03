@@ -111,6 +111,18 @@ export default function Navbar() {
                         Messages
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/favoris" className="flex items-center gap-2 cursor-pointer">
+                        <Heart className="w-4 h-4" />
+                        Mes Favoris
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/alertes" className="flex items-center gap-2 cursor-pointer">
+                        <Bell className="w-4 h-4" />
+                        Mes Alertes
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link to="/tarifs" className="flex items-center gap-2 cursor-pointer">
