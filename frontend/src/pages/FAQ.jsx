@@ -137,8 +137,20 @@ export default function FAQ() {
     }));
   };
 
+  // Prepare FAQ data for schema
+  const allFaqs = faqs.flatMap(cat => 
+    cat.questions.map(q => ({ question: q.q, answer: q.a }))
+  );
+
   return (
     <div className="min-h-screen bg-secondary/30 py-12">
+      <SEO
+        title="FAQ - Foire Aux Questions"
+        description="Trouvez les réponses à vos questions sur World Auto France : annonces, paiements, livraison, messagerie et sécurité."
+        keywords="FAQ world auto, questions fréquentes, aide marketplace auto, support world auto"
+        url="/faq"
+        structuredData={createFAQSchema(allFaqs)}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in-up">

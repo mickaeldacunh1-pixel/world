@@ -79,6 +79,12 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-secondary/30 py-12" data-testid="pricing-page">
+      <SEO
+        title="Tarifs"
+        description="Découvrez nos packs de crédits pour publier vos annonces sur World Auto France. Des tarifs simples et transparents pour particuliers et professionnels."
+        keywords="tarifs annonces auto, prix publication annonce, crédits world auto, pack annonces"
+        url="/tarifs"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
