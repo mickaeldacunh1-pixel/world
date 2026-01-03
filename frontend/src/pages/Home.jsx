@@ -42,39 +42,39 @@ export default function Home() {
   const [heroSettings, setHeroSettings] = useState(DEFAULT_HERO);
 
   useEffect(() => {
+    const fetchHeroSettings = async () => {
+      try {
+        const response = await axios.get(`${API}/settings/hero`);
+        if (response.data) {
+          setHeroSettings({ ...DEFAULT_HERO, ...response.data });
+        }
+      } catch (error) {
+        console.error('Error fetching hero settings:', error);
+      }
+    };
+
+    const fetchCategoryStats = async () => {
+      try {
+        const response = await axios.get(`${API}/categories/stats`);
+        setCategoryStats(response.data);
+      } catch (error) {
+        console.error('Error fetching category stats:', error);
+      }
+    };
+
+    const fetchRecentListings = async () => {
+      try {
+        const response = await axios.get(`${API}/listings?limit=6`);
+        setRecentListings(response.data.listings || []);
+      } catch (error) {
+        console.error('Error fetching recent listings:', error);
+      }
+    };
+
     fetchCategoryStats();
     fetchRecentListings();
     fetchHeroSettings();
   }, []);
-
-  const fetchHeroSettings = async () => {
-    try {
-      const response = await axios.get(`${API}/settings/hero`);
-      if (response.data) {
-        setHeroSettings({ ...DEFAULT_HERO, ...response.data });
-      }
-    } catch (error) {
-      console.error('Error fetching hero settings:', error);
-    }
-  };
-
-  const fetchCategoryStats = async () => {
-    try {
-      const response = await axios.get(`${API}/categories/stats`);
-      setCategoryStats(response.data);
-    } catch (error) {
-      console.error('Error fetching category stats:', error);
-    }
-  };
-
-  const fetchRecentListings = async () => {
-    try {
-      const response = await axios.get(`${API}/listings?limit=6`);
-      setRecentListings(response.data.listings || []);
-    } catch (error) {
-      console.error('Error fetching recent listings:', error);
-    }
-  };
 
   const handleSearch = (e) => {
     e.preventDefault();
