@@ -480,6 +480,70 @@ export default function Orders() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Review Dialog */}
+        <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Laisser un avis</DialogTitle>
+            </DialogHeader>
+            {reviewOrder && (
+              <div className="space-y-4 mt-4">
+                <div>
+                  <p className="font-medium">{reviewOrder.listing_title}</p>
+                  <p className="text-sm text-muted-foreground">Vendeur: {reviewOrder.seller_name}</p>
+                </div>
+                
+                <div>
+                  <Label>Note *</Label>
+                  <div className="flex gap-2 mt-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setReviewRating(star)}
+                        className="focus:outline-none"
+                      >
+                        <Star
+                          className={`w-8 h-8 transition-colors ${
+                            star <= reviewRating
+                              ? 'text-yellow-500 fill-yellow-500'
+                              : 'text-gray-300'
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {reviewRating === 1 && 'Très mauvais'}
+                    {reviewRating === 2 && 'Mauvais'}
+                    {reviewRating === 3 && 'Moyen'}
+                    {reviewRating === 4 && 'Bien'}
+                    {reviewRating === 5 && 'Excellent'}
+                  </p>
+                </div>
+                
+                <div>
+                  <Label>Commentaire (optionnel)</Label>
+                  <Textarea
+                    placeholder="Partagez votre expérience avec ce vendeur..."
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+                
+                <Button
+                  onClick={handleSubmitReview}
+                  disabled={submittingReview}
+                  className="w-full bg-accent hover:bg-accent/90"
+                >
+                  {submittingReview ? 'Publication...' : 'Publier l\'avis'}
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
