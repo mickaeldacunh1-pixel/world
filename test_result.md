@@ -257,15 +257,18 @@ backend:
 
   - task: "Carriers list"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "low"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Implemented GET /api/carriers endpoint. Returns available shipping carriers."
+        - working: true
+        - agent: "testing"
+        - comment: "Carriers list API working correctly. GET /api/carriers endpoint returns all expected carriers: colissimo, mondial_relay, chronopost, lettre_suivie. Each carrier has proper structure with name and logo fields."
 
 frontend:
   - task: "Pricing page"
