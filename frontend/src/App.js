@@ -35,6 +35,8 @@ function AppContent() {
           <Route path="/annonces/:category" element={<Listings />} />
           <Route path="/annonce/:id" element={<ListingDetail />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/tarifs" element={<Pricing />} />
           <Route path="/payment/success" element={<PaymentSuccess />} />
           <Route path="/deposer" element={
