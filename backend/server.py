@@ -36,7 +36,7 @@ STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
 cloudinary.config(
     cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME', 'dmtnmaloe'),
     api_key=os.environ.get('CLOUDINARY_API_KEY', '743968936572992'),
-    api_secret=os.environ.get('CLOUDINARY_API_SECRET', 'S9L4owos6Okd_9bFq')
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET', 'S9L4owos6Okd_9bFqo5R2keEbcU')
 )
 
 app = FastAPI(title="World Auto Marketplace API")
