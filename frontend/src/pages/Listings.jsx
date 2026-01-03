@@ -346,32 +346,45 @@ export default function Listings() {
                     className="group"
                     data-testid={`listing-${listing.id}`}
                   >
-                    <Card className={`overflow-hidden card-hover ${viewMode === 'list' ? 'flex' : ''}`}>
-                      <div className={`relative ${viewMode === 'list' ? 'w-48 flex-shrink-0' : 'h-48'}`}>
+                    <Card className={`overflow-hidden card-hover border-0 shadow-md ${viewMode === 'list' ? 'flex' : ''}`}>
+                      <div className={`relative overflow-hidden ${viewMode === 'list' ? 'w-48 flex-shrink-0' : 'h-52'}`}>
                         <img
-                          src={listing.images?.[0] || 'https://images.unsplash.com/photo-1767339736233-f4b02c41ee4a?w=400&h=300&fit=crop'}
+                          src={listing.images?.[0] || 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=300&fit=crop'}
                           alt={listing.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="w-full h-full object-cover img-zoom"
                         />
-                        {listing.seller_is_pro && (
-                          <span className="absolute top-3 left-3 badge-pro">PRO</span>
-                        )}
-                        <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium">
+                        {/* Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        
+                        {/* Badges */}
+                        <div className="absolute top-3 left-3 flex gap-2">
+                          {listing.seller_is_pro && (
+                            <span className="badge-pro">PRO</span>
+                          )}
+                        </div>
+                        <span className="absolute top-3 right-3 badge-condition">
                           {conditionLabels[listing.condition] || listing.condition}
                         </span>
+                        
+                        {/* Quick view */}
+                        <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                          <span className="bg-white/95 backdrop-blur-sm text-primary px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
+                            Voir →
+                          </span>
+                        </div>
                       </div>
-                      <div className="p-4 flex-1">
-                        <h3 className="font-heading font-bold text-lg mb-1 line-clamp-1 group-hover:text-accent transition-colors">
+                      <div className="p-5 flex-1">
+                        <h3 className="font-heading font-bold text-lg mb-2 line-clamp-1 group-hover:text-accent transition-colors">
                           {listing.title}
                         </h3>
-                        <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+                        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                           {listing.description}
                         </p>
-                        <div className="flex items-center justify-between">
-                          <span className="font-heading font-bold text-xl text-accent">
+                        <div className="flex items-center justify-between pt-3 border-t border-border/50">
+                          <span className="font-heading font-bold text-xl price-tag">
                             {listing.price?.toLocaleString('fr-FR')} €
                           </span>
-                          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
                             {listing.location && (
                               <span className="flex items-center gap-1">
                                 <MapPin className="w-3 h-3" />
