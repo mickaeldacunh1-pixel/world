@@ -386,6 +386,10 @@ class AutoPiecesAPITester:
         self.test_get_current_user()
         self.test_professional_registration()
         
+        # Payment tests (Stripe and PayPal removal verification)
+        self.test_stripe_checkout_creation()
+        self.test_paypal_endpoints_removed()
+        
         # Listings tests
         self.test_listings_endpoint()
         self.test_listings_with_filters()
