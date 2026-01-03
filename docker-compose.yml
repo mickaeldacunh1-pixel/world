@@ -36,13 +36,15 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongodb_data:/data/db
+      - mongo_data:/data/db
     restart: unless-stopped
     networks:
       - worldauto-network
 
 volumes:
-  mongodb_data:
+  mongo_data:
+    external: true
+    name: worldauto_mongo_data
 
 networks:
   worldauto-network:
