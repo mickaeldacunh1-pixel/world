@@ -351,9 +351,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Seller public profile"
-    - "Hero settings API"
-    - "Shipping slip PDF generation"
     - "Seller Profile Page"
     - "Admin Settings Page"
     - "Orders Page with shipping slips"
