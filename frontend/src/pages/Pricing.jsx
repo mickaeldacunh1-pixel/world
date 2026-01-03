@@ -135,23 +135,15 @@ export default function Pricing() {
                 ))}
               </ul>
             </CardContent>
-            <CardFooter className="flex flex-col gap-2">
+            <CardFooter>
               <Button
                 className="w-full"
                 variant="outline"
-                onClick={() => handleBuyPackage('single', 'stripe')}
-                disabled={loading.single_stripe}
-                data-testid="buy-single-stripe"
+                onClick={() => handleBuyPackage('single')}
+                disabled={loading.single}
+                data-testid="buy-single"
               >
-                {loading.single_stripe ? 'Chargement...' : '💳 Carte bancaire'}
-              </Button>
-              <Button
-                className="w-full bg-[#0070ba] hover:bg-[#005ea6] text-white"
-                onClick={() => handleBuyPackage('single', 'paypal')}
-                disabled={loading.single_paypal}
-                data-testid="buy-single-paypal"
-              >
-                {loading.single_paypal ? 'Chargement...' : '🅿️ PayPal'}
+                {loading.single ? 'Chargement...' : 'Acheter'}
               </Button>
             </CardFooter>
           </Card>
