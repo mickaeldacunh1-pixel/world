@@ -210,6 +210,54 @@ backend:
         - agent: "testing"
         - comment: "Order management endpoints working correctly. POST /orders, GET /orders, PUT /orders/{id}/status, POST /orders/{id}/return all accept BackgroundTasks and process email notifications. Order status updates (shipped/delivered) and return requests trigger appropriate email notifications."
 
+  - task: "Seller public profile"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented GET /api/seller/{seller_id}/profile endpoint. Returns seller info, active listings count, sold count, reviews and average rating."
+
+  - task: "Hero settings API"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented GET /api/settings/hero and POST /api/settings/hero endpoints. Returns/saves hero section content (title, description, image, CTA)."
+
+  - task: "Shipping slip PDF generation"
+    implemented: true
+    working: "NA"
+    file: "backend/bordereau_generator.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented GET /api/orders/{order_id}/shipping-slip and GET /api/returns/{return_id}/slip endpoints. Uses BordereauGenerator class to create PDF documents."
+
+  - task: "Carriers list"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented GET /api/carriers endpoint. Returns available shipping carriers."
+
 frontend:
   - task: "Pricing page"
     implemented: true
@@ -235,6 +283,54 @@ frontend:
         - agent: "main"
         - comment: "Homepage loads correctly with all sections"
 
+  - task: "Seller Profile Page"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/SellerProfile.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Created SellerProfile.jsx page accessible at /vendeur/:sellerId. Displays seller info, stats, active listings and reviews."
+
+  - task: "Admin Settings Page"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/AdminSettings.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Created AdminSettings.jsx page accessible at /admin/parametres. Allows editing hero section content with live preview. Available for professional users."
+
+  - task: "Orders Page with shipping slips"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/Orders.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Orders page includes download buttons for shipping slips (bordereau) and return slips. Calls /api/orders/{id}/shipping-slip and /api/returns/{id}/slip endpoints."
+
+  - task: "ListingDetail with seller profile link"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/ListingDetail.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Added clickable link to seller profile in listing detail page. Users can now click on seller name to view public profile."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
@@ -242,7 +338,13 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Seller public profile"
+    - "Hero settings API"
+    - "Shipping slip PDF generation"
+    - "Seller Profile Page"
+    - "Admin Settings Page"
+    - "Orders Page with shipping slips"
   stuck_tasks: 
     - "Stripe payment checkout"
   test_all: false
@@ -257,3 +359,5 @@ agent_communication:
     - message: "Added email notification system using SMTP (Hostinger). Notifications implemented: welcome email on registration, new order emails to seller and buyer, order shipped email to buyer, order delivered email to seller, return request email to seller. Need to test the complete flow."
     - agent: "testing"
     - message: "Email notification system testing completed successfully. 66/67 tests passed (only Stripe checkout fails due to invalid API key). All email notification endpoints working correctly: user registration with welcome email, order creation with buyer/seller notifications, order status updates (shipped/delivered) with email notifications, return requests with seller notifications. BackgroundTasks parameter accepted by all endpoints. SMTP authentication fails in test environment but email functions are properly called and logged."
+    - agent: "main"
+    - message: "Implemented 3 new features: 1) Seller public profile page (/vendeur/:sellerId) with backend endpoint GET /api/seller/{seller_id}/profile. 2) Admin Settings page (/admin/parametres) for editing hero section, with GET/POST /api/settings/hero endpoints. 3) Shipping slip PDF generation with existing endpoints GET /api/orders/{id}/shipping-slip and GET /api/returns/{id}/slip. Also added link to seller profile in ListingDetail page and admin link in Navbar for professional users. Need to test all these new features."
