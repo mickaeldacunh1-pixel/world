@@ -32,6 +32,13 @@ JWT_ALGORITHM = "HS256"
 # Stripe Config
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
 
+# Cloudinary Config
+cloudinary.config(
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME', 'dmtnmaloe'),
+    api_key=os.environ.get('CLOUDINARY_API_KEY', '743968936572992'),
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET', 'S9L4owos6Okd_9bFq')
+)
+
 app = FastAPI(title="World Auto Marketplace API")
 api_router = APIRouter(prefix="/api")
 
