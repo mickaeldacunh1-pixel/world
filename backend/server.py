@@ -894,7 +894,7 @@ async def create_checkout(package_id: str, request: Request, current_user: dict 
     # Create payment transaction record
     transaction_doc = {
         "id": str(uuid.uuid4()),
-        "session_id": session.session_id,
+        "session_id": session.id,
         "user_id": current_user["id"],
         "package_id": package_id,
         "amount": package["price"],
@@ -905,7 +905,7 @@ async def create_checkout(package_id: str, request: Request, current_user: dict 
     }
     await db.payment_transactions.insert_one(transaction_doc)
     
-    return {"url": session.url, "session_id": session.session_id}
+    return {"url": session.url, "session_id": session.id}
 
 @api_router.get("/payments/status/{session_id}")
 async def get_payment_status(session_id: str, current_user: dict = Depends(get_current_user)):
