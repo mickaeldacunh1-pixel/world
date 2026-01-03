@@ -6,57 +6,31 @@ import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { Bell, BellOff, Plus, Trash2, X, Power } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogClose
-} from '../components/ui/dialog';
+import { Bell, BellOff, Plus, Trash2 } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
-const CATEGORIES = [
-  { value: 'pieces-moteur', label: 'Pièces Moteur' },
-  { value: 'carrosserie', label: 'Carrosserie' },
-  { value: 'freinage', label: 'Freinage' },
-  { value: 'suspension', label: 'Suspension' },
-  { value: 'transmission', label: 'Transmission' },
-  { value: 'electricite', label: 'Électricité' },
-  { value: 'interieur', label: 'Intérieur' },
-  { value: 'echappement', label: 'Échappement' },
-  { value: 'vehicules', label: 'Véhicules complets' },
-  { value: 'autres', label: 'Autres' },
-];
 
 export default function Alerts() {
   const { user } = useAuth();
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showDialog, setShowDialog] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    category: '',
     brand: '',
     model: '',
+    keywords: '',
     min_price: '',
-    max_price: '',
-    min_year: '',
-    max_year: '',
-    postal_code: '',
-    keywords: ''
+    max_price: ''
   });
 
   useEffect(() => {
     if (user) {
       fetchAlerts();
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
@@ -80,27 +54,17 @@ export default function Alerts() {
     }
 
     try {
-      const alertData = {
+      await axios.post(`${API}/alerts`, {
         name: formData.name,
-        category: formData.category || null,
         brand: formData.brand || null,
         model: formData.model || null,
+        keywords: formData.keywords || null,
         min_price: formData.min_price ? parseFloat(formData.min_price) : null,
-        max_price: formData.max_price ? parseFloat(formData.max_price) : null,
-        min_year: formData.min_year ? parseInt(formData.min_year) : null,
-        max_year: formData.max_year ? parseInt(formData.max_year) : null,
-        postal_code: formData.postal_code || null,
-        keywords: formData.keywords || null
-      };
-
-      await axios.post(`${API}/alerts`, alertData);
-      toast.success('Alerte créée !');
-      setShowDialog(false);
-      setFormData({
-        name: '', category: '', brand: '', model: '',
-        min_price: '', max_price: '', min_year: '', max_year: '',
-        postal_code: '', keywords: ''
+        max_price: formData.max_price ? parseFloat(formData.max_price) : null
       });
+      toast.success('Alerte créée !');
+      setShowForm(false);
+      setFormData({ name: '', brand: '', model: '', keywords: '', min_price: '', max_price: '' });
       fetchAlerts();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Erreur lors de la création');
@@ -160,147 +124,13 @@ export default function Alerts() {
             <h1 className="font-heading text-3xl font-bold">Mes alertes</h1>
             <p className="text-muted-foreground">Recevez un email quand une annonce correspond à vos critères</p>
           </div>
-          <Dialog open={showDialog} onOpenChange={setShowDialog}>
-            <DialogTrigger asChild>
-              <Button className="bg-accent hover:bg-accent/90">
-                <Plus className="w-4 h-4 mr-2" />
-                Nouvelle alerte
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
-              <DialogHeader>
-                <DialogTitle>Créer une alerte</DialogTitle>
-                <DialogDescription>
-                  Définissez vos critères de recherche pour recevoir des notifications.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={createAlert} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Nom de l'alerte *</Label>
-                  <Input
-                    id="name"
-                    placeholder="Ex: Moteur BMW E46"
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    required
-                  />
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Catégorie</Label>
-                    <Select value={formData.category} onValueChange={(v) => setFormData({...formData, category: v})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Toutes" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">Toutes</SelectItem>
-                        {CATEGORIES.map(cat => (
-                          <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="keywords">Mots-clés</Label>
-                    <Input
-                      id="keywords"
-                      placeholder="Ex: turbo, N47..."
-                      value={formData.keywords}
-                      onChange={(e) => setFormData({...formData, keywords: e.target.value})}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="brand">Marque</Label>
-                    <Input
-                      id="brand"
-                      placeholder="Ex: BMW"
-                      value={formData.brand}
-                      onChange={(e) => setFormData({...formData, brand: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="model">Modèle</Label>
-                    <Input
-                      id="model"
-                      placeholder="Ex: Serie 3"
-                      value={formData.model}
-                      onChange={(e) => setFormData({...formData, model: e.target.value})}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="min_price">Prix min (€)</Label>
-                    <Input
-                      id="min_price"
-                      type="number"
-                      placeholder="0"
-                      value={formData.min_price}
-                      onChange={(e) => setFormData({...formData, min_price: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="max_price">Prix max (€)</Label>
-                    <Input
-                      id="max_price"
-                      type="number"
-                      placeholder="10000"
-                      value={formData.max_price}
-                      onChange={(e) => setFormData({...formData, max_price: e.target.value})}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="min_year">Année min</Label>
-                    <Input
-                      id="min_year"
-                      type="number"
-                      placeholder="2000"
-                      value={formData.min_year}
-                      onChange={(e) => setFormData({...formData, min_year: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="max_year">Année max</Label>
-                    <Input
-                      id="max_year"
-                      type="number"
-                      placeholder="2024"
-                      value={formData.max_year}
-                      onChange={(e) => setFormData({...formData, max_year: e.target.value})}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="postal_code">Code postal (2 premiers chiffres)</Label>
-                  <Input
-                    id="postal_code"
-                    placeholder="Ex: 75 pour Paris"
-                    maxLength={2}
-                    value={formData.postal_code}
-                    onChange={(e) => setFormData({...formData, postal_code: e.target.value})}
-                  />
-                </div>
-
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button type="button" variant="outline">Annuler</Button>
-                  </DialogClose>
-                  <Button type="submit" className="bg-accent hover:bg-accent/90">
-                    Créer l'alerte
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <Button 
+            onClick={() => setShowForm(!showForm)} 
+            className="bg-accent hover:bg-accent/90"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Nouvelle alerte
+          </Button>
         </div>
 
         <div className="flex gap-4 mb-6">
@@ -309,6 +139,87 @@ export default function Alerts() {
           </Link>
         </div>
 
+        {showForm && (
+          <Card className="mb-6 p-6">
+            <h3 className="font-bold mb-4">Créer une alerte</h3>
+            <form onSubmit={createAlert} className="space-y-4">
+              <div>
+                <Label htmlFor="name">Nom de l'alerte *</Label>
+                <Input
+                  id="name"
+                  placeholder="Ex: Moteur BMW E46"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  required
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="brand">Marque</Label>
+                  <Input
+                    id="brand"
+                    placeholder="Ex: BMW"
+                    value={formData.brand}
+                    onChange={(e) => setFormData({...formData, brand: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="model">Modèle</Label>
+                  <Input
+                    id="model"
+                    placeholder="Ex: Serie 3"
+                    value={formData.model}
+                    onChange={(e) => setFormData({...formData, model: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="keywords">Mots-clés</Label>
+                <Input
+                  id="keywords"
+                  placeholder="Ex: turbo, N47, injecteur..."
+                  value={formData.keywords}
+                  onChange={(e) => setFormData({...formData, keywords: e.target.value})}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="min_price">Prix min (€)</Label>
+                  <Input
+                    id="min_price"
+                    type="number"
+                    placeholder="0"
+                    value={formData.min_price}
+                    onChange={(e) => setFormData({...formData, min_price: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="max_price">Prix max (€)</Label>
+                  <Input
+                    id="max_price"
+                    type="number"
+                    placeholder="10000"
+                    value={formData.max_price}
+                    onChange={(e) => setFormData({...formData, max_price: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <Button type="submit" className="bg-accent hover:bg-accent/90">
+                  Créer l'alerte
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                  Annuler
+                </Button>
+              </div>
+            </form>
+          </Card>
+        )}
+
         {alerts.length === 0 ? (
           <Card className="p-12 text-center">
             <Bell className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
@@ -316,7 +227,7 @@ export default function Alerts() {
             <p className="text-muted-foreground mb-4">
               Créez une alerte pour être notifié quand une pièce correspondant à vos critères est publiée.
             </p>
-            <Button onClick={() => setShowDialog(true)} className="bg-accent hover:bg-accent/90">
+            <Button onClick={() => setShowForm(true)} className="bg-accent hover:bg-accent/90">
               <Plus className="w-4 h-4 mr-2" />
               Créer ma première alerte
             </Button>
@@ -335,9 +246,6 @@ export default function Alerts() {
                         </Badge>
                       </div>
                       <div className="flex flex-wrap gap-2 text-sm">
-                        {alert.category && (
-                          <Badge variant="outline">{CATEGORIES.find(c => c.value === alert.category)?.label || alert.category}</Badge>
-                        )}
                         {alert.brand && <Badge variant="outline">{alert.brand}</Badge>}
                         {alert.model && <Badge variant="outline">{alert.model}</Badge>}
                         {alert.keywords && <Badge variant="outline">"{alert.keywords}"</Badge>}
@@ -346,32 +254,16 @@ export default function Alerts() {
                             {alert.min_price || 0}€ - {alert.max_price || '∞'}€
                           </Badge>
                         )}
-                        {(alert.min_year || alert.max_year) && (
-                          <Badge variant="outline">
-                            {alert.min_year || '...'} - {alert.max_year || '...'}
-                          </Badge>
-                        )}
-                        {alert.postal_code && <Badge variant="outline">📍 {alert.postal_code}...</Badge>}
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       <Button
                         variant={alert.active ? "default" : "outline"}
                         size="sm"
                         onClick={() => toggleAlert(alert.id)}
                         className={alert.active ? 'bg-accent hover:bg-accent/90' : ''}
                       >
-                        {alert.active ? (
-                          <>
-                            <Bell className="w-4 h-4 mr-1" />
-                            Active
-                          </>
-                        ) : (
-                          <>
-                            <BellOff className="w-4 h-4 mr-1" />
-                            Inactive
-                          </>
-                        )}
+                        {alert.active ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4" />}
                       </Button>
                       <Button
                         variant="ghost"
@@ -395,7 +287,6 @@ export default function Alerts() {
             <li>• Créez une alerte avec vos critères de recherche</li>
             <li>• Dès qu'une nouvelle annonce correspond, vous recevez un email</li>
             <li>• Vous pouvez créer jusqu'à 10 alertes</li>
-            <li>• Désactivez temporairement une alerte sans la supprimer</li>
           </ul>
         </Card>
       </div>
