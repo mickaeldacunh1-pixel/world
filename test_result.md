@@ -212,15 +212,18 @@ backend:
 
   - task: "Seller public profile"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Implemented GET /api/seller/{seller_id}/profile endpoint. Returns seller info, active listings count, sold count, reviews and average rating."
+        - working: true
+        - agent: "testing"
+        - comment: "Seller public profile API working correctly. Endpoint returns all required fields: id, name, is_professional, city, created_at, active_listings, sold_count, total_reviews, average_rating, and reviews array. Tested with registered user ID and received proper response structure."
 
   - task: "Hero settings API"
     implemented: true
