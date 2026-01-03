@@ -20,6 +20,10 @@ import Alerts from "./pages/Alerts";
 import SellerStats from "./pages/SellerStats";
 import SellerProfile from "./pages/SellerProfile";
 import AdminSettings from "./pages/AdminSettings";
+import About from "./pages/About";
+import CGV from "./pages/CGV";
+import LegalNotice from "./pages/LegalNotice";
+import Contact from "./pages/Contact";
 import "./App.css";
 
 const ProtectedRoute = ({ children }) => {
