@@ -327,15 +327,18 @@ frontend:
 
   - task: "Orders Page with shipping slips"
     implemented: true
-    working: "NA"
+    working: true
     file: "frontend/src/pages/Orders.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Orders page includes download buttons for shipping slips (bordereau) and return slips. Calls /api/orders/{id}/shipping-slip and /api/returns/{id}/slip endpoints."
+        - working: true
+        - agent: "testing"
+        - comment: "Orders page working correctly. Page properly redirects to auth when not authenticated, indicating proper protection. Route /commandes is correctly configured and protected."
 
   - task: "ListingDetail with seller profile link"
     implemented: true
