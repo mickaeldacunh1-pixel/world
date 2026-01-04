@@ -363,7 +363,9 @@ export default function Auth() {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="siret">SIRET</Label>
+                        <Label htmlFor="siret">
+                          SIRET <span className="text-red-500">*</span>
+                        </Label>
                         <div className="relative">
                           <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                           <Input
@@ -371,10 +373,56 @@ export default function Auth() {
                             placeholder="123 456 789 00001"
                             value={registerData.siret}
                             onChange={(e) => updateRegisterData('siret', e.target.value)}
-                            className="pl-10"
+                            className={`pl-10 pr-10 ${
+                              siretStatus.valid === true ? 'border-green-500 focus-visible:ring-green-500' :
+                              siretStatus.valid === false ? 'border-red-500 focus-visible:ring-red-500' : ''
+                            }`}
                             data-testid="register-siret-input"
                           />
+                          {/* Status indicator */}
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            {siretStatus.checking && (
+                              <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                            )}
+                            {siretStatus.valid === true && (
+                              <CheckCircle className="w-4 h-4 text-green-500" />
+                            )}
+                            {siretStatus.valid === false && (
+                              <XCircle className="w-4 h-4 text-red-500" />
+                            )}
+                          </div>
                         </div>
+                        
+                        {/* SIRET validation messages */}
+                        {siretStatus.valid === true && siretStatus.companyInfo && (
+                          <div className="text-sm p-3 bg-green-50 border border-green-200 rounded-md">
+                            <p className="font-medium text-green-800">
+                              <CheckCircle className="inline w-4 h-4 mr-1" />
+                              SIRET vérifié
+                            </p>
+                            <p className="text-green-700 mt-1">
+                              {siretStatus.companyInfo.denomination}
+                            </p>
+                            {siretStatus.companyInfo.adresse?.libelle_commune && (
+                              <p className="text-green-600 text-xs">
+                                {siretStatus.companyInfo.adresse.code_postal} {siretStatus.companyInfo.adresse.libelle_commune}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                        {siretStatus.valid === false && siretStatus.error && (
+                          <div className="text-sm p-3 bg-red-50 border border-red-200 rounded-md">
+                            <p className="font-medium text-red-800">
+                              <XCircle className="inline w-4 h-4 mr-1" />
+                              {siretStatus.error}
+                            </p>
+                          </div>
+                        )}
+                        {siretStatus.checking && (
+                          <p className="text-sm text-muted-foreground">
+                            Vérification en cours...
+                          </p>
+                        )}
                       </div>
                     </div>
                   )}
