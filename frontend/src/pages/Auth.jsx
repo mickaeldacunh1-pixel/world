@@ -48,6 +48,56 @@ export default function Auth() {
     }
   }, [user, navigate]);
 
+  // Fonction de vérification SIRET avec debounce
+  const verifySiret = useCallback(async (siret) => {
+    const cleanSiret = siret.replace(/[\s-]/g, '');
+    
+    // Ne pas vérifier si moins de 14 chiffres
+    if (cleanSiret.length < 14) {
+      setSiretStatus({ checking: false, valid: null, error: null, companyInfo: null });
+      return;
+    }
+    
+    if (cleanSiret.length !== 14 || !/^\d+$/.test(cleanSiret)) {
+      setSiretStatus({ checking: false, valid: false, error: 'Le SIRET doit contenir 14 chiffres', companyInfo: null });
+      return;
+    }
+    
+    setSiretStatus({ checking: true, valid: null, error: null, companyInfo: null });
+    
+    try {
+      const response = await api.get(`/api/verify-siret/${cleanSiret}`);
+      setSiretStatus({ 
+        checking: false, 
+        valid: true, 
+        error: null, 
+        companyInfo: response.data.company_info 
+      });
+      
+      // Auto-remplir le nom de l'entreprise si pas déjà rempli
+      if (response.data.company_info?.denomination && !registerData.company_name) {
+        setRegisterData(prev => ({ 
+          ...prev, 
+          company_name: response.data.company_info.denomination 
+        }));
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.detail || 'Erreur lors de la vérification';
+      setSiretStatus({ checking: false, valid: false, error: errorMessage, companyInfo: null });
+    }
+  }, [registerData.company_name]);
+
+  // Déclencher la vérification quand le SIRET change
+  useEffect(() => {
+    const cleanSiret = registerData.siret.replace(/[\s-]/g, '');
+    if (registerData.is_professional && cleanSiret.length >= 14) {
+      const timeoutId = setTimeout(() => verifySiret(registerData.siret), 500);
+      return () => clearTimeout(timeoutId);
+    } else {
+      setSiretStatus({ checking: false, valid: null, error: null, companyInfo: null });
+    }
+  }, [registerData.siret, registerData.is_professional, verifySiret]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
