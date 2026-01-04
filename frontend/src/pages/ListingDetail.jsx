@@ -320,6 +320,21 @@ export default function ListingDetail() {
               {listing.price?.toLocaleString('fr-FR')} €
             </div>
 
+            {/* Shipping info */}
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-muted-foreground">📦 Livraison :</span>
+              {listing.shipping_cost === 0 ? (
+                <span className="font-semibold text-green-600">Gratuite</span>
+              ) : listing.shipping_cost ? (
+                <span className="font-semibold">{listing.shipping_cost?.toLocaleString('fr-FR')} €</span>
+              ) : (
+                <span className="text-muted-foreground">À définir avec le vendeur</span>
+              )}
+              {listing.shipping_info && (
+                <span className="text-muted-foreground">• {listing.shipping_info}</span>
+              )}
+            </div>
+
             <Card className="p-6">
               <h2 className="font-heading font-bold text-lg mb-4">Description</h2>
               <p className="text-muted-foreground whitespace-pre-line" data-testid="listing-description">
