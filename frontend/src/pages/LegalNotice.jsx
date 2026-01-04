@@ -89,9 +89,9 @@ export default function LegalNotice() {
           <section>
             <h2 className="font-heading text-xl font-bold mb-4">6. Limitation de responsabilité</h2>
             <p className="text-muted-foreground leading-relaxed">
-              World Auto s'efforce d'assurer l'exactitude des informations diffusées sur 
+              World Auto France s'efforce d'assurer l'exactitude des informations diffusées sur 
               ce site. Toutefois, elle ne peut garantir l'exactitude, la complétude et 
-              l'actualité des informations. World Auto décline toute responsabilité pour 
+              l'actualité des informations. World Auto France décline toute responsabilité pour 
               tout dommage résultant d'une intrusion frauduleuse d'un tiers ou de la 
               présence d'un virus informatique.
             </p>
