@@ -390,7 +390,7 @@ class FavoritesMessagingTester:
         
         # Test getting messages with invalid listing ID and user ID
         result = self.run_test("Messages - Invalid Conversation", "GET", "messages/invalid-listing/invalid-user", 200, token=self.buyer_token)
-        if result and isinstance(result, list) and len(result) == 0:
+        if result is not None and isinstance(result, list) and len(result) == 0:
             self.log_test("Messages - Invalid Conversation Handling", True, "Correctly returned empty array for invalid conversation")
         else:
             self.log_test("Messages - Invalid Conversation Handling", False, "Unexpected response for invalid conversation")
