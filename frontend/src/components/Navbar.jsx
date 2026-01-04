@@ -70,9 +70,28 @@ export default function Navbar() {
           </div>
 
           {/* Right section */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {user ? (
               <>
+                {/* Quick action icons */}
+                <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Heart className="w-5 h-5" />
+                  </Button>
+                </Link>
+
+                <Link to="/messages" className="hidden sm:flex" title="Messages">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <MessageSquare className="w-5 h-5" />
+                  </Button>
+                </Link>
+
+                <Link to="/panier" className="hidden sm:flex" title="Panier">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <ShoppingCart className="w-5 h-5" />
+                  </Button>
+                </Link>
+
                 <Link to="/deposer">
                   <Button className="hidden sm:flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground btn-primary" data-testid="create-listing-btn">
                     <Plus className="w-4 h-4" />
