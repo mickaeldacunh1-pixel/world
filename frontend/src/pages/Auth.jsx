@@ -68,7 +68,7 @@ export default function Auth() {
     setSiretStatus({ checking: true, valid: null, error: null, companyInfo: null });
     
     try {
-      const response = await api.get(`/api/verify-siret/${cleanSiret}`);
+      const response = await axios.get(`${API}/verify-siret/${cleanSiret}`);
       setSiretStatus({ 
         checking: false, 
         valid: true, 
