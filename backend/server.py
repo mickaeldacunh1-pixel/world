@@ -858,6 +858,7 @@ async def get_listings(
     max_year: Optional[int] = None,
     condition: Optional[str] = None,
     postal_code: Optional[str] = None,
+    region: Optional[str] = None,
     search: Optional[str] = None,
     compatible_brand: Optional[str] = None,
     oem_reference: Optional[str] = None,
@@ -887,6 +888,8 @@ async def get_listings(
         query["condition"] = condition
     if postal_code:
         query["postal_code"] = {"$regex": f"^{postal_code[:2]}"}
+    if region:
+        query["region"] = region
     if compatible_brand:
         query["compatible_brands"] = compatible_brand
     if oem_reference:
