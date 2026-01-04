@@ -341,6 +341,39 @@ export default function CreateListing() {
                 </div>
               </div>
 
+              {/* Shipping / Livraison */}
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-4">
+                <h3 className="font-medium text-blue-900">📦 Livraison</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="shipping_cost">Frais de port (€)</Label>
+                    <Input
+                      id="shipping_cost"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="0 = Gratuit, vide = À définir"
+                      value={formData.shipping_cost}
+                      onChange={(e) => handleChange('shipping_cost', e.target.value)}
+                      data-testid="shipping-cost-input"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Laissez vide si à définir avec l'acheteur
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="shipping_info">Infos livraison</Label>
+                    <Input
+                      id="shipping_info"
+                      placeholder="Ex: Colissimo, retrait possible..."
+                      value={formData.shipping_info}
+                      onChange={(e) => handleChange('shipping_info', e.target.value)}
+                      data-testid="shipping-info-input"
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* Vehicle-specific fields */}
               {showVehicleFields && (
                 <div className="p-4 bg-secondary/50 rounded-lg space-y-4 animate-fade-in">
