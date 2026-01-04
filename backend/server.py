@@ -1119,6 +1119,14 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
     }
     background_tasks.add_task(send_new_listing_admin_email, listing_doc, seller_info)
     
+    # Email de confirmation au vendeur
+    background_tasks.add_task(
+        send_listing_confirmation_email, 
+        current_user.get("email"), 
+        current_user.get("name"), 
+        listing_doc
+    )
+    
     return ListingResponse(**listing_doc)
 
 # ================== IMAGE UPLOAD ==================
