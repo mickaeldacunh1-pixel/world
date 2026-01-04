@@ -446,6 +446,8 @@ class ListingCreate(BaseModel):
     location: Optional[str] = None
     postal_code: Optional[str] = None
     region: Optional[str] = None  # Région française
+    shipping_cost: Optional[float] = None  # Frais de port (None = à définir, 0 = gratuit)
+    shipping_info: Optional[str] = None  # Infos livraison supplémentaires
     # Compatibilité véhicule
     compatible_brands: List[str] = []  # Marques compatibles
     compatible_models: List[str] = []  # Modèles compatibles
