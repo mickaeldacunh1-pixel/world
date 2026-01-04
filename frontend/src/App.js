@@ -22,6 +22,7 @@ import SellerStats from "./pages/SellerStats";
 import SellerProfile from "./pages/SellerProfile";
 import AdminSettings from "./pages/AdminSettings";
 import Profile from "./pages/Profile";
+import Cart from "./pages/Cart";
 import About from "./pages/About";
 import CGV from "./pages/CGV";
 import LegalNotice from "./pages/LegalNotice";
