@@ -691,22 +691,12 @@ async def verify_siret(siret: str):
             detail="Le numéro SIRET doit contenir exactement 14 chiffres"
         )
     
-    # Appeler l'API gouvernementale
-    api_url = f"https://api.insee.fr/api-sirene/3.11/siret/{clean_siret}"
+    # Utiliser l'API recherche-entreprises.api.gouv.fr
+    api_url = f"https://recherche-entreprises.api.gouv.fr/search?q={clean_siret}&mtm_campaign=worldauto"
     
-    # Alternative : API entreprise.data.gouv.fr (plus simple, sans authentification)
-    fallback_url = f"https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/{clean_siret}"
-    
-    async with httpx.AsyncClient(timeout=10.0) as client:
+    async with httpx.AsyncClient(timeout=15.0) as http_client:
         try:
-            # Utiliser l'API entreprise.data.gouv.fr (gratuite et sans clé API)
-            response = await client.get(fallback_url)
-            
-            if response.status_code == 404:
-                raise HTTPException(
-                    status_code=404, 
-                    detail="Numéro SIRET non trouvé. Vérifiez votre numéro."
-                )
+            response = await http_client.get(api_url)
             
             if response.status_code != 200:
                 raise HTTPException(
@@ -715,31 +705,64 @@ async def verify_siret(siret: str):
                 )
             
             data = response.json()
-            etablissement = data.get("etablissement", {})
+            results = data.get("results", [])
             
-            # Extraire les informations pertinentes
-            unite_legale = etablissement.get("unite_legale", {})
-            adresse = etablissement.get("adresse", {})
+            # Chercher l'établissement correspondant au SIRET exact
+            found_etablissement = None
+            found_entreprise = None
+            
+            for entreprise in results:
+                # Vérifier le siège
+                siege = entreprise.get("siege", {})
+                if siege.get("siret") == clean_siret:
+                    found_etablissement = siege
+                    found_entreprise = entreprise
+                    break
+                
+                # Vérifier les établissements correspondants
+                matching = entreprise.get("matching_etablissements", [])
+                for etab in matching:
+                    if etab.get("siret") == clean_siret:
+                        found_etablissement = etab
+                        found_entreprise = entreprise
+                        break
+                if found_etablissement:
+                    break
+            
+            if not found_etablissement:
+                raise HTTPException(
+                    status_code=404, 
+                    detail="Numéro SIRET non trouvé. Vérifiez votre numéro ou assurez-vous que l'établissement est enregistré."
+                )
+            
+            # Vérifier si l'établissement est actif
+            etat = found_etablissement.get("etat_administratif", "A")
+            if etat != "A":
+                raise HTTPException(
+                    status_code=400,
+                    detail="Cet établissement n'est plus actif (fermé ou radié)"
+                )
             
             return {
                 "valid": True,
                 "siret": clean_siret,
                 "company_info": {
-                    "siren": etablissement.get("siren", ""),
-                    "nic": etablissement.get("nic", ""),
-                    "denomination": unite_legale.get("denomination") or 
-                                   f"{unite_legale.get('prenom_1', '')} {unite_legale.get('nom', '')}".strip(),
-                    "categorie_juridique": unite_legale.get("categorie_juridique", ""),
-                    "activite_principale": etablissement.get("activite_principale", ""),
+                    "siren": found_entreprise.get("siren", ""),
+                    "denomination": found_entreprise.get("nom_complet") or found_entreprise.get("nom_raison_sociale", ""),
+                    "sigle": found_entreprise.get("sigle"),
+                    "nature_juridique": found_entreprise.get("nature_juridique", ""),
+                    "activite_principale": found_etablissement.get("activite_principale", ""),
                     "adresse": {
-                        "numero_voie": adresse.get("numero_voie", ""),
-                        "type_voie": adresse.get("type_voie", ""),
-                        "libelle_voie": adresse.get("libelle_voie", ""),
-                        "code_postal": adresse.get("code_postal", ""),
-                        "libelle_commune": adresse.get("libelle_commune", "")
+                        "numero_voie": found_etablissement.get("numero_voie", ""),
+                        "type_voie": found_etablissement.get("type_voie", ""),
+                        "libelle_voie": found_etablissement.get("libelle_voie", ""),
+                        "code_postal": found_etablissement.get("code_postal", ""),
+                        "libelle_commune": found_etablissement.get("libelle_commune", ""),
+                        "adresse_complete": found_etablissement.get("adresse") or found_etablissement.get("geo_adresse", "")
                     },
-                    "etat_administratif": etablissement.get("etat_administratif", ""),
-                    "date_creation": etablissement.get("date_creation", "")
+                    "etat_administratif": etat,
+                    "date_creation": found_etablissement.get("date_creation", ""),
+                    "est_siege": found_etablissement.get("est_siege", False)
                 }
             }
             
