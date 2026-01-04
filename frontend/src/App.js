@@ -86,6 +86,9 @@ function AppContent() {
             <ProtectedRoute><Profile /></ProtectedRoute>
           } />
           <Route path="/panier" element={<Cart />} />
+          <Route path="/checkout" element={
+            <ProtectedRoute><Checkout /></ProtectedRoute>
+          } />
           <Route path="/a-propos" element={<About />} />
           <Route path="/cgv" element={<CGV />} />
           <Route path="/mentions-legales" element={<LegalNotice />} />
