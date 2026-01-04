@@ -673,6 +673,87 @@ async def login(credentials: UserLogin):
 async def get_me(current_user: dict = Depends(get_current_user)):
     return current_user
 
+# ================== SIRET VERIFICATION ==================
+
+@api_router.get("/verify-siret/{siret}")
+async def verify_siret(siret: str):
+    """
+    Vérifie la validité d'un numéro SIRET via l'API gouvernementale française.
+    Retourne les informations de l'entreprise si le SIRET est valide.
+    """
+    # Nettoyer le SIRET (retirer espaces et tirets)
+    clean_siret = siret.replace(" ", "").replace("-", "")
+    
+    # Vérifier le format (14 chiffres)
+    if not clean_siret.isdigit() or len(clean_siret) != 14:
+        raise HTTPException(
+            status_code=400, 
+            detail="Le numéro SIRET doit contenir exactement 14 chiffres"
+        )
+    
+    # Appeler l'API gouvernementale
+    api_url = f"https://api.insee.fr/api-sirene/3.11/siret/{clean_siret}"
+    
+    # Alternative : API entreprise.data.gouv.fr (plus simple, sans authentification)
+    fallback_url = f"https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/{clean_siret}"
+    
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        try:
+            # Utiliser l'API entreprise.data.gouv.fr (gratuite et sans clé API)
+            response = await client.get(fallback_url)
+            
+            if response.status_code == 404:
+                raise HTTPException(
+                    status_code=404, 
+                    detail="Numéro SIRET non trouvé. Vérifiez votre numéro."
+                )
+            
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=503, 
+                    detail="Service de vérification temporairement indisponible"
+                )
+            
+            data = response.json()
+            etablissement = data.get("etablissement", {})
+            
+            # Extraire les informations pertinentes
+            unite_legale = etablissement.get("unite_legale", {})
+            adresse = etablissement.get("adresse", {})
+            
+            return {
+                "valid": True,
+                "siret": clean_siret,
+                "company_info": {
+                    "siren": etablissement.get("siren", ""),
+                    "nic": etablissement.get("nic", ""),
+                    "denomination": unite_legale.get("denomination") or 
+                                   f"{unite_legale.get('prenom_1', '')} {unite_legale.get('nom', '')}".strip(),
+                    "categorie_juridique": unite_legale.get("categorie_juridique", ""),
+                    "activite_principale": etablissement.get("activite_principale", ""),
+                    "adresse": {
+                        "numero_voie": adresse.get("numero_voie", ""),
+                        "type_voie": adresse.get("type_voie", ""),
+                        "libelle_voie": adresse.get("libelle_voie", ""),
+                        "code_postal": adresse.get("code_postal", ""),
+                        "libelle_commune": adresse.get("libelle_commune", "")
+                    },
+                    "etat_administratif": etablissement.get("etat_administratif", ""),
+                    "date_creation": etablissement.get("date_creation", "")
+                }
+            }
+            
+        except httpx.TimeoutException:
+            raise HTTPException(
+                status_code=503, 
+                detail="Le service de vérification ne répond pas. Réessayez dans quelques instants."
+            )
+        except httpx.RequestError as e:
+            raise HTTPException(
+                status_code=503, 
+                detail="Erreur de connexion au service de vérification"
+            )
+
 # ================== PROFILE MANAGEMENT ==================
 
 class ProfileUpdate(BaseModel):
