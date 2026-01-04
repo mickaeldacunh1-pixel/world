@@ -1458,6 +1458,85 @@ async def create_order(order: OrderCreate, background_tasks: BackgroundTasks, cu
     
     return order_doc
 
+@api_router.post("/orders/checkout")
+async def checkout_cart(checkout: CartCheckout, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
+    """Créer plusieurs commandes depuis le panier (checkout groupé)"""
+    if not checkout.listing_ids:
+        raise HTTPException(status_code=400, detail="Le panier est vide")
+    
+    created_orders = []
+    errors = []
+    
+    for listing_id in checkout.listing_ids:
+        try:
+            # Get listing
+            listing = await db.listings.find_one({"id": listing_id, "status": "active"}, {"_id": 0})
+            if not listing:
+                errors.append({"listing_id": listing_id, "error": "Annonce non trouvée ou déjà vendue"})
+                continue
+            
+            if listing["seller_id"] == current_user["id"]:
+                errors.append({"listing_id": listing_id, "error": "Vous ne pouvez pas acheter votre propre annonce"})
+                continue
+            
+            # Get seller info
+            seller = await db.users.find_one({"id": listing["seller_id"]}, {"_id": 0, "password": 0})
+            
+            order_doc = {
+                "id": str(uuid.uuid4()),
+                "listing_id": listing_id,
+                "listing_title": listing["title"],
+                "price": listing["price"],
+                "oem_reference": listing.get("oem_reference"),
+                "seller_id": listing["seller_id"],
+                "seller_name": listing["seller_name"],
+                "seller_address": seller.get("address", "") if seller else "",
+                "seller_city": seller.get("city", "") if seller else "",
+                "seller_postal": seller.get("postal_code", "") if seller else "",
+                "seller_phone": seller.get("phone", "") if seller else "",
+                "buyer_id": current_user["id"],
+                "buyer_name": current_user["name"],
+                "buyer_address": checkout.buyer_address,
+                "buyer_city": checkout.buyer_city,
+                "buyer_postal": checkout.buyer_postal,
+                "buyer_phone": checkout.buyer_phone or current_user.get("phone", ""),
+                "status": "confirmed",
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "shipped_at": None,
+                "delivered_at": None
+            }
+            
+            await db.orders.insert_one(order_doc)
+            
+            # Mark listing as sold
+            await db.listings.update_one({"id": listing_id}, {"$set": {"status": "sold"}})
+            
+            # Send notification emails
+            if seller:
+                background_tasks.add_task(send_new_order_seller_email, seller.get("email"), seller.get("name"), order_doc)
+            background_tasks.add_task(send_new_order_buyer_email, current_user.get("email"), current_user.get("name"), order_doc)
+            
+            # Send admin notification email
+            buyer_info = {"name": current_user.get("name"), "email": current_user.get("email"), "phone": current_user.get("phone")}
+            seller_info = {"name": seller.get("name") if seller else "N/A", "email": seller.get("email") if seller else ""}
+            background_tasks.add_task(send_new_order_admin_email, order_doc, buyer_info, seller_info)
+            
+            created_orders.append(order_doc)
+            
+        except Exception as e:
+            errors.append({"listing_id": listing_id, "error": str(e)})
+    
+    if not created_orders and errors:
+        raise HTTPException(status_code=400, detail={"message": "Aucune commande n'a pu être créée", "errors": errors})
+    
+    return {
+        "success": True,
+        "orders_created": len(created_orders),
+        "total_amount": sum(o["price"] for o in created_orders),
+        "orders": created_orders,
+        "errors": errors if errors else None
+    }
+
 @api_router.get("/orders")
 async def get_my_orders(current_user: dict = Depends(get_current_user)):
     """Récupérer mes commandes (achats et ventes)"""
