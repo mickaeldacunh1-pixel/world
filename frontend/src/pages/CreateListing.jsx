@@ -52,6 +52,8 @@ export default function CreateListing() {
     location: '',
     postal_code: '',
     region: '',
+    shipping_cost: '',
+    shipping_info: '',
     // Compatibilité
     compatible_brands: [],
     compatible_models: '',
