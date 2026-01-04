@@ -859,6 +859,14 @@ class AutoPiecesAPITester:
         self.test_get_current_user()
         self.test_professional_registration()
         
+        # SIRET VERIFICATION TESTS (NEW FEATURE)
+        print("\n🏢 Testing SIRET Verification API...")
+        self.test_siret_verification_valid()
+        self.test_siret_verification_invalid_not_found()
+        self.test_siret_verification_invalid_format_short()
+        self.test_siret_verification_invalid_format_non_numeric()
+        self.test_siret_verification_with_spaces()
+        
         # PROFILE MANAGEMENT TESTS
         print("\n👤 Testing Profile Management Features...")
         self.test_profile_update()
