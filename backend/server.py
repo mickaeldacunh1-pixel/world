@@ -1703,6 +1703,30 @@ async def download_shipping_slip(order_id: str, current_user: dict = Depends(get
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
+@api_router.get("/orders/{order_id}/invoice")
+async def download_invoice(order_id: str, current_user: dict = Depends(get_current_user)):
+    """Télécharger la facture PDF"""
+    order = await db.orders.find_one(
+        {"id": order_id},
+        {"_id": 0}
+    )
+    if not order:
+        raise HTTPException(status_code=404, detail="Commande non trouvée")
+    
+    # Vérifier que l'utilisateur est le vendeur ou l'acheteur
+    if order["seller_id"] != current_user["id"] and order["buyer_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Accès non autorisé")
+    
+    pdf_buffer = bordereau_gen.generate_invoice(order)
+    
+    filename = f"facture_WA-{order_id[:8].upper()}.pdf"
+    
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
 @api_router.post("/orders/{order_id}/return")
 async def request_return(order_id: str, return_req: ReturnRequest, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
     """Demander un retour pour une commande"""
