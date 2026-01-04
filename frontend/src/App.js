@@ -50,6 +50,9 @@ function AppContent() {
           <Route path="/annonces" element={<Listings />} />
           <Route path="/annonces/:category" element={<Listings />} />
           <Route path="/annonce/:id" element={<ListingDetail />} />
+          <Route path="/annonce/:id/modifier" element={
+            <ProtectedRoute><EditListing /></ProtectedRoute>
+          } />
           <Route path="/auth" element={<Auth />} />
           <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
