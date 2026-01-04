@@ -528,6 +528,19 @@ export default function CreateListing() {
                     data-testid="postal-code-input"
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="region">Région</Label>
+                  <Select value={formData.region} onValueChange={(v) => handleChange('region', v)}>
+                    <SelectTrigger data-testid="region-select">
+                      <SelectValue placeholder="Sélectionner une région" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {regions.map((r) => (
+                        <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               {/* Images */}
