@@ -276,6 +276,17 @@ export default function Orders() {
                                 Bordereau
                               </Button>
                               
+                              {/* Télécharger facture */}
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => downloadInvoice(order.id)}
+                                data-testid={`download-invoice-${order.id}`}
+                              >
+                                <Download className="w-4 h-4 mr-1" />
+                                Facture
+                              </Button>
+                              
                               {/* Marquer comme expédié */}
                               {order.status === 'confirmed' && (
                                 <Button
