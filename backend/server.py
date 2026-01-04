@@ -1034,6 +1034,14 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
     # Check alerts and send notifications
     await check_and_send_alerts(listing_doc, background_tasks)
     
+    # Send admin notification email for new listing
+    seller_info = {
+        "name": current_user.get("name"),
+        "email": current_user.get("email"),
+        "is_pro": current_user.get("is_professional", False)
+    }
+    background_tasks.add_task(send_new_listing_admin_email, listing_doc, seller_info)
+    
     return ListingResponse(**listing_doc)
 
 # ================== IMAGE UPLOAD ==================
