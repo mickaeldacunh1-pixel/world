@@ -125,6 +125,27 @@ export default function Auth() {
       return;
     }
 
+    // Vérifier le SIRET pour les professionnels
+    if (registerData.is_professional) {
+      const cleanSiret = registerData.siret.replace(/[\s-]/g, '');
+      if (!cleanSiret) {
+        toast.error('Veuillez saisir votre numéro SIRET');
+        return;
+      }
+      if (siretStatus.valid === false) {
+        toast.error('Veuillez corriger votre numéro SIRET avant de continuer');
+        return;
+      }
+      if (siretStatus.checking) {
+        toast.error('Vérification du SIRET en cours, veuillez patienter...');
+        return;
+      }
+      if (siretStatus.valid !== true) {
+        toast.error('Veuillez vérifier votre numéro SIRET');
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       const { confirmPassword, ...userData } = registerData;
