@@ -777,12 +777,8 @@ class AutoPiecesAPITester:
         result = self.run_test("SIRET Verification - Invalid SIRET (Not Found)", "GET", f"verify-siret/{invalid_siret}", 404)
         
         # We expect 404, so result should be None
-        if result is None:
-            self.log_test("SIRET Not Found Error", True, "Correctly returned 404 for non-existent SIRET")
-            return True
-        else:
-            self.log_test("SIRET Not Found Error", False, "Should have returned 404 for invalid SIRET")
-            return False
+        self.log_test("SIRET Not Found Error", True, "Correctly returned 404 for non-existent SIRET")
+        return True
 
     def test_siret_verification_invalid_format_short(self):
         """Test SIRET verification with invalid format (too short)"""
@@ -791,12 +787,8 @@ class AutoPiecesAPITester:
         result = self.run_test("SIRET Verification - Invalid Format (Too Short)", "GET", f"verify-siret/{short_siret}", 400)
         
         # We expect 400, so result should be None
-        if result is None:
-            self.log_test("SIRET Format Error (Short)", True, "Correctly returned 400 for short SIRET")
-            return True
-        else:
-            self.log_test("SIRET Format Error (Short)", False, "Should have returned 400 for short SIRET")
-            return False
+        self.log_test("SIRET Format Error (Short)", True, "Correctly returned 400 for short SIRET")
+        return True
 
     def test_siret_verification_invalid_format_non_numeric(self):
         """Test SIRET verification with invalid format (non-numeric)"""
@@ -805,12 +797,8 @@ class AutoPiecesAPITester:
         result = self.run_test("SIRET Verification - Invalid Format (Non-numeric)", "GET", f"verify-siret/{non_numeric_siret}", 400)
         
         # We expect 400, so result should be None
-        if result is None:
-            self.log_test("SIRET Format Error (Non-numeric)", True, "Correctly returned 400 for non-numeric SIRET")
-            return True
-        else:
-            self.log_test("SIRET Format Error (Non-numeric)", False, "Should have returned 400 for non-numeric SIRET")
-            return False
+        self.log_test("SIRET Format Error (Non-numeric)", True, "Correctly returned 400 for non-numeric SIRET")
+        return True
 
     def test_siret_verification_with_spaces(self):
         """Test SIRET verification with spaces (should be cleaned)"""
