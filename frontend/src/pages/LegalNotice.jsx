@@ -20,7 +20,7 @@ export default function LegalNotice() {
           <section>
             <h2 className="font-heading text-xl font-bold mb-4">1. Éditeur du site</h2>
             <div className="text-muted-foreground space-y-2">
-              <p><strong>Nom du site :</strong> World Auto</p>
+              <p><strong>Nom du site :</strong> World Auto France</p>
               <p><strong>URL :</strong> https://worldautofrance.com</p>
               <p><strong>Email :</strong> contact@worldautofrance.com</p>
               <p><strong>Statut :</strong> Plateforme de mise en relation</p>
@@ -40,7 +40,7 @@ export default function LegalNotice() {
             <h2 className="font-heading text-xl font-bold mb-4">3. Propriété intellectuelle</h2>
             <p className="text-muted-foreground leading-relaxed mb-3">
               L'ensemble du contenu de ce site (textes, images, vidéos, logos, icônes, 
-              sons, logiciels, etc.) est la propriété exclusive de World Auto ou de ses 
+              sons, logiciels, etc.) est la propriété exclusive de World Auto France ou de ses 
               partenaires et est protégé par les lois françaises et internationales 
               relatives à la propriété intellectuelle.
             </p>
