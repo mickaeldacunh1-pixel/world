@@ -94,6 +94,13 @@ export default function Navbar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuItem asChild>
+                      <Link to="/profil" className="flex items-center gap-2 cursor-pointer">
+                        <User className="w-4 h-4" />
+                        Mon Profil
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
                       <Link to="/tableau-de-bord" className="flex items-center gap-2 cursor-pointer">
                         <LayoutDashboard className="w-4 h-4" />
                         Tableau de bord
