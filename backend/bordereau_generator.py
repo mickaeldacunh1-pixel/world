@@ -435,7 +435,7 @@ class BordereauGenerator:
             try:
                 date_obj = datetime.fromisoformat(order_date.replace('Z', '+00:00'))
                 date_str = date_obj.strftime("%d/%m/%Y")
-            except:
+            except (ValueError, TypeError):
                 date_str = order_date[:10] if len(order_date) >= 10 else order_date
         else:
             date_str = datetime.now().strftime("%d/%m/%Y")
