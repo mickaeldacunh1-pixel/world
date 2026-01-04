@@ -764,6 +764,13 @@ class AutoPiecesAPITester:
         self.test_get_current_user()
         self.test_professional_registration()
         
+        # PROFILE MANAGEMENT TESTS
+        print("\n👤 Testing Profile Management Features...")
+        self.test_profile_update()
+        self.test_password_change()
+        self.test_account_deletion()
+        self.test_profile_management_flow()
+        
         # EMAIL NOTIFICATION SYSTEM TESTS
         print("\n📧 Testing Email Notification System...")
         self.test_user_registration_with_email()
