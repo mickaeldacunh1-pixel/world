@@ -1017,6 +1017,10 @@ class AutoPiecesAPITester:
         self.test_shipping_slip_pdf_generation()
         self.test_carriers_list_api()
         
+        # CART CHECKOUT FLOW TESTING (NEW)
+        print("\n🛒 Testing Cart Checkout Flow...")
+        self.test_cart_checkout_flow()
+        
         # Payment tests (Stripe and PayPal removal verification)
         self.test_stripe_checkout_creation()
         self.test_paypal_endpoints_removed()
