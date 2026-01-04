@@ -147,6 +147,7 @@ export default function Listings() {
     setSearch('');
     setSubcategory('');
     setCompatibleBrand('');
+    setRegion('');
     setOemReference('');
     setMinPrice('');
     setMaxPrice('');
