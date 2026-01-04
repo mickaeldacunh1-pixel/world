@@ -452,3 +452,29 @@ agent_communication:
     - message: "CRITICAL FIX: Resolved deployment issues on VPS. Fixed Docker volume configuration - MongoDB was using new empty volume instead of existing data volume (worldauto_mongo_data). Fixed MONGO_URL hostname. All user data restored. Need full frontend testing to verify all pages work correctly."
     - agent: "testing"
     - message: "Frontend testing completed successfully. All major pages and flows working correctly: 1) Homepage loads with hero section and navigation (5 links). 2) Listings page displays with filters and 1 listing available. 3) Auth page with login/registration forms and proper validation. 4) Pricing page shows 4 pricing packages with Stripe buttons. 5) All protected routes (/favoris, /alertes, /statistiques, /commandes, /admin/parametres) properly redirect to auth. 6) Seller Profile page accessible and displays seller info. 7) ListingDetail page shows seller profile links. 8) Mobile responsiveness working. 9) Navigation functional. Only remaining issue: Stripe checkout still fails due to invalid API key (sk_test_emergent). All frontend features ready for production."
+# New tasks to test - Profile Management
+## backend:
+##   - task: "Profile Update API"
+##     implemented: true
+##     working: "NA"
+##     file: "server.py"
+##     stuck_count: 0
+##     priority: "high"
+##     needs_retesting: true
+##     status_history:
+##         -working: "NA"
+##         -agent: "main"
+##         -comment: "New endpoints added for profile update, password change, account deletion"
+
+## frontend:
+##   - task: "Profile Page"
+##     implemented: true
+##     working: "NA"
+##     file: "pages/Profile.jsx"
+##     stuck_count: 0
+##     priority: "high"
+##     needs_retesting: true
+##     status_history:
+##         -working: "NA"
+##         -agent: "main"
+##         -comment: "New profile page with tabs for info, password, delete account"
