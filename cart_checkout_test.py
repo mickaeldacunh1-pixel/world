@@ -76,14 +76,14 @@ class CartCheckoutTester:
         
         result = self.make_request("POST", "auth/register", user_data, 200)
         
-        if "error" not in result and "token" in result:
-            self.token = result["token"]
-            if "user" in result:
-                self.user_id = result["user"].get("id")
+        if result["success"] and "token" in result.get("data", {}):
+            self.token = result["data"]["token"]
+            if "user" in result["data"]:
+                self.user_id = result["data"]["user"].get("id")
             self.log_result("User Registration", True, f"Registered user: {user_data['email']}")
             return True
         else:
-            self.log_result("User Registration", False, f"Error: {result.get('error', 'Unknown error')}")
+            self.log_result("User Registration", False, f"Error: {result.get('data', 'Unknown error')}")
             return False
 
     def test_checkout_empty_cart(self):
@@ -98,11 +98,11 @@ class CartCheckoutTester:
         
         result = self.make_request("POST", "orders/checkout", checkout_data, 400)
         
-        if result.get("status_code") == 400:
+        if result["success"]:
             self.log_result("Empty Cart Checkout", True, "Correctly returned 400 for empty cart")
             return True
         else:
-            self.log_result("Empty Cart Checkout", False, f"Expected 400, got {result.get('status_code')}")
+            self.log_result("Empty Cart Checkout", False, f"Expected 400, got {result['status_code']}")
             return False
 
     def test_checkout_invalid_listing(self):
@@ -115,22 +115,23 @@ class CartCheckoutTester:
             "buyer_phone": "0612345678"
         }
         
-        result = self.make_request("POST", "orders/checkout", checkout_data, 200)
+        result = self.make_request("POST", "orders/checkout", checkout_data, 400)
         
-        # Should either return 400 or 200 with errors
-        if result.get("status_code") == 400:
+        if result["success"]:
+            # Check if response contains error details
+            data = result.get("data", {})
+            if isinstance(data, dict) and "detail" in data:
+                detail = data["detail"]
+                if isinstance(detail, dict) and "errors" in detail:
+                    self.log_result("Invalid Listing Checkout", True, "Correctly returned errors for invalid listing")
+                    return True
+                elif isinstance(detail, str) and "non trouvée" in detail:
+                    self.log_result("Invalid Listing Checkout", True, "Correctly handled invalid listing")
+                    return True
             self.log_result("Invalid Listing Checkout", True, "Correctly returned 400 for invalid listing")
             return True
-        elif "error" not in result:
-            # Check if it returned with errors array or no orders created
-            if "errors" in result or result.get("orders_created", 0) == 0:
-                self.log_result("Invalid Listing Checkout", True, "Handled invalid listing appropriately")
-                return True
-            else:
-                self.log_result("Invalid Listing Checkout", False, "Unexpected success with invalid listing")
-                return False
         else:
-            self.log_result("Invalid Listing Checkout", False, f"Unexpected error: {result.get('error')}")
+            self.log_result("Invalid Listing Checkout", False, f"Expected 400, got {result['status_code']}")
             return False
 
     def test_checkout_endpoint_structure(self):
@@ -144,14 +145,14 @@ class CartCheckoutTester:
             "buyer_phone": "0612345678"
         }
         
-        result = self.make_request("POST", "orders/checkout", checkout_data, 200)
+        result = self.make_request("POST", "orders/checkout", checkout_data, 400)
         
         # We expect this to fail due to listing not found, but endpoint should accept the request
-        if result.get("status_code") in [200, 400, 404]:
+        if result["status_code"] in [200, 400, 404]:
             self.log_result("Checkout Endpoint Structure", True, "Endpoint accepts required fields")
             return True
         else:
-            self.log_result("Checkout Endpoint Structure", False, f"Unexpected status: {result.get('status_code')}")
+            self.log_result("Checkout Endpoint Structure", False, f"Unexpected status: {result['status_code']}")
             return False
 
     def test_checkout_missing_fields(self):
@@ -165,11 +166,11 @@ class CartCheckoutTester:
         
         result = self.make_request("POST", "orders/checkout", incomplete_data, 422)
         
-        if result.get("status_code") == 422:
+        if result["success"]:
             self.log_result("Missing Fields Validation", True, "Correctly validated missing fields")
             return True
         else:
-            self.log_result("Missing Fields Validation", False, f"Expected 422, got {result.get('status_code')}")
+            self.log_result("Missing Fields Validation", False, f"Expected 422, got {result['status_code']}")
             return False
 
     def test_authentication_required(self):
@@ -191,11 +192,11 @@ class CartCheckoutTester:
         # Restore token
         self.token = original_token
         
-        if result.get("status_code") == 401:
+        if result["success"]:
             self.log_result("Authentication Required", True, "Correctly requires authentication")
             return True
         else:
-            self.log_result("Authentication Required", False, f"Expected 401, got {result.get('status_code')}")
+            self.log_result("Authentication Required", False, f"Expected 401, got {result['status_code']}")
             return False
 
     def run_all_tests(self):
