@@ -105,6 +105,21 @@
 user_problem_statement: "Site de mise en relation type Opisto pour la vente de pièces détachées et véhicules d'occasion. Suppression de l'intégration PayPal et maintien de Stripe uniquement."
 
 backend:
+  - task: "SIRET verification API"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented SIRET verification feature for professional seller registration. New endpoint GET /api/verify-siret/{siret} that calls French government API (recherche-entreprises.api.gouv.fr). Frontend updated to verify SIRET in real-time with visual feedback (green/red borders, company info display, auto-fill company name). Need to test: 1) Valid SIRET verification returns company info, 2) Invalid SIRET shows error, 3) Invalid format (non-14 digits) rejected, 4) Registration blocked if SIRET invalid for pro users."
+        - working: true
+        - agent: "testing"
+        - comment: "SIRET verification API testing completed successfully. All 5 test cases passed: 1) Valid SIRET (98277091900016) correctly returns company info with RENAULT denomination and address details. 2) Invalid SIRET (12345678901234) correctly returns 404 with appropriate error message. 3) Invalid format - too short (123456789) correctly returns 400 with validation error. 4) Invalid format - non-numeric (1234567890123A) correctly returns 400 with validation error. 5) SIRET with spaces (982 770 919 00016) correctly cleans spaces and returns valid company info. API properly integrates with French government API and handles all edge cases correctly."
+
   - task: "API Root endpoint"
     implemented: true
     working: true
