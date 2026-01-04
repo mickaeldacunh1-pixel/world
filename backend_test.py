@@ -731,6 +731,112 @@ class AutoPiecesAPITester:
         self.log_test("Complete Profile Management Flow", True, "All profile operations completed successfully")
         return True
 
+    def test_siret_verification_valid(self):
+        """Test SIRET verification with valid SIRET number"""
+        # Test with valid SIRET: 98277091900016 (RENAULT)
+        valid_siret = "98277091900016"
+        result = self.run_test("SIRET Verification - Valid SIRET", "GET", f"verify-siret/{valid_siret}", 200)
+        
+        if result:
+            # Check response structure
+            if result.get("valid") == True:
+                self.log_test("SIRET Valid Flag", True)
+            else:
+                self.log_test("SIRET Valid Flag", False, f"Expected valid=true, got {result.get('valid')}")
+                return False
+            
+            # Check company info
+            company_info = result.get("company_info", {})
+            if not company_info:
+                self.log_test("SIRET Company Info", False, "No company_info in response")
+                return False
+            
+            # Check for RENAULT denomination
+            denomination = company_info.get("denomination", "")
+            if "RENAULT" in denomination.upper():
+                self.log_test("SIRET Company Name (RENAULT)", True)
+            else:
+                self.log_test("SIRET Company Name (RENAULT)", False, f"Expected RENAULT in denomination, got: {denomination}")
+                return False
+            
+            # Check address info exists
+            address = company_info.get("adresse", {})
+            if address and isinstance(address, dict):
+                self.log_test("SIRET Address Info", True)
+            else:
+                self.log_test("SIRET Address Info", False, "No address info in company_info")
+                return False
+            
+            return True
+        return False
+
+    def test_siret_verification_invalid_not_found(self):
+        """Test SIRET verification with invalid SIRET (not found)"""
+        # Test with invalid SIRET: 12345678901234
+        invalid_siret = "12345678901234"
+        result = self.run_test("SIRET Verification - Invalid SIRET (Not Found)", "GET", f"verify-siret/{invalid_siret}", 404)
+        
+        # We expect 404, so result should be None
+        if result is None:
+            self.log_test("SIRET Not Found Error", True, "Correctly returned 404 for non-existent SIRET")
+            return True
+        else:
+            self.log_test("SIRET Not Found Error", False, "Should have returned 404 for invalid SIRET")
+            return False
+
+    def test_siret_verification_invalid_format_short(self):
+        """Test SIRET verification with invalid format (too short)"""
+        # Test with short SIRET: 123456789
+        short_siret = "123456789"
+        result = self.run_test("SIRET Verification - Invalid Format (Too Short)", "GET", f"verify-siret/{short_siret}", 400)
+        
+        # We expect 400, so result should be None
+        if result is None:
+            self.log_test("SIRET Format Error (Short)", True, "Correctly returned 400 for short SIRET")
+            return True
+        else:
+            self.log_test("SIRET Format Error (Short)", False, "Should have returned 400 for short SIRET")
+            return False
+
+    def test_siret_verification_invalid_format_non_numeric(self):
+        """Test SIRET verification with invalid format (non-numeric)"""
+        # Test with non-numeric SIRET: 1234567890123A
+        non_numeric_siret = "1234567890123A"
+        result = self.run_test("SIRET Verification - Invalid Format (Non-numeric)", "GET", f"verify-siret/{non_numeric_siret}", 400)
+        
+        # We expect 400, so result should be None
+        if result is None:
+            self.log_test("SIRET Format Error (Non-numeric)", True, "Correctly returned 400 for non-numeric SIRET")
+            return True
+        else:
+            self.log_test("SIRET Format Error (Non-numeric)", False, "Should have returned 400 for non-numeric SIRET")
+            return False
+
+    def test_siret_verification_with_spaces(self):
+        """Test SIRET verification with spaces (should be cleaned)"""
+        # Test with spaced SIRET: "982 770 919 00016"
+        spaced_siret = "982 770 919 00016"
+        result = self.run_test("SIRET Verification - With Spaces", "GET", f"verify-siret/{spaced_siret}", 200)
+        
+        if result:
+            # Check that it works the same as without spaces
+            if result.get("valid") == True:
+                self.log_test("SIRET Spaces Cleaned", True, "Spaces were properly cleaned from SIRET")
+            else:
+                self.log_test("SIRET Spaces Cleaned", False, f"Expected valid=true, got {result.get('valid')}")
+                return False
+            
+            # Check company info (should be RENAULT)
+            company_info = result.get("company_info", {})
+            denomination = company_info.get("denomination", "")
+            if "RENAULT" in denomination.upper():
+                self.log_test("SIRET Spaces - Company Name", True)
+                return True
+            else:
+                self.log_test("SIRET Spaces - Company Name", False, f"Expected RENAULT, got: {denomination}")
+                return False
+        return False
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting AutoPièces API Tests...")
