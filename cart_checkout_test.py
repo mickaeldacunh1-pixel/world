@@ -48,20 +48,20 @@ class CartCheckoutTester:
 
             success = response.status_code == expected_status
             
-            if success:
-                try:
-                    return response.json()
-                except:
-                    return {"status": "success"}
-            else:
-                try:
-                    error_data = response.json()
-                    return {"error": error_data, "status_code": response.status_code}
-                except:
-                    return {"error": response.text, "status_code": response.status_code}
+            result = {
+                "status_code": response.status_code,
+                "success": success
+            }
+            
+            try:
+                result["data"] = response.json()
+            except:
+                result["data"] = response.text
+                
+            return result
 
         except Exception as e:
-            return {"error": str(e), "status_code": 0}
+            return {"error": str(e), "status_code": 0, "success": False}
 
     def register_test_user(self):
         """Register a test user for authentication"""
