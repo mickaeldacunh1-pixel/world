@@ -377,7 +377,7 @@ class FavoritesMessagingTester:
         
         # Test empty conversations
         result = self.run_test("Messages - Get Empty Conversations", "GET", "messages/conversations", 200, token=fresh_token)
-        if result and isinstance(result, list) and len(result) == 0:
+        if result is not None and isinstance(result, list) and len(result) == 0:
             self.log_test("Messages - Empty Conversations Structure", True, "Correctly returned empty array")
         else:
             self.log_test("Messages - Empty Conversations Structure", False, f"Expected empty array, got: {result}")
