@@ -157,6 +157,75 @@ def send_new_order_buyer_email(buyer_email: str, buyer_name: str, order: dict):
     """
     send_email(buyer_email, f"Commande confirmée - WA-{order['id'][:8].upper()}", html)
 
+ADMIN_EMAIL = "contact@worldautofrance.com"
+
+def send_new_order_admin_email(order: dict, buyer_info: dict, seller_info: dict):
+    """Email à l'administrateur : notification de nouvelle commande"""
+    from datetime import datetime
+    
+    order_date = datetime.fromisoformat(order['created_at'].replace('Z', '+00:00')) if isinstance(order.get('created_at'), str) else datetime.now()
+    formatted_date = order_date.strftime("%d/%m/%Y à %H:%M")
+    
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #1E3A5F; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">🔔 World Auto - Admin</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2 style="color: #1E3A5F;">Nouvelle commande reçue !</h2>
+            
+            <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #1E3A5F;">
+                <h3 style="margin: 0 0 10px 0; color: #1E3A5F;">📦 Détails de la commande</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 5px 0; color: #666;">N° Commande :</td>
+                        <td style="padding: 5px 0; font-weight: bold;">WA-{order['id'][:8].upper()}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px 0; color: #666;">Date :</td>
+                        <td style="padding: 5px 0; font-weight: bold;">{formatted_date}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px 0; color: #666;">Article :</td>
+                        <td style="padding: 5px 0; font-weight: bold;">{order['listing_title']}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px 0; color: #666;">Prix :</td>
+                        <td style="padding: 5px 0; font-weight: bold; color: #f97316; font-size: 18px;">{order['price']} €</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div style="display: flex; gap: 20px; margin: 20px 0;">
+                <div style="flex: 1; background: #f3f4f6; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #1E3A5F;">👤 Acheteur</h4>
+                    <p style="margin: 5px 0;"><strong>{buyer_info.get('name', 'N/A')}</strong></p>
+                    <p style="margin: 5px 0; font-size: 14px; color: #666;">{buyer_info.get('email', 'N/A')}</p>
+                    <p style="margin: 5px 0; font-size: 14px; color: #666;">{buyer_info.get('phone', 'Non renseigné')}</p>
+                </div>
+            </div>
+            
+            <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #92400e;">🏪 Vendeur</h4>
+                <p style="margin: 5px 0;"><strong>{seller_info.get('name', 'N/A')}</strong></p>
+                <p style="margin: 5px 0; font-size: 14px; color: #666;">{seller_info.get('email', 'N/A')}</p>
+            </div>
+            
+            <div style="background: #d1fae5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #065f46;">📍 Adresse de livraison</h4>
+                <p style="margin: 5px 0;">{order.get('shipping_address', 'N/A')}</p>
+                <p style="margin: 5px 0;">{order.get('shipping_postal_code', '')} {order.get('shipping_city', '')}</p>
+            </div>
+            
+            <a href="{SITE_URL}/admin/parametres" style="display: inline-block; background: #1E3A5F; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 20px;">Accéder au panneau admin</a>
+        </div>
+        <div style="padding: 20px; background: #f3f4f6; text-align: center; font-size: 12px; color: #666;">
+            <p>Email automatique - World Auto France</p>
+        </div>
+    </div>
+    """
+    send_email(ADMIN_EMAIL, f"🔔 Nouvelle commande WA-{order['id'][:8].upper()} - {order['price']} €", html)
+
 def send_order_shipped_email(buyer_email: str, buyer_name: str, order: dict):
     """Email à l'acheteur : commande expédiée"""
     html = f"""
