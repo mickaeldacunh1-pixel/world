@@ -86,6 +86,24 @@ export default function Orders() {
     }
   };
 
+  const downloadInvoice = async (orderId) => {
+    try {
+      const response = await axios.get(`${API}/orders/${orderId}/invoice`, {
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `facture_WA-${orderId.slice(0, 8).toUpperCase()}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Facture téléchargée !');
+    } catch (error) {
+      toast.error('Erreur lors du téléchargement');
+    }
+  };
+
   const downloadReturnSlip = async (returnId) => {
     try {
       const response = await axios.get(`${API}/returns/${returnId}/slip`, {
