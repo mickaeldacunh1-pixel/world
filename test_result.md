@@ -453,28 +453,51 @@ agent_communication:
     - agent: "testing"
     - message: "Frontend testing completed successfully. All major pages and flows working correctly: 1) Homepage loads with hero section and navigation (5 links). 2) Listings page displays with filters and 1 listing available. 3) Auth page with login/registration forms and proper validation. 4) Pricing page shows 4 pricing packages with Stripe buttons. 5) All protected routes (/favoris, /alertes, /statistiques, /commandes, /admin/parametres) properly redirect to auth. 6) Seller Profile page accessible and displays seller info. 7) ListingDetail page shows seller profile links. 8) Mobile responsiveness working. 9) Navigation functional. Only remaining issue: Stripe checkout still fails due to invalid API key (sk_test_emergent). All frontend features ready for production."
 # New tasks to test - Profile Management
-## backend:
-##   - task: "Profile Update API"
-##     implemented: true
-##     working: "NA"
-##     file: "server.py"
-##     stuck_count: 0
-##     priority: "high"
-##     needs_retesting: true
-##     status_history:
-##         -working: "NA"
-##         -agent: "main"
-##         -comment: "New endpoints added for profile update, password change, account deletion"
+backend:
+  - task: "Profile Update API"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "New endpoints added for profile update, password change, account deletion"
+        - working: true
+        - agent: "testing"
+        - comment: "Profile Management API testing completed successfully. All 3 endpoints working correctly: 1) PUT /api/auth/profile - Updates user profile fields (name, phone, address, city, postal_code) with authentication required. Returns updated user data. 2) PUT /api/auth/password - Changes password with current password verification. Correctly rejects invalid current passwords with 400 error. 3) DELETE /api/auth/account - Deletes user account and all associated data (listings, messages, favorites, alerts, reviews). Properly denies access to deleted accounts with 401 error. Complete profile management flow tested: register → login → update profile → change password → login with new password - all working correctly."
 
-## frontend:
-##   - task: "Profile Page"
-##     implemented: true
-##     working: "NA"
-##     file: "pages/Profile.jsx"
-##     stuck_count: 0
-##     priority: "high"
-##     needs_retesting: true
-##     status_history:
-##         -working: "NA"
-##         -agent: "main"
-##         -comment: "New profile page with tabs for info, password, delete account"
+frontend:
+  - task: "Profile Page"
+    implemented: true
+    working: "NA"
+    file: "pages/Profile.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "New profile page with tabs for info, password, delete account"
+
+agent_communication:
+    - agent: "main"
+    - message: "Removed PayPal integration completely (backend code, config, frontend buttons). Stripe remains as the only payment method. Need to verify that the Stripe checkout flow still works correctly. Also need basic verification that auth and listings endpoints are functional."
+    - agent: "testing"
+    - message: "Backend testing completed. 55/56 tests passed. All core functionality working except Stripe checkout which fails due to invalid API key configuration (sk_test_emergent). PayPal endpoints successfully removed. Auth, listings, pricing, and all other endpoints working correctly."
+    - agent: "main"
+    - message: "Added email notification system using SMTP (Hostinger). Notifications implemented: welcome email on registration, new order emails to seller and buyer, order shipped email to buyer, order delivered email to seller, return request email to seller. Need to test the complete flow."
+    - agent: "testing"
+    - message: "Email notification system testing completed successfully. 66/67 tests passed (only Stripe checkout fails due to invalid API key). All email notification endpoints working correctly: user registration with welcome email, order creation with buyer/seller notifications, order status updates (shipped/delivered) with email notifications, return requests with seller notifications. BackgroundTasks parameter accepted by all endpoints. SMTP authentication fails in test environment but email functions are properly called and logged."
+    - agent: "main"
+    - message: "Implemented 3 new features: 1) Seller public profile page (/vendeur/:sellerId) with backend endpoint GET /api/seller/{seller_id}/profile. 2) Admin Settings page (/admin/parametres) for editing hero section, with GET/POST /api/settings/hero endpoints. 3) Shipping slip PDF generation with existing endpoints GET /api/orders/{id}/shipping-slip and GET /api/returns/{id}/slip. Also added link to seller profile in ListingDetail page and admin link in Navbar for professional users. Need to test all these new features."
+    - agent: "testing"
+    - message: "New features testing completed successfully. 98/99 tests passed (only Stripe checkout fails due to invalid API key). All 4 new backend features working correctly: 1) Seller public profile API returns all required fields (seller info, stats, reviews). 2) Hero settings API - both GET (returns default settings) and POST (saves with auth) working. 3) Shipping slip PDF generation - both endpoints accessible and properly configured with BordereauGenerator. 4) Carriers list API returns all expected carriers with proper structure. All new features ready for production use."
+    - agent: "main"
+    - message: "CRITICAL FIX: Resolved deployment issues on VPS. Fixed Docker volume configuration - MongoDB was using new empty volume instead of existing data volume (worldauto_mongo_data). Fixed MONGO_URL hostname. All user data restored. Need full frontend testing to verify all pages work correctly."
+    - agent: "testing"
+    - message: "Frontend testing completed successfully. All major pages and flows working correctly: 1) Homepage loads with hero section and navigation (5 links). 2) Listings page displays with filters and 1 listing available. 3) Auth page with login/registration forms and proper validation. 4) Pricing page shows 4 pricing packages with Stripe buttons. 5) All protected routes (/favoris, /alertes, /statistiques, /commandes, /admin/parametres) properly redirect to auth. 6) Seller Profile page accessible and displays seller info. 7) ListingDetail page shows seller profile links. 8) Mobile responsiveness working. 9) Navigation functional. Only remaining issue: Stripe checkout still fails due to invalid API key (sk_test_emergent). All frontend features ready for production."
+    - agent: "testing"
+    - message: "Profile Management backend testing completed successfully. 116/117 tests passed (only Stripe checkout fails due to invalid API key). All 3 new profile management endpoints working correctly: 1) PUT /api/auth/profile - Updates user profile with proper validation and authentication. 2) PUT /api/auth/password - Changes password with current password verification and proper error handling. 3) DELETE /api/auth/account - Deletes user account and all associated data, properly denies access afterward. Complete profile management flow tested and working. Backend ready for production use."
