@@ -227,6 +227,62 @@ def send_new_order_admin_email(order: dict, buyer_info: dict, seller_info: dict)
     """
     send_email(ADMIN_EMAIL, f"🔔 Nouvelle commande WA-{order['id'][:8].upper()} - {order['price']} €", html)
 
+def send_new_listing_admin_email(listing: dict, seller_info: dict):
+    """Email à l'administrateur : nouvelle annonce publiée"""
+    listing_date = datetime.fromisoformat(listing['created_at'].replace('Z', '+00:00')) if isinstance(listing.get('created_at'), str) else datetime.now()
+    formatted_date = listing_date.strftime("%d/%m/%Y à %H:%M")
+    
+    category_labels = {
+        "pieces": "Pièces Détachées",
+        "voitures": "Voitures",
+        "motos": "Motos",
+        "utilitaires": "Utilitaires",
+        "accessoires": "Accessoires"
+    }
+    
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #1E3A5F; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">🚗 World Auto - Admin</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2 style="color: #1E3A5F;">📢 Nouvelle annonce publiée !</h2>
+            <p style="color: #666;">Publiée le {formatted_date}</p>
+            
+            <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #1E3A5F;">
+                <h3 style="margin: 0 0 10px 0; color: #1E3A5F;">📦 Détails de l'annonce</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 5px 0; color: #666;">Titre :</td>
+                        <td style="padding: 5px 0; font-weight: bold;">{listing['title']}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px 0; color: #666;">Catégorie :</td>
+                        <td style="padding: 5px 0;">{category_labels.get(listing.get('category', ''), listing.get('category', 'N/A'))}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px 0; color: #666;">Prix :</td>
+                        <td style="padding: 5px 0; font-weight: bold; color: #f97316; font-size: 18px;">{listing['price']} €</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px 0; color: #666;">Localisation :</td>
+                        <td style="padding: 5px 0;">{listing.get('location', 'N/A')} ({listing.get('postal_code', '')})</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="margin: 0 0 10px 0;">👤 Vendeur</h4>
+                <p style="margin: 5px 0;"><strong>{seller_info.get('name', 'N/A')}</strong> {'🏢 PRO' if seller_info.get('is_pro') else '👤 Particulier'}</p>
+                <p style="margin: 5px 0; font-size: 14px; color: #666;">{seller_info.get('email', 'N/A')}</p>
+            </div>
+            
+            <a href="{SITE_URL}/annonce/{listing['id']}" style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 20px;">Voir l'annonce</a>
+        </div>
+    </div>
+    """
+    send_email(ADMIN_EMAIL, f"📢 Nouvelle annonce - {listing['title']} - {listing['price']} €", html)
+
 def send_order_shipped_email(buyer_email: str, buyer_name: str, order: dict):
     """Email à l'acheteur : commande expédiée"""
     html = f"""
