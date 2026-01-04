@@ -21,7 +21,7 @@ export default function CGV() {
             <h2 className="font-heading text-xl font-bold mb-4">Article 1 - Objet</h2>
             <p className="text-muted-foreground leading-relaxed">
               Les présentes Conditions Générales de Vente (CGV) régissent les relations contractuelles 
-              entre World Auto et ses utilisateurs dans le cadre de l'utilisation de la plateforme 
+              entre World Auto France et ses utilisateurs dans le cadre de l'utilisation de la plateforme 
               de mise en relation pour l'achat et la vente de pièces détachées automobiles et véhicules d'occasion.
             </p>
           </section>
@@ -29,7 +29,7 @@ export default function CGV() {
           <section>
             <h2 className="font-heading text-xl font-bold mb-4">Article 2 - Services proposés</h2>
             <p className="text-muted-foreground leading-relaxed mb-3">
-              World Auto propose les services suivants :
+              World Auto France propose les services suivants :
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
               <li>Publication d'annonces pour la vente de pièces détachées et véhicules</li>
@@ -43,12 +43,12 @@ export default function CGV() {
           <section>
             <h2 className="font-heading text-xl font-bold mb-4">Article 3 - Inscription et compte utilisateur</h2>
             <p className="text-muted-foreground leading-relaxed mb-3">
-              L'inscription sur World Auto est gratuite. L'utilisateur s'engage à fournir des 
+              L'inscription sur World Auto France est gratuite. L'utilisateur s'engage à fournir des 
               informations exactes et à jour. Chaque utilisateur est responsable de la 
               confidentialité de ses identifiants de connexion.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              World Auto se réserve le droit de suspendre ou supprimer tout compte en cas de 
+              World Auto France se réserve le droit de suspendre ou supprimer tout compte en cas de 
               non-respect des présentes CGV ou de comportement frauduleux.
             </p>
           </section>
@@ -69,19 +69,19 @@ export default function CGV() {
           <section>
             <h2 className="font-heading text-xl font-bold mb-4">Article 5 - Transactions et paiements</h2>
             <p className="text-muted-foreground leading-relaxed mb-3">
-              Les paiements sont sécurisés par Stripe. World Auto agit en tant qu'intermédiaire 
+              Les paiements sont sécurisés par Stripe. World Auto France agit en tant qu'intermédiaire 
               et ne peut être tenu responsable des litiges entre acheteurs et vendeurs.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               En cas de litige, les parties sont invitées à trouver une solution amiable. 
-              World Auto peut intervenir en tant que médiateur si nécessaire.
+              World Auto France peut intervenir en tant que médiateur si nécessaire.
             </p>
           </section>
 
           <section>
             <h2 className="font-heading text-xl font-bold mb-4">Article 6 - Responsabilités</h2>
             <p className="text-muted-foreground leading-relaxed mb-3">
-              World Auto n'est pas responsable :
+              World Auto France n'est pas responsable :
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
               <li>De la qualité, sécurité ou légalité des articles proposés à la vente</li>
@@ -94,7 +94,7 @@ export default function CGV() {
           <section>
             <h2 className="font-heading text-xl font-bold mb-4">Article 7 - Propriété intellectuelle</h2>
             <p className="text-muted-foreground leading-relaxed">
-              L'ensemble des éléments constituant le site World Auto (textes, graphismes, 
+              L'ensemble des éléments constituant le site World Auto France (textes, graphismes, 
               logiciels, etc.) est protégé par le droit de la propriété intellectuelle. 
               Toute reproduction ou utilisation non autorisée est interdite.
             </p>
@@ -103,7 +103,7 @@ export default function CGV() {
           <section>
             <h2 className="font-heading text-xl font-bold mb-4">Article 8 - Modification des CGV</h2>
             <p className="text-muted-foreground leading-relaxed">
-              World Auto se réserve le droit de modifier les présentes CGV à tout moment. 
+              World Auto France se réserve le droit de modifier les présentes CGV à tout moment. 
               Les utilisateurs seront informés de toute modification par email ou notification 
               sur le site. L'utilisation continue du service après modification vaut acceptation.
             </p>
