@@ -429,11 +429,14 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Stripe payment checkout"
-  stuck_tasks: 
-    - "Stripe payment checkout"
+    - "SIRET verification API"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+agent_communication:
+    - agent: "main"
+    - message: "Implemented SIRET verification feature for professional seller registration. New endpoint GET /api/verify-siret/{siret} that calls French government API (recherche-entreprises.api.gouv.fr). Frontend updated to verify SIRET in real-time with visual feedback (green/red borders, company info display, auto-fill company name). Need to test: 1) Valid SIRET verification returns company info, 2) Invalid SIRET shows error, 3) Invalid format (non-14 digits) rejected, 4) Registration blocked if SIRET invalid for pro users."
 
 agent_communication:
     - agent: "main"
