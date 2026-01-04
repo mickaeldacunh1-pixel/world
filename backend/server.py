@@ -1339,7 +1339,8 @@ async def send_message(message: MessageCreate, current_user: dict = Depends(get_
     }
     
     await db.messages.insert_one(message_doc)
-    return message_doc
+    # Return the message without MongoDB's _id field
+    return {k: v for k, v in message_doc.items() if k != "_id"}
 
 @api_router.get("/messages/conversations")
 async def get_conversations(current_user: dict = Depends(get_current_user)):
