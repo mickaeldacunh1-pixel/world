@@ -443,14 +443,15 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Cart checkout flow"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
-    - message: "Implemented SIRET verification feature for professional seller registration. New endpoint GET /api/verify-siret/{siret} that calls French government API (recherche-entreprises.api.gouv.fr). Frontend updated to verify SIRET in real-time with visual feedback (green/red borders, company info display, auto-fill company name). Need to test: 1) Valid SIRET verification returns company info, 2) Invalid SIRET shows error, 3) Invalid format (non-14 digits) rejected, 4) Registration blocked if SIRET invalid for pro users."
+    - message: "Implemented cart checkout flow. New endpoint POST /api/orders/checkout that creates multiple orders from cart. Frontend Checkout.jsx page with shipping form, cart summary, and order confirmation. Cart.jsx updated with 'Passer commande' button linking to checkout. Need to test: 1) Checkout endpoint creates orders for valid listings, 2) Orders have correct buyer/seller info, 3) Listings marked as sold after checkout, 4) Email notifications sent, 5) Error handling for unavailable listings."
     - agent: "testing"
     - message: "SIRET verification API testing completed successfully. All 5 test scenarios passed perfectly: ✅ Valid SIRET (98277091900016) returns correct RENAULT company info with full address details. ✅ Invalid SIRET (12345678901234) properly returns 404 error. ✅ Invalid format cases (too short/non-numeric) correctly return 400 validation errors. ✅ SIRET with spaces properly cleaned and processed. API integrates correctly with French government API (recherche-entreprises.api.gouv.fr) and handles all edge cases as expected. Feature ready for production use."
 
