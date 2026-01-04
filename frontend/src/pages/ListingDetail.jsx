@@ -483,6 +483,13 @@ export default function ListingDetail() {
                 <Share2 className="w-5 h-5 mr-2" />
                 Partager
               </Button>
+
+              {user?.id !== listing.seller_id && (
+                <Button variant="outline" className="h-12" onClick={handleAddToCart} data-testid="add-to-cart-btn">
+                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  Panier
+                </Button>
+              )}
             </div>
           </div>
         </div>
