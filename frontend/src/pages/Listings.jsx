@@ -302,6 +302,22 @@ export default function Listings() {
                   </Select>
                 </div>
 
+                {/* Region */}
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Région</label>
+                  <Select value={region || "all"} onValueChange={(v) => setRegion(v === "all" ? "" : v)}>
+                    <SelectTrigger data-testid="filter-region">
+                      <SelectValue placeholder="Toutes les régions" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Toutes les régions</SelectItem>
+                      {regions.map((r) => (
+                        <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 {/* Sort */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">Trier par</label>
