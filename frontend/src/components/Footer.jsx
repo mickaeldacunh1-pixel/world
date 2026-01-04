@@ -73,6 +73,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/politique-retours" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                  Politique de retours
+                </Link>
+              </li>
+              <li>
                 <Link to="/mentions-legales" className="text-primary-foreground/70 hover:text-accent transition-colors">
                   Mentions légales
                 </Link>
