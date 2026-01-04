@@ -503,6 +503,39 @@ backend:
         - agent: "testing"
         - comment: "Profile Management API testing completed successfully. All 3 endpoints working correctly: 1) PUT /api/auth/profile - Updates user profile fields (name, phone, address, city, postal_code) with authentication required. Returns updated user data. 2) PUT /api/auth/password - Changes password with current password verification. Correctly rejects invalid current passwords with 400 error. 3) DELETE /api/auth/account - Deletes user account and all associated data (listings, messages, favorites, alerts, reviews). Properly denies access to deleted accounts with 401 error. Complete profile management flow tested: register → login → update profile → change password → login with new password - all working correctly."
 
+  - task: "Favorites API"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Favorites endpoints implemented: POST /api/favorites/{listing_id}, GET /api/favorites, GET /api/favorites/check/{listing_id}, DELETE /api/favorites/{listing_id}"
+        - working: true
+        - agent: "testing"
+        - comment: "Favorites API testing completed successfully. All 4 endpoints working correctly: 1) POST /api/favorites/{listing_id} - Add to favorites (requires auth, handles invalid listings with 404, prevents duplicates). 2) GET /api/favorites - Get user's favorites list (requires auth, returns empty array when no favorites, includes full listing details). 3) GET /api/favorites/check/{listing_id} - Check if listing is favorited (requires auth, returns is_favorite boolean). 4) DELETE /api/favorites/{listing_id} - Remove from favorites (requires auth, 404 for non-existent favorites). All authentication, validation, and error handling working correctly. Ready for production use."
+
+  - task: "Messaging API"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Messaging endpoints implemented: GET /api/messages/conversations, POST /api/messages, GET /api/messages/{listing_id}/{other_user_id}"
+        - working: false
+        - agent: "testing"
+        - comment: "MongoDB ObjectId serialization error in messages endpoint causing 520 errors"
+        - working: true
+        - agent: "testing"
+        - comment: "FIXED: MongoDB ObjectId serialization error. Messaging API testing completed successfully. All 3 endpoints working correctly: 1) GET /api/messages/conversations - Get user's conversations (requires auth, returns array with conversation metadata including unread counts). 2) POST /api/messages - Send message (requires auth, validates receiver_id, returns full message object with proper structure). 3) GET /api/messages/{listing_id}/{other_user_id} - Get conversation messages (requires auth, marks messages as read, returns chronological order). Complete messaging flow tested: Register 2 users → Send message → Reply → Check conversations → Verify unread counts → Mark as read. All authentication, validation, error handling, and edge cases working correctly. Ready for production use."
+
 frontend:
   - task: "Profile Page"
     implemented: true
