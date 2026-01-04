@@ -89,6 +89,7 @@ function AppContent() {
           <Route path="/cgv" element={<CGV />} />
           <Route path="/mentions-legales" element={<LegalNotice />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/politique-retours" element={<ReturnsPolicy />} />
           <Route path="/faq" element={<FAQ />} />
         </Routes>
       </main>
