@@ -48,7 +48,7 @@ export default function Listings() {
   // Filters
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [subcategory, setSubcategory] = useState(searchParams.get('subcategory') || '');
-  const [compatibleBrand, setCompatibleBrand] = useState('');
+  const [compatibleBrand, setCompatibleBrand] = useState(searchParams.get('brand') || '');
   const [oemReference, setOemReference] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
