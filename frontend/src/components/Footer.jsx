@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Mail, Car, Wrench, Bike, Truck } from 'lucide-react';
 import WorldAutoLogo from './WorldAutoLogo';
+import FranceText from './FranceText';
 
 export default function Footer() {
   return (
@@ -11,7 +12,7 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4 group">
               <WorldAutoLogo className="w-10 h-10 transition-transform group-hover:scale-110" />
-              <span className="font-heading font-bold text-xl">World Auto</span>
+              <span className="font-heading font-bold text-xl">World Auto <FranceText /></span>
             </Link>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
               La marketplace automobile de référence pour les pièces détachées, 
