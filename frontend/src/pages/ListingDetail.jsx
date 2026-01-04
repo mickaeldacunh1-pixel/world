@@ -141,6 +141,30 @@ export default function ListingDetail() {
     }
   };
 
+  const handleAddToCart = () => {
+    const savedCart = localStorage.getItem('worldauto_cart');
+    let cart = savedCart ? JSON.parse(savedCart) : [];
+    
+    // Check if item already in cart
+    if (cart.some(item => item.id === listing.id)) {
+      toast.info('Cet article est déjà dans votre panier');
+      return;
+    }
+    
+    // Add to cart
+    cart.push({
+      id: listing.id,
+      title: listing.title,
+      price: listing.price,
+      images: listing.images,
+      category: listing.category,
+      condition: listing.condition,
+    });
+    
+    localStorage.setItem('worldauto_cart', JSON.stringify(cart));
+    toast.success('Ajouté au panier !');
+  };
+
   const images = listing?.images?.length > 0 
     ? listing.images 
     : ['https://images.unsplash.com/photo-1767339736233-f4b02c41ee4a?w=800&h=600&fit=crop'];
