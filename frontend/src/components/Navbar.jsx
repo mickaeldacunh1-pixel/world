@@ -38,7 +38,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2" data-testid="logo-link">
             <WorldAutoLogo className="w-10 h-10" />
-            <span className="font-heading font-bold text-xl text-primary">World Auto</span>
+            <span className="font-heading font-bold text-xl text-primary">World Auto <FranceText /></span>
           </Link>
 
           {/* Desktop Navigation */}
