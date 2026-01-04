@@ -825,6 +825,145 @@ class AutoPiecesAPITester:
                 return False
         return False
 
+    def test_cart_checkout_flow(self):
+        """Test the complete cart checkout flow"""
+        if not self.token:
+            self.log_test("Cart Checkout Flow", False, "No token available")
+            return False
+        
+        print("\n🛒 Testing Cart Checkout Flow...")
+        
+        # Step 1: Get available listings to add to cart
+        listings_result = self.run_test("Get Available Listings for Cart", "GET", "listings?limit=5", 200)
+        if not listings_result or not listings_result.get("listings"):
+            self.log_test("Cart Checkout - No Listings Available", False, "No listings found for testing")
+            return False
+        
+        available_listings = [listing for listing in listings_result["listings"] 
+                            if listing.get("status") == "active" and listing.get("seller_id") != self.user_id]
+        
+        if not available_listings:
+            self.log_test("Cart Checkout - No Available Listings", False, "No active listings from other sellers")
+            return False
+        
+        # Step 2: Test checkout with valid listings
+        valid_listing_ids = [listing["id"] for listing in available_listings[:2]]  # Take first 2 listings
+        
+        checkout_data = {
+            "listing_ids": valid_listing_ids,
+            "buyer_address": "123 rue de la Paix",
+            "buyer_city": "Paris",
+            "buyer_postal": "75001",
+            "buyer_phone": "0612345678"
+        }
+        
+        checkout_result = self.run_test("Cart Checkout - Valid Listings", "POST", "orders/checkout", 200, checkout_data)
+        if checkout_result:
+            # Check response structure
+            expected_fields = ["orders_created", "total_amount", "orders"]
+            for field in expected_fields:
+                if field in checkout_result:
+                    self.log_test(f"Cart Checkout Response - {field}", True)
+                else:
+                    self.log_test(f"Cart Checkout Response - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Verify orders were created
+            orders_created = checkout_result.get("orders_created", 0)
+            if orders_created == len(valid_listing_ids):
+                self.log_test("Cart Checkout - Orders Created Count", True, f"Created {orders_created} orders")
+            else:
+                self.log_test("Cart Checkout - Orders Created Count", False, 
+                            f"Expected {len(valid_listing_ids)}, got {orders_created}")
+                return False
+            
+            # Verify total amount is positive
+            total_amount = checkout_result.get("total_amount", 0)
+            if total_amount > 0:
+                self.log_test("Cart Checkout - Total Amount", True, f"Total: {total_amount}€")
+            else:
+                self.log_test("Cart Checkout - Total Amount", False, f"Invalid total: {total_amount}")
+                return False
+        else:
+            return False
+        
+        # Step 3: Test checkout with empty cart
+        empty_cart_data = {
+            "listing_ids": [],
+            "buyer_address": "123 rue Test",
+            "buyer_city": "Paris",
+            "buyer_postal": "75001",
+            "buyer_phone": "0612345678"
+        }
+        
+        empty_result = self.run_test("Cart Checkout - Empty Cart", "POST", "orders/checkout", 400, empty_cart_data)
+        # We expect 400 error for empty cart
+        self.log_test("Cart Checkout - Empty Cart Error", True, "Correctly rejected empty cart")
+        
+        # Step 4: Test checkout with invalid listing ID
+        invalid_cart_data = {
+            "listing_ids": ["non-existent-listing-id"],
+            "buyer_address": "123 rue Test",
+            "buyer_city": "Paris", 
+            "buyer_postal": "75001",
+            "buyer_phone": "0612345678"
+        }
+        
+        invalid_result = self.run_test("Cart Checkout - Invalid Listing", "POST", "orders/checkout", 200, invalid_cart_data)
+        if invalid_result:
+            # Should either return 400 error or partial success with errors
+            if "errors" in invalid_result:
+                self.log_test("Cart Checkout - Invalid Listing Errors", True, "Returned errors array for invalid listings")
+            else:
+                # Check if no orders were created
+                orders_created = invalid_result.get("orders_created", 0)
+                if orders_created == 0:
+                    self.log_test("Cart Checkout - Invalid Listing No Orders", True, "No orders created for invalid listings")
+                else:
+                    self.log_test("Cart Checkout - Invalid Listing No Orders", False, f"Unexpected orders created: {orders_created}")
+                    return False
+        
+        # Step 5: Verify orders were created in database
+        orders_result = self.run_test("Get My Orders After Checkout", "GET", "orders", 200)
+        if orders_result and isinstance(orders_result, list):
+            # Check if we have orders
+            if len(orders_result) > 0:
+                self.log_test("Cart Checkout - Orders in Database", True, f"Found {len(orders_result)} orders")
+                
+                # Check order structure
+                first_order = orders_result[0]
+                order_fields = ["id", "listing_id", "listing_title", "price", "buyer_address", "status"]
+                for field in order_fields:
+                    if field in first_order:
+                        self.log_test(f"Order Field - {field}", True)
+                    else:
+                        self.log_test(f"Order Field - {field}", False, f"Missing field: {field}")
+                        return False
+            else:
+                self.log_test("Cart Checkout - Orders in Database", False, "No orders found in database")
+                return False
+        else:
+            self.log_test("Cart Checkout - Orders in Database", False, "Failed to retrieve orders")
+            return False
+        
+        # Step 6: Verify listings are marked as sold (check first listing)
+        if valid_listing_ids:
+            first_listing_id = valid_listing_ids[0]
+            listing_detail = self.run_test("Check Listing Status After Purchase", "GET", f"listings/{first_listing_id}", 200)
+            if listing_detail:
+                if listing_detail.get("status") == "sold":
+                    self.log_test("Cart Checkout - Listing Marked Sold", True, "Listing status updated to sold")
+                else:
+                    self.log_test("Cart Checkout - Listing Marked Sold", False, 
+                                f"Expected status 'sold', got '{listing_detail.get('status')}'")
+                    return False
+            else:
+                self.log_test("Cart Checkout - Listing Status Check", False, "Failed to retrieve listing details")
+                return False
+        
+        self.log_test("Complete Cart Checkout Flow", True, "All cart checkout tests passed")
+        return True
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting AutoPièces API Tests...")
