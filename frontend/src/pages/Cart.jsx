@@ -168,17 +168,18 @@ export default function Cart() {
               </div>
               <p className="text-sm text-muted-foreground mb-6">
                 <Package className="w-4 h-4 inline mr-1" />
-                Contactez les vendeurs directement pour finaliser vos achats
+                Frais de livraison à convenir avec les vendeurs
               </p>
-              <div className="flex gap-4">
-                <Link to="/annonces" className="flex-1">
-                  <Button variant="outline" className="w-full">
-                    Continuer mes achats
+              <div className="flex flex-col gap-3">
+                <Link to="/checkout">
+                  <Button className="w-full h-12 bg-accent hover:bg-accent/90 text-lg">
+                    Passer commande
+                    <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
-                <Link to="/messages" className="flex-1">
-                  <Button className="w-full bg-accent hover:bg-accent/90">
-                    Contacter les vendeurs
+                <Link to="/annonces">
+                  <Button variant="outline" className="w-full">
+                    Continuer mes achats
                   </Button>
                 </Link>
               </div>
