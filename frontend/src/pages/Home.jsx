@@ -235,6 +235,78 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Search by Brand Section */}
+      <section className="py-16 md:py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 animate-fade-in-up">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4">
+              Rechercher par marque
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Trouvez des pièces et véhicules de votre marque préférée
+            </p>
+          </div>
+
+          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-10 gap-4 md:gap-6">
+            {[
+              { name: 'Renault', logo: 'https://www.carlogos.org/car-logos/renault-logo.png' },
+              { name: 'Peugeot', logo: 'https://www.carlogos.org/car-logos/peugeot-logo.png' },
+              { name: 'Citroën', logo: 'https://www.carlogos.org/car-logos/citroen-logo.png' },
+              { name: 'Volkswagen', logo: 'https://www.carlogos.org/car-logos/volkswagen-logo.png' },
+              { name: 'BMW', logo: 'https://www.carlogos.org/car-logos/bmw-logo.png' },
+              { name: 'Mercedes', logo: 'https://www.carlogos.org/car-logos/mercedes-benz-logo.png' },
+              { name: 'Audi', logo: 'https://www.carlogos.org/car-logos/audi-logo.png' },
+              { name: 'Ford', logo: 'https://www.carlogos.org/car-logos/ford-logo.png' },
+              { name: 'Opel', logo: 'https://www.carlogos.org/car-logos/opel-logo.png' },
+              { name: 'Toyota', logo: 'https://www.carlogos.org/car-logos/toyota-logo.png' },
+              { name: 'Nissan', logo: 'https://www.carlogos.org/car-logos/nissan-logo.png' },
+              { name: 'Honda', logo: 'https://www.carlogos.org/car-logos/honda-logo.png' },
+              { name: 'Fiat', logo: 'https://www.carlogos.org/car-logos/fiat-logo.png' },
+              { name: 'Seat', logo: 'https://www.carlogos.org/car-logos/seat-logo.png' },
+              { name: 'Skoda', logo: 'https://www.carlogos.org/car-logos/skoda-logo.png' },
+              { name: 'Hyundai', logo: 'https://www.carlogos.org/car-logos/hyundai-logo.png' },
+              { name: 'Kia', logo: 'https://www.carlogos.org/car-logos/kia-logo.png' },
+              { name: 'Dacia', logo: 'https://www.carlogos.org/car-logos/dacia-logo.png' },
+              { name: 'Volvo', logo: 'https://www.carlogos.org/car-logos/volvo-logo.png' },
+              { name: 'Mazda', logo: 'https://www.carlogos.org/car-logos/mazda-logo.png' },
+            ].map((brand, index) => (
+              <Link
+                key={brand.name}
+                to={`/annonces?brand=${encodeURIComponent(brand.name)}`}
+                className="group flex flex-col items-center justify-center p-4 bg-white rounded-xl border border-border hover:border-accent hover:shadow-lg transition-all duration-300 hover-lift"
+                title={`Voir les annonces ${brand.name}`}
+              >
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  className="w-12 h-12 md:w-14 md:h-14 object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div className="hidden w-12 h-12 md:w-14 md:h-14 bg-accent/10 rounded-full items-center justify-center">
+                  <span className="text-accent font-bold text-lg">{brand.name.charAt(0)}</span>
+                </div>
+                <span className="mt-2 text-xs md:text-sm font-medium text-muted-foreground group-hover:text-accent transition-colors">
+                  {brand.name}
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link 
+              to="/annonces" 
+              className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
+            >
+              Voir toutes les marques
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Recent Listings - Improved cards */}
       {recentListings.length > 0 && (
         <section className="py-16 md:py-24">
