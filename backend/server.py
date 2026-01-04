@@ -520,6 +520,14 @@ class OrderCreate(BaseModel):
     buyer_postal: str
     buyer_phone: Optional[str] = None
 
+class CartCheckout(BaseModel):
+    """Modèle pour la commande groupée depuis le panier"""
+    listing_ids: List[str]
+    buyer_address: str
+    buyer_city: str
+    buyer_postal: str
+    buyer_phone: Optional[str] = None
+
 class OrderResponse(BaseModel):
     id: str
     listing_id: str
