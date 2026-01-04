@@ -319,6 +319,7 @@ class ListingCreate(BaseModel):
     images: List[str] = []
     location: Optional[str] = None
     postal_code: Optional[str] = None
+    region: Optional[str] = None  # Région française
     # Compatibilité véhicule
     compatible_brands: List[str] = []  # Marques compatibles
     compatible_models: List[str] = []  # Modèles compatibles
