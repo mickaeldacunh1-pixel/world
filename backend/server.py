@@ -283,6 +283,79 @@ def send_new_listing_admin_email(listing: dict, seller_info: dict):
     """
     send_email(ADMIN_EMAIL, f"📢 Nouvelle annonce - {listing['title']} - {listing['price']} €", html)
 
+def send_listing_confirmation_email(seller_email: str, seller_name: str, listing: dict):
+    """Email au vendeur : confirmation de mise en ligne de l'annonce"""
+    listing_date = datetime.fromisoformat(listing['created_at'].replace('Z', '+00:00')) if isinstance(listing.get('created_at'), str) else datetime.now()
+    formatted_date = listing_date.strftime("%d/%m/%Y à %H:%M")
+    
+    category_labels = {
+        "pieces": "Pièces Détachées",
+        "voitures": "Voitures",
+        "motos": "Motos",
+        "utilitaires": "Utilitaires",
+        "accessoires": "Accessoires"
+    }
+    
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #1E3A5F 0%, #0F2744 100%); padding: 30px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 28px;">🚗 World Auto France</h1>
+            <p style="color: #60A5FA; margin: 10px 0 0 0;">Marketplace de pièces automobiles</p>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2 style="color: #1E3A5F; margin-top: 0;">✅ Votre annonce est en ligne !</h2>
+            <p>Bonjour {seller_name},</p>
+            <p>Félicitations ! Votre annonce a été publiée avec succès et est désormais visible par tous les acheteurs.</p>
+            
+            <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 20px; border-radius: 12px; margin: 25px 0; border-left: 4px solid #1E3A5F;">
+                <h3 style="margin: 0 0 15px 0; color: #1E3A5F;">📦 Récapitulatif de votre annonce</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 8px 0; color: #64748B;">Titre :</td>
+                        <td style="padding: 8px 0; font-weight: bold; color: #0F172A;">{listing['title']}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #64748B;">Catégorie :</td>
+                        <td style="padding: 8px 0; color: #0F172A;">{category_labels.get(listing.get('category', ''), listing.get('category', 'N/A'))}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #64748B;">Prix :</td>
+                        <td style="padding: 8px 0; font-weight: bold; color: #F97316; font-size: 18px;">{listing['price']} €</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #64748B;">Publiée le :</td>
+                        <td style="padding: 8px 0; color: #0F172A;">{formatted_date}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div style="background: #FFF7ED; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #F97316;">
+                <h4 style="margin: 0 0 10px 0; color: #C2410C;">💡 Conseils pour vendre rapidement</h4>
+                <ul style="margin: 0; padding-left: 20px; color: #9A3412;">
+                    <li style="margin-bottom: 5px;">Ajoutez des photos de qualité sous plusieurs angles</li>
+                    <li style="margin-bottom: 5px;">Répondez rapidement aux messages des acheteurs</li>
+                    <li style="margin-bottom: 5px;">Précisez les références et la compatibilité</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{SITE_URL}/annonce/{listing['id']}" style="display: inline-block; background: linear-gradient(135deg, #F97316 0%, #EA580C 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">Voir mon annonce</a>
+            </div>
+            
+            <p style="margin-top: 30px; color: #64748B; font-size: 14px;">
+                Vous pouvez modifier ou supprimer votre annonce à tout moment depuis votre <a href="{SITE_URL}/tableau-de-bord" style="color: #1E3A5F;">tableau de bord</a>.
+            </p>
+        </div>
+        <div style="background: #F1F5F9; padding: 20px; text-align: center;">
+            <p style="margin: 0; color: #64748B; font-size: 12px;">
+                World Auto France - La marketplace des pièces automobiles<br/>
+                <a href="{SITE_URL}" style="color: #1E3A5F;">www.worldautofrance.com</a>
+            </p>
+        </div>
+    </div>
+    """
+    send_email(seller_email, f"✅ Votre annonce \"{listing['title']}\" est en ligne !", html)
+
 def send_order_shipped_email(buyer_email: str, buyer_name: str, order: dict):
     """Email à l'acheteur : commande expédiée"""
     html = f"""
