@@ -10,7 +10,9 @@ import { Checkbox } from '../components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Mail, Lock, User, Phone, Building, FileText, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import WorldAutoLogo from '../components/WorldAutoLogo';
-import api from '../lib/api';
+import axios from 'axios';
+
+const API = process.env.REACT_APP_BACKEND_URL;
 
 export default function Auth() {
   const navigate = useNavigate();
