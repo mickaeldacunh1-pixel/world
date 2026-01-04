@@ -602,6 +602,87 @@ async def login(credentials: UserLogin):
 async def get_me(current_user: dict = Depends(get_current_user)):
     return current_user
 
+# ================== PROFILE MANAGEMENT ==================
+
+class ProfileUpdate(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    postal_code: Optional[str] = None
+    company_name: Optional[str] = None
+    siret: Optional[str] = None
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
+@api_router.put("/auth/profile")
+async def update_profile(profile: ProfileUpdate, current_user: dict = Depends(get_current_user)):
+    """Mettre à jour les informations du profil"""
+    update_data = {k: v for k, v in profile.model_dump().items() if v is not None}
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Aucune donnée à mettre à jour")
+    
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": update_data}
+    )
+    
+    # Return updated user
+    updated_user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0, "password": 0})
+    return updated_user
+
+@api_router.put("/auth/password")
+async def change_password(passwords: PasswordChange, current_user: dict = Depends(get_current_user)):
+    """Changer le mot de passe"""
+    # Get user with password
+    user = await db.users.find_one({"id": current_user["id"]})
+    
+    # Verify current password
+    if not verify_password(passwords.current_password, user["password"]):
+        raise HTTPException(status_code=400, detail="Mot de passe actuel incorrect")
+    
+    # Update password
+    hashed_password = hash_password(passwords.new_password)
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"password": hashed_password}}
+    )
+    
+    return {"message": "Mot de passe modifié avec succès"}
+
+@api_router.delete("/auth/account")
+async def delete_account(current_user: dict = Depends(get_current_user)):
+    """Supprimer le compte utilisateur"""
+    user_id = current_user["id"]
+    
+    # Delete user's listings
+    await db.listings.delete_many({"seller_id": user_id})
+    
+    # Delete user's messages
+    await db.messages.delete_many({"$or": [{"sender_id": user_id}, {"receiver_id": user_id}]})
+    
+    # Delete user's favorites
+    await db.favorites.delete_many({"user_id": user_id})
+    
+    # Delete user's alerts
+    await db.search_alerts.delete_many({"user_id": user_id})
+    
+    # Delete user's reviews (as buyer)
+    await db.reviews.delete_many({"buyer_id": user_id})
+    
+    # Delete password reset tokens
+    await db.password_resets.delete_many({"user_id": user_id})
+    
+    # Finally delete the user
+    await db.users.delete_one({"id": user_id})
+    
+    return {"message": "Compte supprimé avec succès"}
+
 # ================== PASSWORD RESET ==================
 
 class PasswordResetRequest(BaseModel):
