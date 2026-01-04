@@ -419,3 +419,196 @@ class BordereauGenerator:
         doc.build(story)
         buffer.seek(0)
         return buffer
+
+    def generate_invoice(self, order_data: dict) -> BytesIO:
+        """Génère une facture PDF pour une commande"""
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=1.5*cm, bottomMargin=1.5*cm)
+        story = []
+        
+        # Extraction des données
+        order_id = order_data.get('id', 'N/A')
+        order_date = order_data.get('created_at', datetime.now().isoformat())
+        
+        # Parse date
+        if isinstance(order_date, str):
+            try:
+                date_obj = datetime.fromisoformat(order_date.replace('Z', '+00:00'))
+                date_str = date_obj.strftime("%d/%m/%Y")
+            except:
+                date_str = order_date[:10] if len(order_date) >= 10 else order_date
+        else:
+            date_str = datetime.now().strftime("%d/%m/%Y")
+        
+        # Infos vendeur
+        seller_name = order_data.get('seller_name', 'N/A')
+        seller_address = order_data.get('seller_address', '')
+        seller_city = order_data.get('seller_city', '')
+        seller_postal = order_data.get('seller_postal', '')
+        seller_phone = order_data.get('seller_phone', '')
+        
+        # Infos acheteur
+        buyer_name = order_data.get('buyer_name', 'N/A')
+        buyer_address = order_data.get('buyer_address', '')
+        buyer_city = order_data.get('buyer_city', '')
+        buyer_postal = order_data.get('buyer_postal', '')
+        buyer_phone = order_data.get('buyer_phone', '')
+        
+        # Produit
+        listing_title = order_data.get('listing_title', 'Article')
+        price = order_data.get('price', 0)
+        oem_reference = order_data.get('oem_reference', '')
+        
+        # ===== EN-TÊTE =====
+        story.append(Paragraph("🚗 WORLD AUTO FRANCE", self.styles['Title_Custom']))
+        story.append(Paragraph("Marketplace de pièces détachées automobiles", self.styles['Subtitle']))
+        
+        # Numéro de facture
+        invoice_number = f"FA-{order_id[:8].upper()}"
+        story.append(Paragraph(f"<b>FACTURE N° {invoice_number}</b>", ParagraphStyle(
+            name='InvoiceNumber',
+            parent=self.styles['Normal'],
+            fontSize=16,
+            textColor=colors.HexColor('#1E3A5F'),
+            alignment=TA_CENTER,
+            spaceBefore=10,
+            spaceAfter=20
+        )))
+        story.append(Paragraph(f"Date : {date_str}", ParagraphStyle(
+            name='DateStyle',
+            parent=self.styles['Normal'],
+            fontSize=10,
+            textColor=colors.HexColor('#64748B'),
+            alignment=TA_CENTER,
+            spaceAfter=30
+        )))
+        
+        # ===== VENDEUR ET ACHETEUR =====
+        seller_info = f"""
+        <b>VENDEUR</b><br/>
+        {seller_name}<br/>
+        {seller_address}<br/>
+        {seller_postal} {seller_city}<br/>
+        {f'Tél: {seller_phone}' if seller_phone else ''}
+        """
+        
+        buyer_info = f"""
+        <b>ACHETEUR</b><br/>
+        {buyer_name}<br/>
+        {buyer_address}<br/>
+        {buyer_postal} {buyer_city}<br/>
+        {f'Tél: {buyer_phone}' if buyer_phone else ''}
+        """
+        
+        address_table = Table([
+            [Paragraph(seller_info, self.styles['Info']), Paragraph(buyer_info, self.styles['Info'])]
+        ], colWidths=[9*cm, 9*cm])
+        address_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (0, 0), colors.HexColor('#F0F9FF')),
+            ('BACKGROUND', (1, 0), (1, 0), colors.HexColor('#FFF7ED')),
+            ('BOX', (0, 0), (0, 0), 1, colors.HexColor('#1E3A5F')),
+            ('BOX', (1, 0), (1, 0), 1, colors.HexColor('#F97316')),
+            ('PADDING', (0, 0), (-1, -1), 15),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ]))
+        story.append(address_table)
+        story.append(Spacer(1, 30))
+        
+        # ===== DÉTAIL DE LA COMMANDE =====
+        story.append(Paragraph("📦 DÉTAIL DE LA COMMANDE", self.styles['SectionTitle']))
+        
+        # Tableau des articles
+        product_data = [
+            ['Description', 'Référence', 'Qté', 'Prix HT', 'Total HT'],
+            [listing_title, oem_reference or '-', '1', f"{price:.2f} €", f"{price:.2f} €"],
+        ]
+        
+        product_table = Table(product_data, colWidths=[7*cm, 3.5*cm, 1.5*cm, 3*cm, 3*cm])
+        product_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1E3A5F')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 10),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#F8FAFC')),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.HexColor('#334155')),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('ALIGN', (2, 0), (-1, -1), 'CENTER'),
+            ('ALIGN', (3, 0), (-1, -1), 'RIGHT'),
+            ('PADDING', (0, 0), (-1, -1), 10),
+            ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#E2E8F0')),
+            ('LINEBELOW', (0, 0), (-1, 0), 1, colors.HexColor('#1E3A5F')),
+        ]))
+        story.append(product_table)
+        story.append(Spacer(1, 20))
+        
+        # ===== TOTAUX =====
+        # Note: Vente entre particuliers = pas de TVA
+        totals_data = [
+            ['', '', 'Sous-total HT:', f"{price:.2f} €"],
+            ['', '', 'TVA (0%)*:', "0.00 €"],
+            ['', '', 'TOTAL TTC:', f"{price:.2f} €"],
+        ]
+        
+        totals_table = Table(totals_data, colWidths=[7*cm, 3.5*cm, 4*cm, 3.5*cm])
+        totals_table.setStyle(TableStyle([
+            ('ALIGN', (2, 0), (2, -1), 'RIGHT'),
+            ('ALIGN', (3, 0), (3, -1), 'RIGHT'),
+            ('FONTNAME', (2, -1), (3, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('FONTSIZE', (2, -1), (3, -1), 12),
+            ('TEXTCOLOR', (2, -1), (3, -1), colors.HexColor('#1E3A5F')),
+            ('BACKGROUND', (2, -1), (3, -1), colors.HexColor('#F0F9FF')),
+            ('PADDING', (0, 0), (-1, -1), 8),
+            ('BOX', (2, -1), (3, -1), 1, colors.HexColor('#1E3A5F')),
+        ]))
+        story.append(totals_table)
+        
+        # Note TVA
+        story.append(Spacer(1, 10))
+        story.append(Paragraph(
+            "*Vente entre particuliers - TVA non applicable (Article 256 du CGI)",
+            ParagraphStyle(
+                name='TVANote',
+                parent=self.styles['Normal'],
+                fontSize=8,
+                textColor=colors.HexColor('#64748B'),
+                alignment=TA_RIGHT
+            )
+        ))
+        
+        story.append(Spacer(1, 40))
+        
+        # ===== INFORMATIONS LÉGALES =====
+        story.append(Paragraph("📋 INFORMATIONS", self.styles['SectionTitle']))
+        
+        legal_text = f"""
+        <b>Numéro de commande :</b> WA-{order_id[:8].upper()}<br/>
+        <b>Date de commande :</b> {date_str}<br/>
+        <b>Mode de paiement :</b> À convenir entre vendeur et acheteur<br/>
+        <b>Livraison :</b> À organiser entre les parties<br/><br/>
+        
+        <i>Cette facture est générée automatiquement par World Auto France.
+        Elle constitue une preuve d'achat entre le vendeur et l'acheteur.
+        En cas de litige, veuillez contacter notre service client à contact@worldautofrance.com</i>
+        """
+        story.append(Paragraph(legal_text, self.styles['Info']))
+        
+        # Footer
+        story.append(Spacer(1, 40))
+        footer_text = f"""
+        World Auto France - Marketplace de pièces automobiles<br/>
+        www.worldautofrance.com | contact@worldautofrance.com<br/>
+        Document généré le {datetime.now().strftime("%d/%m/%Y à %H:%M")}
+        """
+        story.append(Paragraph(footer_text, ParagraphStyle(
+            name='Footer',
+            parent=self.styles['Normal'],
+            fontSize=8,
+            textColor=colors.HexColor('#94A3B8'),
+            alignment=TA_CENTER
+        )))
+        
+        doc.build(story)
+        buffer.seek(0)
+        return buffer
