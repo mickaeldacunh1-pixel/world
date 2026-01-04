@@ -554,6 +554,194 @@ class AutoPiecesAPITester:
             return True
         return False
 
+    def test_profile_update(self):
+        """Test profile update endpoint"""
+        if not self.token:
+            self.log_test("Profile Update", False, "No token available")
+            return False
+        
+        # Test updating profile information
+        profile_data = {
+            "name": "Updated Test User",
+            "phone": "0687654321",
+            "address": "456 Updated Street",
+            "city": "Lyon",
+            "postal_code": "69000"
+        }
+        
+        result = self.run_test("Update Profile", "PUT", "auth/profile", 200, profile_data)
+        if result:
+            # Verify the updated data is returned
+            if result.get("name") == profile_data["name"]:
+                self.log_test("Profile Name Update", True)
+            else:
+                self.log_test("Profile Name Update", False, f"Expected {profile_data['name']}, got {result.get('name')}")
+                return False
+            
+            if result.get("phone") == profile_data["phone"]:
+                self.log_test("Profile Phone Update", True)
+            else:
+                self.log_test("Profile Phone Update", False, f"Expected {profile_data['phone']}, got {result.get('phone')}")
+                return False
+            
+            return True
+        return False
+
+    def test_password_change(self):
+        """Test password change endpoint"""
+        if not self.token:
+            self.log_test("Password Change", False, "No token available")
+            return False
+        
+        # Test with correct current password
+        password_data = {
+            "current_password": "TestPass123!",
+            "new_password": "NewTestPass456!"
+        }
+        
+        result = self.run_test("Change Password (Valid)", "PUT", "auth/password", 200, password_data)
+        if result and result.get("message"):
+            self.log_test("Password Change Success Message", True)
+        else:
+            self.log_test("Password Change Success Message", False, "No success message returned")
+            return False
+        
+        # Test with incorrect current password
+        wrong_password_data = {
+            "current_password": "WrongPassword123!",
+            "new_password": "AnotherNewPass789!"
+        }
+        
+        result = self.run_test("Change Password (Invalid Current)", "PUT", "auth/password", 400, wrong_password_data)
+        # We expect this to fail with 400
+        if result is None:
+            self.log_test("Password Change Invalid Current Password", True, "Correctly rejected wrong current password")
+            return True
+        else:
+            self.log_test("Password Change Invalid Current Password", False, "Should have rejected wrong current password")
+            return False
+
+    def test_account_deletion(self):
+        """Test account deletion endpoint"""
+        # Create a separate user for deletion test
+        timestamp = datetime.now().strftime('%H%M%S')
+        delete_user = {
+            "name": f"Delete Test User {timestamp}",
+            "email": f"delete{timestamp}@example.com",
+            "password": "DeletePass123!",
+            "phone": "0612345678",
+            "is_professional": False
+        }
+        
+        # Register the user to be deleted
+        reg_result = self.run_test("Register User for Deletion", "POST", "auth/register", 200, delete_user)
+        if not reg_result or 'token' not in reg_result:
+            return False
+        
+        # Store the current token and switch to the delete user's token
+        original_token = self.token
+        delete_token = reg_result['token']
+        self.token = delete_token
+        
+        # Test account deletion
+        result = self.run_test("Delete Account", "DELETE", "auth/account", 200)
+        if result and result.get("message"):
+            self.log_test("Account Deletion Success Message", True)
+            
+            # Restore original token
+            self.token = original_token
+            
+            # Try to access the deleted user's profile (should fail)
+            self.token = delete_token
+            result = self.run_test("Access Deleted Account", "GET", "auth/me", 401)
+            if result is None:
+                self.log_test("Deleted Account Access Denied", True, "Correctly denied access to deleted account")
+                # Restore original token
+                self.token = original_token
+                return True
+            else:
+                self.log_test("Deleted Account Access Denied", False, "Should not be able to access deleted account")
+                self.token = original_token
+                return False
+        else:
+            self.log_test("Account Deletion Success Message", False, "No success message returned")
+            self.token = original_token
+            return False
+
+    def test_profile_management_flow(self):
+        """Test complete profile management flow"""
+        # Create a new user for the complete flow test
+        timestamp = datetime.now().strftime('%H%M%S')
+        flow_user = {
+            "name": f"Flow Test User {timestamp}",
+            "email": f"flow{timestamp}@example.com",
+            "password": "FlowPass123!",
+            "phone": "0612345678",
+            "is_professional": False
+        }
+        
+        # 1. Register user
+        reg_result = self.run_test("Profile Flow - Register", "POST", "auth/register", 200, flow_user)
+        if not reg_result or 'token' not in reg_result:
+            return False
+        
+        # Store original token and use flow user token
+        original_token = self.token
+        flow_token = reg_result['token']
+        self.token = flow_token
+        
+        # 2. Login to get fresh token
+        login_data = {
+            "email": flow_user["email"],
+            "password": flow_user["password"]
+        }
+        login_result = self.run_test("Profile Flow - Login", "POST", "auth/login", 200, login_data)
+        if not login_result or 'token' not in login_result:
+            self.token = original_token
+            return False
+        
+        self.token = login_result['token']
+        
+        # 3. Update profile
+        profile_update = {
+            "name": f"Updated Flow User {timestamp}",
+            "phone": "0687654321",
+            "address": "789 Flow Street",
+            "city": "Marseille",
+            "postal_code": "13000"
+        }
+        
+        profile_result = self.run_test("Profile Flow - Update Profile", "PUT", "auth/profile", 200, profile_update)
+        if not profile_result:
+            self.token = original_token
+            return False
+        
+        # 4. Change password
+        password_change = {
+            "current_password": "FlowPass123!",
+            "new_password": "NewFlowPass456!"
+        }
+        
+        password_result = self.run_test("Profile Flow - Change Password", "PUT", "auth/password", 200, password_change)
+        if not password_result:
+            self.token = original_token
+            return False
+        
+        # 5. Verify login with new password
+        new_login_data = {
+            "email": flow_user["email"],
+            "password": "NewFlowPass456!"
+        }
+        new_login_result = self.run_test("Profile Flow - Login with New Password", "POST", "auth/login", 200, new_login_data)
+        if not new_login_result:
+            self.token = original_token
+            return False
+        
+        # Restore original token
+        self.token = original_token
+        self.log_test("Complete Profile Management Flow", True, "All profile operations completed successfully")
+        return True
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting AutoPièces API Tests...")
