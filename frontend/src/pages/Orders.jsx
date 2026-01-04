@@ -357,6 +357,16 @@ export default function Orders() {
                               </p>
                             </div>
                             <div className="flex flex-wrap gap-2">
+                              {/* Télécharger facture */}
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => downloadInvoice(order.id)}
+                              >
+                                <Download className="w-4 h-4 mr-1" />
+                                Facture
+                              </Button>
+                              
                               {/* Confirmer réception */}
                               {order.status === 'shipped' && (
                                 <Button
