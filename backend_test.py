@@ -1377,6 +1377,11 @@ class AutoPiecesAPITester:
         print("\n🛒 Testing Cart Checkout Flow...")
         self.test_cart_checkout_flow()
         
+        # FAVORITES AND MESSAGING API TESTING (REVIEW REQUEST)
+        print("\n⭐💬 Testing Favorites and Messaging APIs...")
+        self.test_favorites_api_complete()
+        self.test_messaging_api_complete()
+        
         # Payment tests (Stripe and PayPal removal verification)
         self.test_stripe_checkout_creation()
         self.test_paypal_endpoints_removed()
