@@ -1338,6 +1338,11 @@ async def create_order(order: OrderCreate, background_tasks: BackgroundTasks, cu
     background_tasks.add_task(send_new_order_seller_email, seller.get("email"), seller.get("name"), order_doc)
     background_tasks.add_task(send_new_order_buyer_email, current_user.get("email"), current_user.get("name"), order_doc)
     
+    # Send admin notification email
+    buyer_info = {"name": current_user.get("name"), "email": current_user.get("email"), "phone": current_user.get("phone")}
+    seller_info = {"name": seller.get("name"), "email": seller.get("email")}
+    background_tasks.add_task(send_new_order_admin_email, order_doc, buyer_info, seller_info)
+    
     return order_doc
 
 @api_router.get("/orders")
