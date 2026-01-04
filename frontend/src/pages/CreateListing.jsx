@@ -192,6 +192,7 @@ export default function CreateListing() {
       const response = await axios.post(`${API}/listings`, {
         ...formData,
         price: parseFloat(formData.price),
+        shipping_cost: formData.shipping_cost ? parseFloat(formData.shipping_cost) : null,
         year: formData.year ? parseInt(formData.year) : null,
         mileage: formData.mileage ? parseInt(formData.mileage) : null,
         compatible_models,
