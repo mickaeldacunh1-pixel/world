@@ -161,7 +161,7 @@ class FavoritesMessagingTester:
         print("\n⭐ Testing Empty Favorites List...")
         
         result = self.run_test("Favorites - Get Empty List", "GET", "favorites", 200, token=self.buyer_token)
-        if result and isinstance(result, list) and len(result) == 0:
+        if result is not None and isinstance(result, list) and len(result) == 0:
             self.log_test("Favorites - Empty List Structure", True, "Correctly returned empty array")
         else:
             self.log_test("Favorites - Empty List Structure", False, f"Expected empty array, got: {result}")
