@@ -83,7 +83,7 @@ export default function Listings() {
 
   useEffect(() => {
     fetchListings();
-  }, [category, page, sort, subcategory, compatibleBrand]);
+  }, [category, page, sort, subcategory, compatibleBrand, region]);
 
   const fetchSubcategories = async () => {
     try {
