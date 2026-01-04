@@ -964,6 +964,362 @@ class AutoPiecesAPITester:
         self.log_test("Complete Cart Checkout Flow", True, "All cart checkout tests passed")
         return True
 
+    def test_favorites_api_complete(self):
+        """Test complete favorites API functionality"""
+        if not self.token:
+            self.log_test("Favorites API Complete", False, "No token available")
+            return False
+        
+        print("\n⭐ Testing Favorites API...")
+        
+        # Step 1: Test authentication required for all favorites endpoints
+        original_token = self.token
+        self.token = None
+        
+        # Test without authentication
+        self.run_test("Favorites - Auth Required (Add)", "POST", "favorites/test-listing-id", 401)
+        self.run_test("Favorites - Auth Required (Get)", "GET", "favorites", 401)
+        self.run_test("Favorites - Auth Required (Check)", "GET", "favorites/check/test-listing-id", 401)
+        self.run_test("Favorites - Auth Required (Remove)", "DELETE", "favorites/test-listing-id", 401)
+        
+        # Restore token
+        self.token = original_token
+        
+        # Step 2: Get available listings for testing
+        listings_result = self.run_test("Get Listings for Favorites Test", "GET", "listings?limit=5", 200)
+        if not listings_result or not listings_result.get("listings"):
+            self.log_test("Favorites - No Listings Available", False, "No listings found for testing")
+            return False
+        
+        available_listings = [listing for listing in listings_result["listings"] 
+                            if listing.get("status") == "active" and listing.get("seller_id") != self.user_id]
+        
+        if not available_listings:
+            self.log_test("Favorites - No Available Listings", False, "No active listings from other sellers")
+            return False
+        
+        test_listing_id = available_listings[0]["id"]
+        test_listing_title = available_listings[0]["title"]
+        
+        # Step 3: Test adding to favorites
+        add_result = self.run_test("Favorites - Add to Favorites", "POST", f"favorites/{test_listing_id}", 200)
+        if not add_result:
+            return False
+        
+        # Verify response message
+        if add_result.get("message"):
+            self.log_test("Favorites - Add Response Message", True, f"Message: {add_result['message']}")
+        else:
+            self.log_test("Favorites - Add Response Message", False, "No message in response")
+            return False
+        
+        # Step 4: Test adding same listing again (should handle gracefully)
+        duplicate_result = self.run_test("Favorites - Add Duplicate", "POST", f"favorites/{test_listing_id}", 200)
+        if duplicate_result and duplicate_result.get("message"):
+            self.log_test("Favorites - Duplicate Handling", True, f"Message: {duplicate_result['message']}")
+        else:
+            self.log_test("Favorites - Duplicate Handling", False, "Failed to handle duplicate favorite")
+            return False
+        
+        # Step 5: Test checking if listing is favorited
+        check_result = self.run_test("Favorites - Check Favorited", "GET", f"favorites/check/{test_listing_id}", 200)
+        if check_result and check_result.get("is_favorite") == True:
+            self.log_test("Favorites - Check True", True, "Correctly identified as favorite")
+        else:
+            self.log_test("Favorites - Check True", False, f"Expected is_favorite=true, got {check_result}")
+            return False
+        
+        # Step 6: Test getting user's favorites list
+        favorites_list = self.run_test("Favorites - Get List", "GET", "favorites", 200)
+        if favorites_list and isinstance(favorites_list, list):
+            # Check if our test listing is in the favorites
+            found_listing = False
+            for favorite in favorites_list:
+                if favorite.get("id") == test_listing_id:
+                    found_listing = True
+                    # Verify listing structure
+                    required_fields = ["id", "title", "price", "seller_name"]
+                    for field in required_fields:
+                        if field in favorite:
+                            self.log_test(f"Favorites List - {field}", True)
+                        else:
+                            self.log_test(f"Favorites List - {field}", False, f"Missing field: {field}")
+                            return False
+                    break
+            
+            if found_listing:
+                self.log_test("Favorites - List Contains Added Item", True, f"Found {test_listing_title}")
+            else:
+                self.log_test("Favorites - List Contains Added Item", False, "Added listing not found in favorites list")
+                return False
+        else:
+            self.log_test("Favorites - Get List Structure", False, "Expected array response")
+            return False
+        
+        # Step 7: Test removing from favorites
+        remove_result = self.run_test("Favorites - Remove from Favorites", "DELETE", f"favorites/{test_listing_id}", 200)
+        if remove_result and remove_result.get("message"):
+            self.log_test("Favorites - Remove Response Message", True, f"Message: {remove_result['message']}")
+        else:
+            self.log_test("Favorites - Remove Response Message", False, "No message in response")
+            return False
+        
+        # Step 8: Verify listing is no longer favorited
+        check_after_remove = self.run_test("Favorites - Check After Remove", "GET", f"favorites/check/{test_listing_id}", 200)
+        if check_after_remove and check_after_remove.get("is_favorite") == False:
+            self.log_test("Favorites - Check False After Remove", True, "Correctly identified as not favorite")
+        else:
+            self.log_test("Favorites - Check False After Remove", False, f"Expected is_favorite=false, got {check_after_remove}")
+            return False
+        
+        # Step 9: Test removing non-existent favorite
+        remove_nonexistent = self.run_test("Favorites - Remove Non-existent", "DELETE", f"favorites/{test_listing_id}", 404)
+        # We expect 404 since it's no longer in favorites
+        self.log_test("Favorites - Remove Non-existent Error", True, "Correctly returned 404 for non-existent favorite")
+        
+        # Step 10: Test with invalid listing ID
+        invalid_listing_id = "non-existent-listing-id"
+        add_invalid = self.run_test("Favorites - Add Invalid Listing", "POST", f"favorites/{invalid_listing_id}", 404)
+        # We expect 404 since listing doesn't exist
+        self.log_test("Favorites - Add Invalid Listing Error", True, "Correctly returned 404 for invalid listing")
+        
+        self.log_test("Complete Favorites API Test", True, "All favorites functionality working correctly")
+        return True
+
+    def test_messaging_api_complete(self):
+        """Test complete messaging API functionality"""
+        if not self.token:
+            self.log_test("Messaging API Complete", False, "No token available")
+            return False
+        
+        print("\n💬 Testing Messaging API...")
+        
+        # Step 1: Create a second user for messaging tests
+        timestamp = datetime.now().strftime('%H%M%S')
+        seller_user = {
+            "name": f"Seller User {timestamp}",
+            "email": f"seller{timestamp}@example.com",
+            "password": "SellerPass123!",
+            "phone": "0612345679",
+            "is_professional": False
+        }
+        
+        seller_reg = self.run_test("Messaging - Register Seller User", "POST", "auth/register", 200, seller_user)
+        if not seller_reg or 'token' not in seller_reg:
+            return False
+        
+        seller_token = seller_reg['token']
+        seller_user_id = seller_reg['user']['id']
+        
+        # Step 2: Test authentication required for all messaging endpoints
+        original_token = self.token
+        self.token = None
+        
+        # Test without authentication
+        self.run_test("Messages - Auth Required (Conversations)", "GET", "messages/conversations", 401)
+        self.run_test("Messages - Auth Required (Send)", "POST", "messages", 401)
+        self.run_test("Messages - Auth Required (Get)", "GET", "messages/test-listing/test-user", 401)
+        
+        # Restore token
+        self.token = original_token
+        
+        # Step 3: Get available listings for messaging test
+        listings_result = self.run_test("Get Listings for Messaging Test", "GET", "listings?limit=5", 200)
+        if not listings_result or not listings_result.get("listings"):
+            self.log_test("Messaging - No Listings Available", False, "No listings found for testing")
+            return False
+        
+        available_listings = [listing for listing in listings_result["listings"] 
+                            if listing.get("status") == "active"]
+        
+        if not available_listings:
+            self.log_test("Messaging - No Available Listings", False, "No active listings found")
+            return False
+        
+        test_listing_id = available_listings[0]["id"]
+        
+        # Step 4: Test sending a message
+        message_data = {
+            "listing_id": test_listing_id,
+            "receiver_id": seller_user_id,
+            "content": "Bonjour, je suis intéressé par cette pièce. Est-elle encore disponible ?"
+        }
+        
+        send_result = self.run_test("Messages - Send Message", "POST", "messages", 200, message_data)
+        if send_result:
+            # Verify message structure
+            required_fields = ["id", "listing_id", "sender_id", "sender_name", "receiver_id", "receiver_name", "content", "created_at", "read"]
+            for field in required_fields:
+                if field in send_result:
+                    self.log_test(f"Message Field - {field}", True)
+                else:
+                    self.log_test(f"Message Field - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Verify content
+            if send_result.get("content") == message_data["content"]:
+                self.log_test("Messages - Content Correct", True)
+            else:
+                self.log_test("Messages - Content Correct", False, f"Content mismatch")
+                return False
+            
+            # Verify read status is False for new message
+            if send_result.get("read") == False:
+                self.log_test("Messages - Initial Read Status", True, "New message marked as unread")
+            else:
+                self.log_test("Messages - Initial Read Status", False, f"Expected read=false, got {send_result.get('read')}")
+                return False
+        else:
+            return False
+        
+        # Step 5: Test sending message with invalid receiver
+        invalid_message_data = {
+            "listing_id": test_listing_id,
+            "receiver_id": "non-existent-user-id",
+            "content": "Test message to invalid user"
+        }
+        
+        invalid_send = self.run_test("Messages - Send to Invalid User", "POST", "messages", 404, invalid_message_data)
+        # We expect 404 since receiver doesn't exist
+        self.log_test("Messages - Invalid Receiver Error", True, "Correctly returned 404 for invalid receiver")
+        
+        # Step 6: Test getting conversations (from buyer perspective)
+        conversations_result = self.run_test("Messages - Get Conversations", "GET", "messages/conversations", 200)
+        if conversations_result and isinstance(conversations_result, list):
+            if len(conversations_result) > 0:
+                conversation = conversations_result[0]
+                # Verify conversation structure
+                conv_fields = ["listing_id", "listing_title", "other_user_id", "other_user_name", "last_message", "last_message_at", "unread_count"]
+                for field in conv_fields:
+                    if field in conversation:
+                        self.log_test(f"Conversation Field - {field}", True)
+                    else:
+                        self.log_test(f"Conversation Field - {field}", False, f"Missing field: {field}")
+                        return False
+                
+                # Verify the conversation contains our test message
+                if conversation.get("last_message") == message_data["content"]:
+                    self.log_test("Messages - Conversation Last Message", True)
+                else:
+                    self.log_test("Messages - Conversation Last Message", False, "Last message doesn't match sent message")
+                    return False
+            else:
+                self.log_test("Messages - Conversations Found", False, "No conversations found after sending message")
+                return False
+        else:
+            self.log_test("Messages - Conversations Structure", False, "Expected array response")
+            return False
+        
+        # Step 7: Test getting messages in conversation
+        messages_result = self.run_test("Messages - Get Conversation Messages", "GET", f"messages/{test_listing_id}/{seller_user_id}", 200)
+        if messages_result and isinstance(messages_result, list):
+            if len(messages_result) > 0:
+                message = messages_result[0]
+                # Verify message structure
+                msg_fields = ["id", "listing_id", "sender_id", "sender_name", "receiver_id", "receiver_name", "content", "created_at", "read"]
+                for field in msg_fields:
+                    if field in message:
+                        self.log_test(f"Conversation Message Field - {field}", True)
+                    else:
+                        self.log_test(f"Conversation Message Field - {field}", False, f"Missing field: {field}")
+                        return False
+                
+                # Verify content matches
+                if message.get("content") == message_data["content"]:
+                    self.log_test("Messages - Conversation Message Content", True)
+                else:
+                    self.log_test("Messages - Conversation Message Content", False, "Message content doesn't match")
+                    return False
+            else:
+                self.log_test("Messages - Conversation Messages Found", False, "No messages found in conversation")
+                return False
+        else:
+            self.log_test("Messages - Conversation Messages Structure", False, "Expected array response")
+            return False
+        
+        # Step 8: Switch to seller user and send a reply
+        self.token = seller_token
+        
+        reply_data = {
+            "listing_id": test_listing_id,
+            "receiver_id": self.user_id,
+            "content": "Oui, la pièce est encore disponible. Le prix est ferme."
+        }
+        
+        reply_result = self.run_test("Messages - Send Reply", "POST", "messages", 200, reply_data)
+        if not reply_result:
+            self.token = original_token
+            return False
+        
+        # Step 9: Switch back to buyer and check updated conversation
+        self.token = original_token
+        
+        updated_conversations = self.run_test("Messages - Updated Conversations", "GET", "messages/conversations", 200)
+        if updated_conversations and isinstance(updated_conversations, list) and len(updated_conversations) > 0:
+            conversation = updated_conversations[0]
+            # Check if last message is the reply
+            if conversation.get("last_message") == reply_data["content"]:
+                self.log_test("Messages - Conversation Updated", True, "Conversation shows latest reply")
+            else:
+                self.log_test("Messages - Conversation Updated", False, f"Expected '{reply_data['content']}', got '{conversation.get('last_message')}'")
+                return False
+            
+            # Check unread count
+            unread_count = conversation.get("unread_count", 0)
+            if unread_count > 0:
+                self.log_test("Messages - Unread Count", True, f"Unread count: {unread_count}")
+            else:
+                self.log_test("Messages - Unread Count", False, "Expected unread messages")
+                return False
+        else:
+            self.log_test("Messages - Updated Conversations Structure", False, "Failed to get updated conversations")
+            return False
+        
+        # Step 10: Get full conversation and verify both messages
+        full_conversation = self.run_test("Messages - Full Conversation", "GET", f"messages/{test_listing_id}/{seller_user_id}", 200)
+        if full_conversation and isinstance(full_conversation, list):
+            if len(full_conversation) >= 2:
+                self.log_test("Messages - Full Conversation Length", True, f"Found {len(full_conversation)} messages")
+                
+                # Verify messages are in chronological order
+                first_msg = full_conversation[0]
+                second_msg = full_conversation[1]
+                
+                if first_msg.get("content") == message_data["content"] and second_msg.get("content") == reply_data["content"]:
+                    self.log_test("Messages - Conversation Order", True, "Messages in correct chronological order")
+                else:
+                    self.log_test("Messages - Conversation Order", False, "Messages not in expected order")
+                    return False
+                
+                # After getting messages, they should be marked as read
+                # Test conversations again to see if unread count decreased
+                final_conversations = self.run_test("Messages - Final Conversations Check", "GET", "messages/conversations", 200)
+                if final_conversations and len(final_conversations) > 0:
+                    final_unread = final_conversations[0].get("unread_count", 0)
+                    if final_unread == 0:
+                        self.log_test("Messages - Mark as Read", True, "Messages marked as read after viewing")
+                    else:
+                        self.log_test("Messages - Mark as Read", False, f"Still {final_unread} unread messages")
+                        return False
+            else:
+                self.log_test("Messages - Full Conversation Length", False, f"Expected 2+ messages, got {len(full_conversation)}")
+                return False
+        else:
+            self.log_test("Messages - Full Conversation Structure", False, "Failed to get full conversation")
+            return False
+        
+        # Step 11: Test edge cases
+        # Test getting messages with invalid listing ID
+        invalid_messages = self.run_test("Messages - Invalid Listing ID", "GET", "messages/invalid-listing/invalid-user", 200)
+        if invalid_messages and isinstance(invalid_messages, list) and len(invalid_messages) == 0:
+            self.log_test("Messages - Invalid Listing Handling", True, "Correctly returned empty array for invalid listing")
+        else:
+            self.log_test("Messages - Invalid Listing Handling", False, "Unexpected response for invalid listing")
+            return False
+        
+        self.log_test("Complete Messaging API Test", True, "All messaging functionality working correctly")
+        return True
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting AutoPièces API Tests...")
