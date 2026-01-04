@@ -48,7 +48,7 @@ const faqs = [
       },
       {
         q: "Comment payer un vendeur pour un article ?",
-        a: "Contactez le vendeur via la messagerie intégrée pour convenir des modalités de paiement et de livraison. World Auto facilite la mise en relation mais n'intervient pas directement dans les transactions entre acheteurs et vendeurs."
+        a: "Contactez le vendeur via la messagerie intégrée pour convenir des modalités de paiement et de livraison. World Auto France facilite la mise en relation mais n'intervient pas directement dans les transactions entre acheteurs et vendeurs."
       }
     ]
   },
@@ -119,8 +119,8 @@ const faqs = [
         a: "Rendez-vous dans votre espace Commandes, sélectionnez la commande concernée et cliquez sur \"Demander un retour\". Expliquez le motif de votre demande. Le vendeur sera notifié."
       },
       {
-        q: "World Auto intervient-il en cas de litige ?",
-        a: "World Auto peut intervenir en tant que médiateur si les deux parties n'arrivent pas à trouver un accord. Cependant, nous vous encourageons à privilégier le dialogue direct avec le vendeur."
+        q: "World Auto France intervient-il en cas de litige ?",
+        a: "World Auto France peut intervenir en tant que médiateur si les deux parties n'arrivent pas à trouver un accord. Cependant, nous vous encourageons à privilégier le dialogue direct avec le vendeur."
       }
     ]
   }
