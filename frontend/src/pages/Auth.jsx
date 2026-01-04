@@ -20,6 +20,9 @@ export default function Auth() {
   const [activeTab, setActiveTab] = useState(searchParams.get('mode') === 'register' ? 'register' : 'login');
   const [loading, setLoading] = useState(false);
   
+  // SIRET verification state
+  const [siretStatus, setSiretStatus] = useState({ checking: false, valid: null, error: null, companyInfo: null });
+  
   // Login state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
