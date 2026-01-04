@@ -66,7 +66,7 @@ export default function Listings() {
 
   useEffect(() => {
     fetchListings();
-  }, [category, page, sort, subcategory]);
+  }, [category, page, sort, subcategory, compatibleBrand]);
 
   const fetchSubcategories = async () => {
     try {
