@@ -23,6 +23,7 @@ import SellerProfile from "./pages/SellerProfile";
 import AdminSettings from "./pages/AdminSettings";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 import About from "./pages/About";
 import CGV from "./pages/CGV";
 import LegalNotice from "./pages/LegalNotice";
