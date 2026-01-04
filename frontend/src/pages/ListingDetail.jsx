@@ -487,7 +487,7 @@ export default function ListingDetail() {
                   </DialogContent>
                 </Dialog>
               ) : (
-                <Link to="/tableau-de-bord" className="flex-1">
+                <Link to={`/annonce/${listing.id}/modifier`} className="flex-1">
                   <Button className="w-full h-12" variant="outline">
                     Modifier mon annonce
                   </Button>
