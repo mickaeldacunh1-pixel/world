@@ -369,6 +369,60 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Search by Region Section */}
+      <section className="py-16 md:py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 animate-fade-in-up">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4">
+              Recherche par région
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Trouvez des annonces près de chez vous
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
+            {[
+              { name: 'Île-de-France', code: 'ile-de-france' },
+              { name: 'Auvergne-Rhône-Alpes', code: 'auvergne-rhone-alpes' },
+              { name: 'Nouvelle-Aquitaine', code: 'nouvelle-aquitaine' },
+              { name: 'Occitanie', code: 'occitanie' },
+              { name: 'Hauts-de-France', code: 'hauts-de-france' },
+              { name: 'Provence-Alpes-Côte d\'Azur', code: 'paca' },
+              { name: 'Grand Est', code: 'grand-est' },
+              { name: 'Pays de la Loire', code: 'pays-de-la-loire' },
+              { name: 'Bretagne', code: 'bretagne' },
+              { name: 'Normandie', code: 'normandie' },
+              { name: 'Bourgogne-Franche-Comté', code: 'bourgogne-franche-comte' },
+              { name: 'Centre-Val de Loire', code: 'centre-val-de-loire' },
+            ].map((region) => (
+              <Link
+                key={region.code}
+                to={`/annonces?region=${region.code}`}
+                className="group flex items-center justify-center p-4 bg-white rounded-xl border border-border hover:border-accent hover:shadow-lg hover:bg-accent/5 transition-all duration-300 text-center"
+              >
+                <div>
+                  <MapPin className="w-5 h-5 mx-auto mb-2 text-muted-foreground group-hover:text-accent transition-colors" />
+                  <span className="text-sm font-medium text-foreground group-hover:text-accent transition-colors line-clamp-2">
+                    {region.name}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link 
+              to="/annonces" 
+              className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
+            >
+              Voir toutes les régions
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Recent Listings - Improved cards */}
       {recentListings.length > 0 && (
         <section className="py-16 md:py-24">
