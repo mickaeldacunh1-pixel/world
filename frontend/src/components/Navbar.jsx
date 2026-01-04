@@ -11,6 +11,7 @@ import {
 } from './ui/dropdown-menu';
 import { Car, Wrench, Bike, Truck, Settings, User, LogOut, MessageSquare, LayoutDashboard, Menu, X, Plus, Package, Heart, Bell, TrendingUp, Palette, ShoppingCart } from 'lucide-react';
 import WorldAutoLogo from './WorldAutoLogo';
+import FranceText from './FranceText';
 
 const categories = [
   { name: 'Pièces Détachées', slug: 'pieces', icon: Wrench },
