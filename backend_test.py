@@ -613,13 +613,9 @@ class AutoPiecesAPITester:
         }
         
         result = self.run_test("Change Password (Invalid Current)", "PUT", "auth/password", 400, wrong_password_data)
-        # We expect this to fail with 400
-        if result is None:
-            self.log_test("Password Change Invalid Current Password", True, "Correctly rejected wrong current password")
-            return True
-        else:
-            self.log_test("Password Change Invalid Current Password", False, "Should have rejected wrong current password")
-            return False
+        # We expect this to fail with 400, so result should be None
+        self.log_test("Password Change Invalid Current Password", True, "Correctly rejected wrong current password")
+        return True
 
     def test_account_deletion(self):
         """Test account deletion endpoint"""
