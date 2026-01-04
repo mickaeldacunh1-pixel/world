@@ -79,6 +79,9 @@ function AppContent() {
           <Route path="/admin/parametres" element={
             <ProtectedRoute><AdminSettings /></ProtectedRoute>
           } />
+          <Route path="/profil" element={
+            <ProtectedRoute><Profile /></ProtectedRoute>
+          } />
           <Route path="/a-propos" element={<About />} />
           <Route path="/cgv" element={<CGV />} />
           <Route path="/mentions-legales" element={<LegalNotice />} />
