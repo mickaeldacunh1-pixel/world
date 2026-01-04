@@ -49,6 +49,7 @@ export default function Listings() {
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [subcategory, setSubcategory] = useState(searchParams.get('subcategory') || '');
   const [compatibleBrand, setCompatibleBrand] = useState(searchParams.get('brand') || '');
+  const [region, setRegion] = useState(searchParams.get('region') || '');
   const [oemReference, setOemReference] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
@@ -56,6 +57,22 @@ export default function Listings() {
   const [sort, setSort] = useState('recent');
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+
+  const regions = [
+    { value: 'ile-de-france', label: 'Île-de-France' },
+    { value: 'auvergne-rhone-alpes', label: 'Auvergne-Rhône-Alpes' },
+    { value: 'nouvelle-aquitaine', label: 'Nouvelle-Aquitaine' },
+    { value: 'occitanie', label: 'Occitanie' },
+    { value: 'hauts-de-france', label: 'Hauts-de-France' },
+    { value: 'paca', label: 'Provence-Alpes-Côte d\'Azur' },
+    { value: 'grand-est', label: 'Grand Est' },
+    { value: 'pays-de-la-loire', label: 'Pays de la Loire' },
+    { value: 'bretagne', label: 'Bretagne' },
+    { value: 'normandie', label: 'Normandie' },
+    { value: 'bourgogne-franche-comte', label: 'Bourgogne-Franche-Comté' },
+    { value: 'centre-val-de-loire', label: 'Centre-Val de Loire' },
+    { value: 'corse', label: 'Corse' },
+  ];
 
   useEffect(() => {
     if (category === 'pieces' || category === 'accessoires') {
