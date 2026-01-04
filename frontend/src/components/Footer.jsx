@@ -109,7 +109,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-primary-foreground/20 mt-10 pt-8">
           <p className="text-primary-foreground/50 text-sm text-center">
-            © {new Date().getFullYear()} World Auto. Tous droits réservés.
+            © {new Date().getFullYear()} World Auto <FranceText />. Tous droits réservés.
           </p>
         </div>
       </div>
