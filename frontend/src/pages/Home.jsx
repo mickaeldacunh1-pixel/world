@@ -39,6 +39,7 @@ export default function Home() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
+  const [oemSearch, setOemSearch] = useState('');
   const [categoryStats, setCategoryStats] = useState({});
   const [recentListings, setRecentListings] = useState([]);
   const [heroSettings, setHeroSettings] = useState(DEFAULT_HERO);
