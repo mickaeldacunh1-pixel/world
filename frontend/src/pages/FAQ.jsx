@@ -35,20 +35,32 @@ const faqs = [
     icon: CreditCard,
     questions: [
       {
-        q: "Comment fonctionne le paiement ?",
-        a: "Nous utilisons Stripe pour sécuriser tous les paiements. Vos informations bancaires ne sont jamais stockées sur nos serveurs. Vous pouvez payer par carte bancaire (Visa, Mastercard, etc.)."
+        q: "Comment fonctionne le paiement sécurisé ?",
+        a: "Notre système de paiement sécurisé (escrow) protège acheteurs et vendeurs. Quand vous cliquez sur \"Acheter maintenant\", l'argent est bloqué sur un compte sécurisé Stripe. Le vendeur n'est payé que lorsque vous confirmez avoir reçu l'article en bon état. En cas de problème, nous intervenons pour trouver une solution."
       },
       {
-        q: "Comment acheter des crédits ?",
-        a: "Rendez-vous sur la page Tarifs, choisissez le pack qui vous convient et procédez au paiement. Les crédits sont ajoutés instantanément à votre compte après confirmation du paiement."
+        q: "Quelle est la commission prélevée par World Auto France ?",
+        a: "World Auto France prélève une commission de 5% sur chaque vente effectuée via le paiement sécurisé. Cette commission est uniquement à la charge du vendeur. L'acheteur paie le prix affiché + les frais de livraison."
       },
       {
-        q: "Les crédits sont-ils remboursables ?",
-        a: "Les crédits achetés ne sont pas remboursables une fois la transaction effectuée. Cependant, ils n'ont pas de date d'expiration et restent sur votre compte indéfiniment."
+        q: "Comment un vendeur peut-il recevoir des paiements ?",
+        a: "Pour recevoir des paiements via notre plateforme, les vendeurs doivent connecter leur compte Stripe depuis leur profil (section \"Paiements\"). C'est gratuit et ne prend que quelques minutes. Une fois connecté, le bouton \"Acheter maintenant\" apparaît sur leurs annonces."
       },
       {
-        q: "Comment payer un vendeur pour un article ?",
-        a: "Contactez le vendeur via la messagerie intégrée pour convenir des modalités de paiement et de livraison. World Auto France facilite la mise en relation mais n'intervient pas directement dans les transactions entre acheteurs et vendeurs."
+        q: "Que se passe-t-il si l'article n'est pas conforme ?",
+        a: "Avec le paiement sécurisé, vous êtes protégé. Avant de confirmer la réception, signalez tout problème via votre espace Commandes. L'argent reste bloqué pendant la médiation. Si le retour est justifié, vous serez remboursé intégralement."
+      },
+      {
+        q: "Puis-je payer directement le vendeur sans passer par la plateforme ?",
+        a: "Oui, les transactions directes entre acheteurs et vendeurs restent possibles via la messagerie. Cependant, nous recommandons fortement d'utiliser le paiement sécurisé pour bénéficier de la protection acheteur et éviter les arnaques."
+      },
+      {
+        q: "Comment acheter des crédits pour mes annonces ?",
+        a: "Rendez-vous sur la page Tarifs, choisissez le pack qui vous convient et procédez au paiement. Les crédits sont ajoutés instantanément à votre compte après confirmation du paiement. Les crédits n'ont pas de date d'expiration."
+      },
+      {
+        q: "Quels moyens de paiement sont acceptés ?",
+        a: "Nous acceptons les cartes bancaires (Visa, Mastercard, American Express) via notre partenaire Stripe. Le paiement est 100% sécurisé et vos informations bancaires ne sont jamais stockées sur nos serveurs."
       }
     ]
   },
