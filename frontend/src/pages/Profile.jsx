@@ -385,6 +385,139 @@ export default function Profile() {
             </Card>
           </TabsContent>
 
+          {/* Stripe Connect Tab */}
+          <TabsContent value="stripe">
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-heading flex items-center gap-2">
+                  <CreditCard className="w-5 h-5" />
+                  Recevoir des paiements
+                </CardTitle>
+                <CardDescription>
+                  Connectez votre compte Stripe pour recevoir les paiements de vos ventes en toute sécurité
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Status Card */}
+                <div className={`p-4 rounded-lg border ${
+                  stripeStatus?.charges_enabled 
+                    ? 'bg-green-50 border-green-200' 
+                    : 'bg-yellow-50 border-yellow-200'
+                }`}>
+                  <div className="flex items-start gap-3">
+                    {stripeStatus?.charges_enabled ? (
+                      <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
+                    ) : (
+                      <AlertCircle className="w-6 h-6 text-yellow-600 flex-shrink-0" />
+                    )}
+                    <div>
+                      <h3 className={`font-semibold ${
+                        stripeStatus?.charges_enabled ? 'text-green-800' : 'text-yellow-800'
+                      }`}>
+                        {stripeStatus?.charges_enabled 
+                          ? 'Compte Stripe connecté !' 
+                          : 'Compte Stripe non configuré'}
+                      </h3>
+                      <p className={`text-sm ${
+                        stripeStatus?.charges_enabled ? 'text-green-700' : 'text-yellow-700'
+                      }`}>
+                        {stripeStatus?.charges_enabled 
+                          ? 'Vous pouvez recevoir des paiements pour vos ventes.' 
+                          : 'Configurez Stripe pour recevoir l\'argent de vos ventes.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Benefits */}
+                {!stripeStatus?.charges_enabled && (
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Pourquoi connecter Stripe ?</h4>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
+                        <Shield className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-sm">Paiements sécurisés</p>
+                          <p className="text-xs text-muted-foreground">L'argent est protégé jusqu'à la livraison</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
+                        <CreditCard className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-sm">Virements automatiques</p>
+                          <p className="text-xs text-muted-foreground">Recevez l'argent directement sur votre compte</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
+                        <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-sm">Badge vendeur vérifié</p>
+                          <p className="text-xs text-muted-foreground">Inspire confiance aux acheteurs</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
+                        <Mail className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-sm">Notifications</p>
+                          <p className="text-xs text-muted-foreground">Soyez alerté de chaque vente</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Action Button */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {stripeStatus?.charges_enabled ? (
+                    <Button variant="outline" asChild>
+                      <a 
+                        href="https://dashboard.stripe.com" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Accéder au Dashboard Stripe
+                      </a>
+                    </Button>
+                  ) : stripeStatus?.connected && !stripeStatus?.charges_enabled ? (
+                    <Button 
+                      onClick={handleRefreshStripeLink} 
+                      disabled={stripeLoading}
+                      className="bg-accent hover:bg-accent/90"
+                    >
+                      {stripeLoading ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <CreditCard className="w-4 h-4 mr-2" />
+                      )}
+                      Finaliser la configuration
+                    </Button>
+                  ) : (
+                    <Button 
+                      onClick={handleStripeConnect} 
+                      disabled={stripeLoading}
+                      className="bg-accent hover:bg-accent/90"
+                    >
+                      {stripeLoading ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <CreditCard className="w-4 h-4 mr-2" />
+                      )}
+                      Connecter mon compte Stripe
+                    </Button>
+                  )}
+                </div>
+
+                {/* Info */}
+                <p className="text-xs text-muted-foreground">
+                  En connectant Stripe, vous acceptez les <a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">conditions d'utilisation de Stripe</a>. 
+                  Une commission de 5% est prélevée sur chaque vente.
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* Password Tab */}
           <TabsContent value="password">
             <Card>
