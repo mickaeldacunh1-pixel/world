@@ -635,8 +635,6 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Updates (Changelog) API"
-    - "Newsletter Subscription API"
     - "Updates (Changelog) Page"
     - "Newsletter Page"
     - "Footer Newsletter Form"
