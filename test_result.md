@@ -589,51 +589,63 @@ backend:
 frontend:
   - task: "Updates (Changelog) Page"
     implemented: true
-    working: "NA"
+    working: true
     file: "pages/Updates.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Updates page at /nouveautes displays changelog from API with static fallback. Shows title, version, category badge, date, optional image, and items with type indicators. Includes CTA to newsletter at bottom."
+        - working: true
+        - agent: "testing"
+        - comment: "Updates page working correctly. Page accessible at /nouveautes displays with title 'Nouveautés'. Shows at least 1 update (Lancement du système de Newsletter, v2.6.0). Legend with 4 type indicators (Nouveau, Amélioration, Correction, Maintenance) displayed. Category badge 'Fonctionnalité', date display, and items list all working. CTA section linking to /newsletter found. Page renders without errors."
 
   - task: "Newsletter Page"
     implemented: true
-    working: "NA"
+    working: true
     file: "pages/Newsletter.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Newsletter subscription page at /newsletter with simple form (email required, name optional). Shows benefits section and success confirmation after subscription."
+        - working: true
+        - agent: "testing"
+        - comment: "Newsletter page working correctly. Page accessible at /newsletter displays with title 'Newsletter'. Form has name input (optional) with placeholder 'Jean', email input (required) with placeholder 'votre@email.com', and submit button 'S'inscrire gratuitement'. Newsletter subscription tested successfully with unique email - shows success confirmation with checkmark icon and 'Merci pour votre inscription!' message. All functionality working as expected."
 
   - task: "Footer Newsletter Form"
     implemented: true
-    working: "NA"
+    working: true
     file: "components/Footer.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Added newsletter subscription form to Footer with email input and submit button. Shows success message after subscription. Also added link to Nouveautés page."
+        - working: true
+        - agent: "testing"
+        - comment: "Footer newsletter form working correctly. Footer has newsletter section with 'Newsletter' heading, email input field, and submit button with send icon. Newsletter subscription from footer tested successfully - shows success message 'Merci pour votre inscription!' after submission. Link to Nouveautés page also present in footer. All functionality working as expected."
 
   - task: "Admin Updates Management"
     implemented: true
-    working: "NA"
+    working: false
     file: "pages/AdminUpdates.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "New admin page at /admin/actualites for managing updates. Features: stats dashboard (updates count, subscribers count, latest version), create/edit form with title, version, category, image, items. Lists all updates with edit/delete buttons. Shows recent newsletter subscribers."
+        - working: false
+        - agent: "testing"
+        - comment: "Admin Updates page has authentication issue. Page is properly protected - redirects to /auth when not authenticated (good security). However, admin login with admin@test.com / test1234 credentials fails - user remains on auth page after login attempt. Cannot access admin functionality to test stats cards, 'Nouvelle actualité' button, or form features. Admin authentication needs to be fixed for this feature to be fully functional."
 
 test_plan:
   current_focus:
