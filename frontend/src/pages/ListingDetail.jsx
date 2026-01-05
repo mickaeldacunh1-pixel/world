@@ -618,6 +618,78 @@ export default function ListingDetail() {
                 </div>
               </div>
             )}
+
+            {/* Report Button */}
+            {user?.id !== listing.seller_id && (
+              <Dialog open={reportDialogOpen} onOpenChange={setReportDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" className="w-full mt-4 text-muted-foreground hover:text-red-500">
+                    <Flag className="w-4 h-4 mr-2" />
+                    Signaler cette annonce
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5 text-orange-500" />
+                      Signaler l'annonce
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 mt-4">
+                    <p className="text-sm text-muted-foreground">
+                      Aidez-nous à garder World Auto France sûr. Pourquoi signalez-vous cette annonce ?
+                    </p>
+                    <div className="space-y-2">
+                      {REPORT_REASONS.map((reason) => (
+                        <label
+                          key={reason.value}
+                          className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                            reportReason === reason.value 
+                              ? 'border-accent bg-accent/10' 
+                              : 'border-border hover:border-accent/50'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="report-reason"
+                            value={reason.value}
+                            checked={reportReason === reason.value}
+                            onChange={(e) => setReportReason(e.target.value)}
+                            className="sr-only"
+                          />
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                            reportReason === reason.value ? 'border-accent' : 'border-muted-foreground'
+                          }`}>
+                            {reportReason === reason.value && (
+                              <div className="w-2 h-2 rounded-full bg-accent" />
+                            )}
+                          </div>
+                          <span className="text-sm">{reason.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <Textarea
+                      placeholder="Détails supplémentaires (optionnel)..."
+                      value={reportDescription}
+                      onChange={(e) => setReportDescription(e.target.value)}
+                      rows={3}
+                    />
+                    <Button 
+                      onClick={handleReport}
+                      disabled={reportLoading || !reportReason}
+                      className="w-full bg-red-500 hover:bg-red-600"
+                    >
+                      {reportLoading ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <Flag className="w-4 h-4 mr-2" />
+                      )}
+                      Envoyer le signalement
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
         </div>
       </div>
