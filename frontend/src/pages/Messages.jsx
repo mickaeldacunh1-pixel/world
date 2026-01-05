@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -8,9 +8,10 @@ import { Card } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
-import { MessageSquare, Send, ArrowLeft, User, Smile } from 'lucide-react';
+import { MessageSquare, Send, ArrowLeft, User, Smile, Wifi, WifiOff } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const WS_URL = process.env.REACT_APP_BACKEND_URL?.replace('https://', 'wss://').replace('http://', 'ws://');
 
 // Emoji categories
 const EMOJI_CATEGORIES = {
@@ -20,10 +21,22 @@ const EMOJI_CATEGORIES = {
   'Objets': ['🚗', '🚙', '🏎️', '🚕', '🔧', '🔩', '⚙️', '🛠️', '💰', '💵', '📦', '📱', '💻', '📧', '✅', '❌', '⚠️', '🔔', '🎉', '🎊']
 };
 
+// Sound for new messages
+const playNotificationSound = () => {
+  try {
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdH2JkJeLfXBwfYeQj4d6cHB8houNhnpwcnuEi4yHe3Fyd4OJi4Z7cXN2gYiKhXtxc3aAh4mEe3FzdoCHiYR7cXN2gIeJhHtxc3aAh4mEe3FzdoCHiYR7');
+    audio.volume = 0.3;
+    audio.play();
+  } catch (e) {}
+};
+
 export default function Messages() {
   const { listingId, userId } = useParams();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const messagesEndRef = useRef(null);
+  const wsRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+  const reconnectTimeoutRef = useRef(null);
 
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -31,21 +44,136 @@ export default function Messages() {
   const [selectedConv, setSelectedConv] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [wsConnected, setWsConnected] = useState(false);
+  const [otherUserTyping, setOtherUserTyping] = useState(false);
 
-  // Auto-refresh for real-time feel
+  // WebSocket connection
+  const connectWebSocket = useCallback(() => {
+    if (!token || !user) return;
+    
+    // Close existing connection
+    if (wsRef.current) {
+      wsRef.current.close();
+    }
+    
+    const ws = new WebSocket(`${WS_URL}/ws/chat/${token}`);
+    
+    ws.onopen = () => {
+      console.log('WebSocket connected');
+      setWsConnected(true);
+    };
+    
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      
+      switch (data.type) {
+        case 'connected':
+          console.log('WS: Connected as', data.user_id);
+          break;
+          
+        case 'new_message':
+          // Add new message to list
+          const msg = data.message;
+          setMessages(prev => {
+            // Avoid duplicates
+            if (prev.some(m => m.id === msg.id)) return prev;
+            return [...prev, msg];
+          });
+          
+          // Update conversation list
+          fetchConversations();
+          
+          // Play sound if message is from someone else
+          if (msg.sender_id !== user?.id) {
+            playNotificationSound();
+            // Clear typing indicator
+            setOtherUserTyping(false);
+          }
+          break;
+          
+        case 'typing':
+          if (selectedConv && data.user_id === selectedConv.other_user_id && data.listing_id === selectedConv.listing_id) {
+            setOtherUserTyping(true);
+          }
+          break;
+          
+        case 'stop_typing':
+          if (data.user_id === selectedConv?.other_user_id) {
+            setOtherUserTyping(false);
+          }
+          break;
+          
+        case 'messages_read':
+          // Could update read status in UI
+          break;
+          
+        case 'pong':
+          // Keep-alive response
+          break;
+          
+        default:
+          console.log('WS message:', data);
+      }
+    };
+    
+    ws.onclose = () => {
+      console.log('WebSocket disconnected');
+      setWsConnected(false);
+      
+      // Reconnect after 3 seconds
+      reconnectTimeoutRef.current = setTimeout(() => {
+        connectWebSocket();
+      }, 3000);
+    };
+    
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+    
+    wsRef.current = ws;
+  }, [token, user, selectedConv]);
+
+  // Connect WebSocket on mount
+  useEffect(() => {
+    if (token && user) {
+      connectWebSocket();
+    }
+    
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+    };
+  }, [token, user, connectWebSocket]);
+
+  // Keep-alive ping every 30 seconds
+  useEffect(() => {
+    const pingInterval = setInterval(() => {
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({ action: 'ping' }));
+      }
+    }, 30000);
+    
+    return () => clearInterval(pingInterval);
+  }, []);
+
+  // Fallback polling (less frequent since we have WebSocket)
   useEffect(() => {
     fetchConversations();
     
-    // Poll for new messages every 5 seconds
+    // Fallback poll every 30 seconds (instead of 5)
     const pollInterval = setInterval(() => {
       fetchConversations();
-      if (selectedConv) {
+      if (selectedConv && !wsConnected) {
         fetchMessagesQuiet(selectedConv.listing_id, selectedConv.other_user_id);
       }
-    }, 5000);
+    }, 30000);
     
     return () => clearInterval(pollInterval);
-  }, [selectedConv]);
+  }, [selectedConv, wsConnected]);
 
   useEffect(() => {
     if (listingId && userId) {
