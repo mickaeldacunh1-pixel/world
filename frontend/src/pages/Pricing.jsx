@@ -88,7 +88,7 @@ export default function Pricing() {
       'Badge PRO vérifié',
       'Statistiques avancées',
       'Support VIP',
-      '🏷️ -12% vs mensuel',
+      '🏷️ -33% vs mensuel',
     ],
     pro_6months: [
       'Annonces illimitées',
@@ -96,7 +96,7 @@ export default function Pricing() {
       'Badge PRO vérifié',
       'Statistiques avancées',
       'Support VIP',
-      '🏷️ -18% vs mensuel',
+      '🏷️ -39% vs mensuel',
       '⭐ Meilleure économie',
     ],
   };
