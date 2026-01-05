@@ -2194,6 +2194,367 @@ async def get_pending_reviews(current_user: dict = Depends(get_current_user)):
     
     return pending
 
+# ================== WEBSOCKET CHAT ==================
+
+class ConnectionManager:
+    """Gestionnaire des connexions WebSocket pour le chat en temps réel"""
+    def __init__(self):
+        # active_connections[user_id] = [websocket1, websocket2, ...]
+        self.active_connections: Dict[str, List[WebSocket]] = {}
+        # typing_status[conversation_key] = {user_id: timestamp}
+        self.typing_status: Dict[str, Dict[str, datetime]] = {}
+    
+    async def connect(self, websocket: WebSocket, user_id: str):
+        await websocket.accept()
+        if user_id not in self.active_connections:
+            self.active_connections[user_id] = []
+        self.active_connections[user_id].append(websocket)
+        logger.info(f"WebSocket connected for user {user_id}")
+    
+    def disconnect(self, websocket: WebSocket, user_id: str):
+        if user_id in self.active_connections:
+            if websocket in self.active_connections[user_id]:
+                self.active_connections[user_id].remove(websocket)
+            if not self.active_connections[user_id]:
+                del self.active_connections[user_id]
+        logger.info(f"WebSocket disconnected for user {user_id}")
+    
+    async def send_personal_message(self, message: dict, user_id: str):
+        """Envoyer un message à un utilisateur spécifique"""
+        if user_id in self.active_connections:
+            for connection in self.active_connections[user_id]:
+                try:
+                    await connection.send_json(message)
+                except Exception as e:
+                    logger.error(f"Error sending to {user_id}: {e}")
+    
+    async def broadcast_to_conversation(self, message: dict, user_ids: List[str]):
+        """Envoyer un message à tous les participants d'une conversation"""
+        for user_id in user_ids:
+            await self.send_personal_message(message, user_id)
+    
+    def set_typing(self, conversation_key: str, user_id: str):
+        """Marquer un utilisateur comme en train d'écrire"""
+        if conversation_key not in self.typing_status:
+            self.typing_status[conversation_key] = {}
+        self.typing_status[conversation_key][user_id] = datetime.now(timezone.utc)
+    
+    def clear_typing(self, conversation_key: str, user_id: str):
+        """Effacer le statut "en train d'écrire" """
+        if conversation_key in self.typing_status and user_id in self.typing_status[conversation_key]:
+            del self.typing_status[conversation_key][user_id]
+
+# Instance globale du gestionnaire
+ws_manager = ConnectionManager()
+
+@app.websocket("/ws/chat/{token}")
+async def websocket_chat(websocket: WebSocket, token: str):
+    """WebSocket endpoint pour le chat en temps réel"""
+    user_id = None
+    try:
+        # Vérifier le token JWT
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        user_id = payload.get("user_id")
+        if not user_id:
+            await websocket.close(code=4001)
+            return
+        
+        await ws_manager.connect(websocket, user_id)
+        
+        # Envoyer confirmation de connexion
+        await websocket.send_json({
+            "type": "connected",
+            "user_id": user_id,
+            "message": "Connexion établie"
+        })
+        
+        while True:
+            data = await websocket.receive_json()
+            action = data.get("action")
+            
+            if action == "send_message":
+                # Envoyer un nouveau message
+                receiver_id = data.get("receiver_id")
+                listing_id = data.get("listing_id")
+                content = data.get("content")
+                
+                if not all([receiver_id, listing_id, content]):
+                    await websocket.send_json({"type": "error", "message": "Données manquantes"})
+                    continue
+                
+                # Sauvegarder le message en base
+                message_doc = {
+                    "id": str(uuid.uuid4()),
+                    "listing_id": listing_id,
+                    "sender_id": user_id,
+                    "receiver_id": receiver_id,
+                    "content": content,
+                    "read": False,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                }
+                await db.messages.insert_one(message_doc)
+                
+                # Récupérer les infos du sender
+                sender = await db.users.find_one({"id": user_id}, {"_id": 0, "name": 1})
+                message_doc["sender_name"] = sender.get("name", "Utilisateur") if sender else "Utilisateur"
+                del message_doc["_id"] if "_id" in message_doc else None
+                
+                # Notifier les deux utilisateurs
+                ws_message = {
+                    "type": "new_message",
+                    "message": message_doc
+                }
+                await ws_manager.broadcast_to_conversation(ws_message, [user_id, receiver_id])
+                
+                # Clear typing status
+                conv_key = f"{listing_id}_{min(user_id, receiver_id)}_{max(user_id, receiver_id)}"
+                ws_manager.clear_typing(conv_key, user_id)
+            
+            elif action == "typing":
+                # Notifier que l'utilisateur écrit
+                receiver_id = data.get("receiver_id")
+                listing_id = data.get("listing_id")
+                
+                if receiver_id and listing_id:
+                    conv_key = f"{listing_id}_{min(user_id, receiver_id)}_{max(user_id, receiver_id)}"
+                    ws_manager.set_typing(conv_key, user_id)
+                    
+                    await ws_manager.send_personal_message({
+                        "type": "typing",
+                        "user_id": user_id,
+                        "listing_id": listing_id
+                    }, receiver_id)
+            
+            elif action == "stop_typing":
+                receiver_id = data.get("receiver_id")
+                listing_id = data.get("listing_id")
+                
+                if receiver_id and listing_id:
+                    conv_key = f"{listing_id}_{min(user_id, receiver_id)}_{max(user_id, receiver_id)}"
+                    ws_manager.clear_typing(conv_key, user_id)
+                    
+                    await ws_manager.send_personal_message({
+                        "type": "stop_typing",
+                        "user_id": user_id,
+                        "listing_id": listing_id
+                    }, receiver_id)
+            
+            elif action == "mark_read":
+                # Marquer les messages comme lus
+                listing_id = data.get("listing_id")
+                other_user_id = data.get("other_user_id")
+                
+                if listing_id and other_user_id:
+                    await db.messages.update_many(
+                        {
+                            "listing_id": listing_id,
+                            "sender_id": other_user_id,
+                            "receiver_id": user_id,
+                            "read": False
+                        },
+                        {"$set": {"read": True}}
+                    )
+                    
+                    # Notifier l'autre utilisateur
+                    await ws_manager.send_personal_message({
+                        "type": "messages_read",
+                        "listing_id": listing_id,
+                        "reader_id": user_id
+                    }, other_user_id)
+            
+            elif action == "ping":
+                await websocket.send_json({"type": "pong"})
+    
+    except WebSocketDisconnect:
+        if user_id:
+            ws_manager.disconnect(websocket, user_id)
+    except jwt.ExpiredSignatureError:
+        await websocket.close(code=4002)
+    except jwt.InvalidTokenError:
+        await websocket.close(code=4003)
+    except Exception as e:
+        logger.error(f"WebSocket error: {e}")
+        if user_id:
+            ws_manager.disconnect(websocket, user_id)
+
+# ================== BUYER REVIEWS (Notation Acheteurs) ==================
+
+class BuyerReviewCreate(BaseModel):
+    order_id: str
+    rating: int = Field(..., ge=1, le=5)
+    comment: Optional[str] = None
+
+@api_router.post("/reviews/buyer")
+async def create_buyer_review(review: BuyerReviewCreate, current_user: dict = Depends(get_current_user)):
+    """Créer un avis sur un acheteur (par le vendeur après livraison)"""
+    # Verify order exists and current user is the seller
+    order = await db.orders.find_one({
+        "id": review.order_id,
+        "seller_id": current_user["id"],
+        "status": "delivered"
+    }, {"_id": 0})
+    
+    if not order:
+        raise HTTPException(status_code=400, detail="Commande non trouvée ou non livrée")
+    
+    # Check if already reviewed
+    existing = await db.buyer_reviews.find_one({
+        "order_id": review.order_id,
+        "seller_id": current_user["id"]
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="Vous avez déjà noté cet acheteur pour cette commande")
+    
+    review_doc = {
+        "id": str(uuid.uuid4()),
+        "order_id": review.order_id,
+        "listing_id": order["listing_id"],
+        "listing_title": order["listing_title"],
+        "buyer_id": order["buyer_id"],
+        "buyer_name": order["buyer_name"],
+        "seller_id": current_user["id"],
+        "seller_name": current_user["name"],
+        "rating": review.rating,
+        "comment": review.comment,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.buyer_reviews.insert_one(review_doc)
+    
+    # Update buyer stats cache
+    await update_buyer_stats(order["buyer_id"])
+    
+    return {"message": "Avis sur l'acheteur publié", "review": {k: v for k, v in review_doc.items() if k != "_id"}}
+
+async def update_buyer_stats(buyer_id: str):
+    """Mettre à jour les statistiques d'un acheteur"""
+    reviews = await db.buyer_reviews.find({"buyer_id": buyer_id}, {"_id": 0, "rating": 1}).to_list(1000)
+    
+    if reviews:
+        total_reviews = len(reviews)
+        average_rating = round(sum(r["rating"] for r in reviews) / total_reviews, 1)
+        
+        # Déterminer les badges
+        badges = []
+        
+        # Badge "Acheteur de confiance" - 5+ achats avec moyenne >= 4
+        if total_reviews >= 5 and average_rating >= 4.0:
+            badges.append({
+                "id": "trusted_buyer",
+                "name": "Acheteur de confiance",
+                "icon": "shield-check",
+                "color": "green"
+            })
+        
+        # Badge "Acheteur VIP" - 10+ achats avec moyenne >= 4.5
+        if total_reviews >= 10 and average_rating >= 4.5:
+            badges.append({
+                "id": "vip_buyer",
+                "name": "Acheteur VIP",
+                "icon": "crown",
+                "color": "gold"
+            })
+        
+        # Badge "Acheteur parfait" - moyenne de 5 étoiles avec 3+ achats
+        if total_reviews >= 3 and average_rating == 5.0:
+            badges.append({
+                "id": "perfect_buyer",
+                "name": "Acheteur parfait",
+                "icon": "star",
+                "color": "purple"
+            })
+        
+        await db.users.update_one(
+            {"id": buyer_id},
+            {"$set": {
+                "buyer_rating": average_rating,
+                "buyer_reviews_count": total_reviews,
+                "buyer_badges": badges
+            }}
+        )
+
+@api_router.get("/reviews/buyer/{buyer_id}")
+async def get_buyer_reviews(buyer_id: str, limit: int = 20):
+    """Récupérer les avis sur un acheteur"""
+    reviews = await db.buyer_reviews.find(
+        {"buyer_id": buyer_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    # Calculate stats
+    total = len(reviews)
+    average = round(sum(r["rating"] for r in reviews) / total, 1) if total > 0 else 0
+    
+    # Rating distribution
+    distribution = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+    for r in reviews:
+        distribution[r["rating"]] += 1
+    
+    # Get buyer info with badges
+    buyer = await db.users.find_one({"id": buyer_id}, {"_id": 0, "name": 1, "buyer_badges": 1, "created_at": 1})
+    
+    return {
+        "reviews": reviews,
+        "total": total,
+        "average": average,
+        "distribution": distribution,
+        "buyer_name": buyer.get("name", "Acheteur") if buyer else "Acheteur",
+        "buyer_badges": buyer.get("buyer_badges", []) if buyer else [],
+        "member_since": buyer.get("created_at") if buyer else None
+    }
+
+@api_router.get("/reviews/buyer/pending")
+async def get_pending_buyer_reviews(current_user: dict = Depends(get_current_user)):
+    """Récupérer les commandes livrées où le vendeur n'a pas encore noté l'acheteur"""
+    # Get delivered orders where current user is seller
+    orders = await db.orders.find({
+        "seller_id": current_user["id"],
+        "status": "delivered"
+    }, {"_id": 0}).to_list(100)
+    
+    # Get existing buyer reviews from this seller
+    order_ids = [o["id"] for o in orders]
+    reviewed = await db.buyer_reviews.find(
+        {"order_id": {"$in": order_ids}, "seller_id": current_user["id"]},
+        {"order_id": 1}
+    ).to_list(100)
+    reviewed_ids = [r["order_id"] for r in reviewed]
+    
+    # Filter out already reviewed orders
+    pending = [o for o in orders if o["id"] not in reviewed_ids]
+    
+    return pending
+
+@api_router.get("/buyer/profile/{buyer_id}")
+async def get_buyer_profile(buyer_id: str):
+    """Récupérer le profil public d'un acheteur"""
+    buyer = await db.users.find_one({"id": buyer_id}, {"_id": 0, "password": 0})
+    if not buyer:
+        raise HTTPException(status_code=404, detail="Acheteur non trouvé")
+    
+    # Get buyer stats
+    orders_count = await db.orders.count_documents({"buyer_id": buyer_id, "status": "delivered"})
+    reviews = await db.buyer_reviews.find({"buyer_id": buyer_id}, {"_id": 0}).to_list(100)
+    
+    total_reviews = len(reviews)
+    average_rating = round(sum(r["rating"] for r in reviews) / total_reviews, 1) if total_reviews > 0 else 0
+    
+    # Check trusted buyer badge
+    is_trusted = total_reviews >= 5 and average_rating >= 4.0
+    
+    return {
+        "id": buyer["id"],
+        "name": buyer.get("name", "Acheteur"),
+        "city": buyer.get("city"),
+        "created_at": buyer.get("created_at"),
+        "orders_completed": orders_count,
+        "total_reviews": total_reviews,
+        "average_rating": average_rating,
+        "is_trusted_buyer": is_trusted,
+        "badges": buyer.get("buyer_badges", []),
+        "recent_reviews": reviews[:5]
+    }
+
 # ================== UPDATES (CHANGELOG) ROUTES ==================
 
 class UpdateItem(BaseModel):
