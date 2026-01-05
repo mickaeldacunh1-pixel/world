@@ -689,6 +689,21 @@ backend:
         - agent: "testing"
         - comment: "AI Price Estimation working correctly. Endpoint POST /api/ai/estimate-price accepts all required fields (part_name, condition, brand, year) and returns proper response structure with estimation field containing price information. Validation works correctly for missing fields (returns 422). AI provides relevant automotive price estimates in French. Feature ready for production use."
 
+  - task: "Tobi AI Chat Assistant"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Tobi AI assistant implemented with automotive knowledge and French responses."
+        - working: true
+        - agent: "testing"
+        - comment: "Tobi AI Chat Assistant working excellently. Endpoint POST /api/tobi/chat accepts message and session_id, returns proper response structure with automotive-focused answers in French. Tested with general questions ('comment fonctionne le site?') and specific automotive queries ('alternateur pour Renault Clio 2015'). Tobi provides relevant advice about searching, filters, and automotive parts. Session history endpoint GET /api/tobi/history/{session_id} also functional. Minor: Empty message validation could be stricter (currently accepts empty messages). Overall feature working correctly and ready for production."
+
 frontend:
   - task: "AI Tools Component"
     implemented: true
