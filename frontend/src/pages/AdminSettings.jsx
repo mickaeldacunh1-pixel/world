@@ -395,6 +395,44 @@ export default function AdminSettings() {
               </CardContent>
             </Card>
 
+            {/* Seasonal Animation Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5" />
+                  Animation saisonnière
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Ajoutez une ambiance festive à votre site avec des animations !
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {ANIMATION_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setSettings({...settings, seasonal_animation: option.value})}
+                      className={`p-4 rounded-lg border-2 text-center transition-all ${
+                        settings.seasonal_animation === option.value
+                          ? 'border-accent bg-accent/10'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <span className="text-2xl block mb-1">{option.emoji}</span>
+                      <span className="text-sm font-medium">{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+                {settings.seasonal_animation && (
+                  <p className="text-sm text-accent flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    Animation "{ANIMATION_OPTIONS.find(o => o.value === settings.seasonal_animation)?.label}" activée
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Preview */}
             <Card>
               <CardHeader>
