@@ -291,46 +291,88 @@ export default function Checkout() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="w-5 h-5" />
-                  Adresse de livraison
+                  Mode de livraison
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="address">Adresse *</Label>
-                  <Input
-                    id="address"
-                    placeholder="123 rue de la Pièce Auto"
-                    value={shippingInfo.address}
-                    onChange={(e) => handleInputChange('address', e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="postal_code">Code postal *</Label>
-                    <Input
-                      id="postal_code"
-                      placeholder="75001"
-                      value={shippingInfo.postal_code}
-                      onChange={(e) => handleInputChange('postal_code', e.target.value)}
-                      maxLength={5}
-                      required
+              <CardContent className="space-y-6">
+                {/* Delivery Method Selection */}
+                <RadioGroup value={deliveryMethod} onValueChange={setDeliveryMethod} className="space-y-3">
+                  <div className={`flex items-center space-x-3 p-4 border rounded-lg cursor-pointer transition-colors ${deliveryMethod === 'home' ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <RadioGroupItem value="home" id="home" />
+                    <Label htmlFor="home" className="flex items-center gap-3 cursor-pointer flex-1">
+                      <Home className="w-5 h-5 text-accent" />
+                      <div>
+                        <p className="font-medium">Livraison à domicile</p>
+                        <p className="text-sm text-muted-foreground">Recevoir à votre adresse</p>
+                      </div>
+                    </Label>
+                  </div>
+                  
+                  <div className={`flex items-center space-x-3 p-4 border rounded-lg cursor-pointer transition-colors ${deliveryMethod === 'relay' ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <RadioGroupItem value="relay" id="relay" />
+                    <Label htmlFor="relay" className="flex items-center gap-3 cursor-pointer flex-1">
+                      <Package className="w-5 h-5 text-accent" />
+                      <div>
+                        <p className="font-medium">Point Relais Mondial Relay</p>
+                        <p className="text-sm text-muted-foreground">Retirer dans un point relais près de chez vous</p>
+                      </div>
+                    </Label>
+                  </div>
+                </RadioGroup>
+
+                {/* Home Delivery Form */}
+                {deliveryMethod === 'home' && (
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="space-y-2">
+                      <Label htmlFor="address">Adresse *</Label>
+                      <Input
+                        id="address"
+                        placeholder="123 rue de la Pièce Auto"
+                        value={shippingInfo.address}
+                        onChange={(e) => handleInputChange('address', e.target.value)}
+                        required
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="postal_code">Code postal *</Label>
+                        <Input
+                          id="postal_code"
+                          placeholder="75001"
+                          value={shippingInfo.postal_code}
+                          onChange={(e) => handleInputChange('postal_code', e.target.value)}
+                          maxLength={5}
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="city">Ville *</Label>
+                        <Input
+                          id="city"
+                          placeholder="Paris"
+                          value={shippingInfo.city}
+                          onChange={(e) => handleInputChange('city', e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Point Relay Picker */}
+                {deliveryMethod === 'relay' && (
+                  <div className="pt-4 border-t">
+                    <MondialRelayPicker 
+                      onSelect={setSelectedRelay}
+                      selectedRelay={selectedRelay}
+                      postalCode={shippingInfo.postal_code}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="city">Ville *</Label>
-                    <Input
-                      id="city"
-                      placeholder="Paris"
-                      value={shippingInfo.city}
-                      onChange={(e) => handleInputChange('city', e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
+                )}
                 
-                <div className="space-y-2">
+                {/* Phone - Always visible */}
+                <div className="space-y-2 pt-4 border-t">
                   <Label htmlFor="phone">Téléphone</Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
