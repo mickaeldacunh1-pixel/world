@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
 import { Button } from './ui/button';
 import {
@@ -10,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { Car, Wrench, Bike, Truck, Settings, User, LogOut, MessageSquare, LayoutDashboard, Menu, X, Plus, Package, Heart, Bell, TrendingUp, Palette, ShoppingCart } from 'lucide-react';
+import { Car, Wrench, Bike, Truck, Settings, User, LogOut, MessageSquare, LayoutDashboard, Menu, X, Plus, Package, Heart, Bell, TrendingUp, Palette, ShoppingCart, Moon, Sun } from 'lucide-react';
 import WorldAutoLogo from './WorldAutoLogo';
 import FranceText from './FranceText';
 
