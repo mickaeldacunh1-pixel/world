@@ -350,6 +350,34 @@ export default function Auth() {
                     </div>
                   </div>
 
+                  {/* Country selector */}
+                  <div className="space-y-2">
+                    <Label htmlFor="register-country">
+                      Pays <span className="text-red-500">*</span>
+                    </Label>
+                    <div className="relative">
+                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+                      <Select 
+                        value={registerData.country} 
+                        onValueChange={(v) => updateRegisterData('country', v)}
+                      >
+                        <SelectTrigger className="pl-10" data-testid="register-country-select">
+                          <SelectValue placeholder="Sélectionnez votre pays" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ALLOWED_COUNTRIES.map(country => (
+                            <SelectItem key={country.value} value={country.value}>
+                              {country.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Inscriptions limitées à certains pays européens
+                    </p>
+                  </div>
+
                   {/* Professional checkbox */}
                   <div className="flex items-center space-x-2 py-2">
                     <Checkbox
