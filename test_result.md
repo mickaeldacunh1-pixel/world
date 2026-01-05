@@ -798,8 +798,70 @@ frontend:
 
 agent_communication:
     - agent: "main"
-    - message: "Implemented 4 major features: 1) Verified Seller Badge, 2) Report/Signalement System, 3) Vehicle Compatibility Search, 4) Real-time Chat Enhancements. All features need testing validation."
+    - message: "Implemented 2 major backlog features: 1) WebSocket Chat - Real-time messaging with typing indicators, connection status, and instant message delivery. 2) Buyer Reviews System - Sellers can now rate buyers after delivery, buyers have profile pages with badges (Trusted Buyer, VIP, Perfect). Added BuyerProfile page, RateBuyerModal component, and buyer review endpoints."
     - agent: "testing"
     - message: "Comprehensive testing of 4 new features completed successfully. ✅ WORKING FEATURES: 1) Vehicle Compatibility Search - All cascading dropdowns (Brand/Model/Year) working perfectly with 20+ brands, proper model filtering, and 1990-2026 year range. Clear filters button functional. 2) Report System - Complete signalement modal with all 7 report reasons (Spam, Arnaque, Contenu inapproprié, Contrefaçon, Mauvaise catégorie, Annonce en double, Autre), optional description field, and submit functionality. 3) Verified Seller Badge - Green badge with Shield icon implementation found, appears for sellers with 5+ sales and 4+ rating. 4) Real-time Chat Enhancements - 5-second polling, notification sounds, unread badges in navbar with 30-second polling intervals all implemented. ⚠️ ADMIN ACCESS: AdminReports page properly protected, requires specific admin emails (contact@worldautofrance.com or admin@worldautofrance.com) rather than test credentials. All features fully functional and ready for production use."
     - agent: "testing"
     - message: "AI Features testing completed. ✅ WORKING: 1) AI Price Estimation (POST /api/ai/estimate-price) - Accepts part_name, condition, brand, year and returns detailed price estimates with automotive context. Validation working correctly. 2) Tobi AI Chat Assistant (POST /api/tobi/chat) - Provides excellent French automotive advice, responds to general and specific questions about parts/vehicles. Session history functional. ❌ ISSUE: AI Part Recognition (POST /api/ai/recognize-part) - Returns 500 error 'ImageContent.__init__() got an unexpected keyword argument 'url''. This is an emergentintegrations library issue with image processing. Endpoint structure correct but internal AI vision processing fails. Needs main agent to fix ImageContent initialization."
+
+backend:
+  - task: "WebSocket Chat"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented WebSocket endpoint /ws/chat/{token} with ConnectionManager class. Features: real-time messaging, typing indicators, mark as read, ping/pong keepalive. Frontend updated with WebSocket connection, fallback to polling, typing indicator display."
+
+  - task: "Buyer Reviews System"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented buyer review system: POST /api/reviews/buyer, GET /api/reviews/buyer/{buyer_id}, GET /api/reviews/buyer/pending, GET /api/buyer/profile/{buyer_id}. Added badges system (Trusted Buyer, VIP Buyer, Perfect Buyer). Frontend: BuyerProfile page, RateBuyerModal component, integration in Orders page."
+
+frontend:
+  - task: "WebSocket Chat Frontend"
+    implemented: true
+    working: true
+    file: "pages/Messages.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Updated Messages.jsx with WebSocket support. Features: connection status indicator (Wifi icon), typing indicator, instant message delivery, fallback to 30s polling. Emoji picker already added."
+
+  - task: "Buyer Profile Page"
+    implemented: true
+    working: true
+    file: "pages/BuyerProfile.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Created BuyerProfile page at /acheteur/:buyerId. Displays buyer info, badges, stats (orders completed, reviews, average rating), and recent reviews from sellers."
+
+  - task: "Rate Buyer Modal"
+    implemented: true
+    working: true
+    file: "components/RateBuyerModal.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Created RateBuyerModal component for sellers to rate buyers after delivery. 5-star rating system with emoji feedback, optional comment. Integrated in Orders page for delivered orders."
