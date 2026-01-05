@@ -139,9 +139,8 @@ export default function Listings() {
   };
 
   const handleFilterApply = () => {
-    // Update URL with current filter state
+    // Update URL with current filter state using setSearchParams
     const params = new URLSearchParams();
-    if (category) params.set('category', category);
     if (subcategory) params.set('subcategory', subcategory);
     if (compatibleBrand) params.set('compatible_brand', compatibleBrand);
     if (region) params.set('region', region);
@@ -152,9 +151,8 @@ export default function Listings() {
     if (condition) params.set('condition', condition);
     if (sort !== 'recent') params.set('sort', sort);
     
-    // Update URL without navigation
-    const newUrl = `/annonces${category ? `/${category}` : ''}${params.toString() ? `?${params.toString()}` : ''}`;
-    window.history.pushState({}, '', newUrl);
+    // Update search params
+    setSearchParams(params);
     
     fetchListings(true);
     setShowFilters(false);
