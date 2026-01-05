@@ -650,8 +650,7 @@ frontend:
         - comment: "Admin Updates page has authentication issue. Page is properly protected - redirects to /auth when not authenticated (good security). However, admin login with admin@test.com / test1234 credentials fails - user remains on auth page after login attempt. Cannot access admin functionality to test stats cards, 'Nouvelle actualité' button, or form features. Admin authentication needs to be fixed for this feature to be fully functional."
 
 test_plan:
-  current_focus:
-    - "Admin Hero Settings Panel"
+  current_focus: []
   stuck_tasks:
     - "Admin Updates Management"
   test_all: false
