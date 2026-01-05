@@ -1920,6 +1920,12 @@ class AutoPiecesAPITester:
         self.test_updates_api_complete()
         self.test_newsletter_api_complete()
         
+        # AI FEATURES TESTING (NEW)
+        print("\n🤖 Testing AI Features...")
+        self.test_ai_price_estimation()
+        self.test_ai_part_recognition()
+        self.test_tobi_chat_assistant()
+        
         # Payment tests (Stripe and PayPal removal verification)
         self.test_stripe_checkout_creation()
         self.test_paypal_endpoints_removed()
