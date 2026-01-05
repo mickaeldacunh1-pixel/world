@@ -539,6 +539,28 @@ export default function ListingDetail() {
                 </Button>
               )}
             </div>
+
+            {/* Secure Payment Button */}
+            {user?.id !== listing.seller_id && listing.seller_stripe_connected && (
+              <div className="mt-4 space-y-3">
+                <Button 
+                  onClick={handleBuyNow}
+                  disabled={buyLoading}
+                  className="w-full h-14 bg-green-600 hover:bg-green-700 text-white text-lg font-semibold"
+                >
+                  {buyLoading ? (
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  ) : (
+                    <CreditCard className="w-5 h-5 mr-2" />
+                  )}
+                  Acheter maintenant - {listing.price + (listing.shipping_cost || 0)}€
+                </Button>
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                  <Shield className="w-4 h-4 text-green-600" />
+                  Paiement sécurisé - Argent protégé jusqu'à réception
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
