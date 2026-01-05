@@ -98,6 +98,16 @@ export default function Checkout() {
   };
 
   const validateForm = () => {
+    // For relay delivery, only need phone (relay info handles address)
+    if (deliveryMethod === 'relay') {
+      if (!selectedRelay) {
+        toast.error('Veuillez sélectionner un point relais');
+        return false;
+      }
+      return true;
+    }
+    
+    // Home delivery validation
     if (!shippingInfo.address.trim()) {
       toast.error('Veuillez entrer votre adresse');
       return false;
@@ -122,14 +132,34 @@ export default function Checkout() {
     
     setSubmitting(true);
     try {
+      // Prepare shipping data based on delivery method
+      let shippingData = {};
+      
+      if (deliveryMethod === 'relay' && selectedRelay) {
+        shippingData = {
+          buyer_address: `Point Relais: ${selectedRelay.name} - ${selectedRelay.address}`,
+          buyer_city: selectedRelay.city,
+          buyer_postal: selectedRelay.postalCode,
+          buyer_phone: shippingInfo.phone || undefined,
+          delivery_method: 'relay',
+          relay_id: selectedRelay.id,
+          relay_name: selectedRelay.name
+        };
+      } else {
+        shippingData = {
+          buyer_address: shippingInfo.address,
+          buyer_city: shippingInfo.city,
+          buyer_postal: shippingInfo.postal_code,
+          buyer_phone: shippingInfo.phone || undefined,
+          delivery_method: 'home'
+        };
+      }
+      
       const response = await axios.post(
         `${API}/orders/checkout`,
         {
           listing_ids: cartItems.map(item => item.id),
-          buyer_address: shippingInfo.address,
-          buyer_city: shippingInfo.city,
-          buyer_postal: shippingInfo.postal_code,
-          buyer_phone: shippingInfo.phone || undefined
+          ...shippingData
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
