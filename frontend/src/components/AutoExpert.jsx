@@ -163,7 +163,7 @@ export default function AutoExpert() {
     return (
       <button
         onClick={() => setIsMinimized(false)}
-        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-accent to-orange-500 text-white px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 hover:scale-105 transition-transform"
+        className="fixed bottom-24 right-6 z-50 bg-gradient-to-r from-accent to-orange-500 text-white px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 hover:scale-105 transition-transform"
       >
         <Bot className="w-5 h-5" />
         <span className="font-medium">AutoExpert</span>
