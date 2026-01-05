@@ -47,7 +47,7 @@ const COLOR_PRESETS = [
 
 // Options d'animation du texte Hero
 const HERO_TEXT_ANIMATIONS = [
-  { value: "", label: "Aucune" },
+  { value: "none", label: "Aucune" },
   { value: "fade-in", label: "Fondu" },
   { value: "slide-up", label: "Glisser vers le haut" },
   { value: "slide-left", label: "Glisser depuis la gauche" },
