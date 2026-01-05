@@ -83,7 +83,7 @@ export default function Listings() {
 
   useEffect(() => {
     fetchListings();
-  }, [category, page, sort, subcategory, compatibleBrand, region]);
+  }, [category, page, sort, subcategory, compatibleBrand, region, oemReference]);
 
   const fetchSubcategories = async () => {
     try {
