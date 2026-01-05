@@ -813,6 +813,25 @@ export default function AdminSettings() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Link to Updates Management */}
+            <Card className="bg-accent/5 border-accent/20">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-heading font-bold text-lg">Gestion des actualités</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Créez et gérez les mises à jour affichées sur la page Nouveautés
+                    </p>
+                  </div>
+                  <Link to="/admin/actualites">
+                    <Button className="bg-accent hover:bg-accent/90">
+                      Gérer les actualités
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
 
