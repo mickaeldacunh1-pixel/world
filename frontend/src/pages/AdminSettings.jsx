@@ -333,14 +333,119 @@ export default function AdminSettings() {
 
           {/* Hero Tab */}
           <TabsContent value="hero" className="space-y-6">
+            {/* Announcement Bar Card */}
             <Card>
               <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  📢 Barre d'annonce
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>Activer la barre d'annonce</Label>
+                    <p className="text-sm text-muted-foreground">Affiche un message en haut du site</p>
+                  </div>
+                  <Switch
+                    checked={settings.announcement_enabled}
+                    onCheckedChange={(checked) => setSettings({...settings, announcement_enabled: checked})}
+                  />
+                </div>
+                
+                {settings.announcement_enabled && (
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="space-y-2">
+                      <Label>Texte de l'annonce</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          value={settings.announcement_text}
+                          onChange={(e) => setSettings({...settings, announcement_text: e.target.value})}
+                          placeholder="🎄 Livraison gratuite jusqu'au 31 décembre !"
+                          className="flex-1"
+                        />
+                        <EmojiPicker onSelect={(emoji) => setSettings({...settings, announcement_text: settings.announcement_text + emoji})} />
+                      </div>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Lien (optionnel)</Label>
+                        <Input
+                          value={settings.announcement_link}
+                          onChange={(e) => setSettings({...settings, announcement_link: e.target.value})}
+                          placeholder="/promotions"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Couleur de fond</Label>
+                        <div className="flex gap-2">
+                          <Input
+                            type="color"
+                            value={settings.announcement_bg_color}
+                            onChange={(e) => setSettings({...settings, announcement_bg_color: e.target.value})}
+                            className="w-12 h-9 p-1 cursor-pointer"
+                          />
+                          <Input
+                            value={settings.announcement_bg_color}
+                            onChange={(e) => setSettings({...settings, announcement_bg_color: e.target.value})}
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Couleur du texte</Label>
+                        <div className="flex gap-2">
+                          <Input
+                            type="color"
+                            value={settings.announcement_text_color}
+                            onChange={(e) => setSettings({...settings, announcement_text_color: e.target.value})}
+                            className="w-12 h-9 p-1 cursor-pointer"
+                          />
+                          <Input
+                            value={settings.announcement_text_color}
+                            onChange={(e) => setSettings({...settings, announcement_text_color: e.target.value})}
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* Preview */}
+                    <div 
+                      className="p-3 rounded-lg text-center text-sm font-medium"
+                      style={{ backgroundColor: settings.announcement_bg_color, color: settings.announcement_text_color }}
+                    >
+                      {settings.announcement_text || "Aperçu de votre annonce"}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Image className="w-5 h-5" />
                   Section Hero (Bannière principale)
                 </CardTitle>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setSettings({...settings, 
+                    hero_title_line1: DEFAULT_SETTINGS.hero_title_line1,
+                    hero_title_line2: DEFAULT_SETTINGS.hero_title_line2,
+                    hero_description: DEFAULT_SETTINGS.hero_description,
+                    hero_image: DEFAULT_SETTINGS.hero_image,
+                    hero_cta_text: DEFAULT_SETTINGS.hero_cta_text,
+                    hero_cta_link: DEFAULT_SETTINGS.hero_cta_link,
+                    hero_overlay_opacity: DEFAULT_SETTINGS.hero_overlay_opacity,
+                    hero_text_animation: DEFAULT_SETTINGS.hero_text_animation,
+                  })}
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Réinitialiser
+                </Button>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Titres avec émojis */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="hero_title_line1">Titre ligne 1</Label>
@@ -385,8 +490,35 @@ export default function AdminSettings() {
                   </div>
                 </div>
 
+                {/* Galerie d'images prédéfinies */}
+                <div className="space-y-3">
+                  <Label>🖼️ Galerie d'images (cliquez pour sélectionner)</Label>
+                  <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+                    {HERO_IMAGE_PRESETS.map((preset, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => setSettings({...settings, hero_image: preset.url})}
+                        className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all ${
+                          settings.hero_image === preset.url 
+                            ? 'border-accent ring-2 ring-accent/50' 
+                            : 'border-gray-200 hover:border-gray-400'
+                        }`}
+                      >
+                        <img src={preset.url} alt={preset.label} className="w-full h-full object-cover" />
+                        {settings.hero_image === preset.url && (
+                          <div className="absolute inset-0 bg-accent/20 flex items-center justify-center">
+                            <CheckCircle className="w-5 h-5 text-white" />
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* URL personnalisée + Upload */}
                 <div className="space-y-2">
-                  <Label>Image de fond</Label>
+                  <Label>Ou URL personnalisée</Label>
                   <div className="flex gap-2">
                     <Input
                       value={settings.hero_image}
@@ -406,24 +538,56 @@ export default function AdminSettings() {
                       )}
                     </Button>
                   </div>
-                  {settings.hero_image && (
-                    <img 
-                      src={settings.hero_image} 
-                      alt="Preview" 
-                      className="w-full h-40 object-cover rounded-lg mt-2"
-                    />
-                  )}}
                 </div>
 
+                {/* Opacité et Animation */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>🌗 Opacité du fond sombre ({settings.hero_overlay_opacity || 50}%)</Label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={settings.hero_overlay_opacity || 50}
+                      onChange={(e) => setSettings({...settings, hero_overlay_opacity: parseInt(e.target.value)})}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-accent"
+                    />
+                    <p className="text-xs text-muted-foreground">0% = pas de fond sombre, 100% = fond noir</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>✨ Animation du texte</Label>
+                    <Select 
+                      value={settings.hero_text_animation || ""} 
+                      onValueChange={(v) => setSettings({...settings, hero_text_animation: v})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choisir une animation" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {HERO_TEXT_ANIMATIONS.map(anim => (
+                          <SelectItem key={anim.value} value={anim.value}>
+                            {anim.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Bouton CTA */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="hero_cta_text">Texte du bouton</Label>
-                    <Input
-                      id="hero_cta_text"
-                      value={settings.hero_cta_text}
-                      onChange={(e) => setSettings({...settings, hero_cta_text: e.target.value})}
-                      placeholder="Déposer une annonce"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        id="hero_cta_text"
+                        value={settings.hero_cta_text}
+                        onChange={(e) => setSettings({...settings, hero_cta_text: e.target.value})}
+                        placeholder="Déposer une annonce"
+                        className="flex-1"
+                      />
+                      <EmojiPicker onSelect={(emoji) => setSettings({...settings, hero_cta_text: settings.hero_cta_text + emoji})} />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="hero_cta_link">Lien du bouton</Label>
