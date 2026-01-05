@@ -21,6 +21,7 @@ import Alerts from "./pages/Alerts";
 import SellerStats from "./pages/SellerStats";
 import SellerProfile from "./pages/SellerProfile";
 import AdminSettings from "./pages/AdminSettings";
+import AdminUpdates from "./pages/AdminUpdates";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
@@ -89,6 +90,9 @@ function AppContent() {
           <Route path="/vendeur/:sellerId" element={<SellerProfile />} />
           <Route path="/admin/parametres" element={
             <ProtectedRoute><AdminSettings /></ProtectedRoute>
+          } />
+          <Route path="/admin/actualites" element={
+            <ProtectedRoute><AdminUpdates /></ProtectedRoute>
           } />
           <Route path="/profil" element={
             <ProtectedRoute><Profile /></ProtectedRoute>
