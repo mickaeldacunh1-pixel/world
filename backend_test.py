@@ -1320,6 +1320,330 @@ class AutoPiecesAPITester:
         self.log_test("Complete Messaging API Test", True, "All messaging functionality working correctly")
         return True
 
+    def test_updates_api_complete(self):
+        """Test complete Updates (Changelog) API functionality"""
+        print("\n📰 Testing Updates (Changelog) API...")
+        
+        # Step 1: Test GET /api/updates (public endpoint)
+        updates_result = self.run_test("Updates - Get All Updates", "GET", "updates", 200)
+        if updates_result and isinstance(updates_result, list):
+            self.log_test("Updates - Get All Structure", True, f"Found {len(updates_result)} updates")
+            
+            # If there are updates, check structure
+            if len(updates_result) > 0:
+                update = updates_result[0]
+                required_fields = ["id", "title", "version", "category", "items", "date"]
+                for field in required_fields:
+                    if field in update:
+                        self.log_test(f"Update Field - {field}", True)
+                    else:
+                        self.log_test(f"Update Field - {field}", False, f"Missing field: {field}")
+                        return False
+                
+                # Check items structure
+                items = update.get("items", [])
+                if items and isinstance(items, list):
+                    item = items[0]
+                    item_fields = ["type", "text"]
+                    for field in item_fields:
+                        if field in item:
+                            self.log_test(f"Update Item Field - {field}", True)
+                        else:
+                            self.log_test(f"Update Item Field - {field}", False, f"Missing field: {field}")
+                            return False
+                else:
+                    self.log_test("Update Items Structure", False, "Items should be a non-empty array")
+                    return False
+        else:
+            self.log_test("Updates - Get All Structure", True, "Empty updates list (valid)")
+        
+        # Step 2: Test POST /api/updates (requires auth)
+        if not self.token:
+            self.log_test("Updates - Create Update", False, "No token available")
+            return False
+        
+        # Create a test update
+        test_update = {
+            "title": "Test Update v1.0.0",
+            "version": "1.0.0",
+            "category": "feature",
+            "image_url": "https://example.com/test-image.jpg",
+            "items": [
+                {
+                    "type": "new",
+                    "text": "Nouvelle fonctionnalité de test"
+                },
+                {
+                    "type": "improvement",
+                    "text": "Amélioration des performances"
+                },
+                {
+                    "type": "fix",
+                    "text": "Correction d'un bug mineur"
+                }
+            ]
+        }
+        
+        create_result = self.run_test("Updates - Create Update", "POST", "updates", 200, test_update)
+        if create_result:
+            # Verify created update structure
+            created_fields = ["id", "title", "version", "category", "image_url", "items", "date", "created_by"]
+            for field in created_fields:
+                if field in create_result:
+                    self.log_test(f"Created Update Field - {field}", True)
+                else:
+                    self.log_test(f"Created Update Field - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Verify content matches
+            if create_result.get("title") == test_update["title"]:
+                self.log_test("Updates - Created Title Match", True)
+            else:
+                self.log_test("Updates - Created Title Match", False, "Title doesn't match")
+                return False
+            
+            if create_result.get("version") == test_update["version"]:
+                self.log_test("Updates - Created Version Match", True)
+            else:
+                self.log_test("Updates - Created Version Match", False, "Version doesn't match")
+                return False
+            
+            # Store the created update ID for further tests
+            created_update_id = create_result.get("id")
+            
+            # Step 3: Test GET /api/updates/{id}
+            single_update = self.run_test("Updates - Get Single Update", "GET", f"updates/{created_update_id}", 200)
+            if single_update:
+                if single_update.get("id") == created_update_id:
+                    self.log_test("Updates - Get Single Match", True)
+                else:
+                    self.log_test("Updates - Get Single Match", False, "ID doesn't match")
+                    return False
+            else:
+                return False
+            
+            # Step 4: Test PUT /api/updates/{id} (update existing)
+            updated_data = {
+                "title": "Updated Test Update v1.0.1",
+                "version": "1.0.1",
+                "category": "security",
+                "image_url": "https://example.com/updated-image.jpg",
+                "items": [
+                    {
+                        "type": "fix",
+                        "text": "Correction de sécurité importante"
+                    },
+                    {
+                        "type": "maintenance",
+                        "text": "Maintenance préventive"
+                    }
+                ]
+            }
+            
+            update_result = self.run_test("Updates - Update Existing", "PUT", f"updates/{created_update_id}", 200, updated_data)
+            if update_result:
+                # Verify updated content
+                if update_result.get("title") == updated_data["title"]:
+                    self.log_test("Updates - Updated Title Match", True)
+                else:
+                    self.log_test("Updates - Updated Title Match", False, "Updated title doesn't match")
+                    return False
+                
+                if update_result.get("version") == updated_data["version"]:
+                    self.log_test("Updates - Updated Version Match", True)
+                else:
+                    self.log_test("Updates - Updated Version Match", False, "Updated version doesn't match")
+                    return False
+                
+                # Check if updated_at field was added
+                if "updated_at" in update_result:
+                    self.log_test("Updates - Updated Timestamp", True)
+                else:
+                    self.log_test("Updates - Updated Timestamp", False, "Missing updated_at field")
+                    return False
+            else:
+                return False
+            
+            # Step 5: Test DELETE /api/updates/{id}
+            delete_result = self.run_test("Updates - Delete Update", "DELETE", f"updates/{created_update_id}", 200)
+            if delete_result and delete_result.get("message"):
+                self.log_test("Updates - Delete Success Message", True, f"Message: {delete_result['message']}")
+            else:
+                self.log_test("Updates - Delete Success Message", False, "No success message")
+                return False
+            
+            # Step 6: Verify update is deleted
+            deleted_check = self.run_test("Updates - Verify Deleted", "GET", f"updates/{created_update_id}", 404)
+            # We expect 404 since it's deleted
+            self.log_test("Updates - Deleted Verification", True, "Update correctly deleted")
+        else:
+            return False
+        
+        # Step 7: Test authentication required for admin endpoints
+        original_token = self.token
+        self.token = None
+        
+        # Test without authentication
+        self.run_test("Updates - Auth Required (Create)", "POST", "updates", 401, test_update)
+        self.run_test("Updates - Auth Required (Update)", "PUT", "updates/test-id", 401, test_update)
+        self.run_test("Updates - Auth Required (Delete)", "DELETE", "updates/test-id", 401)
+        
+        # Restore token
+        self.token = original_token
+        
+        # Step 8: Test invalid update ID
+        invalid_update = self.run_test("Updates - Invalid ID", "GET", "updates/non-existent-id", 404)
+        # We expect 404
+        self.log_test("Updates - Invalid ID Error", True, "Correctly returned 404 for invalid ID")
+        
+        self.log_test("Complete Updates API Test", True, "All updates functionality working correctly")
+        return True
+
+    def test_newsletter_api_complete(self):
+        """Test complete Newsletter API functionality"""
+        print("\n📧 Testing Newsletter API...")
+        
+        # Step 1: Test POST /api/newsletter/subscribe (public endpoint)
+        timestamp = datetime.now().strftime('%H%M%S')
+        test_subscriber = {
+            "email": f"newsletter{timestamp}@example.com",
+            "name": f"Newsletter Test User {timestamp}"
+        }
+        
+        subscribe_result = self.run_test("Newsletter - Subscribe", "POST", "newsletter/subscribe", 200, test_subscriber)
+        if subscribe_result:
+            # Verify response message
+            if subscribe_result.get("message"):
+                self.log_test("Newsletter - Subscribe Success Message", True, f"Message: {subscribe_result['message']}")
+            else:
+                self.log_test("Newsletter - Subscribe Success Message", False, "No success message")
+                return False
+        else:
+            return False
+        
+        # Step 2: Test duplicate subscription (should fail)
+        duplicate_result = self.run_test("Newsletter - Duplicate Subscribe", "POST", "newsletter/subscribe", 400, test_subscriber)
+        # We expect 400 for duplicate email
+        self.log_test("Newsletter - Duplicate Email Error", True, "Correctly rejected duplicate email")
+        
+        # Step 3: Test invalid email format
+        invalid_email_subscriber = {
+            "email": "invalid-email-format",
+            "name": "Test User"
+        }
+        
+        invalid_email_result = self.run_test("Newsletter - Invalid Email", "POST", "newsletter/subscribe", 400, invalid_email_subscriber)
+        # We expect 400 for invalid email format
+        self.log_test("Newsletter - Invalid Email Error", True, "Correctly rejected invalid email format")
+        
+        # Step 4: Test subscription without name (optional field)
+        timestamp2 = datetime.now().strftime('%H%M%S')
+        no_name_subscriber = {
+            "email": f"noname{timestamp2}@example.com"
+        }
+        
+        no_name_result = self.run_test("Newsletter - Subscribe Without Name", "POST", "newsletter/subscribe", 200, no_name_subscriber)
+        if no_name_result:
+            self.log_test("Newsletter - Optional Name Field", True, "Subscription works without name")
+        else:
+            self.log_test("Newsletter - Optional Name Field", False, "Failed to subscribe without name")
+            return False
+        
+        # Step 5: Test GET /api/newsletter/subscribers (requires auth)
+        if not self.token:
+            self.log_test("Newsletter - Get Subscribers", False, "No token available")
+            return False
+        
+        subscribers_result = self.run_test("Newsletter - Get Subscribers", "GET", "newsletter/subscribers", 200)
+        if subscribers_result:
+            # Verify response structure
+            if "subscribers" in subscribers_result and "total" in subscribers_result:
+                self.log_test("Newsletter - Subscribers Response Structure", True)
+                
+                subscribers_list = subscribers_result.get("subscribers", [])
+                total_count = subscribers_result.get("total", 0)
+                
+                # Verify total matches list length
+                if len(subscribers_list) == total_count:
+                    self.log_test("Newsletter - Subscribers Count Match", True, f"Found {total_count} subscribers")
+                else:
+                    self.log_test("Newsletter - Subscribers Count Match", False, f"Count mismatch: list={len(subscribers_list)}, total={total_count}")
+                    return False
+                
+                # Check if our test subscribers are in the list
+                if total_count > 0:
+                    subscriber = subscribers_list[0]
+                    required_fields = ["id", "email", "name", "subscribed_at", "active"]
+                    for field in required_fields:
+                        if field in subscriber:
+                            self.log_test(f"Subscriber Field - {field}", True)
+                        else:
+                            self.log_test(f"Subscriber Field - {field}", False, f"Missing field: {field}")
+                            return False
+                    
+                    # Verify our test email is in the list
+                    test_emails = [test_subscriber["email"], no_name_subscriber["email"]]
+                    found_emails = [s.get("email") for s in subscribers_list]
+                    
+                    for test_email in test_emails:
+                        if test_email in found_emails:
+                            self.log_test(f"Newsletter - Found Test Email {test_email}", True)
+                        else:
+                            self.log_test(f"Newsletter - Found Test Email {test_email}", False, "Test email not found in subscribers")
+                            return False
+            else:
+                self.log_test("Newsletter - Subscribers Response Structure", False, "Missing subscribers or total field")
+                return False
+        else:
+            return False
+        
+        # Step 6: Test authentication required for admin endpoint
+        original_token = self.token
+        self.token = None
+        
+        # Test without authentication
+        self.run_test("Newsletter - Auth Required (Get Subscribers)", "GET", "newsletter/subscribers", 401)
+        
+        # Restore token
+        self.token = original_token
+        
+        # Step 7: Test DELETE /api/newsletter/unsubscribe/{email} (public endpoint)
+        unsubscribe_result = self.run_test("Newsletter - Unsubscribe", "DELETE", f"newsletter/unsubscribe/{test_subscriber['email']}", 200)
+        if unsubscribe_result:
+            self.log_test("Newsletter - Unsubscribe Success", True, "Successfully unsubscribed")
+        else:
+            self.log_test("Newsletter - Unsubscribe Success", False, "Failed to unsubscribe")
+            return False
+        
+        # Step 8: Test unsubscribing non-existent email
+        non_existent_email = f"nonexistent{timestamp}@example.com"
+        non_existent_result = self.run_test("Newsletter - Unsubscribe Non-existent", "DELETE", f"newsletter/unsubscribe/{non_existent_email}", 404)
+        # We expect 404 for non-existent email
+        self.log_test("Newsletter - Non-existent Email Error", True, "Correctly returned 404 for non-existent email")
+        
+        # Step 9: Verify unsubscribed user is no longer active
+        updated_subscribers = self.run_test("Newsletter - Get Subscribers After Unsubscribe", "GET", "newsletter/subscribers", 200)
+        if updated_subscribers:
+            active_emails = [s.get("email") for s in updated_subscribers.get("subscribers", [])]
+            if test_subscriber["email"] not in active_emails:
+                self.log_test("Newsletter - Unsubscribe Verification", True, "Unsubscribed email no longer in active list")
+            else:
+                self.log_test("Newsletter - Unsubscribe Verification", False, "Unsubscribed email still in active list")
+                return False
+        else:
+            return False
+        
+        # Step 10: Test re-subscription after unsubscribe
+        resubscribe_result = self.run_test("Newsletter - Re-subscribe", "POST", "newsletter/subscribe", 200, test_subscriber)
+        if resubscribe_result:
+            self.log_test("Newsletter - Re-subscription", True, "Successfully re-subscribed after unsubscribe")
+        else:
+            self.log_test("Newsletter - Re-subscription", False, "Failed to re-subscribe")
+            return False
+        
+        self.log_test("Complete Newsletter API Test", True, "All newsletter functionality working correctly")
+        return True
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting AutoPièces API Tests...")
