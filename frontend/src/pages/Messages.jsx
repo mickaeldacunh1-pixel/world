@@ -386,7 +386,7 @@ export default function Messages() {
                   >
                     <ArrowLeft className="w-4 h-4" />
                   </Button>
-                  <div>
+                  <div className="flex-1">
                     <p className="font-medium">
                       {selectedConv.other_user_name || 'Conversation'}
                     </p>
@@ -397,6 +397,12 @@ export default function Messages() {
                       >
                         {selectedConv.listing_title}
                       </Link>
+                    )}
+                    {/* Typing indicator */}
+                    {otherUserTyping && (
+                      <p className="text-xs text-muted-foreground italic animate-pulse">
+                        {selectedConv.other_user_name || 'L\'utilisateur'} est en train d'écrire...
+                      </p>
                     )}
                   </div>
                 </div>
