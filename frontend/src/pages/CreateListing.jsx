@@ -9,7 +9,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { ArrowLeft, Upload, X, ImagePlus, Loader2 } from 'lucide-react';
+import { ArrowLeft, Upload, X, ImagePlus, Loader2, Video, Play } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -32,11 +32,14 @@ export default function CreateListing() {
   const { user, refreshUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [uploadingImages, setUploadingImages] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [images, setImages] = useState([]);
+  const [videoUrl, setVideoUrl] = useState('');
   const [piecesSubcategories, setPiecesSubcategories] = useState({});
   const [accessoiresSubcategories, setAccessoiresSubcategories] = useState({});
   const [carBrands, setCarBrands] = useState([]);
   const fileInputRef = useRef(null);
+  const videoInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     title: '',
