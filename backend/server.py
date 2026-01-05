@@ -3503,6 +3503,7 @@ async def recognize_part(file: UploadFile = File(...)):
         
         chat = LlmChat(
             api_key=api_key,
+            session_id=f"recognize_{uuid.uuid4()}",
             system_message=PART_RECOGNITION_PROMPT
         ).with_model("openai", "gpt-4o")
         
@@ -3551,6 +3552,7 @@ async def estimate_price(request: PriceEstimationRequest):
         
         chat = LlmChat(
             api_key=api_key,
+            session_id=f"estimate_{uuid.uuid4()}",
             system_message="Tu es un expert en évaluation de pièces automobiles."
         ).with_model("openai", "gpt-4o-mini")
         
