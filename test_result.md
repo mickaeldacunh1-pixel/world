@@ -672,8 +672,18 @@ frontend:
         - agent: "testing"
         - comment: "Admin Hero Settings Panel testing completed successfully. ✅ WORKING FEATURES: 1) Authentication with admin_test@worldautofrance.com credentials works correctly. 2) All 5 tabs navigation (Hero, Couleurs, Polices, Bannières, Sections) accessible. 3) Hero Tab: Title/description fields with emoji pickers functional, image gallery with 8 preset images clickable and working, overlay opacity slider (0-100%) functional, text animation dropdown working with 6 options, CTA button fields editable, seasonal animation selection working with multiple options, desktop/mobile preview toggle working (375px mobile view confirmed), reset button functional. 4) Save functionality working with 'Paramètres sauvegardés!' success message. 5) 'Voir le site' button present and accessible. 6) Form fields retain values and update preview in real-time. All core admin panel features working correctly for hero section management. Ready for production use."
 
+  - task: "OEM Reference Search Feature"
+    implemented: true
+    working: "NA"
+    file: "pages/Home.jsx, pages/Listings.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented OEM Reference Search feature: 1) Added dedicated OEM search section on homepage with search field, example references (7701474426, 1K0615301M, 30735878, 04E115561H) as clickable buttons, and 4 feature highlights. 2) Enhanced OEM filter on Listings page - now always visible (not just for pieces category), with highlighted styling, mono font, and helper text. 3) Backend already supported OEM search via oem_reference query parameter."
+
 agent_communication:
     - agent: "main"
-    - message: "Completed Hero Admin Panel optimization. All 7 features implemented: 1) Image gallery with 8 car-related preset images, 2) Quick color palettes with 8 themes (World Auto, Bleu Premium, Vert Nature, Rouge Sport, Violet Luxe, Orange Energy, Noir Élégant, Bleu Nuit), 3) Overlay opacity slider, 4) Text animation dropdown with 6 options, 5) Announcement bar with customizable colors, 6) Reset buttons for Hero section, 7) Desktop/Mobile preview toggle showing 375px mobile view. Screenshots taken confirm all features working. Need frontend testing agent to validate full flow."
-    - agent: "testing"
-    - message: "Admin Hero Settings Panel testing completed successfully. All requested features working correctly: Authentication with admin_test@worldautofrance.com works. All 5 tabs accessible (Hero, Couleurs, Polices, Bannières, Sections). Hero Tab: Title/description fields with emoji pickers, 8 preset images gallery (clickable selection), overlay opacity slider (0-100%), text animation dropdown (6 options), CTA button fields, seasonal animations, desktop/mobile preview toggle (375px confirmed), reset button. Save functionality with success message. 'Voir le site' button present. All core admin panel features for hero section management working correctly. Ready for production use."
+    - message: "Implemented OEM Reference Search feature. Added dedicated search section on homepage with professional styling, example references as clickable buttons, and enhanced filter on listings page. Need testing to verify search functionality works end-to-end."
