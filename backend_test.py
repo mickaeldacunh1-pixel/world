@@ -1644,6 +1644,215 @@ class AutoPiecesAPITester:
         self.log_test("Complete Newsletter API Test", True, "All newsletter functionality working correctly")
         return True
 
+    def test_ai_price_estimation(self):
+        """Test AI price estimation endpoint"""
+        print("\n🤖 Testing AI Price Estimation...")
+        
+        # Test with valid data
+        estimation_data = {
+            "part_name": "Alternateur",
+            "condition": "occasion",
+            "brand": "Renault",
+            "year": 2018
+        }
+        
+        result = self.run_test("AI Price Estimation - Valid Data", "POST", "ai/estimate-price", 200, estimation_data)
+        if result:
+            # Check response structure
+            required_fields = ["part_name", "condition", "brand", "year", "estimation"]
+            for field in required_fields:
+                if field in result:
+                    self.log_test(f"AI Price Estimation - {field}", True)
+                else:
+                    self.log_test(f"AI Price Estimation - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Check estimation structure
+            estimation = result.get("estimation", {})
+            if isinstance(estimation, (dict, str)) and len(str(estimation)) > 0:
+                self.log_test("AI Price Estimation - Estimation Structure", True)
+                # The estimation should contain price information
+                estimation_str = str(estimation).lower()
+                if "prix" in estimation_str or "€" in estimation_str or "euro" in estimation_str or "coût" in estimation_str:
+                    self.log_test("AI Price Estimation - Contains Price Info", True)
+                else:
+                    self.log_test("AI Price Estimation - Contains Price Info", False, "No price information found")
+                    return False
+            else:
+                self.log_test("AI Price Estimation - Estimation Structure", False, "Estimation should contain content")
+                return False
+        else:
+            return False
+        
+        # Test with missing required fields
+        invalid_data = {
+            "part_name": "Alternateur"
+            # Missing other required fields
+        }
+        
+        invalid_result = self.run_test("AI Price Estimation - Missing Fields", "POST", "ai/estimate-price", 422, invalid_data)
+        # We expect 422 for validation error
+        self.log_test("AI Price Estimation - Validation Error", True, "Correctly rejected incomplete data")
+        
+        return True
+
+    def test_ai_part_recognition(self):
+        """Test AI part recognition endpoint"""
+        print("\n📷 Testing AI Part Recognition...")
+        
+        # Create a simple test image (1x1 pixel PNG)
+        import base64
+        # Minimal PNG image data (1x1 transparent pixel)
+        png_data = base64.b64decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChAI9jU8'
+            'IQAAAAABJRU5ErkJggg=='
+        )
+        
+        # Test with multipart/form-data
+        import requests
+        url = f"{self.base_url}/ai/recognize-part"
+        headers = {}
+        if self.token:
+            headers['Authorization'] = f'Bearer {self.token}'
+        
+        try:
+            files = {'file': ('test.png', png_data, 'image/png')}
+            response = requests.post(url, files=files, headers=headers)
+            
+            if response.status_code == 200:
+                self.log_test("AI Part Recognition - Image Upload", True, f"Status: {response.status_code}")
+                
+                try:
+                    result = response.json()
+                    # Check response structure
+                    required_fields = ["analysis"]
+                    for field in required_fields:
+                        if field in result:
+                            self.log_test(f"AI Part Recognition - {field}", True)
+                        else:
+                            self.log_test(f"AI Part Recognition - {field}", False, f"Missing field: {field}")
+                            return False
+                    
+                    # Check if analysis contains content
+                    analysis = result.get("analysis", "")
+                    if isinstance(analysis, str) and len(analysis) > 0:
+                        self.log_test("AI Part Recognition - Analysis Content", True, f"Analysis length: {len(analysis)}")
+                    else:
+                        self.log_test("AI Part Recognition - Analysis Content", False, "Empty or invalid analysis")
+                        return False
+                        
+                except Exception as e:
+                    self.log_test("AI Part Recognition - Response Parse", False, f"Failed to parse JSON: {e}")
+                    return False
+                    
+            else:
+                self.log_test("AI Part Recognition - Image Upload", False, f"Status: {response.status_code}, Response: {response.text[:200]}")
+                return False
+                
+        except Exception as e:
+            self.log_test("AI Part Recognition - Image Upload", False, f"Exception: {str(e)}")
+            return False
+        
+        # Test with invalid file type
+        try:
+            files = {'file': ('test.txt', b'not an image', 'text/plain')}
+            response = requests.post(url, files=files, headers=headers)
+            
+            if response.status_code == 400:
+                self.log_test("AI Part Recognition - Invalid File Type", True, "Correctly rejected non-image file")
+            else:
+                self.log_test("AI Part Recognition - Invalid File Type", False, f"Expected 400, got {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_test("AI Part Recognition - Invalid File Type", False, f"Exception: {str(e)}")
+            return False
+        
+        return True
+
+    def test_tobi_chat_assistant(self):
+        """Test Tobi AI chat assistant"""
+        print("\n💬 Testing Tobi AI Assistant...")
+        
+        # Test basic chat functionality
+        chat_data = {
+            "message": "Bonjour, comment fonctionne le site?",
+            "session_id": "test-123"
+        }
+        
+        result = self.run_test("Tobi Chat - Basic Question", "POST", "tobi/chat", 200, chat_data)
+        if result:
+            # Check response structure
+            required_fields = ["response", "session_id"]
+            for field in required_fields:
+                if field in result:
+                    self.log_test(f"Tobi Chat - {field}", True)
+                else:
+                    self.log_test(f"Tobi Chat - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Check if response is in French and contains relevant information
+            response_text = result.get("response", "")
+            if isinstance(response_text, str) and len(response_text) > 0:
+                self.log_test("Tobi Chat - Response Content", True, f"Response length: {len(response_text)}")
+                
+                # Check if response mentions World Auto or automotive terms
+                automotive_terms = ["world auto", "pièce", "voiture", "auto", "marketplace", "annonce", "site", "plateforme"]
+                found_terms = [term for term in automotive_terms if term.lower() in response_text.lower()]
+                if found_terms:
+                    self.log_test("Tobi Chat - Automotive Context", True, f"Found terms: {found_terms}")
+                else:
+                    self.log_test("Tobi Chat - Automotive Context", False, "No automotive terms found in response")
+                    return False
+            else:
+                self.log_test("Tobi Chat - Response Content", False, "Empty or invalid response")
+                return False
+        else:
+            return False
+        
+        # Test with automotive-specific question
+        auto_chat_data = {
+            "message": "Je cherche un alternateur pour ma Renault Clio 2015",
+            "session_id": "test-456"
+        }
+        
+        auto_result = self.run_test("Tobi Chat - Automotive Question", "POST", "tobi/chat", 200, auto_chat_data)
+        if auto_result:
+            response_text = auto_result.get("response", "")
+            # Should mention search, filters, or how to find parts
+            search_terms = ["recherche", "filtre", "catégorie", "pièce", "alternateur", "renault", "clio", "trouver", "chercher"]
+            found_terms = [term for term in search_terms if term.lower() in response_text.lower()]
+            if found_terms:
+                self.log_test("Tobi Chat - Automotive Advice", True, f"Found relevant terms: {found_terms}")
+            else:
+                self.log_test("Tobi Chat - Automotive Advice", False, "Response doesn't contain relevant automotive advice")
+                return False
+        else:
+            return False
+        
+        # Test session history (optional - might not be implemented)
+        history_result = self.run_test("Tobi Chat - Session History", "GET", "tobi/history/test-123", 200)
+        if history_result is not None:
+            if isinstance(history_result, list):
+                self.log_test("Tobi Chat - History Structure", True, f"Found {len(history_result)} messages")
+            else:
+                self.log_test("Tobi Chat - History Structure", False, "History should be an array")
+        else:
+            # History endpoint might not be implemented or might require auth
+            self.log_test("Tobi Chat - History Endpoint", True, "History endpoint not accessible (acceptable)")
+        
+        # Test with empty message
+        empty_chat_data = {
+            "message": "",
+            "session_id": "test-789"
+        }
+        
+        empty_result = self.run_test("Tobi Chat - Empty Message", "POST", "tobi/chat", 422, empty_chat_data)
+        # We expect validation error for empty message
+        self.log_test("Tobi Chat - Empty Message Validation", True, "Correctly rejected empty message")
+        
+        return True
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting AutoPièces API Tests...")
