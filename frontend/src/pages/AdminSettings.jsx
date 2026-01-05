@@ -64,7 +64,8 @@ const DEFAULT_SETTINGS = {
   hero_cta_text: "Déposer une annonce",
   hero_cta_link: "/deposer",
   hero_overlay_opacity: 50,
-  hero_text_animation: "",
+  hero_text_animation: "none",
+  preview_mode: "desktop",
   
   // Announcement Bar
   announcement_enabled: false,
