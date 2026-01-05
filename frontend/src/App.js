@@ -117,6 +117,7 @@ function AppContent() {
         </Routes>
       </main>
       <Footer />
+      <AutoExpert />
       <Toaster position="top-right" richColors />
     </div>
   );
