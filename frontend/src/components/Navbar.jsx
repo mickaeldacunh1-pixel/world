@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -13,6 +14,8 @@ import { Car, Wrench, Bike, Truck, Settings, User, LogOut, MessageSquare, Layout
 import WorldAutoLogo from './WorldAutoLogo';
 import FranceText from './FranceText';
 
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
 const categories = [
   { name: 'Pièces Détachées', slug: 'pieces', icon: Wrench },
   { name: 'Voitures', slug: 'voitures', icon: Car },
@@ -22,9 +25,34 @@ const categories = [
 ];
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  // Fetch unread messages count
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      if (!user || !token) {
+        setUnreadMessages(0);
+        return;
+      }
+      try {
+        const response = await axios.get(`${API}/users/me/stats`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUnreadMessages(response.data.unread_messages || 0);
+      } catch (error) {
+        console.error('Error fetching unread count:', error);
+      }
+    };
+
+    fetchUnreadCount();
+    
+    // Poll every 30 seconds for unread messages
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, [user, token]);
 
   const handleLogout = () => {
     logout();
