@@ -182,7 +182,7 @@ export default function Tobi() {
           </div>
           <div>
             <h3 className="font-bold flex items-center gap-2">
-              AutoExpert
+              Tobi
               <Sparkles className="w-4 h-4" />
             </h3>
             <p className="text-xs text-white/80">Assistant IA • En ligne</p>
