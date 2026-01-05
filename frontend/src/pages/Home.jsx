@@ -94,6 +94,9 @@ export default function Home() {
 
   return (
     <div className="animate-fade-in" data-testid="home-page">
+      {/* Seasonal Animation */}
+      <SeasonalAnimation type={heroSettings.seasonal_animation} enabled={!!heroSettings.seasonal_animation} />
+      
       <SEO
         title="Accueil"
         description="World Auto France - La marketplace automobile pour acheter et vendre des pièces détachées, voitures, motos et utilitaires d'occasion. Particuliers et professionnels."
