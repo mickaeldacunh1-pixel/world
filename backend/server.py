@@ -3448,6 +3448,125 @@ async def clear_tobi_session(session_id: str):
     await db.tobi_conversations.delete_many({"session_id": session_id})
     return {"message": "Session effacée"}
 
+# ================== AI TOOLS ==================
+
+PART_RECOGNITION_PROMPT = """Tu es un expert en pièces détachées automobiles. Analyse cette image et identifie:
+
+1. **Type de pièce** : Quel type de pièce automobile est-ce ? (ex: filtre à huile, plaquettes de frein, alternateur, etc.)
+2. **État apparent** : Neuf, occasion bon état, usé, à reconditionner ?
+3. **Marques compatibles** : Pour quelles marques de véhicules cette pièce pourrait être compatible ?
+4. **Référence possible** : Si visible, note toute référence OEM ou équipementier
+5. **Conseils** : Donne des conseils pour trouver cette pièce sur World Auto France
+
+Réponds en français de manière structurée et professionnelle."""
+
+PRICE_ESTIMATION_PROMPT = """Tu es un expert en évaluation de pièces automobiles d'occasion. Estime le prix de cette pièce:
+
+Pièce: {part_name}
+État: {condition}
+Marque compatible: {brand}
+Année du véhicule: {year}
+
+Fournis:
+1. **Fourchette de prix estimée** : Prix min - max en euros
+2. **Prix moyen du marché** : Basé sur les prix habituels
+3. **Facteurs influençant le prix** : Ce qui peut faire varier le prix
+4. **Conseils de vente** : Pour optimiser la vente sur World Auto France
+
+Réponds en français de manière structurée."""
+
+@api_router.post("/ai/recognize-part")
+async def recognize_part(file: UploadFile = File(...)):
+    """Reconnaître une pièce automobile à partir d'une photo"""
+    if not file.content_type.startswith('image/'):
+        raise HTTPException(status_code=400, detail="Le fichier doit être une image")
+    
+    try:
+        # Read image
+        contents = await file.read()
+        
+        # Upload to Cloudinary temporarily
+        upload_result = cloudinary.uploader.upload(
+            contents,
+            folder="worldauto_temp",
+            resource_type="image"
+        )
+        image_url = upload_result['secure_url']
+        
+        # Get API key
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        if not api_key:
+            raise HTTPException(status_code=500, detail="Clé API non configurée")
+        
+        # Create chat with vision capability
+        from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+        
+        chat = LlmChat(
+            api_key=api_key,
+            system_message=PART_RECOGNITION_PROMPT
+        ).with_model("openai", "gpt-4o")
+        
+        # Send image for analysis
+        user_message = UserMessage(
+            text="Analyse cette pièce automobile:",
+            images=[ImageContent(url=image_url)]
+        )
+        response = await chat.send_message(user_message)
+        
+        # Clean up temp image
+        try:
+            cloudinary.uploader.destroy(upload_result['public_id'])
+        except:
+            pass
+        
+        return {
+            "analysis": response,
+            "image_url": image_url
+        }
+        
+    except Exception as e:
+        logger.error(f"Part recognition error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur d'analyse: {str(e)}")
+
+class PriceEstimationRequest(BaseModel):
+    part_name: str
+    condition: str = "occasion"
+    brand: Optional[str] = None
+    year: Optional[int] = None
+
+@api_router.post("/ai/estimate-price")
+async def estimate_price(request: PriceEstimationRequest):
+    """Estimer le prix d'une pièce automobile"""
+    try:
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        if not api_key:
+            raise HTTPException(status_code=500, detail="Clé API non configurée")
+        
+        prompt = PRICE_ESTIMATION_PROMPT.format(
+            part_name=request.part_name,
+            condition=request.condition,
+            brand=request.brand or "Non spécifié",
+            year=request.year or "Non spécifié"
+        )
+        
+        chat = LlmChat(
+            api_key=api_key,
+            system_message="Tu es un expert en évaluation de pièces automobiles."
+        ).with_model("openai", "gpt-4o-mini")
+        
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        
+        return {
+            "estimation": response,
+            "part_name": request.part_name,
+            "condition": request.condition
+        }
+        
+    except Exception as e:
+        logger.error(f"Price estimation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur d'estimation: {str(e)}")
+
 # ================== ROOT ==================
 
 @api_router.get("/")
