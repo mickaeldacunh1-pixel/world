@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 
 class FavoritesMessagingTester:
-    def __init__(self, base_url="https://carparts-trade.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://autorepair-parts.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.buyer_token = None
         self.seller_token = None
