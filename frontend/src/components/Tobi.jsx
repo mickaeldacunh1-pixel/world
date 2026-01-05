@@ -8,13 +8,13 @@ import { MessageCircle, X, Send, Bot, User, Sparkles, Loader2, Trash2, Minimize2
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-export default function AutoExpert() {
+export default function Tobi() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: "Bonjour ! 👋 Je suis **AutoExpert**, votre assistant automobile IA.\n\nJe peux vous aider à :\n- 🔍 Trouver des pièces compatibles\n- 🚗 Vérifier la compatibilité véhicule\n- 💡 Donner des conseils d'entretien\n- 📦 Expliquer le fonctionnement de la plateforme\n\nComment puis-je vous aider ?"
+      content: "Bonjour ! 👋 Je suis **Tobi**, votre assistant automobile IA.\n\nJe peux vous aider à :\n- 🔍 Trouver des pièces compatibles\n- 🚗 Vérifier la compatibilité véhicule\n- 💡 Donner des conseils d'entretien\n- 📦 Expliquer le fonctionnement de la plateforme\n\nComment puis-je vous aider ?"
     }
   ]);
   const [input, setInput] = useState('');
@@ -25,14 +25,14 @@ export default function AutoExpert() {
 
   // Generate session ID on mount
   useEffect(() => {
-    const storedSessionId = localStorage.getItem('autoexpert_session');
+    const storedSessionId = localStorage.getItem('tobi_session');
     if (storedSessionId) {
       setSessionId(storedSessionId);
       loadHistory(storedSessionId);
     } else {
       const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       setSessionId(newSessionId);
-      localStorage.setItem('autoexpert_session', newSessionId);
+      localStorage.setItem('tobi_session', newSessionId);
     }
   }, []);
 
