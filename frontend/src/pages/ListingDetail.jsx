@@ -146,6 +146,43 @@ export default function ListingDetail() {
     }
   };
 
+  const handleReport = async () => {
+    if (!user) {
+      toast.error('Connectez-vous pour signaler');
+      navigate('/auth');
+      return;
+    }
+
+    if (!reportReason) {
+      toast.error('Veuillez sélectionner une raison');
+      return;
+    }
+
+    setReportLoading(true);
+    try {
+      await axios.post(`${API}/reports`, {
+        target_type: 'listing',
+        target_id: listing.id,
+        reason: reportReason,
+        description: reportDescription || null
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Signalement envoyé. Merci de nous aider à garder la plateforme sûre !');
+      setReportDialogOpen(false);
+      setReportReason('');
+      setReportDescription('');
+    } catch (error) {
+      if (error.response?.data?.detail?.includes('déjà signalé')) {
+        toast.error('Vous avez déjà signalé cette annonce');
+      } else {
+        toast.error('Erreur lors du signalement');
+      }
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!user) {
       toast.error('Connectez-vous pour envoyer un message');
