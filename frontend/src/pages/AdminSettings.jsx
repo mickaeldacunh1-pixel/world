@@ -739,11 +739,58 @@ export default function AdminSettings() {
 
           {/* Colors Tab */}
           <TabsContent value="colors" className="space-y-6">
+            {/* Quick Color Presets Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  🎨 Palettes rapides
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Cliquez sur une palette pour l'appliquer instantanément
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {COLOR_PRESETS.map((preset, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setSettings({
+                        ...settings, 
+                        color_primary: preset.primary, 
+                        color_accent: preset.accent
+                      })}
+                      className={`p-4 rounded-xl border-2 text-left transition-all hover:scale-105 ${
+                        settings.color_primary === preset.primary && settings.color_accent === preset.accent
+                          ? 'border-accent ring-2 ring-accent/30 shadow-lg'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex gap-2 mb-2">
+                        <div 
+                          className="w-8 h-8 rounded-lg shadow-inner"
+                          style={{ backgroundColor: preset.primary }}
+                        />
+                        <div 
+                          className="w-8 h-8 rounded-lg shadow-inner"
+                          style={{ backgroundColor: preset.accent }}
+                        />
+                      </div>
+                      <span className="text-sm font-medium block truncate">{preset.name}</span>
+                      {settings.color_primary === preset.primary && settings.color_accent === preset.accent && (
+                        <span className="text-xs text-accent">✓ Active</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Palette className="w-5 h-5" />
-                  Palette de couleurs
+                  Personnalisation avancée
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
