@@ -145,7 +145,7 @@ export default function AutoExpert() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-accent to-orange-500 hover:from-accent/90 hover:to-orange-500/90 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 group"
+        className="fixed bottom-24 right-6 z-50 bg-gradient-to-r from-accent to-orange-500 hover:from-accent/90 hover:to-orange-500/90 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 group"
         aria-label="Ouvrir AutoExpert"
       >
         <div className="relative">
