@@ -43,6 +43,20 @@ export default function ListingDetail() {
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [buyLoading, setBuyLoading] = useState(false);
   const [sellerStripeConnected, setSellerStripeConnected] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportDescription, setReportDescription] = useState('');
+  const [reportLoading, setReportLoading] = useState(false);
+
+  const REPORT_REASONS = [
+    { value: 'spam', label: 'Spam ou publicité' },
+    { value: 'scam', label: 'Arnaque suspectée' },
+    { value: 'inappropriate', label: 'Contenu inapproprié' },
+    { value: 'counterfeit', label: 'Contrefaçon' },
+    { value: 'wrong_category', label: 'Mauvaise catégorie' },
+    { value: 'duplicate', label: 'Annonce en double' },
+    { value: 'other', label: 'Autre raison' }
+  ];
 
   useEffect(() => {
     fetchListing();
