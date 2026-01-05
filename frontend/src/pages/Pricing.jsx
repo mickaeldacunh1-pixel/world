@@ -144,147 +144,259 @@ export default function Pricing() {
           </Card>
         )}
 
-        {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Single */}
-          <Card className="relative card-hover" data-testid="package-single">
-            <CardHeader>
-              <CardTitle className="font-heading">Annonce Unique</CardTitle>
-              <CardDescription>Pour une vente ponctuelle</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-6">
-                <span className="text-4xl font-heading font-black">2€</span>
-                <span className="text-muted-foreground">/annonce</span>
-              </div>
-              <ul className="space-y-3">
-                {pricingFeatures.single.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button
-                className="w-full"
-                variant="outline"
-                onClick={() => handleBuyPackage('single')}
-                disabled={loading.single}
-                data-testid="buy-single"
-              >
-                {loading.single ? 'Chargement...' : 'Acheter'}
-              </Button>
-            </CardFooter>
-          </Card>
+        {/* Pricing Cards - Particuliers */}
+        <div className="mb-8">
+          <h2 className="font-heading text-2xl font-bold mb-6 text-center">
+            📦 Packs Crédits
+            <span className="block text-sm font-normal text-muted-foreground mt-1">Pour les particuliers</span>
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Single */}
+            <Card className="relative card-hover" data-testid="package-single">
+              <CardHeader>
+                <CardTitle className="font-heading">1 Crédit</CardTitle>
+                <CardDescription>Pour une vente ponctuelle</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">2€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.single.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => handleBuyPackage('single')}
+                  disabled={loading.single}
+                  data-testid="buy-single"
+                >
+                  {loading.single ? 'Chargement...' : 'Acheter'}
+                </Button>
+              </CardFooter>
+            </Card>
 
-          {/* Pack 5 */}
-          <Card className="relative card-hover" data-testid="package-pack5">
-            <CardHeader>
-              <CardTitle className="font-heading">Pack 5</CardTitle>
-              <CardDescription>Pour les vendeurs réguliers</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-6">
-                <span className="text-4xl font-heading font-black">8€</span>
-                <span className="text-muted-foreground">/pack</span>
-                <p className="text-sm text-accent font-medium">1,60€/annonce</p>
-              </div>
-              <ul className="space-y-3">
-                {pricingFeatures.pack5.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button
-                className="w-full"
-                variant="outline"
-                onClick={() => handleBuyPackage('pack5')}
-                disabled={loading.pack5}
-                data-testid="buy-pack5"
-              >
-                {loading.pack5 ? 'Chargement...' : 'Acheter'}
-              </Button>
-            </CardFooter>
-          </Card>
+            {/* Pack 5 */}
+            <Card className="relative card-hover" data-testid="package-pack5">
+              <CardHeader>
+                <CardTitle className="font-heading">Pack 5</CardTitle>
+                <CardDescription>1,60€ par annonce</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">8€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.pack5.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => handleBuyPackage('pack5')}
+                  disabled={loading.pack5}
+                  data-testid="buy-pack5"
+                >
+                  {loading.pack5 ? 'Chargement...' : 'Acheter'}
+                </Button>
+              </CardFooter>
+            </Card>
 
-          {/* Pack 20 - Popular */}
-          <Card className="relative card-hover border-accent shadow-lg" data-testid="package-pack20">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <Badge className="bg-accent text-accent-foreground">
-                <Zap className="w-3 h-3 mr-1" />
-                Populaire
-              </Badge>
-            </div>
-            <CardHeader>
-              <CardTitle className="font-heading">Pack 20</CardTitle>
-              <CardDescription>Meilleur rapport qualité/prix</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-6">
-                <span className="text-4xl font-heading font-black">25€</span>
-                <span className="text-muted-foreground">/pack</span>
-                <p className="text-sm text-accent font-medium">1,25€/annonce</p>
-              </div>
-              <ul className="space-y-3">
-                {pricingFeatures.pack20.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button
-                className="w-full bg-accent hover:bg-accent/90"
-                onClick={() => handleBuyPackage('pack20')}
-                disabled={loading.pack20}
-                data-testid="buy-pack20"
-              >
-                {loading.pack20 ? 'Chargement...' : 'Acheter'}
-              </Button>
-            </CardFooter>
-          </Card>
+            {/* Pack 20 */}
+            <Card className="relative card-hover" data-testid="package-pack20">
+              <CardHeader>
+                <CardTitle className="font-heading">Pack 20</CardTitle>
+                <CardDescription>1,25€ par annonce</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">25€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.pack20.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => handleBuyPackage('pack20')}
+                  disabled={loading.pack20}
+                  data-testid="buy-pack20"
+                >
+                  {loading.pack20 ? 'Chargement...' : 'Acheter'}
+                </Button>
+              </CardFooter>
+            </Card>
 
-          {/* Pro Unlimited */}
-          <Card className="relative card-hover bg-primary text-primary-foreground" data-testid="package-unlimited">
-            <CardHeader>
-              <CardTitle className="font-heading text-primary-foreground">Pro Illimité</CardTitle>
-              <CardDescription className="text-primary-foreground/70">
-                Pour les professionnels
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-6">
-                <span className="text-4xl font-heading font-black">49€</span>
-                <span className="text-primary-foreground/70">/mois</span>
+            {/* Pack 50 - Popular */}
+            <Card className="relative card-hover border-accent shadow-lg" data-testid="package-pack50">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <Badge className="bg-accent text-accent-foreground">
+                  <Zap className="w-3 h-3 mr-1" />
+                  Meilleur choix
+                </Badge>
               </div>
-              <ul className="space-y-3">
-                {pricingFeatures.unlimited.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button
-                className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
-                onClick={() => handleBuyPackage('unlimited')}
-                disabled={loading.unlimited}
-                data-testid="buy-unlimited"
-              >
-                {loading.unlimited ? 'Chargement...' : 'Acheter'}
-              </Button>
-            </CardFooter>
-          </Card>
+              <CardHeader>
+                <CardTitle className="font-heading">Pack 50</CardTitle>
+                <CardDescription>0,78€ par annonce</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">39€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.pack50.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-accent hover:bg-accent/90"
+                  onClick={() => handleBuyPackage('pack50')}
+                  disabled={loading.pack50}
+                  data-testid="buy-pack50"
+                >
+                  {loading.pack50 ? 'Chargement...' : 'Acheter'}
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
+
+        {/* Pricing Cards - Professionnels */}
+        <div className="mb-8">
+          <h2 className="font-heading text-2xl font-bold mb-6 text-center">
+            🏢 Abonnements Pro
+            <span className="block text-sm font-normal text-muted-foreground mt-1">Pour les professionnels</span>
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {/* Pro 1 mois */}
+            <Card className="relative card-hover bg-primary text-primary-foreground" data-testid="package-pro-monthly">
+              <CardHeader>
+                <CardTitle className="font-heading text-primary-foreground">Pro 1 mois</CardTitle>
+                <CardDescription className="text-primary-foreground/70">49€/mois</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">49€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.pro_monthly.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                  onClick={() => handleBuyPackage('pro_monthly')}
+                  disabled={loading.pro_monthly}
+                  data-testid="buy-pro-monthly"
+                >
+                  {loading.pro_monthly ? 'Chargement...' : 'Souscrire'}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* Pro 3 mois - Popular */}
+            <Card className="relative card-hover bg-primary text-primary-foreground border-2 border-accent" data-testid="package-pro-3months">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <Badge className="bg-accent text-accent-foreground">
+                  <Zap className="w-3 h-3 mr-1" />
+                  Populaire
+                </Badge>
+              </div>
+              <CardHeader>
+                <CardTitle className="font-heading text-primary-foreground">Pro 3 mois</CardTitle>
+                <CardDescription className="text-primary-foreground/70">43€/mois</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">129€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.pro_3months.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                  onClick={() => handleBuyPackage('pro_3months')}
+                  disabled={loading.pro_3months}
+                  data-testid="buy-pro-3months"
+                >
+                  {loading.pro_3months ? 'Chargement...' : 'Souscrire'}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* Pro 6 mois */}
+            <Card className="relative card-hover bg-primary text-primary-foreground" data-testid="package-pro-6months">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <Badge className="bg-green-500 text-white">
+                  Meilleure économie
+                </Badge>
+              </div>
+              <CardHeader>
+                <CardTitle className="font-heading text-primary-foreground">Pro 6 mois</CardTitle>
+                <CardDescription className="text-primary-foreground/70">~40€/mois</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">239€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.pro_6months.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                  onClick={() => handleBuyPackage('pro_6months')}
+                  disabled={loading.pro_6months}
+                  data-testid="buy-pro-6months"
+                >
+                  {loading.pro_6months ? 'Chargement...' : 'Souscrire'}
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
         </div>
 
         {/* FAQ */}
