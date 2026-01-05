@@ -2113,7 +2113,7 @@ async def get_update(update_id: str):
 async def create_update(update: UpdateCreate, current_user: dict = Depends(get_current_user)):
     """Create a new update - Admin only"""
     update_doc = {
-        "id": str(uuid4()),
+        "id": str(uuid.uuid4()),
         "title": update.title,
         "version": update.version,
         "category": update.category,
@@ -2174,7 +2174,7 @@ async def subscribe_newsletter(subscriber: NewsletterSubscribe):
         raise HTTPException(status_code=400, detail="Cet email est déjà inscrit à la newsletter")
     
     subscriber_doc = {
-        "id": str(uuid4()),
+        "id": str(uuid.uuid4()),
         "email": subscriber.email.lower(),
         "name": subscriber.name,
         "subscribed_at": datetime.now(timezone.utc).isoformat(),
