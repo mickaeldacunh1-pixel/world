@@ -106,15 +106,23 @@ const faqs = [
     questions: [
       {
         q: "Comment savoir si un vendeur est fiable ?",
-        a: "Consultez les avis et notes laissés par d'autres acheteurs sur le profil du vendeur. Les vendeurs PRO sont des professionnels vérifiés. Méfiez-vous des prix anormalement bas."
+        a: "Consultez les avis et notes laissés par d'autres acheteurs sur le profil du vendeur. Les vendeurs avec le badge \"Vérifié\" ont réalisé 5+ ventes avec de bonnes évaluations. Les vendeurs PRO sont des professionnels. Privilégiez le paiement sécurisé pour être protégé."
+      },
+      {
+        q: "Comment fonctionne la protection acheteur ?",
+        a: "Avec le paiement sécurisé, votre argent est protégé. Il est bloqué jusqu'à ce que vous confirmiez la bonne réception de l'article. Si l'article n'est pas conforme, vous pouvez ouvrir un litige et nous interviendrons pour vous rembourser si nécessaire."
       },
       {
         q: "Que faire en cas d'arnaque ?",
-        a: "Si vous pensez être victime d'une arnaque, contactez-nous immédiatement à contact@worldautofrance.com avec tous les détails (messages, preuves de paiement). Nous prendrons les mesures nécessaires."
+        a: "Si vous avez utilisé le paiement sécurisé, signalez le problème avant de confirmer la réception - vous serez remboursé. Pour les transactions directes, contactez-nous à contact@worldautofrance.com avec tous les détails (messages, preuves de paiement). Nous prendrons les mesures nécessaires."
+      },
+      {
+        q: "Comment signaler une annonce frauduleuse ?",
+        a: "Sur chaque annonce, un bouton \"Signaler cette annonce\" vous permet de nous alerter. Choisissez le motif (arnaque, spam, contrefaçon, etc.) et nous examinerons le signalement rapidement. Les annonces frauduleuses sont supprimées et les comptes peuvent être suspendus."
       },
       {
         q: "Mes données personnelles sont-elles protégées ?",
-        a: "Oui, nous respectons le RGPD et protégeons vos données personnelles. Consultez nos Mentions Légales pour plus d'informations sur notre politique de confidentialité."
+        a: "Oui, nous respectons le RGPD et protégeons vos données personnelles. Les paiements sont gérés par Stripe, vos coordonnées bancaires ne sont jamais stockées chez nous. Consultez nos Mentions Légales pour plus d'informations."
       }
     ]
   },
@@ -124,15 +132,19 @@ const faqs = [
     questions: [
       {
         q: "L'article reçu ne correspond pas à l'annonce, que faire ?",
-        a: "Contactez d'abord le vendeur via la messagerie pour trouver une solution amiable. Si aucun accord n'est trouvé, vous pouvez faire une demande de retour depuis votre espace Commandes."
+        a: "Avec le paiement sécurisé : NE CONFIRMEZ PAS la réception et signalez le problème dans votre espace Commandes. L'argent reste bloqué pendant la médiation. Sans paiement sécurisé : contactez d'abord le vendeur via la messagerie pour trouver une solution amiable."
       },
       {
-        q: "Comment faire une demande de retour ?",
-        a: "Rendez-vous dans votre espace Commandes, sélectionnez la commande concernée et cliquez sur \"Demander un retour\". Expliquez le motif de votre demande. Le vendeur sera notifié."
+        q: "Comment ouvrir un litige ?",
+        a: "Rendez-vous dans votre espace Commandes, sélectionnez la commande concernée et cliquez sur \"Signaler un problème\". Décrivez le problème avec photos si possible. Notre équipe intervient généralement sous 24-48h."
       },
       {
-        q: "World Auto France intervient-il en cas de litige ?",
-        a: "World Auto France peut intervenir en tant que médiateur si les deux parties n'arrivent pas à trouver un accord. Cependant, nous vous encourageons à privilégier le dialogue direct avec le vendeur."
+        q: "Combien de temps dure la résolution d'un litige ?",
+        a: "La plupart des litiges sont résolus en 3-7 jours ouvrés. Pour les paiements sécurisés, le remboursement est effectué sous 5-7 jours après validation. Nous vous tenons informé par email à chaque étape."
+      },
+      {
+        q: "World Auto France peut-il bloquer un vendeur ?",
+        a: "Oui, en cas de litiges répétés, de comportement frauduleux ou de non-respect de nos conditions, nous pouvons suspendre ou supprimer définitivement un compte vendeur. Les fonds en attente peuvent être gelés le temps de l'enquête."
       }
     ]
   }
