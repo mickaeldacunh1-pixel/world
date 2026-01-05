@@ -32,6 +32,28 @@
         --chart-4: 43 74% 66%;
         --chart-5: 27 87% 67%;
     }
+
+    .dark {
+        --background: 222 47% 6%;
+        --foreground: 210 40% 98%;
+        --card: 222 47% 8%;
+        --card-foreground: 210 40% 98%;
+        --popover: 222 47% 8%;
+        --popover-foreground: 210 40% 98%;
+        --primary: 210 40% 98%;
+        --primary-foreground: 222 47% 11%;
+        --secondary: 222 47% 12%;
+        --secondary-foreground: 210 40% 98%;
+        --muted: 222 47% 15%;
+        --muted-foreground: 215 20% 65%;
+        --accent: 24 95% 53%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 62% 50%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 222 47% 18%;
+        --input: 222 47% 18%;
+        --ring: 24 95% 53%;
+    }
 }
 
 @layer base {
