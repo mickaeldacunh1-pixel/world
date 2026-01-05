@@ -2146,6 +2146,12 @@ async def create_checkout(package_id: str, request: Request, current_user: dict 
     # Initialize Stripe
     stripe.api_key = STRIPE_API_KEY
     
+    # Determine product name
+    if package.get("is_pro"):
+        product_name = f"{package['name']} - World Auto France"
+    else:
+        product_name = f"Pack {package['credits']} crédits - World Auto France"
+    
     # Create Stripe checkout session
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
@@ -2153,7 +2159,7 @@ async def create_checkout(package_id: str, request: Request, current_user: dict 
             "price_data": {
                 "currency": "eur",
                 "product_data": {
-                    "name": f"Pack {package['listings']} annonces - World Auto",
+                    "name": product_name,
                 },
                 "unit_amount": int(package["price"] * 100),  # Stripe uses cents
             },
@@ -2165,7 +2171,9 @@ async def create_checkout(package_id: str, request: Request, current_user: dict 
         metadata={
             "user_id": current_user["id"],
             "package_id": package_id,
-            "listings": str(package["listings"])
+            "credits": str(package["credits"]),
+            "is_pro": str(package.get("is_pro", False)),
+            "duration": str(package.get("duration", 30))
         }
     )
     
@@ -2177,7 +2185,9 @@ async def create_checkout(package_id: str, request: Request, current_user: dict 
         "package_id": package_id,
         "amount": package["price"],
         "currency": "eur",
-        "listings_count": package["listings"],
+        "credits_count": package["credits"],
+        "is_pro": package.get("is_pro", False),
+        "duration_days": package.get("duration", 30),
         "payment_status": "pending",
         "created_at": datetime.now(timezone.utc).isoformat()
     }
