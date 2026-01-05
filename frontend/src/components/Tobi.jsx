@@ -102,7 +102,7 @@ export default function Tobi() {
   const clearConversation = async () => {
     if (sessionId) {
       try {
-        await axios.delete(`${API}/autoexpert/session/${sessionId}`);
+        await axios.delete(`${API}/tobi/session/${sessionId}`);
       } catch (error) {
         console.error('Error clearing session:', error);
       }
@@ -110,7 +110,7 @@ export default function Tobi() {
     
     const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     setSessionId(newSessionId);
-    localStorage.setItem('autoexpert_session', newSessionId);
+    localStorage.setItem('tobi_session', newSessionId);
     setMessages([{
       role: 'assistant',
       content: "Conversation effacée ! 🧹\n\nComment puis-je vous aider ?"
