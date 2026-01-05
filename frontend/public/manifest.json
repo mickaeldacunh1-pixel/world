@@ -1,0 +1,49 @@
+{
+  "name": "World Auto France",
+  "short_name": "World Auto",
+  "description": "La marketplace automobile française - Pièces détachées, voitures, motos, utilitaires",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#1e293b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "auto", "business"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Déposer une annonce",
+      "short_name": "Déposer",
+      "description": "Créer une nouvelle annonce",
+      "url": "/deposer",
+      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mes messages",
+      "short_name": "Messages",
+      "description": "Voir mes conversations",
+      "url": "/messages",
+      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Rechercher des pièces",
+      "short_name": "Pièces",
+      "description": "Parcourir les pièces détachées",
+      "url": "/annonces/pieces",
+      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+    }
+  ]
+}
