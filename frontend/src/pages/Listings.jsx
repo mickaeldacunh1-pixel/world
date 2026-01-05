@@ -87,6 +87,8 @@ export default function Listings() {
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [subcategory, setSubcategory] = useState(searchParams.get('subcategory') || '');
   const [compatibleBrand, setCompatibleBrand] = useState(searchParams.get('brand') || '');
+  const [compatibleModel, setCompatibleModel] = useState(searchParams.get('model') || '');
+  const [compatibleYear, setCompatibleYear] = useState(searchParams.get('year') || '');
   const [region, setRegion] = useState(searchParams.get('region') || '');
   const [oemReference, setOemReference] = useState(searchParams.get('oem_reference') || '');
   const [minPrice, setMinPrice] = useState('');
@@ -95,6 +97,9 @@ export default function Listings() {
   const [sort, setSort] = useState('recent');
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  
+  // Get available models based on selected brand
+  const availableModels = compatibleBrand ? CAR_MODELS_BY_BRAND[compatibleBrand] || [] : [];
 
   const regions = [
     { value: 'ile-de-france', label: 'Île-de-France' },
