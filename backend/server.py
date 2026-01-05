@@ -1208,6 +1208,36 @@ async def delete_image(public_id: str, current_user: dict = Depends(get_current_
         logging.error(f"Cloudinary delete error: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la suppression de l'image")
 
+@api_router.post("/upload/video")
+async def upload_video(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    """Upload a video to Cloudinary"""
+    if not file.content_type.startswith('video/'):
+        raise HTTPException(status_code=400, detail="Le fichier doit être une vidéo")
+    
+    # Check file size (max 50MB)
+    contents = await file.read()
+    if len(contents) > 50 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="La vidéo ne doit pas dépasser 50 Mo")
+    
+    try:
+        result = cloudinary.uploader.upload(
+            contents,
+            resource_type="video",
+            folder="worldauto_videos",
+            eager=[
+                {"format": "mp4", "video_codec": "h264"}
+            ]
+        )
+        return {
+            "url": result['secure_url'],
+            "public_id": result['public_id'],
+            "duration": result.get('duration'),
+            "format": result.get('format')
+        }
+    except cloudinary.exceptions.Error as e:
+        logging.error(f"Cloudinary video upload error: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'upload de la vidéo")
+
 @api_router.get("/listings")
 async def get_listings(
     category: Optional[str] = None,
