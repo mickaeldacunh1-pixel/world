@@ -293,20 +293,90 @@ export default function Listings() {
                 )}
 
                 {/* Compatible Brand - for pieces and accessoires */}
-                {showCompatibilityFilters && carBrands.length > 0 && (
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Marque compatible</label>
-                    <Select value={compatibleBrand || "all"} onValueChange={(v) => setCompatibleBrand(v === "all" ? "" : v)}>
-                      <SelectTrigger data-testid="filter-compatible-brand">
-                        <SelectValue placeholder="Toutes marques" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Toutes marques</SelectItem>
-                        {carBrands.map((brand) => (
-                          <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                {/* Vehicle Compatibility Search - Enhanced */}
+                {showCompatibilityFilters && (
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 space-y-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Car className="w-5 h-5 text-primary" />
+                      <span className="font-semibold text-sm">Recherche par véhicule</span>
+                    </div>
+                    
+                    {/* Brand */}
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Marque</label>
+                      <Select 
+                        value={compatibleBrand || "all"} 
+                        onValueChange={(v) => {
+                          setCompatibleBrand(v === "all" ? "" : v);
+                          setCompatibleModel(""); // Reset model when brand changes
+                        }}
+                      >
+                        <SelectTrigger data-testid="filter-compatible-brand" className="bg-white">
+                          <SelectValue placeholder="Sélectionner une marque" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Toutes les marques</SelectItem>
+                          {Object.keys(CAR_MODELS_BY_BRAND).sort().map((brand) => (
+                            <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {/* Model - only show if brand is selected */}
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Modèle</label>
+                      <Select 
+                        value={compatibleModel || "all"} 
+                        onValueChange={(v) => setCompatibleModel(v === "all" ? "" : v)}
+                        disabled={!compatibleBrand}
+                      >
+                        <SelectTrigger data-testid="filter-compatible-model" className={`bg-white ${!compatibleBrand ? 'opacity-50' : ''}`}>
+                          <SelectValue placeholder={compatibleBrand ? "Sélectionner un modèle" : "Choisir d'abord une marque"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Tous les modèles</SelectItem>
+                          {availableModels.map((model) => (
+                            <SelectItem key={model} value={model}>{model}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {/* Year */}
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Année</label>
+                      <Select 
+                        value={compatibleYear || "all"} 
+                        onValueChange={(v) => setCompatibleYear(v === "all" ? "" : v)}
+                      >
+                        <SelectTrigger data-testid="filter-compatible-year" className="bg-white">
+                          <SelectValue placeholder="Toutes les années" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Toutes les années</SelectItem>
+                          {YEARS.map((year) => (
+                            <SelectItem key={year} value={year}>{year}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {/* Clear filters button */}
+                    {(compatibleBrand || compatibleModel || compatibleYear) && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="w-full text-xs"
+                        onClick={() => {
+                          setCompatibleBrand('');
+                          setCompatibleModel('');
+                          setCompatibleYear('');
+                        }}
+                      >
+                        Effacer les filtres véhicule
+                      </Button>
+                    )}
                   </div>
                 )}
 
