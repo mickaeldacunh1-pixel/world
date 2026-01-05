@@ -265,6 +265,34 @@ export default function Messages() {
 
                 {/* Input */}
                 <form onSubmit={handleSendMessage} className="p-4 border-t flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button type="button" variant="ghost" size="icon" className="shrink-0">
+                        <Smile className="w-5 h-5 text-muted-foreground hover:text-accent" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 p-2" align="start">
+                      <div className="space-y-3">
+                        {Object.entries(EMOJI_CATEGORIES).map(([category, emojis]) => (
+                          <div key={category}>
+                            <p className="text-xs font-medium text-muted-foreground mb-1">{category}</p>
+                            <div className="flex flex-wrap gap-1">
+                              {emojis.map((emoji) => (
+                                <button
+                                  key={emoji}
+                                  type="button"
+                                  className="text-xl hover:bg-secondary rounded p-1 transition-colors"
+                                  onClick={() => setNewMessage(prev => prev + emoji)}
+                                >
+                                  {emoji}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                   <Input
                     placeholder="Écrire un message..."
                     value={newMessage}
