@@ -2291,6 +2291,103 @@ async def get_newsletter_logs(current_user: dict = Depends(get_current_user)):
     logs = await db.newsletter_logs.find({}, {"_id": 0}).sort("sent_at", -1).to_list(50)
     return logs
 
+class AutoNewsletterRequest(BaseModel):
+    secret_key: str
+    subject: Optional[str] = None
+    title: Optional[str] = None
+    content: Optional[str] = None
+
+@api_router.post("/newsletter/send-auto")
+async def send_auto_newsletter(request: AutoNewsletterRequest, background_tasks: BackgroundTasks):
+    """Envoi automatique de newsletter via cron job - Authentification par clé secrète"""
+    
+    # Vérifier la clé secrète
+    if not NEWSLETTER_SECRET_KEY:
+        raise HTTPException(status_code=500, detail="Clé newsletter non configurée sur le serveur")
+    
+    if request.secret_key != NEWSLETTER_SECRET_KEY:
+        raise HTTPException(status_code=401, detail="Clé secrète invalide")
+    
+    # Récupérer les abonnés actifs
+    subscribers = await db.newsletter_subscribers.find({"active": True}, {"_id": 0}).to_list(10000)
+    
+    if not subscribers:
+        return {"message": "Aucun abonné actif", "sent_count": 0}
+    
+    # Récupérer la dernière actualité pour le contenu auto
+    latest_update = await db.updates.find_one({}, {"_id": 0}, sort=[("date", -1)])
+    
+    # Générer le contenu automatique si non fourni
+    week_num = datetime.now().isocalendar()[1]
+    subject = request.subject or f"World Auto France - Newsletter Semaine {week_num}"
+    title = request.title or "Les actualités de la semaine"
+    
+    if request.content:
+        content = request.content
+    elif latest_update:
+        items_text = "\n".join([f"• {item['text']}" for item in latest_update.get('items', [])[:5]])
+        content = f"Dernière mise à jour : {latest_update.get('title', '')} (v{latest_update.get('version', '')})\n\n{items_text}\n\nÀ bientôt sur World Auto France !"
+    else:
+        content = "Découvrez les dernières annonces sur World Auto France !\n\nÀ bientôt !"
+    
+    # Créer le HTML
+    site_url = os.environ.get('FRONTEND_URL', 'https://worldautofrance.com')
+    
+    def create_newsletter_html(subscriber_email: str):
+        unsubscribe_url = f"{site_url}/api/newsletter/unsubscribe/{subscriber_email}"
+        
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="utf-8"></head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #1E3A5F;">World Auto France 🇫🇷</h1>
+            </div>
+            <div style="background: #f8f9fa; border-radius: 10px; padding: 30px; margin-bottom: 20px;">
+                <h2 style="color: #1E3A5F; margin-top: 0;">{title}</h2>
+                <div style="white-space: pre-line;">{content}</div>
+            </div>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{site_url}/annonces" style="background: #F97316; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">Voir les annonces</a>
+            </div>
+            <div style="border-top: 1px solid #eee; margin-top: 30px; padding-top: 20px; text-align: center; color: #666; font-size: 12px;">
+                <p><a href="{unsubscribe_url}" style="color: #666;">Se désabonner</a></p>
+            </div>
+        </body>
+        </html>
+        """
+        return html
+    
+    # Envoyer les emails
+    sent_count = 0
+    for subscriber in subscribers:
+        try:
+            html_content = create_newsletter_html(subscriber["email"])
+            background_tasks.add_task(send_email, subscriber["email"], subject, html_content)
+            sent_count += 1
+        except Exception as e:
+            logging.error(f"Failed to queue email for {subscriber['email']}: {e}")
+    
+    # Logger l'envoi
+    newsletter_log = {
+        "id": str(uuid.uuid4()),
+        "subject": subject,
+        "title": title,
+        "sent_by": "cron-auto",
+        "sent_at": datetime.now(timezone.utc).isoformat(),
+        "total_subscribers": len(subscribers),
+        "sent_count": sent_count,
+        "failed_count": len(subscribers) - sent_count
+    }
+    await db.newsletter_logs.insert_one(newsletter_log)
+    
+    return {
+        "message": f"Newsletter envoyée à {sent_count} abonnés",
+        "sent_count": sent_count,
+        "total_subscribers": len(subscribers)
+    }
+
 # ================== SETTINGS ROUTES ==================
 
 DEFAULT_HERO_SETTINGS = {
