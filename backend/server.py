@@ -2220,9 +2220,10 @@ async def get_payment_status(session_id: str, current_user: dict = Depends(get_c
             )
             
             # Add credits to user
+            credits_to_add = transaction.get("credits_count") or transaction.get("listings_count", 0)
             await db.users.update_one(
                 {"id": transaction["user_id"]},
-                {"$inc": {"credits": transaction["listings_count"]}}
+                {"$inc": {"credits": credits_to_add}}
             )
             
             return {"status": session.status, "payment_status": "paid", "message": "Crédits ajoutés avec succès"}
@@ -2259,9 +2260,10 @@ async def stripe_webhook(request: Request):
                 # Get transaction to add credits
                 transaction = await db.payment_transactions.find_one({"session_id": session_id})
                 if transaction:
+                    credits_to_add = transaction.get("credits_count") or transaction.get("listings_count", 0)
                     await db.users.update_one(
                         {"id": transaction["user_id"]},
-                        {"$inc": {"credits": transaction["listings_count"]}}
+                        {"$inc": {"credits": credits_to_add}}
                     )
         
         return {"status": "success"}
