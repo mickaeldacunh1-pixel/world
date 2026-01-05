@@ -6,8 +6,46 @@ import { Input } from '../components/ui/input';
 import { Card } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Skeleton } from '../components/ui/skeleton';
-import { Search, Filter, Grid3X3, List, MapPin, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Filter, Grid3X3, List, MapPin, Eye, ChevronLeft, ChevronRight, Car } from 'lucide-react';
 import SEO, { createBreadcrumbSchema } from '../components/SEO';
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+// Database of car models by brand
+const CAR_MODELS_BY_BRAND = {
+  'Renault': ['Clio', 'Megane', 'Captur', 'Scenic', 'Kadjar', 'Twingo', 'Talisman', 'Kangoo', 'Espace', 'Zoe', 'Arkana', 'Austral'],
+  'Peugeot': ['208', '308', '2008', '3008', '5008', '508', '108', 'Partner', 'Rifter', 'Expert', 'Traveller'],
+  'Citroën': ['C3', 'C4', 'C5', 'Berlingo', 'C3 Aircross', 'C5 Aircross', 'C1', 'Spacetourer', 'Jumpy', 'ë-C4'],
+  'Volkswagen': ['Golf', 'Polo', 'Tiguan', 'T-Roc', 'Passat', 'Touran', 'T-Cross', 'Arteon', 'ID.3', 'ID.4', 'Taigo'],
+  'BMW': ['Série 1', 'Série 2', 'Série 3', 'Série 4', 'Série 5', 'X1', 'X3', 'X5', 'iX', 'i4', 'Z4'],
+  'Mercedes': ['Classe A', 'Classe B', 'Classe C', 'Classe E', 'GLA', 'GLB', 'GLC', 'GLE', 'EQA', 'EQC'],
+  'Audi': ['A1', 'A3', 'A4', 'A5', 'A6', 'Q2', 'Q3', 'Q5', 'Q7', 'e-tron', 'TT'],
+  'Ford': ['Fiesta', 'Focus', 'Puma', 'Kuga', 'Mondeo', 'Mustang', 'Explorer', 'Ranger', 'Transit'],
+  'Opel': ['Corsa', 'Astra', 'Crossland', 'Grandland', 'Mokka', 'Insignia', 'Combo', 'Zafira'],
+  'Toyota': ['Yaris', 'Corolla', 'C-HR', 'RAV4', 'Aygo', 'Camry', 'Supra', 'Land Cruiser', 'Hilux'],
+  'Nissan': ['Micra', 'Juke', 'Qashqai', 'X-Trail', 'Leaf', 'Ariya', 'Navara', 'Note'],
+  'Honda': ['Civic', 'Jazz', 'HR-V', 'CR-V', 'e', 'ZR-V'],
+  'Fiat': ['500', 'Panda', 'Tipo', '500X', '500L', 'Doblo', 'Ducato'],
+  'Seat': ['Ibiza', 'Leon', 'Arona', 'Ateca', 'Tarraco', 'Cupra Formentor'],
+  'Skoda': ['Fabia', 'Octavia', 'Kamiq', 'Karoq', 'Kodiaq', 'Superb', 'Enyaq'],
+  'Hyundai': ['i10', 'i20', 'i30', 'Tucson', 'Kona', 'Santa Fe', 'Ioniq', 'Bayon'],
+  'Kia': ['Picanto', 'Rio', 'Ceed', 'Sportage', 'Niro', 'Sorento', 'EV6', 'Stonic'],
+  'Dacia': ['Sandero', 'Duster', 'Jogger', 'Spring', 'Logan'],
+  'Volvo': ['XC40', 'XC60', 'XC90', 'V40', 'V60', 'V90', 'S60', 'S90', 'C40'],
+  'Mazda': ['2', '3', 'CX-3', 'CX-30', 'CX-5', 'MX-5', 'CX-60'],
+};
+
+// Generate year range
+const generateYears = () => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let year = currentYear + 1; year >= 1990; year--) {
+    years.push(year.toString());
+  }
+  return years;
+};
+
+const YEARS = generateYears();
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
