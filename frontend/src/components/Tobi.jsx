@@ -50,7 +50,7 @@ export default function Tobi() {
 
   const loadHistory = async (sid) => {
     try {
-      const response = await axios.get(`${API}/autoexpert/history/${sid}`);
+      const response = await axios.get(`${API}/tobi/history/${sid}`);
       if (response.data.length > 0) {
         const history = response.data.flatMap(item => [
           { role: 'user', content: item.user_message },
