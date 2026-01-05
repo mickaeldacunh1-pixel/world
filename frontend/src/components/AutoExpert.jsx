@@ -173,7 +173,7 @@ export default function AutoExpert() {
   }
 
   return (
-    <Card className="fixed bottom-6 right-6 z-50 w-[380px] h-[550px] flex flex-col shadow-2xl border-0 overflow-hidden animate-fade-in-up">
+    <Card className="fixed bottom-24 right-6 z-50 w-[380px] h-[550px] flex flex-col shadow-2xl border-0 overflow-hidden animate-fade-in-up">
       {/* Header */}
       <div className="bg-gradient-to-r from-accent to-orange-500 text-white p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
