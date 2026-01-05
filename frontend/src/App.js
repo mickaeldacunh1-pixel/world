@@ -32,6 +32,8 @@ import LegalNotice from "./pages/LegalNotice";
 import Contact from "./pages/Contact";
 import ReturnsPolicy from "./pages/ReturnsPolicy";
 import FAQ from "./pages/FAQ";
+import Updates from "./pages/Updates";
+import Newsletter from "./pages/Newsletter";
 import "./App.css";
 
 const ProtectedRoute = ({ children }) => {
@@ -101,6 +103,8 @@ function AppContent() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/politique-retours" element={<ReturnsPolicy />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/nouveautes" element={<Updates />} />
+          <Route path="/newsletter" element={<Newsletter />} />
         </Routes>
       </main>
       <Footer />
