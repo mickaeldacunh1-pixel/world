@@ -478,7 +478,10 @@ export default function Messages() {
                   <Input
                     placeholder="Écrire un message..."
                     value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
+                    onChange={(e) => {
+                      setNewMessage(e.target.value);
+                      handleTyping();
+                    }}
                     className="flex-1"
                     data-testid="message-input"
                   />
