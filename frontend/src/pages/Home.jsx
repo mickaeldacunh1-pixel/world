@@ -381,6 +381,82 @@ export default function Home() {
         </div>
       </section>
 
+      {/* OEM Reference Search Section */}
+      <section className="py-16 md:py-20 bg-gradient-to-r from-primary to-slate-800">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 animate-fade-in-up">
+            <div className="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-4">
+              <span className="text-lg">🔍</span>
+              <span className="text-sm font-medium">Recherche professionnelle</span>
+            </div>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white">
+              Recherche par référence OEM
+            </h2>
+            <p className="text-white/70 text-lg max-w-2xl mx-auto">
+              Trouvez la pièce exacte avec sa référence constructeur ou équipementier
+            </p>
+          </div>
+
+          <form 
+            onSubmit={handleOemSearch}
+            className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/20"
+          >
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Entrez la référence OEM (ex: 7701474426, 1K0615301M...)"
+                  value={oemSearch}
+                  onChange={(e) => setOemSearch(e.target.value)}
+                  className="w-full h-14 px-5 bg-white rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent font-mono text-lg"
+                />
+              </div>
+              <Button 
+                type="submit"
+                disabled={!oemSearch.trim()}
+                className="h-14 px-8 btn-primary rounded-xl text-base font-semibold whitespace-nowrap"
+              >
+                <Search className="w-5 h-5 mr-2" />
+                Rechercher
+              </Button>
+            </div>
+            
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <span className="text-white/60 text-sm">Exemples :</span>
+              {['7701474426', '1K0615301M', '30735878', '04E115561H'].map((ref) => (
+                <button
+                  key={ref}
+                  type="button"
+                  onClick={() => setOemSearch(ref)}
+                  className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-white/80 text-sm font-mono transition-colors"
+                >
+                  {ref}
+                </button>
+              ))}
+            </div>
+          </form>
+
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="bg-white/5 rounded-xl p-4">
+              <div className="text-2xl mb-2">🏭</div>
+              <p className="text-white/80 text-sm">Références constructeur</p>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4">
+              <div className="text-2xl mb-2">🔧</div>
+              <p className="text-white/80 text-sm">Références équipementier</p>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4">
+              <div className="text-2xl mb-2">✅</div>
+              <p className="text-white/80 text-sm">Compatibilité garantie</p>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4">
+              <div className="text-2xl mb-2">⚡</div>
+              <p className="text-white/80 text-sm">Recherche instantanée</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Search by Region Section */}
       <section className="py-16 md:py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
