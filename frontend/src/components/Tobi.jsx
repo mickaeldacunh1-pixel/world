@@ -73,7 +73,7 @@ export default function Tobi() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${API}/autoexpert/chat`, {
+      const response = await axios.post(`${API}/tobi/chat`, {
         message: userMessage,
         session_id: sessionId
       });
@@ -86,7 +86,7 @@ export default function Tobi() {
       // Update session ID if new one was created
       if (response.data.session_id !== sessionId) {
         setSessionId(response.data.session_id);
-        localStorage.setItem('autoexpert_session', response.data.session_id);
+        localStorage.setItem('tobi_session', response.data.session_id);
       }
     } catch (error) {
       console.error('Error sending message:', error);
