@@ -2042,13 +2042,18 @@ class AutoPiecesAPITester:
         self.token = seller_token
         
         pending_result = self.run_test("Buyer Reviews - Get Pending (Empty)", "GET", "reviews/buyer/pending", 200)
-        if pending_result and isinstance(pending_result, list):
-            if len(pending_result) == 0:
-                self.log_test("Buyer Reviews - Pending Empty", True, "No pending reviews initially")
+        if pending_result is not None:
+            if isinstance(pending_result, list):
+                if len(pending_result) == 0:
+                    self.log_test("Buyer Reviews - Pending Empty", True, "No pending reviews initially")
+                else:
+                    self.log_test("Buyer Reviews - Pending Structure", True, f"Found {len(pending_result)} pending reviews")
             else:
-                self.log_test("Buyer Reviews - Pending Structure", True, f"Found {len(pending_result)} pending reviews")
+                self.log_test("Buyer Reviews - Pending Structure", False, f"Expected array response, got: {type(pending_result)}")
+                self.token = original_token
+                return False
         else:
-            self.log_test("Buyer Reviews - Pending Structure", False, "Expected array response")
+            self.log_test("Buyer Reviews - Pending Structure", False, "Failed to get pending reviews")
             self.token = original_token
             return False
         
