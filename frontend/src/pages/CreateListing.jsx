@@ -247,6 +247,7 @@ export default function CreateListing() {
         mileage: formData.mileage ? parseInt(formData.mileage) : null,
         compatible_models,
         images: imageUrls,
+        video_url: videoUrl || null,
       });
 
       await refreshUser();
