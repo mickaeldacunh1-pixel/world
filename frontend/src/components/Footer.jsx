@@ -1,23 +1,89 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Car, Wrench, Bike, Truck } from 'lucide-react';
+import axios from 'axios';
+import { toast } from 'sonner';
+import { Mail, Car, Wrench, Bike, Truck, Send, Loader2, Sparkles, CheckCircle } from 'lucide-react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 import WorldAutoLogo from './WorldAutoLogo';
 import FranceText from './FranceText';
 
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
 export default function Footer() {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setLoading(true);
+    try {
+      await axios.post(`${API}/newsletter/subscribe`, { email });
+      setSubscribed(true);
+      setEmail('');
+      toast.success('Inscription réussie !');
+    } catch (error) {
+      const message = error.response?.data?.detail || 'Erreur lors de l\'inscription';
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <footer className="bg-primary text-primary-foreground mt-auto" data-testid="footer">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo & Description */}
-          <div className="col-span-1 md:col-span-1">
+          <div className="col-span-1 lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4 group">
               <WorldAutoLogo className="w-10 h-10 transition-transform group-hover:scale-110" />
               <span className="font-heading font-bold text-xl">World Auto <FranceText /></span>
             </Link>
-            <p className="text-primary-foreground/70 text-sm leading-relaxed">
+            <p className="text-primary-foreground/70 text-sm leading-relaxed mb-6">
               La marketplace automobile de référence pour les pièces détachées, 
               véhicules d'occasion et accessoires. Pour particuliers et professionnels.
             </p>
+
+            {/* Newsletter Form */}
+            <div className="bg-primary-foreground/10 rounded-lg p-4">
+              <h4 className="font-heading font-bold text-sm mb-2 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-accent" />
+                Newsletter
+              </h4>
+              {subscribed ? (
+                <div className="flex items-center gap-2 text-sm text-green-400">
+                  <CheckCircle className="w-4 h-4" />
+                  Merci pour votre inscription !
+                </div>
+              ) : (
+                <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+                  <Input
+                    type="email"
+                    placeholder="Votre email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm h-9"
+                    required
+                  />
+                  <Button 
+                    type="submit" 
+                    size="sm"
+                    className="bg-accent hover:bg-accent/90 h-9 px-3"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Send className="w-4 h-4" />
+                    )}
+                  </Button>
+                </form>
+              )}
+            </div>
           </div>
 
           {/* Catégories */}
@@ -58,6 +124,12 @@ export default function Footer() {
           <div>
             <h3 className="font-heading font-bold text-lg mb-4">Liens utiles</h3>
             <ul className="space-y-2">
+              <li>
+                <Link to="/nouveautes" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  Nouveautés
+                </Link>
+              </li>
               <li>
                 <Link to="/a-propos" className="text-primary-foreground/70 hover:text-accent transition-colors">
                   À propos
