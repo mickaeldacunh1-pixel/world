@@ -135,6 +135,29 @@ export default function SellerProfile() {
                     Membre depuis {new Date(seller.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
                   </span>
                 </div>
+
+                {/* Badges Section */}
+                {seller.badges && seller.badges.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-xs text-muted-foreground mb-2">Badges obtenus</p>
+                    <div className="flex flex-wrap gap-2">
+                      {seller.badges.map((badge) => {
+                        const IconComponent = BADGE_ICONS[badge.icon] || Star;
+                        const colorClass = BADGE_COLORS[badge.color] || BADGE_COLORS.blue;
+                        return (
+                          <div
+                            key={badge.id}
+                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border ${colorClass}`}
+                            title={badge.description}
+                          >
+                            <IconComponent className="w-3.5 h-3.5" />
+                            {badge.name}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="flex flex-col items-end gap-2">
                 {seller.average_rating > 0 ? (
