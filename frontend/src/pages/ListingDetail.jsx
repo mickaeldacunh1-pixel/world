@@ -58,12 +58,43 @@ export default function ListingDetail() {
     try {
       const response = await axios.get(`${API}/listings/${id}`);
       setListing(response.data);
+      // Check if seller has Stripe connected
+      if (response.data.seller_stripe_connected) {
+        setSellerStripeConnected(true);
+      }
     } catch (error) {
       console.error('Error fetching listing:', error);
       toast.error('Annonce non trouvée');
       navigate('/annonces');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (!user) {
+      toast.error('Connectez-vous pour acheter');
+      navigate('/auth');
+      return;
+    }
+
+    setBuyLoading(true);
+    try {
+      const response = await axios.post(`${API}/stripe/connect/checkout`, {
+        listing_id: id,
+        quantity: 1
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      }
+    } catch (error) {
+      const message = error.response?.data?.detail || 'Erreur lors de la création du paiement';
+      toast.error(message);
+    } finally {
+      setBuyLoading(false);
     }
   };
 
