@@ -171,6 +171,53 @@ export default function CreateListing() {
     setImages(images.filter((_, i) => i !== index));
   };
 
+  // Video upload handler
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Check file size (max 50MB)
+    if (file.size > 50 * 1024 * 1024) {
+      toast.error('La vidéo ne doit pas dépasser 50 Mo');
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('video/')) {
+      toast.error('Veuillez sélectionner un fichier vidéo');
+      return;
+    }
+
+    setUploadingVideo(true);
+    try {
+      const token = localStorage.getItem('token');
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+
+      const response = await axios.post(`${API}/upload/video`, formDataUpload, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      setVideoUrl(response.data.url);
+      toast.success('Vidéo uploadée avec succès !');
+    } catch (error) {
+      toast.error('Erreur lors de l\'upload de la vidéo');
+      console.error('Video upload error:', error);
+    } finally {
+      setUploadingVideo(false);
+      if (videoInputRef.current) {
+        videoInputRef.current.value = '';
+      }
+    }
+  };
+
+  const removeVideo = () => {
+    setVideoUrl('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
