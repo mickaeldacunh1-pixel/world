@@ -334,11 +334,11 @@ export default function Pricing() {
               </div>
               <CardHeader>
                 <CardTitle className="font-heading text-primary-foreground">Pro 3 mois</CardTitle>
-                <CardDescription className="text-primary-foreground/70">43€/mois</CardDescription>
+                <CardDescription className="text-primary-foreground/70">33€/mois</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="mb-6">
-                  <span className="text-4xl font-heading font-black">129€</span>
+                  <span className="text-4xl font-heading font-black">99€</span>
                 </div>
                 <ul className="space-y-3">
                   {pricingFeatures.pro_3months.map((feature, i) => (
