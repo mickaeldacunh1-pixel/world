@@ -95,6 +95,9 @@ function AppContent() {
           <Route path="/admin/actualites" element={
             <ProtectedRoute><AdminUpdates /></ProtectedRoute>
           } />
+          <Route path="/admin/signalements" element={
+            <ProtectedRoute><AdminReports /></ProtectedRoute>
+          } />
           <Route path="/profil" element={
             <ProtectedRoute><Profile /></ProtectedRoute>
           } />
