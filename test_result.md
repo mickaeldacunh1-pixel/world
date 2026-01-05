@@ -661,7 +661,7 @@ test_plan:
 backend:
   - task: "AI Part Recognition"
     implemented: true
-    working: true
+    working: false
     file: "server.py"
     stuck_count: 0
     priority: "high"
@@ -670,6 +670,9 @@ backend:
         - working: true
         - agent: "main"
         - comment: "Fixed missing session_id parameter in LlmChat initialization. Endpoint POST /api/ai/recognize-part accepts image upload, uses GPT-4o vision to analyze automotive parts."
+        - working: false
+        - agent: "testing"
+        - comment: "AI Part Recognition endpoint has implementation error. Returns 500 error with message 'ImageContent.__init__() got an unexpected keyword argument 'url''. This appears to be an issue with the emergentintegrations library version or usage. The endpoint structure is correct (accepts multipart/form-data with file upload) but the internal image processing fails. Needs main agent to fix the ImageContent initialization in the AI part recognition code."
 
   - task: "AI Price Estimation"
     implemented: true
@@ -682,6 +685,9 @@ backend:
         - working: true
         - agent: "main"
         - comment: "Fixed missing session_id parameter in LlmChat initialization. Endpoint POST /api/ai/estimate-price returns detailed price estimation with min/max range, market average, and selling tips. Tested with curl - works perfectly."
+        - working: true
+        - agent: "testing"
+        - comment: "AI Price Estimation working correctly. Endpoint POST /api/ai/estimate-price accepts all required fields (part_name, condition, brand, year) and returns proper response structure with estimation field containing price information. Validation works correctly for missing fields (returns 422). AI provides relevant automotive price estimates in French. Feature ready for production use."
 
 frontend:
   - task: "AI Tools Component"
