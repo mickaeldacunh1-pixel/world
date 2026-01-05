@@ -92,6 +92,7 @@ function AppContent() {
             <ProtectedRoute><SellerStats /></ProtectedRoute>
           } />
           <Route path="/vendeur/:sellerId" element={<SellerProfile />} />
+          <Route path="/acheteur/:buyerId" element={<BuyerProfile />} />
           <Route path="/admin/parametres" element={
             <ProtectedRoute><AdminSettings /></ProtectedRoute>
           } />
