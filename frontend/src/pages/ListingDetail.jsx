@@ -31,7 +31,7 @@ const categoryLabels = {
 export default function ListingDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -41,6 +41,8 @@ export default function ListingDetail() {
   const [messageDialogOpen, setMessageDialogOpen] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [buyLoading, setBuyLoading] = useState(false);
+  const [sellerStripeConnected, setSellerStripeConnected] = useState(false);
 
   useEffect(() => {
     fetchListing();
