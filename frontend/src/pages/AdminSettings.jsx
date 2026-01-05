@@ -558,7 +558,7 @@ export default function AdminSettings() {
                   <div className="space-y-2">
                     <Label>✨ Animation du texte</Label>
                     <Select 
-                      value={settings.hero_text_animation || ""} 
+                      value={settings.hero_text_animation || "none"} 
                       onValueChange={(v) => setSettings({...settings, hero_text_animation: v})}
                     >
                       <SelectTrigger>
