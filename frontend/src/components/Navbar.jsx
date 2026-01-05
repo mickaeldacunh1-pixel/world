@@ -102,6 +102,21 @@ export default function Navbar() {
 
           {/* Right section */}
           <div className="flex items-center gap-2">
+            {/* Theme Toggle */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+              className="hidden sm:flex"
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-5 h-5 text-yellow-500" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </Button>
+
             {user ? (
               <>
                 {/* Quick action icons */}
