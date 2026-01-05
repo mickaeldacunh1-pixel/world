@@ -105,6 +105,28 @@ export default function Home() {
       {/* Seasonal Animation */}
       <SeasonalAnimation type={heroSettings.seasonal_animation} enabled={!!heroSettings.seasonal_animation} />
       
+      {/* Announcement Bar */}
+      {heroSettings.announcement_enabled && heroSettings.announcement_text && (
+        <div 
+          className="w-full py-3 px-4 text-center font-medium text-sm md:text-base"
+          style={{ 
+            backgroundColor: heroSettings.announcement_bg_color || '#e74c3c', 
+            color: heroSettings.announcement_text_color || '#ffffff' 
+          }}
+        >
+          {heroSettings.announcement_link ? (
+            <a 
+              href={heroSettings.announcement_link} 
+              className="hover:opacity-80 transition-opacity"
+            >
+              {heroSettings.announcement_text}
+            </a>
+          ) : (
+            <span>{heroSettings.announcement_text}</span>
+          )}
+        </div>
+      )}
+      
       <SEO
         title="Accueil"
         description="World Auto France - La marketplace automobile pour acheter et vendre des pièces détachées, voitures, motos et utilitaires d'occasion. Particuliers et professionnels."
