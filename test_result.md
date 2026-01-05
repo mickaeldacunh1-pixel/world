@@ -650,11 +650,51 @@ frontend:
         - comment: "Admin Updates page has authentication issue. Page is properly protected - redirects to /auth when not authenticated (good security). However, admin login with admin@test.com / test1234 credentials fails - user remains on auth page after login attempt. Cannot access admin functionality to test stats cards, 'Nouvelle actualité' button, or form features. Admin authentication needs to be fixed for this feature to be fully functional."
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "AI Tools - Part Recognition"
+    - "AI Tools - Price Estimation"
   stuck_tasks:
     - "Admin Updates Management"
   test_all: false
   test_priority: "high_first"
+
+backend:
+  - task: "AI Part Recognition"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Fixed missing session_id parameter in LlmChat initialization. Endpoint POST /api/ai/recognize-part accepts image upload, uses GPT-4o vision to analyze automotive parts."
+
+  - task: "AI Price Estimation"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Fixed missing session_id parameter in LlmChat initialization. Endpoint POST /api/ai/estimate-price returns detailed price estimation with min/max range, market average, and selling tips. Tested with curl - works perfectly."
+
+frontend:
+  - task: "AI Tools Component"
+    implemented: true
+    working: true
+    file: "components/AITools.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "AITools component added to Home.jsx. Modal with two tabs: Recognition (image upload) and Price Estimation (form with part name, condition, brand, year). Tested via screenshots - both tabs working correctly."
 
 frontend:
   - task: "Admin Hero Settings Panel Optimization"
