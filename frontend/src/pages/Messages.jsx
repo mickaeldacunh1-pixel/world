@@ -7,9 +7,18 @@ import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { ScrollArea } from '../components/ui/scroll-area';
-import { MessageSquare, Send, ArrowLeft, User } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
+import { MessageSquare, Send, ArrowLeft, User, Smile } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+// Emoji categories
+const EMOJI_CATEGORIES = {
+  'Smileys': ['😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂', '😉', '😌', '😍', '🥰', '😘', '😋', '😜', '🤪', '😎', '🤩', '🥳', '😏', '😒', '🙄', '😬', '🤔', '🤫', '🤭', '😱', '😢'],
+  'Gestes': ['👍', '👎', '👌', '✌️', '🤞', '🤟', '🤙', '👋', '🤚', '✋', '🖐️', '👏', '🙌', '🤝', '🙏', '💪', '👊', '✊', '🤛', '🤜'],
+  'Cœurs': ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟'],
+  'Objets': ['🚗', '🚙', '🏎️', '🚕', '🔧', '🔩', '⚙️', '🛠️', '💰', '💵', '📦', '📱', '💻', '📧', '✅', '❌', '⚠️', '🔔', '🎉', '🎊']
+};
 
 export default function Messages() {
   const { listingId, userId } = useParams();
