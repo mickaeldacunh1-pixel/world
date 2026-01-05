@@ -640,35 +640,99 @@ export default function AdminSettings() {
               </CardContent>
             </Card>
 
-            {/* Preview */}
+            {/* Preview with Mobile/Desktop toggle */}
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Eye className="w-5 h-5" />
-                  Aperçu
+                  Aperçu en direct
                 </CardTitle>
+                <div className="flex items-center gap-2 bg-secondary rounded-lg p-1">
+                  <button
+                    type="button"
+                    onClick={() => setSettings({...settings, preview_mode: 'desktop'})}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      settings.preview_mode !== 'mobile' 
+                        ? 'bg-white shadow text-foreground' 
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    🖥️ Desktop
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSettings({...settings, preview_mode: 'mobile'})}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      settings.preview_mode === 'mobile' 
+                        ? 'bg-white shadow text-foreground' 
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    📱 Mobile
+                  </button>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="relative rounded-lg overflow-hidden" style={{ backgroundColor: settings.color_primary }}>
-                  <div className="absolute inset-0 opacity-20">
+                {/* Announcement Bar Preview */}
+                {settings.announcement_enabled && settings.announcement_text && (
+                  <div 
+                    className="text-center text-sm font-medium py-2 px-4 mb-4 rounded-t-lg"
+                    style={{ backgroundColor: settings.announcement_bg_color, color: settings.announcement_text_color }}
+                  >
+                    {settings.announcement_text}
+                  </div>
+                )}
+                
+                {/* Hero Preview */}
+                <div 
+                  className={`relative rounded-lg overflow-hidden transition-all duration-300 mx-auto ${
+                    settings.preview_mode === 'mobile' ? 'max-w-[375px]' : 'w-full'
+                  }`}
+                >
+                  {/* Background Image with Opacity */}
+                  <div className="absolute inset-0">
                     <div 
                       className="absolute inset-0 bg-cover bg-center" 
                       style={{ backgroundImage: `url('${settings.hero_image}')` }}
                     />
+                    <div 
+                      className="absolute inset-0 bg-black"
+                      style={{ opacity: (settings.hero_overlay_opacity || 50) / 100 }}
+                    />
                   </div>
-                  <div className="relative p-8">
-                    <h1 className="text-2xl md:text-3xl font-black text-white leading-tight mb-3" style={{ fontFamily: settings.font_heading }}>
+                  
+                  {/* Content */}
+                  <div className={`relative ${settings.preview_mode === 'mobile' ? 'p-4' : 'p-8'}`}>
+                    <h1 
+                      className={`font-black text-white leading-tight mb-3 ${
+                        settings.preview_mode === 'mobile' ? 'text-xl' : 'text-2xl md:text-3xl'
+                      } ${settings.hero_text_animation ? `animate-${settings.hero_text_animation}` : ''}`}
+                      style={{ fontFamily: settings.font_heading }}
+                    >
                       {settings.hero_title_line1}<br />
                       <span style={{ color: settings.color_accent }}>{settings.hero_title_line2}</span>
                     </h1>
-                    <p className="text-white/80 mb-4 text-sm max-w-md" style={{ fontFamily: settings.font_body }}>
+                    <p 
+                      className={`text-white/80 mb-4 max-w-md ${settings.preview_mode === 'mobile' ? 'text-xs' : 'text-sm'}`}
+                      style={{ fontFamily: settings.font_body }}
+                    >
                       {settings.hero_description}
                     </p>
-                    <Button style={{ backgroundColor: settings.color_accent }} className="text-sm text-white">
+                    <Button 
+                      style={{ backgroundColor: settings.color_accent }} 
+                      className={`text-white ${settings.preview_mode === 'mobile' ? 'text-xs h-8 px-3' : 'text-sm'}`}
+                    >
                       {settings.hero_cta_text}
                     </Button>
                   </div>
                 </div>
+                
+                {/* Preview Info */}
+                <p className="text-xs text-muted-foreground mt-4 text-center">
+                  {settings.preview_mode === 'mobile' 
+                    ? '📱 Vue mobile (375px) - comme sur iPhone' 
+                    : '🖥️ Vue desktop - comme sur ordinateur'}
+                </p>
               </CardContent>
             </Card>
           </TabsContent>
