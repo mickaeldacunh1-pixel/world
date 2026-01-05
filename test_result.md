@@ -551,24 +551,90 @@ frontend:
 
 agent_communication:
     - agent: "main"
-    - message: "Removed PayPal integration completely (backend code, config, frontend buttons). Stripe remains as the only payment method. Need to verify that the Stripe checkout flow still works correctly. Also need basic verification that auth and listings endpoints are functional."
-    - agent: "testing"
-    - message: "Backend testing completed. 55/56 tests passed. All core functionality working except Stripe checkout which fails due to invalid API key configuration (sk_test_emergent). PayPal endpoints successfully removed. Auth, listings, pricing, and all other endpoints working correctly."
-    - agent: "main"
-    - message: "Added email notification system using SMTP (Hostinger). Notifications implemented: welcome email on registration, new order emails to seller and buyer, order shipped email to buyer, order delivered email to seller, return request email to seller. Need to test the complete flow."
-    - agent: "testing"
-    - message: "Email notification system testing completed successfully. 66/67 tests passed (only Stripe checkout fails due to invalid API key). All email notification endpoints working correctly: user registration with welcome email, order creation with buyer/seller notifications, order status updates (shipped/delivered) with email notifications, return requests with seller notifications. BackgroundTasks parameter accepted by all endpoints. SMTP authentication fails in test environment but email functions are properly called and logged."
-    - agent: "main"
-    - message: "Implemented 3 new features: 1) Seller public profile page (/vendeur/:sellerId) with backend endpoint GET /api/seller/{seller_id}/profile. 2) Admin Settings page (/admin/parametres) for editing hero section, with GET/POST /api/settings/hero endpoints. 3) Shipping slip PDF generation with existing endpoints GET /api/orders/{id}/shipping-slip and GET /api/returns/{id}/slip. Also added link to seller profile in ListingDetail page and admin link in Navbar for professional users. Need to test all these new features."
-    - agent: "testing"
-    - message: "New features testing completed successfully. 98/99 tests passed (only Stripe checkout fails due to invalid API key). All 4 new backend features working correctly: 1) Seller public profile API returns all required fields (seller info, stats, reviews). 2) Hero settings API - both GET (returns default settings) and POST (saves with auth) working. 3) Shipping slip PDF generation - both endpoints accessible and properly configured with BordereauGenerator. 4) Carriers list API returns all expected carriers with proper structure. All new features ready for production use."
-    - agent: "main"
-    - message: "CRITICAL FIX: Resolved deployment issues on VPS. Fixed Docker volume configuration - MongoDB was using new empty volume instead of existing data volume (worldauto_mongo_data). Fixed MONGO_URL hostname. All user data restored. Need full frontend testing to verify all pages work correctly."
-    - agent: "testing"
-    - message: "Frontend testing completed successfully. All major pages and flows working correctly: 1) Homepage loads with hero section and navigation (5 links). 2) Listings page displays with filters and 1 listing available. 3) Auth page with login/registration forms and proper validation. 4) Pricing page shows 4 pricing packages with Stripe buttons. 5) All protected routes (/favoris, /alertes, /statistiques, /commandes, /admin/parametres) properly redirect to auth. 6) Seller Profile page accessible and displays seller info. 7) ListingDetail page shows seller profile links. 8) Mobile responsiveness working. 9) Navigation functional. Only remaining issue: Stripe checkout still fails due to invalid API key (sk_test_emergent). All frontend features ready for production."
-    - agent: "testing"
-    - message: "Profile Management backend testing completed successfully. 116/117 tests passed (only Stripe checkout fails due to invalid API key). All 3 new profile management endpoints working correctly: 1) PUT /api/auth/profile - Updates user profile with proper validation and authentication. 2) PUT /api/auth/password - Changes password with current password verification and proper error handling. 3) DELETE /api/auth/account - Deletes user account and all associated data, properly denies access afterward. Complete profile management flow tested and working. Backend ready for production use."
-    - agent: "testing"
-    - message: "Cart checkout flow testing completed successfully. All 6 test scenarios passed: ✅ Authentication required (401 without token). ✅ Endpoint structure accepts all required fields (listing_ids, buyer_address, buyer_city, buyer_postal, buyer_phone). ✅ Field validation works (422 for missing required fields). ✅ Empty cart correctly rejected with 400 error 'Le panier est vide'. ✅ Invalid listing IDs handled properly with 400 error and detailed error messages. ✅ Endpoint properly processes requests and returns appropriate error responses. The POST /api/orders/checkout endpoint is fully functional and handles all edge cases correctly. Email notifications are sent via BackgroundTasks. Ready for production use."
-    - agent: "testing"
-    - message: "FAVORITES AND MESSAGING API TESTING COMPLETED SUCCESSFULLY. All 62/62 tests passed for both APIs. 🔧 FIXED: MongoDB ObjectId serialization error in messages endpoint. ⭐ FAVORITES API (4 endpoints): 1) POST /api/favorites/{listing_id} - Add to favorites (requires auth, handles invalid listings with 404). 2) GET /api/favorites - Get user's favorites list (requires auth, returns empty array when no favorites). 3) GET /api/favorites/check/{listing_id} - Check if listing is favorited (requires auth, returns is_favorite boolean). 4) DELETE /api/favorites/{listing_id} - Remove from favorites (requires auth, 404 for non-existent). 💬 MESSAGING API (3 endpoints): 1) GET /api/messages/conversations - Get user's conversations (requires auth, returns array with conversation metadata). 2) POST /api/messages - Send message (requires auth, validates receiver_id, returns full message object). 3) GET /api/messages/{listing_id}/{other_user_id} - Get conversation messages (requires auth, marks messages as read, chronological order). ✅ COMPLETE FLOW TESTED: Register 2 users → Send message → Reply → Check conversations → Verify unread counts → Mark as read. All authentication, validation, error handling, and edge cases working correctly. Both APIs ready for production use."
+    - message: "Implemented Newsletter and Updates (Changelog) system. Backend: New endpoints for /api/updates (CRUD) and /api/newsletter/subscribe. Frontend: Updates.jsx page displays changelog dynamically from API (with static fallback), Newsletter.jsx page for subscription, Footer.jsx updated with newsletter subscription form, AdminUpdates.jsx for managing updates/changelog. All routes added to App.js. Need to test: 1) Newsletter subscription flow, 2) Updates display page, 3) Admin updates management, 4) Footer newsletter form."
+
+backend:
+  - task: "Updates (Changelog) API"
+    implemented: true
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented CRUD endpoints for updates/changelog: GET /api/updates (public), POST /api/updates (auth), PUT /api/updates/{id} (auth), DELETE /api/updates/{id} (auth). Each update has title, version, category, optional image_url, and items array with type (new/improvement/fix/maintenance) and text."
+
+  - task: "Newsletter Subscription API"
+    implemented: true
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented newsletter endpoints: POST /api/newsletter/subscribe (public, validates email format and duplicates), GET /api/newsletter/subscribers (auth, returns all active subscribers), DELETE /api/newsletter/unsubscribe/{email} (public for unsubscribe links)."
+
+frontend:
+  - task: "Updates (Changelog) Page"
+    implemented: true
+    working: "NA"
+    file: "pages/Updates.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Updates page at /nouveautes displays changelog from API with static fallback. Shows title, version, category badge, date, optional image, and items with type indicators. Includes CTA to newsletter at bottom."
+
+  - task: "Newsletter Page"
+    implemented: true
+    working: "NA"
+    file: "pages/Newsletter.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Newsletter subscription page at /newsletter with simple form (email required, name optional). Shows benefits section and success confirmation after subscription."
+
+  - task: "Footer Newsletter Form"
+    implemented: true
+    working: "NA"
+    file: "components/Footer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Added newsletter subscription form to Footer with email input and submit button. Shows success message after subscription. Also added link to Nouveautés page."
+
+  - task: "Admin Updates Management"
+    implemented: true
+    working: "NA"
+    file: "pages/AdminUpdates.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "New admin page at /admin/actualites for managing updates. Features: stats dashboard (updates count, subscribers count, latest version), create/edit form with title, version, category, image, items. Lists all updates with edit/delete buttons. Shows recent newsletter subscribers."
+
+test_plan:
+  current_focus:
+    - "Updates (Changelog) API"
+    - "Newsletter Subscription API"
+    - "Updates (Changelog) Page"
+    - "Newsletter Page"
+    - "Footer Newsletter Form"
+    - "Admin Updates Management"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
