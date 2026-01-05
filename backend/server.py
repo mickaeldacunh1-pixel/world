@@ -1299,6 +1299,10 @@ async def get_listing(listing_id: str):
     await db.listings.update_one({"id": listing_id}, {"$inc": {"views": 1}})
     listing["views"] = listing.get("views", 0) + 1
     
+    # Check if seller has Stripe Connect configured
+    seller = await db.users.find_one({"id": listing.get("seller_id")}, {"_id": 0, "stripe_connected": 1})
+    listing["seller_stripe_connected"] = seller.get("stripe_connected", False) if seller else False
+    
     return listing
 
 @api_router.get("/my-listings")
