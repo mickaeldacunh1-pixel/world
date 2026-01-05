@@ -674,15 +674,18 @@ frontend:
 
   - task: "OEM Reference Search Feature"
     implemented: true
-    working: "NA"
+    working: true
     file: "pages/Home.jsx, pages/Listings.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Implemented OEM Reference Search feature: 1) Added dedicated OEM search section on homepage with search field, example references (7701474426, 1K0615301M, 30735878, 04E115561H) as clickable buttons, and 4 feature highlights. 2) Enhanced OEM filter on Listings page - now always visible (not just for pieces category), with highlighted styling, mono font, and helper text. 3) Backend already supported OEM search via oem_reference query parameter."
+        - working: true
+        - agent: "testing"
+        - comment: "OEM Reference Search feature testing completed successfully. ✅ WORKING FEATURES: 1) Homepage OEM Section: Found section title 'Recherche par référence OEM', search input with correct placeholder containing '7701474426', 'Rechercher' button, and all 4 example reference buttons (7701474426, 1K0615301M, 30735878, 04E115561H). Clicking example references correctly fills input. 2) Navigation Flow: OEM search from homepage successfully navigates to /annonces/pieces?oem_reference=... with correct URL parameters. 3) Listings Page OEM Filter: Found filter label '🔍 Référence OEM / Équipementier', input field with correct placeholder, mono font styling, and helper text 'Recherche dans les références constructeur et équipementier'. Filter is visible on all listings pages (not just pieces category). 4) URL Parameter Population: Fixed issue where OEM filter wasn't populated from URL parameters - now correctly shows searched value when navigating from homepage. FIXED: Added searchParams.get('oem_reference') to useState initialization and oemReference to useEffect dependencies. Minor: Filter application from listings page doesn't update URL (cosmetic issue only - search functionality works). Core OEM search functionality fully operational and ready for production use."
 
 agent_communication:
     - agent: "main"
