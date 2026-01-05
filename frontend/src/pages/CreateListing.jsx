@@ -698,12 +698,75 @@ export default function CreateListing() {
                 )}
               </div>
 
+              {/* Video */}
+              <div className="space-y-4">
+                <Label className="flex items-center gap-2">
+                  <Video className="w-4 h-4" />
+                  Vidéo de présentation (optionnel)
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  Ajoutez une vidéo pour mieux présenter votre article (MP4, MOV, WebM - max 50MB)
+                </p>
+                
+                {/* Video Preview */}
+                {videoUrl && (
+                  <div className="relative rounded-lg overflow-hidden border bg-black">
+                    <video
+                      src={videoUrl}
+                      controls
+                      className="w-full max-h-64"
+                    >
+                      Votre navigateur ne supporte pas la lecture vidéo.
+                    </video>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-2"
+                      onClick={removeVideo}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+
+                {/* Video Upload Button */}
+                {!videoUrl && (
+                  <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-accent transition-colors">
+                    <input
+                      type="file"
+                      ref={videoInputRef}
+                      onChange={handleVideoUpload}
+                      accept="video/mp4,video/webm,video/quicktime,video/mov"
+                      className="hidden"
+                      id="video-upload"
+                    />
+                    <label htmlFor="video-upload" className="cursor-pointer">
+                      {uploadingVideo ? (
+                        <div className="flex flex-col items-center gap-2">
+                          <Loader2 className="w-8 h-8 animate-spin text-accent" />
+                          <span className="text-sm text-muted-foreground">Upload de la vidéo en cours...</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-2">
+                          <Video className="w-8 h-8 text-muted-foreground" />
+                          <span className="text-sm font-medium">Cliquez pour ajouter une vidéo</span>
+                          <span className="text-xs text-muted-foreground">
+                            Max 50 Mo • MP4, MOV, WebM
+                          </span>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                )}
+              </div>
+
               {/* Submit */}
               <div className="flex gap-4 pt-4">
                 <Button
                   type="submit"
                   className="flex-1 h-12 bg-accent hover:bg-accent/90 btn-primary"
-                  disabled={loading || uploadingImages || user?.credits <= 0}
+                  disabled={loading || uploadingImages || uploadingVideo || user?.credits <= 0}
                   data-testid="submit-listing-btn"
                 >
                   {loading ? 'Publication...' : 'Publier l\'annonce (1 crédit)'}
