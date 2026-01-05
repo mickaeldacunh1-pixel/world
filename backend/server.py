@@ -769,6 +769,13 @@ async def get_current_user(request: Request) -> dict:
 
 @api_router.post("/auth/register")
 async def register(user: UserCreate, background_tasks: BackgroundTasks):
+    # Vérifier que le pays est autorisé
+    if user.country not in ALLOWED_COUNTRIES:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Les inscriptions sont limitées aux pays suivants : {', '.join(ALLOWED_COUNTRIES)}"
+        )
+    
     existing = await db.users.find_one({"email": user.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email déjà utilisé")
@@ -785,6 +792,7 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
         "address": user.address,
         "city": user.city,
         "postal_code": user.postal_code,
+        "country": user.country,
         "credits": 0,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
@@ -802,6 +810,7 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
             "email": user_doc["email"],
             "name": user_doc["name"],
             "is_professional": user_doc["is_professional"],
+            "country": user_doc["country"],
             "credits": 0
         }
     }
