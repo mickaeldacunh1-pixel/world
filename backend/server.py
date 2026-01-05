@@ -2297,7 +2297,8 @@ async def websocket_chat(websocket: WebSocket, token: str):
                 # Récupérer les infos du sender
                 sender = await db.users.find_one({"id": user_id}, {"_id": 0, "name": 1})
                 message_doc["sender_name"] = sender.get("name", "Utilisateur") if sender else "Utilisateur"
-                del message_doc["_id"] if "_id" in message_doc else None
+                if "_id" in message_doc:
+                    del message_doc["_id"]
                 
                 # Notifier les deux utilisateurs
                 ws_message = {
