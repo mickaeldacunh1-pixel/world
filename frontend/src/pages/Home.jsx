@@ -87,6 +87,13 @@ export default function Home() {
     navigate(`/annonces?${params.toString()}`);
   };
 
+  const handleOemSearch = (e) => {
+    e.preventDefault();
+    if (oemSearch.trim()) {
+      navigate(`/annonces/pieces?oem_reference=${encodeURIComponent(oemSearch.trim())}`);
+    }
+  };
+
   const conditionLabels = {
     neuf: 'Neuf',
     occasion: 'Occasion',
