@@ -14,8 +14,10 @@ import { Switch } from '../components/ui/switch';
 import { 
   Save, Eye, Image, Type, RefreshCw, Palette, Layout, 
   Plus, Trash2, MoveUp, MoveDown, Upload, Settings, 
-  AlertCircle, CheckCircle, Loader2
+  AlertCircle, CheckCircle, Loader2, Sparkles
 } from 'lucide-react';
+import EmojiPicker from '../components/EmojiPicker';
+import { ANIMATION_OPTIONS } from '../components/SeasonalAnimation';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -27,6 +29,9 @@ const DEFAULT_SETTINGS = {
   hero_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
   hero_cta_text: "Déposer une annonce",
   hero_cta_link: "/deposer",
+  
+  // Seasonal Animation
+  seasonal_animation: "",
   
   // Colors
   color_primary: "#1E3A5F",
