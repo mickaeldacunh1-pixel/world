@@ -1987,10 +1987,14 @@ async def get_seller_profile(seller_id: str):
     total_reviews = len(reviews)
     average_rating = round(sum(r.get("rating", 0) for r in reviews) / total_reviews, 1) if total_reviews > 0 else 0
     
+    # Check if seller is verified (5+ successful sales with good reviews)
+    is_verified_seller = sold_count >= 5 and (average_rating >= 4.0 or total_reviews == 0)
+    
     return {
         "id": seller["id"],
         "name": seller["name"],
         "is_professional": seller.get("is_professional", False),
+        "is_verified_seller": is_verified_seller,
         "company_name": seller.get("company_name"),
         "city": seller.get("city"),
         "created_at": seller.get("created_at"),
