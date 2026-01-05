@@ -3482,16 +3482,10 @@ async def recognize_part(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Le fichier doit être une image")
     
     try:
-        # Read image
+        # Read image and convert to base64
         contents = await file.read()
-        
-        # Upload to Cloudinary temporarily
-        upload_result = cloudinary.uploader.upload(
-            contents,
-            folder="worldauto_temp",
-            resource_type="image"
-        )
-        image_url = upload_result['secure_url']
+        import base64
+        image_base64 = base64.b64encode(contents).decode('utf-8')
         
         # Get API key
         api_key = os.environ.get('EMERGENT_LLM_KEY')
@@ -3507,18 +3501,21 @@ async def recognize_part(file: UploadFile = File(...)):
             system_message=PART_RECOGNITION_PROMPT
         ).with_model("openai", "gpt-4o")
         
-        # Send image for analysis
+        # Send image for analysis using base64
+        image_content = ImageContent(image_base64=image_base64)
         user_message = UserMessage(
             text="Analyse cette pièce automobile:",
-            images=[ImageContent(url=image_url)]
+            file_contents=[image_content]
         )
         response = await chat.send_message(user_message)
         
-        # Clean up temp image
-        try:
-            cloudinary.uploader.destroy(upload_result['public_id'])
-        except:
-            pass
+        # Also upload to Cloudinary for reference
+        upload_result = cloudinary.uploader.upload(
+            contents,
+            folder="worldauto_temp",
+            resource_type="image"
+        )
+        image_url = upload_result['secure_url']
         
         return {
             "analysis": response,
