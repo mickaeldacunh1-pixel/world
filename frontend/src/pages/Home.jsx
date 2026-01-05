@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Card } from '../components/ui/card';
 import { Search, Car, Wrench, Bike, Truck, Settings, ArrowRight, Shield, Users, Clock, MapPin, Eye, Sparkles } from 'lucide-react';
 import SEO, { createOrganizationSchema, createWebsiteSchema } from '../components/SEO';
+import SeasonalAnimation from '../components/SeasonalAnimation';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -30,7 +31,8 @@ const DEFAULT_HERO = {
   hero_description: "Achetez et vendez des pièces détachées, voitures, motos et utilitaires. Pour particuliers et professionnels.",
   hero_image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2832&auto=format&fit=crop",
   hero_cta_text: "Déposer une annonce",
-  hero_cta_link: "/deposer"
+  hero_cta_link: "/deposer",
+  seasonal_animation: ""
 };
 
 export default function Home() {
