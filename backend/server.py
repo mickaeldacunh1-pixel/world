@@ -3089,6 +3089,158 @@ async def get_category_stats():
     stats = await db.listings.aggregate(pipeline).to_list(10)
     return {s["_id"]: s["count"] for s in stats}
 
+# ================== REPORTS (SIGNALEMENTS) ==================
+
+class ReportCreate(BaseModel):
+    target_type: str  # "listing" or "user"
+    target_id: str
+    reason: str  # "spam", "scam", "inappropriate", "counterfeit", "other"
+    description: Optional[str] = None
+
+REPORT_REASONS = {
+    "spam": "Spam ou publicité",
+    "scam": "Arnaque suspectée", 
+    "inappropriate": "Contenu inapproprié",
+    "counterfeit": "Contrefaçon",
+    "wrong_category": "Mauvaise catégorie",
+    "duplicate": "Annonce en double",
+    "other": "Autre raison"
+}
+
+@api_router.post("/reports")
+async def create_report(report: ReportCreate, current_user: dict = Depends(get_current_user)):
+    """Signaler une annonce ou un utilisateur"""
+    if report.target_type not in ["listing", "user"]:
+        raise HTTPException(status_code=400, detail="Type de signalement invalide")
+    
+    if report.reason not in REPORT_REASONS:
+        raise HTTPException(status_code=400, detail="Raison de signalement invalide")
+    
+    # Verify target exists
+    if report.target_type == "listing":
+        target = await db.listings.find_one({"id": report.target_id})
+        if not target:
+            raise HTTPException(status_code=404, detail="Annonce non trouvée")
+        target_name = target.get("title", "Annonce inconnue")
+    else:
+        target = await db.users.find_one({"id": report.target_id})
+        if not target:
+            raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+        target_name = target.get("name", "Utilisateur inconnu")
+    
+    # Check if already reported by this user
+    existing = await db.reports.find_one({
+        "reporter_id": current_user["id"],
+        "target_type": report.target_type,
+        "target_id": report.target_id,
+        "status": {"$ne": "resolved"}
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="Vous avez déjà signalé cet élément")
+    
+    report_doc = {
+        "id": str(uuid4()),
+        "reporter_id": current_user["id"],
+        "reporter_name": current_user["name"],
+        "target_type": report.target_type,
+        "target_id": report.target_id,
+        "target_name": target_name,
+        "reason": report.reason,
+        "reason_label": REPORT_REASONS[report.reason],
+        "description": report.description,
+        "status": "pending",  # pending, reviewed, resolved, dismissed
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": None,
+        "admin_notes": None
+    }
+    
+    await db.reports.insert_one(report_doc)
+    
+    # Notify admin by email
+    admin_html = f"""
+    <h2>🚨 Nouveau signalement</h2>
+    <p><strong>Type:</strong> {report.target_type}</p>
+    <p><strong>Cible:</strong> {target_name} (ID: {report.target_id})</p>
+    <p><strong>Raison:</strong> {REPORT_REASONS[report.reason]}</p>
+    <p><strong>Description:</strong> {report.description or 'Aucune'}</p>
+    <p><strong>Signalé par:</strong> {current_user['name']} ({current_user['email']})</p>
+    <p><a href="{os.environ.get('FRONTEND_URL', 'https://worldautofrance.com')}/admin/signalements">Voir les signalements</a></p>
+    """
+    send_email(ADMIN_EMAIL, f"🚨 Nouveau signalement - {REPORT_REASONS[report.reason]}", admin_html)
+    
+    return {"message": "Signalement envoyé avec succès", "report_id": report_doc["id"]}
+
+@api_router.get("/reports")
+async def get_reports(
+    status: Optional[str] = None,
+    target_type: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Récupérer les signalements (admin uniquement)"""
+    if current_user["email"] != ADMIN_EMAIL:
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    query = {}
+    if status:
+        query["status"] = status
+    if target_type:
+        query["target_type"] = target_type
+    
+    reports = await db.reports.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
+    
+    # Get stats
+    total = await db.reports.count_documents({})
+    pending = await db.reports.count_documents({"status": "pending"})
+    
+    return {
+        "reports": reports,
+        "stats": {
+            "total": total,
+            "pending": pending
+        }
+    }
+
+@api_router.put("/reports/{report_id}")
+async def update_report(
+    report_id: str,
+    status: str,
+    admin_notes: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Mettre à jour un signalement (admin uniquement)"""
+    if current_user["email"] != ADMIN_EMAIL:
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    if status not in ["pending", "reviewed", "resolved", "dismissed"]:
+        raise HTTPException(status_code=400, detail="Statut invalide")
+    
+    report = await db.reports.find_one({"id": report_id})
+    if not report:
+        raise HTTPException(status_code=404, detail="Signalement non trouvé")
+    
+    update_data = {
+        "status": status,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    if admin_notes:
+        update_data["admin_notes"] = admin_notes
+    
+    await db.reports.update_one({"id": report_id}, {"$set": update_data})
+    
+    # If resolved and target is a listing, optionally deactivate it
+    if status == "resolved" and report["target_type"] == "listing":
+        await db.listings.update_one(
+            {"id": report["target_id"]},
+            {"$set": {"status": "suspended", "suspension_reason": f"Signalement: {report['reason_label']}"}}
+        )
+    
+    return {"message": "Signalement mis à jour"}
+
+@api_router.get("/reports/reasons")
+async def get_report_reasons():
+    """Récupérer les raisons de signalement disponibles"""
+    return REPORT_REASONS
+
 # ================== ROOT ==================
 
 @api_router.get("/")
