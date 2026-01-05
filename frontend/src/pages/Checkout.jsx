@@ -30,6 +30,9 @@ export default function Checkout() {
     phone: ''
   });
 
+  const [deliveryMethod, setDeliveryMethod] = useState('home'); // 'home' or 'relay'
+  const [selectedRelay, setSelectedRelay] = useState(null);
+
   useEffect(() => {
     // Redirect if not logged in
     if (!user) {
