@@ -359,6 +359,26 @@ export default function ListingDetail() {
                 ))}
               </div>
             )}
+
+            {/* Video */}
+            {listing.video_url && (
+              <div className="mt-4">
+                <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                  Vidéo de présentation
+                </p>
+                <div className="rounded-xl overflow-hidden bg-black">
+                  <video
+                    src={listing.video_url}
+                    controls
+                    className="w-full max-h-80"
+                    poster={images[0]}
+                  >
+                    Votre navigateur ne supporte pas la lecture vidéo.
+                  </video>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Details */}
