@@ -650,8 +650,26 @@ frontend:
         - comment: "Admin Updates page has authentication issue. Page is properly protected - redirects to /auth when not authenticated (good security). However, admin login with admin@test.com / test1234 credentials fails - user remains on auth page after login attempt. Cannot access admin functionality to test stats cards, 'Nouvelle actualité' button, or form features. Admin authentication needs to be fixed for this feature to be fully functional."
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Admin Hero Settings Panel"
   stuck_tasks:
     - "Admin Updates Management"
   test_all: false
   test_priority: "high_first"
+
+frontend:
+  - task: "Admin Hero Settings Panel Optimization"
+    implemented: true
+    working: "NA"
+    file: "pages/AdminSettings.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented all Hero admin panel optimizations: 1) Image gallery (8 preset images), 2) Quick color palettes (8 themes), 3) Overlay opacity control (slider 0-100%), 4) Text animations (6 options), 5) Announcement bar with colors, 6) Reset button per section, 7) Desktop/Mobile preview toggle. Fixed Select component empty value error by changing hero_text_animation from empty string to 'none'. Added preview_mode to DEFAULT_SETTINGS."
+
+agent_communication:
+    - agent: "main"
+    - message: "Completed Hero Admin Panel optimization. All 7 features implemented: 1) Image gallery with 8 car-related preset images, 2) Quick color palettes with 8 themes (World Auto, Bleu Premium, Vert Nature, Rouge Sport, Violet Luxe, Orange Energy, Noir Élégant, Bleu Nuit), 3) Overlay opacity slider, 4) Text animation dropdown with 6 options, 5) Announcement bar with customizable colors, 6) Reset buttons for Hero section, 7) Desktop/Mobile preview toggle showing 375px mobile view. Screenshots taken confirm all features working. Need frontend testing agent to validate full flow."
