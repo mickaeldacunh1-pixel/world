@@ -664,13 +664,6 @@ frontend:
     stuck_count: 0
     priority: "high"
     needs_retesting: false
-    status_history:
-        - working: "NA"
-        - agent: "main"
-        - comment: "Implemented all Hero admin panel optimizations: 1) Image gallery (8 preset images), 2) Quick color palettes (8 themes), 3) Overlay opacity control (slider 0-100%), 4) Text animations (6 options), 5) Announcement bar with colors, 6) Reset button per section, 7) Desktop/Mobile preview toggle. Fixed Select component empty value error by changing hero_text_animation from empty string to 'none'. Added preview_mode to DEFAULT_SETTINGS."
-        - working: true
-        - agent: "testing"
-        - comment: "Admin Hero Settings Panel testing completed successfully. ✅ WORKING FEATURES: 1) Authentication with admin_test@worldautofrance.com credentials works correctly. 2) All 5 tabs navigation (Hero, Couleurs, Polices, Bannières, Sections) accessible. 3) Hero Tab: Title/description fields with emoji pickers functional, image gallery with 8 preset images clickable and working, overlay opacity slider (0-100%) functional, text animation dropdown working with 6 options, CTA button fields editable, seasonal animation selection working with multiple options, desktop/mobile preview toggle working (375px mobile view confirmed), reset button functional. 4) Save functionality working with 'Paramètres sauvegardés!' success message. 5) 'Voir le site' button present and accessible. 6) Form fields retain values and update preview in real-time. All core admin panel features working correctly for hero section management. Ready for production use."
 
   - task: "OEM Reference Search Feature"
     implemented: true
@@ -679,16 +672,55 @@ frontend:
     stuck_count: 0
     priority: "high"
     needs_retesting: false
+
+  - task: "Verified Seller Badge"
+    implemented: true
+    working: "NA"
+    file: "pages/ListingDetail.jsx, pages/SellerProfile.jsx, backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
     status_history:
         - working: "NA"
         - agent: "main"
-        - comment: "Implemented OEM Reference Search feature: 1) Added dedicated OEM search section on homepage with search field, example references (7701474426, 1K0615301M, 30735878, 04E115561H) as clickable buttons, and 4 feature highlights. 2) Enhanced OEM filter on Listings page - now always visible (not just for pieces category), with highlighted styling, mono font, and helper text. 3) Backend already supported OEM search via oem_reference query parameter."
-        - working: true
-        - agent: "testing"
-        - comment: "OEM Reference Search feature testing completed successfully. ✅ WORKING FEATURES: 1) Homepage OEM Section: Found section title 'Recherche par référence OEM', search input with correct placeholder containing '7701474426', 'Rechercher' button, and all 4 example reference buttons (7701474426, 1K0615301M, 30735878, 04E115561H). Clicking example references correctly fills input. 2) Navigation Flow: OEM search from homepage successfully navigates to /annonces/pieces?oem_reference=... with correct URL parameters. 3) Listings Page OEM Filter: Found filter label '🔍 Référence OEM / Équipementier', input field with correct placeholder, mono font styling, and helper text 'Recherche dans les références constructeur et équipementier'. Filter is visible on all listings pages (not just pieces category). 4) URL Parameter Population: Fixed issue where OEM filter wasn't populated from URL parameters - now correctly shows searched value when navigating from homepage. FIXED: Added searchParams.get('oem_reference') to useState initialization and oemReference to useEffect dependencies. Minor: Filter application from listings page doesn't update URL (cosmetic issue only - search functionality works). Core OEM search functionality fully operational and ready for production use."
+        - comment: "Implemented verified seller badge. Backend: Added is_verified_seller calculation (5+ sales with 4+ rating). Frontend: Added green badge with Shield icon on ListingDetail and SellerProfile pages."
+
+  - task: "Report System (Signalement)"
+    implemented: true
+    working: "NA"
+    file: "pages/ListingDetail.jsx, pages/AdminReports.jsx, backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented complete report system. Backend: CRUD endpoints for reports with 7 reason types, admin management, email notifications. Frontend: Report button on listing detail page with modal, AdminReports page for managing reports with filters and status updates."
+
+  - task: "Vehicle Compatibility Search"
+    implemented: true
+    working: "NA"
+    file: "pages/Listings.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented vehicle compatibility search with cascading dropdowns: Brand (20 brands) -> Model (dynamic based on brand) -> Year (1990-2026). Added CAR_MODELS_BY_BRAND data structure."
+
+  - task: "Real-time Chat Enhancements"
+    implemented: true
+    working: "NA"
+    file: "pages/Messages.jsx, components/Navbar.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Enhanced messaging with real-time feel: 5-second polling for new messages, notification sound for new messages, unread message badge in navbar (polling every 30s), badge count in dropdown menu."
 
 agent_communication:
-    - agent: "testing"
-    - message: "OEM Reference Search feature testing completed successfully. All major functionality working: ✅ Homepage OEM section with title, search input, 'Rechercher' button, and 4 example reference buttons all functional. ✅ Example references correctly fill input when clicked. ✅ Navigation from homepage to listings page with OEM parameters working perfectly. ✅ Listings page OEM filter visible on all pages with correct styling, placeholder, and helper text. ✅ Fixed critical issue where OEM filter wasn't populated from URL parameters. ✅ End-to-end OEM search flow fully operational. Minor: Filter application from listings page doesn't update URL (cosmetic issue only). Core feature ready for production use."
     - agent: "main"
-    - message: "Implemented OEM Reference Search feature. Added dedicated search section on homepage with professional styling, example references as clickable buttons, and enhanced filter on listings page. Need testing to verify search functionality works end-to-end."
+    - message: "Implemented 4 major features: 1) Verified Seller Badge, 2) Report/Signalement System, 3) Vehicle Compatibility Search, 4) Real-time Chat Enhancements. All features need testing validation."
