@@ -47,8 +47,6 @@ const generateYears = () => {
 
 const YEARS = generateYears();
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
 const categoryNames = {
   pieces: 'Pièces Détachées',
   voitures: 'Voitures d\'Occasion',
