@@ -21,6 +21,40 @@ import { ANIMATION_OPTIONS } from '../components/SeasonalAnimation';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+// Galerie d'images Hero prédéfinies
+const HERO_IMAGE_PRESETS = [
+  { url: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop", label: "Garage" },
+  { url: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2832&auto=format&fit=crop", label: "Voiture sport" },
+  { url: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=2832&auto=format&fit=crop", label: "Voiture classique" },
+  { url: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=2832&auto=format&fit=crop", label: "Moto" },
+  { url: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2832&auto=format&fit=crop", label: "Porsche" },
+  { url: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=2832&auto=format&fit=crop", label: "Mercedes" },
+  { url: "https://images.unsplash.com/photo-1619682817481-e994891cd1f5?q=80&w=2832&auto=format&fit=crop", label: "Pièces moteur" },
+  { url: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=2832&auto=format&fit=crop", label: "BMW" },
+];
+
+// Palettes de couleurs rapides
+const COLOR_PRESETS = [
+  { name: "World Auto (défaut)", primary: "#1E3A5F", accent: "#F97316" },
+  { name: "Bleu Premium", primary: "#1E40AF", accent: "#3B82F6" },
+  { name: "Vert Nature", primary: "#166534", accent: "#22C55E" },
+  { name: "Rouge Sport", primary: "#991B1B", accent: "#EF4444" },
+  { name: "Violet Luxe", primary: "#581C87", accent: "#A855F7" },
+  { name: "Orange Energy", primary: "#C2410C", accent: "#FB923C" },
+  { name: "Noir Élégant", primary: "#171717", accent: "#A3A3A3" },
+  { name: "Bleu Nuit", primary: "#0F172A", accent: "#38BDF8" },
+];
+
+// Options d'animation du texte Hero
+const HERO_TEXT_ANIMATIONS = [
+  { value: "", label: "Aucune" },
+  { value: "fade-in", label: "Fondu" },
+  { value: "slide-up", label: "Glisser vers le haut" },
+  { value: "slide-left", label: "Glisser depuis la gauche" },
+  { value: "zoom-in", label: "Zoom" },
+  { value: "typewriter", label: "Machine à écrire" },
+];
+
 const DEFAULT_SETTINGS = {
   // Hero Section
   hero_title_line1: "La marketplace auto",
@@ -29,6 +63,15 @@ const DEFAULT_SETTINGS = {
   hero_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
   hero_cta_text: "Déposer une annonce",
   hero_cta_link: "/deposer",
+  hero_overlay_opacity: 50,
+  hero_text_animation: "",
+  
+  // Announcement Bar
+  announcement_enabled: false,
+  announcement_text: "",
+  announcement_link: "",
+  announcement_bg_color: "#F97316",
+  announcement_text_color: "#FFFFFF",
   
   // Seasonal Animation
   seasonal_animation: "",
