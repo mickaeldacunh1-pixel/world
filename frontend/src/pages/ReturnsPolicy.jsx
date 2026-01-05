@@ -183,53 +183,76 @@ export default function ReturnsPolicy() {
             </div>
           </Card>
 
-          {/* Procédure de retour */}
+          {/* Remboursement */}
           <Card className="p-6">
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
                 <Package className="w-5 h-5 text-purple-600" />
               </div>
               <div>
-                <h2 className="font-heading text-xl font-bold mb-4">5. Procédure de retour</h2>
-                <div className="space-y-4">
-                  <div className="flex gap-4 items-start">
-                    <span className="w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">1</span>
-                    <div>
-                      <h3 className="font-semibold">Contactez le vendeur</h3>
-                      <p className="text-muted-foreground text-sm">
-                        Utilisez la messagerie de la plateforme pour expliquer le motif de votre demande de retour. 
-                        Joignez des photos si nécessaire.
-                      </p>
+                <h2 className="font-heading text-xl font-bold mb-4">5. Procédure de retour et remboursement</h2>
+                
+                {/* Paiement Sécurisé */}
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                  <h3 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Achats via Paiement Sécurisé
+                  </h3>
+                  <div className="space-y-3 text-sm text-green-700">
+                    <div className="flex gap-3 items-start">
+                      <span className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
+                      <p><strong>Signaler le problème</strong> - Avant de confirmer la réception, signalez tout problème via votre espace Commandes</p>
+                    </div>
+                    <div className="flex gap-3 items-start">
+                      <span className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0">2</span>
+                      <p><strong>Médiation automatique</strong> - L'argent reste bloqué, nous intervenons pour trouver une solution</p>
+                    </div>
+                    <div className="flex gap-3 items-start">
+                      <span className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0">3</span>
+                      <p><strong>Remboursement rapide</strong> - Si le retour est accepté, remboursement sous 5-7 jours ouvrés</p>
                     </div>
                   </div>
-                  <div className="flex gap-4 items-start">
-                    <span className="w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">2</span>
-                    <div>
-                      <h3 className="font-semibold">Attendez l'accord du vendeur</h3>
-                      <p className="text-muted-foreground text-sm">
-                        Le vendeur dispose de 48h pour répondre à votre demande. Il vous communiquera les modalités 
-                        de retour (adresse, conditions).
-                      </p>
+                </div>
+
+                {/* Transaction Directe */}
+                <div className="bg-secondary/50 rounded-lg p-4">
+                  <h3 className="font-semibold mb-2">Achats par transaction directe</h3>
+                  <div className="space-y-4">
+                    <div className="flex gap-4 items-start">
+                      <span className="w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">1</span>
+                      <div>
+                        <h4 className="font-semibold">Contactez le vendeur</h4>
+                        <p className="text-muted-foreground text-sm">
+                          Utilisez la messagerie de la plateforme pour expliquer le motif de votre demande de retour.
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex gap-4 items-start">
-                    <span className="w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">3</span>
-                    <div>
-                      <h3 className="font-semibold">Expédiez l'article</h3>
-                      <p className="text-muted-foreground text-sm">
-                        Emballez soigneusement l'article et expédiez-le à l'adresse indiquée. 
-                        <strong> Conservez le numéro de suivi</strong> comme preuve d'envoi.
-                      </p>
+                    <div className="flex gap-4 items-start">
+                      <span className="w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">2</span>
+                      <div>
+                        <h4 className="font-semibold">Attendez l'accord du vendeur</h4>
+                        <p className="text-muted-foreground text-sm">
+                          Le vendeur dispose de 48h pour répondre à votre demande.
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex gap-4 items-start">
-                    <span className="w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">4</span>
-                    <div>
-                      <h3 className="font-semibold">Remboursement</h3>
-                      <p className="text-muted-foreground text-sm">
-                        Une fois l'article reçu et vérifié par le vendeur, le remboursement sera effectué 
-                        selon le mode de paiement initial, sous 14 jours maximum.
-                      </p>
+                    <div className="flex gap-4 items-start">
+                      <span className="w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">3</span>
+                      <div>
+                        <h4 className="font-semibold">Expédiez l'article</h4>
+                        <p className="text-muted-foreground text-sm">
+                          Emballez soigneusement l'article. <strong>Conservez le numéro de suivi</strong>.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                      <span className="w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">4</span>
+                      <div>
+                        <h4 className="font-semibold">Remboursement</h4>
+                        <p className="text-muted-foreground text-sm">
+                          Une fois l'article reçu et vérifié, le remboursement sera effectué sous 14 jours maximum.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
