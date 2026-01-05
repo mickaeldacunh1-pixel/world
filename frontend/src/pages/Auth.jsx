@@ -30,6 +30,19 @@ export default function Auth() {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   
+  // Liste des pays autorisés
+  const ALLOWED_COUNTRIES = [
+    { value: 'France', label: '🇫🇷 France' },
+    { value: 'Belgique', label: '🇧🇪 Belgique' },
+    { value: 'Suisse', label: '🇨🇭 Suisse' },
+    { value: 'Allemagne', label: '🇩🇪 Allemagne' },
+    { value: 'Pays-Bas', label: '🇳🇱 Pays-Bas' },
+    { value: 'Italie', label: '🇮🇹 Italie' },
+    { value: 'Espagne', label: '🇪🇸 Espagne' },
+    { value: 'Portugal', label: '🇵🇹 Portugal' },
+    { value: 'Suède', label: '🇸🇪 Suède' },
+  ];
+  
   // Register state
   const [registerData, setRegisterData] = useState({
     name: '',
@@ -37,6 +50,7 @@ export default function Auth() {
     password: '',
     confirmPassword: '',
     phone: '',
+    country: 'France',
     is_professional: false,
     company_name: '',
     siret: '',
