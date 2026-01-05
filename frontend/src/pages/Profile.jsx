@@ -15,10 +15,15 @@ import SEO from '../components/SEO';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Profile() {
-  const { user, refreshUser, logout } = useAuth();
+  const { user, token, refreshUser, logout } = useAuth();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  
+  // Stripe Connect state
+  const [stripeStatus, setStripeStatus] = useState(null);
+  const [stripeLoading, setStripeLoading] = useState(false);
   
   // Profile form
   const [profileData, setProfileData] = useState({
@@ -37,6 +42,69 @@ export default function Profile() {
     new_password: '',
     confirm_password: '',
   });
+
+  // Check Stripe status on mount and after redirect
+  useEffect(() => {
+    checkStripeStatus();
+    
+    // Handle Stripe redirect
+    if (searchParams.get('stripe_success') === 'true') {
+      toast.success('Compte Stripe configuré avec succès !');
+      checkStripeStatus();
+    } else if (searchParams.get('stripe_refresh') === 'true') {
+      toast.info('Veuillez finaliser la configuration de votre compte Stripe');
+    }
+  }, [searchParams]);
+
+  const checkStripeStatus = async () => {
+    if (!token) return;
+    
+    try {
+      const response = await axios.get(`${API}/stripe/connect/status`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setStripeStatus(response.data);
+    } catch (error) {
+      console.error('Error checking Stripe status:', error);
+    }
+  };
+
+  const handleStripeConnect = async () => {
+    setStripeLoading(true);
+    try {
+      const response = await axios.post(`${API}/stripe/connect/onboard`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.data.already_connected) {
+        toast.success('Votre compte Stripe est déjà connecté !');
+        checkStripeStatus();
+      } else if (response.data.url) {
+        window.location.href = response.data.url;
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la connexion Stripe');
+    } finally {
+      setStripeLoading(false);
+    }
+  };
+
+  const handleRefreshStripeLink = async () => {
+    setStripeLoading(true);
+    try {
+      const response = await axios.post(`${API}/stripe/connect/refresh-link`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la création du lien');
+    } finally {
+      setStripeLoading(false);
+    }
+  };
 
   const handleProfileChange = (e) => {
     setProfileData({ ...profileData, [e.target.name]: e.target.value });
