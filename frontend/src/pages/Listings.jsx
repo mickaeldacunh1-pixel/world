@@ -252,18 +252,25 @@ export default function Listings() {
                   </div>
                 )}
 
-                {/* OEM Reference - for pieces */}
-                {showCompatibilityFilters && (
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Référence OEM</label>
-                    <Input
-                      placeholder="Ex: 7701474426"
-                      value={oemReference}
-                      onChange={(e) => setOemReference(e.target.value)}
-                      data-testid="filter-oem"
-                    />
-                  </div>
-                )}
+                {/* OEM Reference Search - Always visible with highlight */}
+                <div className={`p-3 rounded-lg ${showCompatibilityFilters ? 'bg-accent/10 border border-accent/30' : 'bg-secondary/50'}`}>
+                  <label className="text-sm font-medium mb-2 flex items-center gap-2">
+                    🔍 Référence OEM / Équipementier
+                    {showCompatibilityFilters && (
+                      <span className="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full">Pro</span>
+                    )}
+                  </label>
+                  <Input
+                    placeholder="Ex: 7701474426, 1K0615301M..."
+                    value={oemReference}
+                    onChange={(e) => setOemReference(e.target.value)}
+                    className="font-mono"
+                    data-testid="filter-oem"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Recherche dans les références constructeur et équipementier
+                  </p>
+                </div>
 
                 {/* Price Range */}
                 <div>
