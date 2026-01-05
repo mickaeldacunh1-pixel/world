@@ -714,8 +714,8 @@ PRICING_PACKAGES = {
     "pack20": {"name": "Pack 20 Annonces", "price": 25.00, "credits": 20, "duration": 30},
     "pack50": {"name": "Pack 50 Annonces", "price": 39.00, "credits": 50, "duration": 30},
     "pro_monthly": {"name": "Pro Illimité (1 mois)", "price": 49.00, "credits": 999, "duration": 30, "is_pro": True},
-    "pro_3months": {"name": "Pro Illimité (3 mois)", "price": 129.00, "credits": 999, "duration": 90, "is_pro": True},
-    "pro_6months": {"name": "Pro Illimité (6 mois)", "price": 239.00, "credits": 999, "duration": 180, "is_pro": True}
+    "pro_3months": {"name": "Pro Illimité (3 mois)", "price": 99.00, "credits": 999, "duration": 90, "is_pro": True},
+    "pro_6months": {"name": "Pro Illimité (6 mois)", "price": 179.00, "credits": 999, "duration": 180, "is_pro": True}
 }
 
 # ================== AUTH HELPERS ==================
