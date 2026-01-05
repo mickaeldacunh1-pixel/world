@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Star, MapPin, Calendar, Package, CheckCircle, User, MessageSquare } from 'lucide-react';
+import { Star, MapPin, Calendar, Package, CheckCircle, User, MessageSquare, Shield } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
