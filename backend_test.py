@@ -1706,6 +1706,11 @@ class AutoPiecesAPITester:
         self.test_favorites_api_complete()
         self.test_messaging_api_complete()
         
+        # NEWSLETTER AND UPDATES API TESTING (NEW FEATURES)
+        print("\n📰📧 Testing Newsletter and Updates APIs...")
+        self.test_updates_api_complete()
+        self.test_newsletter_api_complete()
+        
         # Payment tests (Stripe and PayPal removal verification)
         self.test_stripe_checkout_creation()
         self.test_paypal_endpoints_removed()
