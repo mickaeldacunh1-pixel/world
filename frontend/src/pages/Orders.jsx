@@ -49,6 +49,7 @@ export default function Orders() {
   const [reviewComment, setReviewComment] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewedOrders, setReviewedOrders] = useState([]);
+  const [buyerReviewedOrders, setBuyerReviewedOrders] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -62,6 +63,17 @@ export default function Orders() {
       ]);
       setOrders(ordersRes.data);
       setReturns(returnsRes.data);
+      
+      // Fetch already reviewed buyer orders (for sellers)
+      try {
+        const pendingBuyerReviews = await axios.get(`${API}/reviews/buyer/pending`);
+        const deliveredSellerOrders = ordersRes.data.filter(o => o.role === 'seller' && o.status === 'delivered');
+        const pendingIds = pendingBuyerReviews.data.map(o => o.id);
+        const reviewedIds = deliveredSellerOrders.filter(o => !pendingIds.includes(o.id)).map(o => o.id);
+        setBuyerReviewedOrders(reviewedIds);
+      } catch (e) {
+        // Ignore if endpoint doesn't exist
+      }
     } catch (error) {
       console.error('Error fetching orders:', error);
     } finally {
