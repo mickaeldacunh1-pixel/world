@@ -296,7 +296,7 @@ export default function Home() {
 
           <div className="text-center mt-8">
             <Link 
-              to="/annonces" 
+              to="/marques" 
               className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
             >
               Voir toutes les marques
