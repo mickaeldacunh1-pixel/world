@@ -2200,6 +2200,96 @@ async def unsubscribe_newsletter(email: str):
         raise HTTPException(status_code=404, detail="Email non trouvé")
     return {"message": "Désabonnement effectué"}
 
+class NewsletterContent(BaseModel):
+    subject: str
+    title: str
+    content: str
+    cta_text: Optional[str] = None
+    cta_link: Optional[str] = None
+
+@api_router.post("/newsletter/send")
+async def send_newsletter(newsletter: NewsletterContent, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
+    """Send newsletter to all active subscribers - Admin only"""
+    # Get all active subscribers
+    subscribers = await db.newsletter_subscribers.find({"active": True}, {"_id": 0}).to_list(10000)
+    
+    if not subscribers:
+        raise HTTPException(status_code=400, detail="Aucun abonné actif")
+    
+    # Get site URL for unsubscribe links
+    site_url = os.environ.get('FRONTEND_URL', 'https://worldautofrance.com')
+    
+    # Create email HTML template
+    def create_newsletter_html(subscriber_email: str):
+        unsubscribe_url = f"{site_url}/api/newsletter/unsubscribe/{subscriber_email}"
+        
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #1E3A5F; margin: 0;">World Auto <span style="color: #002654;">Fr</span><span style="color: #FFFFFF; text-shadow: -1px 0 #333, 0 1px #333, 1px 0 #333, 0 -1px #333;">an</span><span style="color: #ED2939;">ce</span></h1>
+            </div>
+            
+            <div style="background: #f8f9fa; border-radius: 10px; padding: 30px; margin-bottom: 20px;">
+                <h2 style="color: #1E3A5F; margin-top: 0;">{newsletter.title}</h2>
+                <div style="white-space: pre-line;">{newsletter.content}</div>
+            </div>
+            
+            {"<div style='text-align: center; margin: 30px 0;'><a href='" + newsletter.cta_link + "' style='background: #F97316; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;'>" + newsletter.cta_text + "</a></div>" if newsletter.cta_text and newsletter.cta_link else ""}
+            
+            <div style="border-top: 1px solid #eee; margin-top: 30px; padding-top: 20px; text-align: center; color: #666; font-size: 12px;">
+                <p>Vous recevez cet email car vous êtes inscrit à la newsletter World Auto France.</p>
+                <p><a href="{unsubscribe_url}" style="color: #666;">Se désabonner</a></p>
+            </div>
+        </body>
+        </html>
+        """
+        return html
+    
+    # Send emails in background
+    sent_count = 0
+    failed_count = 0
+    
+    for subscriber in subscribers:
+        try:
+            html_content = create_newsletter_html(subscriber["email"])
+            background_tasks.add_task(send_email, subscriber["email"], newsletter.subject, html_content)
+            sent_count += 1
+        except Exception as e:
+            logging.error(f"Failed to queue email for {subscriber['email']}: {e}")
+            failed_count += 1
+    
+    # Log the newsletter send
+    newsletter_log = {
+        "id": str(uuid.uuid4()),
+        "subject": newsletter.subject,
+        "title": newsletter.title,
+        "sent_by": current_user["id"],
+        "sent_at": datetime.now(timezone.utc).isoformat(),
+        "total_subscribers": len(subscribers),
+        "sent_count": sent_count,
+        "failed_count": failed_count
+    }
+    await db.newsletter_logs.insert_one(newsletter_log)
+    
+    return {
+        "message": f"Newsletter envoyée à {sent_count} abonnés",
+        "sent_count": sent_count,
+        "failed_count": failed_count,
+        "total_subscribers": len(subscribers)
+    }
+
+@api_router.get("/newsletter/logs")
+async def get_newsletter_logs(current_user: dict = Depends(get_current_user)):
+    """Get newsletter send history - Admin only"""
+    logs = await db.newsletter_logs.find({}, {"_id": 0}).sort("sent_at", -1).to_list(50)
+    return logs
+
 # ================== SETTINGS ROUTES ==================
 
 DEFAULT_HERO_SETTINGS = {
