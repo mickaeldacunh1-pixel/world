@@ -90,10 +90,16 @@ export default function SellerProfile() {
                 </span>
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-center gap-3 mb-2 flex-wrap">
                   <h1 className="font-heading text-2xl md:text-3xl font-bold">{seller.name}</h1>
                   {seller.is_professional && (
                     <Badge className="bg-accent">PRO</Badge>
+                  )}
+                  {seller.is_verified_seller && (
+                    <Badge className="bg-green-500 hover:bg-green-600">
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      Vendeur Vérifié
+                    </Badge>
                   )}
                 </div>
                 {seller.company_name && (
