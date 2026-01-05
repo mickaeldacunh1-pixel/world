@@ -169,6 +169,11 @@ export default function Navbar() {
                       <Link to="/messages" className="flex items-center gap-2 cursor-pointer">
                         <MessageSquare className="w-4 h-4" />
                         Messages
+                        {unreadMessages > 0 && (
+                          <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                            {unreadMessages}
+                          </span>
+                        )}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
