@@ -1299,9 +1299,15 @@ async def get_listing(listing_id: str):
     await db.listings.update_one({"id": listing_id}, {"$inc": {"views": 1}})
     listing["views"] = listing.get("views", 0) + 1
     
-    # Check if seller has Stripe Connect configured
+    # Check if seller has Stripe Connect configured and get verification status
     seller = await db.users.find_one({"id": listing.get("seller_id")}, {"_id": 0, "stripe_connected": 1})
     listing["seller_stripe_connected"] = seller.get("stripe_connected", False) if seller else False
+    
+    # Check if seller is verified (5+ successful sales)
+    sold_count = await db.listings.count_documents({"seller_id": listing.get("seller_id"), "status": "sold"})
+    reviews = await db.reviews.find({"seller_id": listing.get("seller_id")}, {"_id": 0, "rating": 1}).to_list(100)
+    avg_rating = sum(r.get("rating", 0) for r in reviews) / len(reviews) if reviews else 5
+    listing["seller_is_verified"] = sold_count >= 5 and avg_rating >= 4.0
     
     return listing
 
