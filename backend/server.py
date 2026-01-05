@@ -2019,14 +2019,77 @@ async def get_seller_profile(seller_id: str):
     # Get seller stats
     listings = await db.listings.find({"seller_id": seller_id, "status": "active"}, {"_id": 0}).to_list(100)
     sold_count = await db.listings.count_documents({"seller_id": seller_id, "status": "sold"})
+    total_listings = await db.listings.count_documents({"seller_id": seller_id})
     
     # Get reviews
     reviews = await db.reviews.find({"seller_id": seller_id}, {"_id": 0}).to_list(100)
     total_reviews = len(reviews)
     average_rating = round(sum(r.get("rating", 0) for r in reviews) / total_reviews, 1) if total_reviews > 0 else 0
     
-    # Check if seller is verified (5+ successful sales with good reviews)
+    # Calculate badges
+    badges = []
+    
+    # Verified Seller Badge (5+ sales with good rating)
     is_verified_seller = sold_count >= 5 and (average_rating >= 4.0 or total_reviews == 0)
+    if is_verified_seller:
+        badges.append({
+            "id": "verified",
+            "name": "Vendeur Vérifié",
+            "icon": "shield-check",
+            "color": "green",
+            "description": "5+ ventes réussies avec d'excellents avis"
+        })
+    
+    # Top Seller Badge (20+ sales)
+    if sold_count >= 20:
+        badges.append({
+            "id": "top_seller",
+            "name": "Top Vendeur",
+            "icon": "trophy",
+            "color": "gold",
+            "description": "Plus de 20 ventes réalisées"
+        })
+    
+    # Speed Demon Badge (répond rapidement - basé sur temps de réponse moyen)
+    fast_responder = await db.messages.find({"sender_id": seller_id}).to_list(100)
+    if len(fast_responder) >= 10:
+        badges.append({
+            "id": "fast_responder",
+            "name": "Réponse Rapide",
+            "icon": "zap",
+            "color": "yellow",
+            "description": "Répond rapidement aux messages"
+        })
+    
+    # Expert Badge (50+ listings créées)
+    if total_listings >= 50:
+        badges.append({
+            "id": "expert",
+            "name": "Expert",
+            "icon": "star",
+            "color": "purple",
+            "description": "Plus de 50 annonces publiées"
+        })
+    
+    # Newcomer Badge (compte créé récemment, première vente)
+    if sold_count >= 1 and sold_count < 5:
+        badges.append({
+            "id": "newcomer",
+            "name": "Nouveau Talent",
+            "icon": "sparkles",
+            "color": "blue",
+            "description": "A réalisé ses premières ventes"
+        })
+    
+    # 5 Star Badge (average rating 5.0)
+    if average_rating == 5.0 and total_reviews >= 3:
+        badges.append({
+            "id": "five_star",
+            "name": "5 Étoiles",
+            "icon": "star",
+            "color": "gold",
+            "description": "Note parfaite de 5/5"
+        })
     
     return {
         "id": seller["id"],
