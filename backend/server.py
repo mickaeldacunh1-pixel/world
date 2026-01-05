@@ -489,6 +489,20 @@ class UserCreate(BaseModel):
     address: Optional[str] = None
     city: Optional[str] = None
     postal_code: Optional[str] = None
+    country: str = "France"  # Pays obligatoire
+
+# Pays autorisés pour l'inscription
+ALLOWED_COUNTRIES = [
+    "France",
+    "Belgique", 
+    "Suisse",
+    "Allemagne",
+    "Pays-Bas",
+    "Italie",
+    "Espagne",
+    "Portugal",
+    "Suède"
+]
 
 class UserLogin(BaseModel):
     email: EmailStr
