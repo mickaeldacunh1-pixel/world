@@ -2474,6 +2474,28 @@ async def update_buyer_stats(buyer_id: str):
             }}
         )
 
+@api_router.get("/reviews/buyer/pending")
+async def get_pending_buyer_reviews(current_user: dict = Depends(get_current_user)):
+    """Récupérer les commandes livrées où le vendeur n'a pas encore noté l'acheteur"""
+    # Get delivered orders where current user is seller
+    orders = await db.orders.find({
+        "seller_id": current_user["id"],
+        "status": "delivered"
+    }, {"_id": 0}).to_list(100)
+    
+    # Get existing buyer reviews from this seller
+    order_ids = [o["id"] for o in orders]
+    reviewed = await db.buyer_reviews.find(
+        {"order_id": {"$in": order_ids}, "seller_id": current_user["id"]},
+        {"order_id": 1}
+    ).to_list(100)
+    reviewed_ids = [r["order_id"] for r in reviewed]
+    
+    # Filter out already reviewed orders
+    pending = [o for o in orders if o["id"] not in reviewed_ids]
+    
+    return pending
+
 @api_router.get("/reviews/buyer/{buyer_id}")
 async def get_buyer_reviews(buyer_id: str, limit: int = 20):
     """Récupérer les avis sur un acheteur"""
