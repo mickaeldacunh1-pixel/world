@@ -3242,6 +3242,116 @@ async def get_report_reasons():
     """Récupérer les raisons de signalement disponibles"""
     return REPORT_REASONS
 
+# ================== AUTOEXPERT AI ASSISTANT ==================
+
+AUTOEXPERT_SYSTEM_PROMPT = """Tu es AutoExpert, l'assistant IA de World Auto France, la marketplace automobile française.
+
+🎯 Ton rôle :
+- Aider les utilisateurs à trouver des pièces détachées compatibles avec leur véhicule
+- Répondre aux questions sur la compatibilité des pièces
+- Donner des conseils sur l'entretien automobile
+- Guider les utilisateurs sur l'utilisation de la plateforme
+- Suggérer des alternatives quand une pièce n'est pas disponible
+
+📚 Tes connaissances :
+- Pièces détachées automobiles (moteur, freinage, suspension, carrosserie, électronique...)
+- Marques : Renault, Peugeot, Citroën, Volkswagen, BMW, Mercedes, Audi, Ford, Opel, Toyota, Nissan, Honda, Fiat, Seat, Skoda, Hyundai, Kia, Dacia, Volvo, Mazda...
+- Références OEM et équipementier
+- Compatibilité entre véhicules
+- Conseils d'entretien et de montage
+
+⚙️ Fonctionnalités de World Auto France :
+- Recherche par catégorie (Pièces, Voitures, Motos, Utilitaires, Accessoires)
+- Recherche par référence OEM
+- Filtres par compatibilité véhicule (Marque/Modèle/Année)
+- Paiement sécurisé avec protection acheteur
+- Messagerie entre acheteurs et vendeurs
+- Points relais Mondial Relay pour la livraison
+
+🗣️ Style de communication :
+- Toujours en français
+- Amical et professionnel
+- Utilise des emojis avec modération pour être sympathique
+- Donne des réponses concises mais complètes
+- Si tu ne connais pas la réponse exacte, oriente vers le service client
+
+💡 Exemples de questions auxquelles tu peux répondre :
+- "Quels sont les filtres à huile compatibles avec ma Clio 4 1.5 dCi ?"
+- "Comment trouver une pièce avec sa référence OEM ?"
+- "Est-ce que cette pièce est compatible avec ma voiture ?"
+- "Comment fonctionne le paiement sécurisé ?"
+- "Où puis-je me faire livrer ?"
+"""
+
+# Store for chat sessions (in production, use Redis or database)
+chat_sessions: Dict[str, LlmChat] = {}
+
+class ChatMessage(BaseModel):
+    message: str
+    session_id: Optional[str] = None
+
+class ChatResponse(BaseModel):
+    response: str
+    session_id: str
+
+@api_router.post("/autoexpert/chat", response_model=ChatResponse)
+async def autoexpert_chat(chat_message: ChatMessage):
+    """Chat avec AutoExpert, l'assistant IA"""
+    try:
+        # Get or create session
+        session_id = chat_message.session_id or str(uuid.uuid4())
+        
+        # Get API key
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        if not api_key:
+            raise HTTPException(status_code=500, detail="Clé API non configurée")
+        
+        # Get or create chat instance for this session
+        if session_id not in chat_sessions:
+            chat_sessions[session_id] = LlmChat(
+                api_key=api_key,
+                session_id=session_id,
+                system_message=AUTOEXPERT_SYSTEM_PROMPT
+            ).with_model("openai", "gpt-4o-mini")
+        
+        chat = chat_sessions[session_id]
+        
+        # Send message and get response
+        user_message = UserMessage(text=chat_message.message)
+        response = await chat.send_message(user_message)
+        
+        # Store conversation in database for persistence
+        await db.autoexpert_conversations.insert_one({
+            "id": str(uuid.uuid4()),
+            "session_id": session_id,
+            "user_message": chat_message.message,
+            "assistant_response": response,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        return ChatResponse(response=response, session_id=session_id)
+        
+    except Exception as e:
+        logger.error(f"AutoExpert error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+
+@api_router.get("/autoexpert/history/{session_id}")
+async def get_chat_history(session_id: str):
+    """Récupérer l'historique d'une conversation"""
+    history = await db.autoexpert_conversations.find(
+        {"session_id": session_id},
+        {"_id": 0}
+    ).sort("created_at", 1).to_list(100)
+    return history
+
+@api_router.delete("/autoexpert/session/{session_id}")
+async def clear_chat_session(session_id: str):
+    """Effacer une session de chat"""
+    if session_id in chat_sessions:
+        del chat_sessions[session_id]
+    await db.autoexpert_conversations.delete_many({"session_id": session_id})
+    return {"message": "Session effacée"}
+
 # ================== ROOT ==================
 
 @api_router.get("/")
