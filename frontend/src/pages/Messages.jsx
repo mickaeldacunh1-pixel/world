@@ -230,25 +230,65 @@ export default function Messages() {
     }
   };
 
-  const playNotificationSound = () => {
-    try {
-      const audio = new Audio('data:audio/wav;base64,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');
-      audio.volume = 0.3;
-      audio.play().catch(() => {}); // Ignore errors if audio can't play
-    } catch (error) {
-      // Ignore audio errors
+  // Handle typing indicator
+  const handleTyping = () => {
+    if (wsRef.current?.readyState === WebSocket.OPEN && selectedConv) {
+      wsRef.current.send(JSON.stringify({
+        action: 'typing',
+        receiver_id: selectedConv.other_user_id,
+        listing_id: selectedConv.listing_id
+      }));
+      
+      // Clear previous timeout
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      
+      // Stop typing after 2 seconds of inactivity
+      typingTimeoutRef.current = setTimeout(() => {
+        if (wsRef.current?.readyState === WebSocket.OPEN && selectedConv) {
+          wsRef.current.send(JSON.stringify({
+            action: 'stop_typing',
+            receiver_id: selectedConv.other_user_id,
+            listing_id: selectedConv.listing_id
+          }));
+        }
+      }, 2000);
     }
   };
 
   const handleSelectConversation = (conv) => {
     setSelectedConv(conv);
+    setOtherUserTyping(false);
     fetchMessages(conv.listing_id, conv.other_user_id);
+    
+    // Mark messages as read via WebSocket
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        action: 'mark_read',
+        listing_id: conv.listing_id,
+        other_user_id: conv.other_user_id
+      }));
+    }
   };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !selectedConv) return;
 
+    // Try WebSocket first
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        action: 'send_message',
+        receiver_id: selectedConv.other_user_id,
+        listing_id: selectedConv.listing_id,
+        content: newMessage
+      }));
+      setNewMessage('');
+      return;
+    }
+
+    // Fallback to HTTP
     setSending(true);
     try {
       const response = await axios.post(`${API}/messages`, {
