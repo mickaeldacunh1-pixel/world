@@ -311,6 +311,24 @@ export default function Orders() {
                                   Marquer expédié
                                 </Button>
                               )}
+                              
+                              {/* Noter l'acheteur */}
+                              {order.status === 'delivered' && !buyerReviewedOrders.includes(order.id) && (
+                                <RateBuyerModal 
+                                  order={order} 
+                                  onRated={() => setBuyerReviewedOrders([...buyerReviewedOrders, order.id])} 
+                                />
+                              )}
+                              
+                              {/* Voir profil acheteur */}
+                              {order.buyer_id && (
+                                <Link to={`/acheteur/${order.buyer_id}`}>
+                                  <Button variant="outline" size="sm">
+                                    <User className="w-4 h-4 mr-1" />
+                                    Profil
+                                  </Button>
+                                </Link>
+                              )}
                             </div>
                           </div>
                           <p className="text-xs text-muted-foreground mt-2">
