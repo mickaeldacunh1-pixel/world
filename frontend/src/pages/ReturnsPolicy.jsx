@@ -39,10 +39,29 @@ export default function ReturnsPolicy() {
               <h2 className="font-heading font-bold text-lg mb-2">Information importante</h2>
               <p className="text-muted-foreground">
                 World Auto France est une <strong>plateforme de mise en relation</strong> entre acheteurs et vendeurs. 
-                Les transactions s'effectuent directement entre les parties. World Auto France n'est pas partie prenante 
-                dans les ventes et ne peut être tenu responsable des litiges commerciaux. Cependant, nous mettons tout 
-                en œuvre pour faciliter la résolution des différends.
+                Pour les achats effectués via notre <strong>système de paiement sécurisé</strong>, l'argent est protégé 
+                jusqu'à confirmation de réception. Pour les transactions directes entre particuliers, 
+                World Auto France ne peut être tenu responsable des litiges commerciaux.
               </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Secure Payment Info */}
+        <Card className="p-6 mb-8 border-green-500/50 bg-green-50">
+          <div className="flex gap-4">
+            <Shield className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+            <div>
+              <h2 className="font-heading font-bold text-lg mb-2 text-green-800">🔒 Paiement Sécurisé (Escrow)</h2>
+              <p className="text-green-700 mb-3">
+                Pour les achats via le bouton <strong>"Acheter maintenant"</strong>, votre argent est protégé :
+              </p>
+              <ul className="list-disc list-inside space-y-1 text-green-700 text-sm">
+                <li>L'argent est bloqué sur un compte sécurisé (escrow) pendant l'expédition</li>
+                <li>Le vendeur n'est payé que lorsque vous confirmez la réception</li>
+                <li>En cas de litige, nous pouvons intervenir et rembourser</li>
+                <li>Commission de 5% prélevée sur le vendeur uniquement</li>
+              </ul>
             </div>
           </div>
         </Card>
