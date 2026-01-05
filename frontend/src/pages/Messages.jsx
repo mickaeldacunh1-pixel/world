@@ -313,8 +313,16 @@ export default function Messages() {
         <div className="grid md:grid-cols-3 gap-6 h-[600px]">
           {/* Conversations List */}
           <Card className="md:col-span-1 flex flex-col">
-            <div className="p-4 border-b">
+            <div className="p-4 border-b flex items-center justify-between">
               <h2 className="font-heading font-bold">Conversations</h2>
+              {/* WebSocket status indicator */}
+              <div className="flex items-center gap-1" title={wsConnected ? 'Connecté en temps réel' : 'Reconnexion...'}>
+                {wsConnected ? (
+                  <Wifi className="w-4 h-4 text-green-500" />
+                ) : (
+                  <WifiOff className="w-4 h-4 text-orange-500 animate-pulse" />
+                )}
+              </div>
             </div>
             <ScrollArea className="flex-1">
               {loading ? (
