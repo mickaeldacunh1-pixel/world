@@ -301,33 +301,45 @@ export default function AdminSettings() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="hero_title_line1">Titre ligne 1</Label>
-                    <Input
-                      id="hero_title_line1"
-                      value={settings.hero_title_line1}
-                      onChange={(e) => setSettings({...settings, hero_title_line1: e.target.value})}
-                      placeholder="La marketplace auto"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        id="hero_title_line1"
+                        value={settings.hero_title_line1}
+                        onChange={(e) => setSettings({...settings, hero_title_line1: e.target.value})}
+                        placeholder="La marketplace auto"
+                        className="flex-1"
+                      />
+                      <EmojiPicker onSelect={(emoji) => setSettings({...settings, hero_title_line1: settings.hero_title_line1 + emoji})} />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="hero_title_line2">Titre ligne 2 (en couleur accent)</Label>
-                    <Input
-                      id="hero_title_line2"
-                      value={settings.hero_title_line2}
-                      onChange={(e) => setSettings({...settings, hero_title_line2: e.target.value})}
-                      placeholder="pour tous"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        id="hero_title_line2"
+                        value={settings.hero_title_line2}
+                        onChange={(e) => setSettings({...settings, hero_title_line2: e.target.value})}
+                        placeholder="pour tous"
+                        className="flex-1"
+                      />
+                      <EmojiPicker onSelect={(emoji) => setSettings({...settings, hero_title_line2: settings.hero_title_line2 + emoji})} />
+                    </div>
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="hero_description">Description</Label>
-                  <Textarea
-                    id="hero_description"
-                    value={settings.hero_description}
-                    onChange={(e) => setSettings({...settings, hero_description: e.target.value})}
-                    placeholder="Description de votre marketplace..."
-                    rows={3}
-                  />
+                  <div className="flex gap-2">
+                    <Textarea
+                      id="hero_description"
+                      value={settings.hero_description}
+                      onChange={(e) => setSettings({...settings, hero_description: e.target.value})}
+                      placeholder="Description de votre marketplace..."
+                      rows={3}
+                      className="flex-1"
+                    />
+                    <EmojiPicker onSelect={(emoji) => setSettings({...settings, hero_description: settings.hero_description + emoji})} />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -357,7 +369,7 @@ export default function AdminSettings() {
                       alt="Preview" 
                       className="w-full h-40 object-cover rounded-lg mt-2"
                     />
-                  )}
+                  )}}
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
