@@ -3294,9 +3294,9 @@ class ChatResponse(BaseModel):
     response: str
     session_id: str
 
-@api_router.post("/autoexpert/chat", response_model=ChatResponse)
-async def autoexpert_chat(chat_message: ChatMessage):
-    """Chat avec AutoExpert, l'assistant IA"""
+@api_router.post("/tobi/chat", response_model=ChatResponse)
+async def tobi_chat(chat_message: ChatMessage):
+    """Chat avec Tobi, l'assistant IA"""
     try:
         # Get or create session
         session_id = chat_message.session_id or str(uuid.uuid4())
@@ -3311,7 +3311,7 @@ async def autoexpert_chat(chat_message: ChatMessage):
             chat_sessions[session_id] = LlmChat(
                 api_key=api_key,
                 session_id=session_id,
-                system_message=AUTOEXPERT_SYSTEM_PROMPT
+                system_message=TOBI_SYSTEM_PROMPT
             ).with_model("openai", "gpt-4o-mini")
         
         chat = chat_sessions[session_id]
@@ -3321,7 +3321,7 @@ async def autoexpert_chat(chat_message: ChatMessage):
         response = await chat.send_message(user_message)
         
         # Store conversation in database for persistence
-        await db.autoexpert_conversations.insert_one({
+        await db.tobi_conversations.insert_one({
             "id": str(uuid.uuid4()),
             "session_id": session_id,
             "user_message": chat_message.message,
@@ -3332,24 +3332,24 @@ async def autoexpert_chat(chat_message: ChatMessage):
         return ChatResponse(response=response, session_id=session_id)
         
     except Exception as e:
-        logger.error(f"AutoExpert error: {str(e)}")
+        logger.error(f"Tobi error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
 
-@api_router.get("/autoexpert/history/{session_id}")
-async def get_chat_history(session_id: str):
+@api_router.get("/tobi/history/{session_id}")
+async def get_tobi_history(session_id: str):
     """Récupérer l'historique d'une conversation"""
-    history = await db.autoexpert_conversations.find(
+    history = await db.tobi_conversations.find(
         {"session_id": session_id},
         {"_id": 0}
     ).sort("created_at", 1).to_list(100)
     return history
 
-@api_router.delete("/autoexpert/session/{session_id}")
-async def clear_chat_session(session_id: str):
+@api_router.delete("/tobi/session/{session_id}")
+async def clear_tobi_session(session_id: str):
     """Effacer une session de chat"""
     if session_id in chat_sessions:
         del chat_sessions[session_id]
-    await db.autoexpert_conversations.delete_many({"session_id": session_id})
+    await db.tobi_conversations.delete_many({"session_id": session_id})
     return {"message": "Session effacée"}
 
 # ================== ROOT ==================
