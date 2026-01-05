@@ -6,7 +6,6 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Checkbox } from '../components/ui/checkbox';
 import { ArrowLeft, Mail, CheckCircle, Loader2, Send, Bell, Sparkles, Tag } from 'lucide-react';
 import SEO from '../components/SEO';
 
@@ -15,12 +14,6 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const [preferences, setPreferences] = useState({
-    new_listings: true,
-    promotions: true,
-    updates: true,
-    weekly_digest: true,
-  });
   const [loading, setLoading] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
 
@@ -36,8 +29,7 @@ export default function Newsletter() {
     try {
       await axios.post(`${API}/newsletter/subscribe`, {
         email,
-        name,
-        preferences
+        name: name || undefined
       });
       setSubscribed(true);
       toast.success('Inscription réussie !');
@@ -47,10 +39,6 @@ export default function Newsletter() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const togglePreference = (key) => {
-    setPreferences(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   if (subscribed) {
@@ -172,56 +160,6 @@ export default function Newsletter() {
                   />
                 </div>
 
-                <div className="space-y-3">
-                  <Label>Je souhaite recevoir :</Label>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="new_listings"
-                        checked={preferences.new_listings}
-                        onCheckedChange={() => togglePreference('new_listings')}
-                      />
-                      <Label htmlFor="new_listings" className="text-sm font-normal">
-                        Les nouvelles annonces
-                      </Label>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="promotions"
-                        checked={preferences.promotions}
-                        onCheckedChange={() => togglePreference('promotions')}
-                      />
-                      <Label htmlFor="promotions" className="text-sm font-normal">
-                        Les promotions et offres spéciales
-                      </Label>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="updates"
-                        checked={preferences.updates}
-                        onCheckedChange={() => togglePreference('updates')}
-                      />
-                      <Label htmlFor="updates" className="text-sm font-normal">
-                        Les nouveautés du site
-                      </Label>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="weekly_digest"
-                        checked={preferences.weekly_digest}
-                        onCheckedChange={() => togglePreference('weekly_digest')}
-                      />
-                      <Label htmlFor="weekly_digest" className="text-sm font-normal">
-                        Le résumé hebdomadaire
-                      </Label>
-                    </div>
-                  </div>
-                </div>
-
                 <Button 
                   type="submit" 
                   className="w-full bg-accent hover:bg-accent/90"
@@ -242,7 +180,7 @@ export default function Newsletter() {
 
                 <p className="text-xs text-muted-foreground text-center">
                   Vous pouvez vous désinscrire à tout moment. 
-                  Consultez notre <Link to="/politique-confidentialite" className="text-accent hover:underline">politique de confidentialité</Link>.
+                  Consultez notre <Link to="/mentions-legales" className="text-accent hover:underline">politique de confidentialité</Link>.
                 </p>
               </form>
             </CardContent>
