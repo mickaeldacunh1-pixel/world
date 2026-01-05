@@ -543,6 +543,7 @@ class ListingCreate(BaseModel):
     compatible_years: Optional[str] = None  # Ex: "2015-2020"
     oem_reference: Optional[str] = None  # Référence constructeur OEM
     aftermarket_reference: Optional[str] = None  # Référence équipementier
+    video_url: Optional[str] = None  # URL de la vidéo de présentation
 
 # Sous-catégories de pièces détachées (style Opisto)
 PIECES_SUBCATEGORIES = {
