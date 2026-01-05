@@ -22,6 +22,7 @@ import Favorites from "./pages/Favorites";
 import Alerts from "./pages/Alerts";
 import SellerStats from "./pages/SellerStats";
 import SellerProfile from "./pages/SellerProfile";
+import BuyerProfile from "./pages/BuyerProfile";
 import AdminSettings from "./pages/AdminSettings";
 import AdminUpdates from "./pages/AdminUpdates";
 import AdminReports from "./pages/AdminReports";
