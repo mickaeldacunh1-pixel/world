@@ -2278,6 +2278,11 @@ class AutoPiecesAPITester:
         self.test_ai_part_recognition()
         self.test_tobi_chat_assistant()
         
+        # WEBSOCKET CHAT AND BUYER REVIEWS TESTING (NEW BACKLOG FEATURES)
+        print("\n🔌⭐ Testing WebSocket Chat and Buyer Reviews...")
+        self.test_websocket_chat_endpoint()
+        self.test_buyer_reviews_system()
+        
         # Payment tests (Stripe and PayPal removal verification)
         self.test_stripe_checkout_creation()
         self.test_paypal_endpoints_removed()
