@@ -4,9 +4,27 @@ import axios from 'axios';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Star, MapPin, Calendar, Package, CheckCircle, User, MessageSquare, Shield } from 'lucide-react';
+import { Star, MapPin, Calendar, Package, CheckCircle, User, MessageSquare, Shield, Trophy, Zap, Sparkles } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+// Badge icon mapping
+const BADGE_ICONS = {
+  'shield-check': Shield,
+  'trophy': Trophy,
+  'zap': Zap,
+  'star': Star,
+  'sparkles': Sparkles
+};
+
+// Badge color mapping
+const BADGE_COLORS = {
+  'green': 'bg-green-100 text-green-700 border-green-200',
+  'gold': 'bg-yellow-100 text-yellow-700 border-yellow-200',
+  'yellow': 'bg-amber-100 text-amber-700 border-amber-200',
+  'purple': 'bg-purple-100 text-purple-700 border-purple-200',
+  'blue': 'bg-blue-100 text-blue-700 border-blue-200'
+};
 
 export default function SellerProfile() {
   const { sellerId } = useParams();
