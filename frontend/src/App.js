@@ -54,6 +54,7 @@ function AppContent() {
           <Route path="/annonce/:id/modifier" element={
             <ProtectedRoute><EditListing /></ProtectedRoute>
           } />
+          <Route path="/marques" element={<Brands />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
