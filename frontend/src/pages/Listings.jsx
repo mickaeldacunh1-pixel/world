@@ -50,7 +50,7 @@ export default function Listings() {
   const [subcategory, setSubcategory] = useState(searchParams.get('subcategory') || '');
   const [compatibleBrand, setCompatibleBrand] = useState(searchParams.get('brand') || '');
   const [region, setRegion] = useState(searchParams.get('region') || '');
-  const [oemReference, setOemReference] = useState('');
+  const [oemReference, setOemReference] = useState(searchParams.get('oem_reference') || '');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [condition, setCondition] = useState('');
