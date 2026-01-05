@@ -2123,7 +2123,7 @@ async def create_update(update: UpdateCreate, current_user: dict = Depends(get_c
         "created_by": current_user["id"]
     }
     await db.updates.insert_one(update_doc)
-    del update_doc["_id"] if "_id" in update_doc else None
+    update_doc.pop("_id", None)
     return update_doc
 
 @api_router.put("/updates/{update_id}")
