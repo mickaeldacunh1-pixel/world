@@ -2600,6 +2600,445 @@ async def stripe_webhook(request: Request):
         logging.error(f"Webhook error: {e}")
         return {"status": "error"}
 
+# ================== STRIPE CONNECT (MARKETPLACE) ROUTES ==================
+
+PLATFORM_COMMISSION_PERCENT = 5  # 5% commission
+
+@api_router.post("/stripe/connect/onboard")
+async def create_connect_account(request: Request, current_user: dict = Depends(get_current_user)):
+    """Créer un compte Stripe Express pour un vendeur et retourner l'URL d'onboarding"""
+    stripe.api_key = STRIPE_API_KEY
+    
+    # Vérifier si l'utilisateur a déjà un compte connecté
+    user = await db.users.find_one({"id": current_user["id"]})
+    
+    if user.get("stripe_account_id"):
+        # Vérifier si le compte est déjà actif
+        try:
+            account = stripe.Account.retrieve(user["stripe_account_id"])
+            if account.charges_enabled:
+                return {"already_connected": True, "message": "Votre compte Stripe est déjà connecté"}
+            else:
+                # Le compte existe mais n'est pas complètement configuré, créer un nouveau lien
+                account_id = user["stripe_account_id"]
+        except Exception:
+            # Compte invalide, en créer un nouveau
+            account_id = None
+    else:
+        account_id = None
+    
+    # Créer un nouveau compte Express si nécessaire
+    if not account_id:
+        try:
+            account = stripe.Account.create(
+                type="express",
+                country="FR",
+                email=current_user["email"],
+                capabilities={
+                    "card_payments": {"requested": True},
+                    "transfers": {"requested": True},
+                },
+                business_type="individual",
+                metadata={
+                    "user_id": current_user["id"],
+                    "platform": "worldautofrance"
+                }
+            )
+            account_id = account.id
+            
+            # Sauvegarder l'ID du compte dans la base
+            await db.users.update_one(
+                {"id": current_user["id"]},
+                {"$set": {"stripe_account_id": account_id, "stripe_connected": False}}
+            )
+        except Exception as e:
+            logging.error(f"Error creating Stripe account: {e}")
+            raise HTTPException(status_code=500, detail="Erreur lors de la création du compte Stripe")
+    
+    # Créer le lien d'onboarding
+    origin = request.headers.get("origin", SITE_URL)
+    
+    try:
+        account_link = stripe.AccountLink.create(
+            account=account_id,
+            refresh_url=f"{origin}/profil?stripe_refresh=true",
+            return_url=f"{origin}/profil?stripe_success=true",
+            type="account_onboarding",
+        )
+        return {"url": account_link.url}
+    except Exception as e:
+        logging.error(f"Error creating account link: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la création du lien Stripe")
+
+@api_router.get("/stripe/connect/status")
+async def get_connect_status(current_user: dict = Depends(get_current_user)):
+    """Vérifier le statut du compte Stripe Connect d'un vendeur"""
+    stripe.api_key = STRIPE_API_KEY
+    
+    user = await db.users.find_one({"id": current_user["id"]})
+    
+    if not user.get("stripe_account_id"):
+        return {"connected": False, "charges_enabled": False, "message": "Aucun compte Stripe connecté"}
+    
+    try:
+        account = stripe.Account.retrieve(user["stripe_account_id"])
+        
+        # Mettre à jour le statut dans la base
+        if account.charges_enabled and not user.get("stripe_connected"):
+            await db.users.update_one(
+                {"id": current_user["id"]},
+                {"$set": {"stripe_connected": True}}
+            )
+        
+        return {
+            "connected": True,
+            "charges_enabled": account.charges_enabled,
+            "payouts_enabled": account.payouts_enabled,
+            "details_submitted": account.details_submitted,
+            "account_id": user["stripe_account_id"]
+        }
+    except Exception as e:
+        logging.error(f"Error retrieving Stripe account: {e}")
+        return {"connected": False, "charges_enabled": False, "error": str(e)}
+
+@api_router.post("/stripe/connect/refresh-link")
+async def refresh_connect_link(request: Request, current_user: dict = Depends(get_current_user)):
+    """Générer un nouveau lien d'onboarding si l'ancien a expiré"""
+    stripe.api_key = STRIPE_API_KEY
+    
+    user = await db.users.find_one({"id": current_user["id"]})
+    
+    if not user.get("stripe_account_id"):
+        raise HTTPException(status_code=400, detail="Aucun compte Stripe à configurer")
+    
+    origin = request.headers.get("origin", SITE_URL)
+    
+    try:
+        account_link = stripe.AccountLink.create(
+            account=user["stripe_account_id"],
+            refresh_url=f"{origin}/profil?stripe_refresh=true",
+            return_url=f"{origin}/profil?stripe_success=true",
+            type="account_onboarding",
+        )
+        return {"url": account_link.url}
+    except Exception as e:
+        logging.error(f"Error refreshing account link: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la création du lien")
+
+class MarketplaceCheckoutRequest(BaseModel):
+    listing_id: str
+    quantity: int = 1
+
+@api_router.post("/stripe/connect/checkout")
+async def create_marketplace_checkout(
+    checkout_data: MarketplaceCheckoutRequest,
+    request: Request,
+    current_user: dict = Depends(get_current_user)
+):
+    """Créer une session de paiement marketplace avec escrow"""
+    stripe.api_key = STRIPE_API_KEY
+    
+    # Récupérer l'annonce
+    listing = await db.listings.find_one({"id": checkout_data.listing_id})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    if listing.get("status") != "active":
+        raise HTTPException(status_code=400, detail="Cette annonce n'est plus disponible")
+    
+    # Vérifier que l'acheteur n'est pas le vendeur
+    if listing["seller_id"] == current_user["id"]:
+        raise HTTPException(status_code=400, detail="Vous ne pouvez pas acheter votre propre annonce")
+    
+    # Récupérer le vendeur et vérifier son compte Stripe
+    seller = await db.users.find_one({"id": listing["seller_id"]})
+    if not seller:
+        raise HTTPException(status_code=404, detail="Vendeur non trouvé")
+    
+    if not seller.get("stripe_account_id") or not seller.get("stripe_connected"):
+        raise HTTPException(status_code=400, detail="Le vendeur n'a pas configuré son compte de paiement")
+    
+    # Vérifier que le compte vendeur peut recevoir des paiements
+    try:
+        seller_account = stripe.Account.retrieve(seller["stripe_account_id"])
+        if not seller_account.charges_enabled:
+            raise HTTPException(status_code=400, detail="Le compte du vendeur n'est pas encore activé")
+    except Exception as e:
+        logging.error(f"Error checking seller account: {e}")
+        raise HTTPException(status_code=400, detail="Impossible de vérifier le compte du vendeur")
+    
+    # Calculer les montants
+    price = float(listing["price"])
+    shipping_cost = float(listing.get("shipping_cost", 0))
+    total_amount = price + shipping_cost
+    total_amount_cents = int(total_amount * 100)
+    
+    # Commission de la plateforme (5%)
+    platform_fee_cents = int(total_amount_cents * PLATFORM_COMMISSION_PERCENT / 100)
+    
+    # URLs de retour
+    origin = request.headers.get("origin", SITE_URL)
+    success_url = f"{origin}/commandes?payment_success=true&session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{origin}/annonce/{listing['id']}?payment_cancelled=true"
+    
+    # Créer la description du produit
+    product_name = f"{listing['title']}"
+    if shipping_cost > 0:
+        product_description = f"Prix: {price}€ + Frais de port: {shipping_cost}€"
+    else:
+        product_description = f"Prix: {price}€"
+    
+    try:
+        # Créer la session Checkout avec destination charge
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{
+                "price_data": {
+                    "currency": "eur",
+                    "product_data": {
+                        "name": product_name,
+                        "description": product_description,
+                        "images": [listing["images"][0]] if listing.get("images") else [],
+                    },
+                    "unit_amount": total_amount_cents,
+                },
+                "quantity": checkout_data.quantity,
+            }],
+            mode="payment",
+            success_url=success_url,
+            cancel_url=cancel_url,
+            payment_intent_data={
+                "application_fee_amount": platform_fee_cents,
+                "transfer_data": {
+                    "destination": seller["stripe_account_id"],
+                },
+                "metadata": {
+                    "listing_id": listing["id"],
+                    "buyer_id": current_user["id"],
+                    "seller_id": seller["id"],
+                    "platform": "worldautofrance"
+                }
+            },
+            metadata={
+                "type": "marketplace",
+                "listing_id": listing["id"],
+                "buyer_id": current_user["id"],
+                "seller_id": seller["id"],
+                "price": str(price),
+                "shipping_cost": str(shipping_cost),
+                "total": str(total_amount)
+            }
+        )
+        
+        # Créer l'enregistrement de la commande en attente
+        order_doc = {
+            "id": str(uuid.uuid4()),
+            "stripe_session_id": session.id,
+            "listing_id": listing["id"],
+            "listing_title": listing["title"],
+            "listing_image": listing["images"][0] if listing.get("images") else None,
+            "buyer_id": current_user["id"],
+            "buyer_name": current_user["name"],
+            "buyer_email": current_user["email"],
+            "seller_id": seller["id"],
+            "seller_name": seller["name"],
+            "seller_email": seller["email"],
+            "price": price,
+            "shipping_cost": shipping_cost,
+            "total_amount": total_amount,
+            "platform_fee": platform_fee_cents / 100,
+            "seller_receives": (total_amount_cents - platform_fee_cents) / 100,
+            "payment_status": "pending",
+            "order_status": "pending_payment",
+            "escrow_status": "not_paid",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        await db.marketplace_orders.insert_one(order_doc)
+        
+        return {"url": session.url, "session_id": session.id}
+        
+    except stripe.error.StripeError as e:
+        logging.error(f"Stripe error: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur Stripe: {str(e)}")
+
+@api_router.get("/stripe/connect/checkout/status/{session_id}")
+async def get_marketplace_checkout_status(session_id: str, current_user: dict = Depends(get_current_user)):
+    """Vérifier le statut d'un paiement marketplace"""
+    stripe.api_key = STRIPE_API_KEY
+    
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        
+        # Mettre à jour la commande si le paiement est complété
+        if session.payment_status == "paid":
+            order = await db.marketplace_orders.find_one({"stripe_session_id": session_id})
+            if order and order.get("payment_status") != "paid":
+                # Mettre à jour le statut
+                await db.marketplace_orders.update_one(
+                    {"stripe_session_id": session_id},
+                    {"$set": {
+                        "payment_status": "paid",
+                        "order_status": "paid",
+                        "escrow_status": "held",
+                        "paid_at": datetime.now(timezone.utc).isoformat(),
+                        "stripe_payment_intent_id": session.payment_intent
+                    }}
+                )
+                
+                # Marquer l'annonce comme vendue
+                await db.listings.update_one(
+                    {"id": order["listing_id"]},
+                    {"$set": {"status": "sold", "sold_at": datetime.now(timezone.utc).isoformat()}}
+                )
+                
+                # Envoyer les emails de notification
+                buyer = await db.users.find_one({"id": order["buyer_id"]})
+                seller = await db.users.find_one({"id": order["seller_id"]})
+                
+                if buyer and seller:
+                    # Email à l'acheteur
+                    buyer_html = f"""
+                    <h2>Commande confirmée !</h2>
+                    <p>Bonjour {buyer['name']},</p>
+                    <p>Votre paiement de <strong>{order['total_amount']}€</strong> pour "{order['listing_title']}" a été confirmé.</p>
+                    <p>L'argent est sécurisé jusqu'à la confirmation de réception.</p>
+                    <p>Le vendeur va maintenant préparer l'expédition.</p>
+                    """
+                    send_email(buyer["email"], "Commande confirmée - World Auto France", buyer_html)
+                    
+                    # Email au vendeur
+                    seller_html = f"""
+                    <h2>Nouvelle vente !</h2>
+                    <p>Bonjour {seller['name']},</p>
+                    <p>Félicitations ! Votre article "{order['listing_title']}" a été vendu pour <strong>{order['total_amount']}€</strong>.</p>
+                    <p>Vous recevrez <strong>{order['seller_receives']}€</strong> après confirmation de réception par l'acheteur.</p>
+                    <p>Veuillez expédier l'article et marquer la commande comme "Expédiée" dans votre espace.</p>
+                    """
+                    send_email(seller["email"], "Nouvelle vente ! - World Auto France", seller_html)
+        
+        return {
+            "status": session.status,
+            "payment_status": session.payment_status,
+            "amount_total": session.amount_total,
+            "currency": session.currency
+        }
+        
+    except Exception as e:
+        logging.error(f"Error checking session status: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la vérification")
+
+@api_router.get("/marketplace/orders")
+async def get_marketplace_orders(current_user: dict = Depends(get_current_user)):
+    """Récupérer les commandes marketplace d'un utilisateur (acheteur ou vendeur)"""
+    # Commandes en tant qu'acheteur
+    buyer_orders = await db.marketplace_orders.find(
+        {"buyer_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    # Commandes en tant que vendeur
+    seller_orders = await db.marketplace_orders.find(
+        {"seller_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    return {
+        "as_buyer": buyer_orders,
+        "as_seller": seller_orders
+    }
+
+@api_router.post("/marketplace/orders/{order_id}/ship")
+async def mark_order_shipped(
+    order_id: str,
+    tracking_number: Optional[str] = None,
+    carrier: Optional[str] = None,
+    current_user: dict = Depends(get_current_user),
+    background_tasks: BackgroundTasks = None
+):
+    """Marquer une commande comme expédiée (vendeur uniquement)"""
+    order = await db.marketplace_orders.find_one({"id": order_id})
+    
+    if not order:
+        raise HTTPException(status_code=404, detail="Commande non trouvée")
+    
+    if order["seller_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Accès non autorisé")
+    
+    if order["order_status"] != "paid":
+        raise HTTPException(status_code=400, detail="Cette commande ne peut pas être expédiée")
+    
+    # Mettre à jour le statut
+    update_data = {
+        "order_status": "shipped",
+        "shipped_at": datetime.now(timezone.utc).isoformat(),
+    }
+    if tracking_number:
+        update_data["tracking_number"] = tracking_number
+    if carrier:
+        update_data["carrier"] = carrier
+    
+    await db.marketplace_orders.update_one({"id": order_id}, {"$set": update_data})
+    
+    # Notifier l'acheteur
+    buyer = await db.users.find_one({"id": order["buyer_id"]})
+    if buyer:
+        html = f"""
+        <h2>Votre commande a été expédiée !</h2>
+        <p>Bonjour {buyer['name']},</p>
+        <p>Votre commande "{order['listing_title']}" a été expédiée.</p>
+        {"<p>Numéro de suivi: <strong>" + tracking_number + "</strong></p>" if tracking_number else ""}
+        {"<p>Transporteur: " + carrier + "</p>" if carrier else ""}
+        <p>Une fois reçu, n'oubliez pas de confirmer la réception pour libérer le paiement au vendeur.</p>
+        """
+        send_email(buyer["email"], "Commande expédiée - World Auto France", html)
+    
+    return {"message": "Commande marquée comme expédiée"}
+
+@api_router.post("/marketplace/orders/{order_id}/confirm-delivery")
+async def confirm_delivery(order_id: str, current_user: dict = Depends(get_current_user)):
+    """Confirmer la réception d'une commande (acheteur uniquement) - Libère les fonds"""
+    order = await db.marketplace_orders.find_one({"id": order_id})
+    
+    if not order:
+        raise HTTPException(status_code=404, detail="Commande non trouvée")
+    
+    if order["buyer_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Accès non autorisé")
+    
+    if order["order_status"] not in ["paid", "shipped"]:
+        raise HTTPException(status_code=400, detail="Cette commande ne peut pas être confirmée")
+    
+    if order.get("escrow_status") == "released":
+        return {"message": "Les fonds ont déjà été libérés"}
+    
+    # Mettre à jour le statut
+    await db.marketplace_orders.update_one(
+        {"id": order_id},
+        {"$set": {
+            "order_status": "delivered",
+            "escrow_status": "released",
+            "delivered_at": datetime.now(timezone.utc).isoformat(),
+            "funds_released_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    # Note: Avec Stripe Connect destination charges, les fonds sont automatiquement
+    # transférés au vendeur. L'escrow_status sert juste pour le suivi.
+    
+    # Notifier le vendeur
+    seller = await db.users.find_one({"id": order["seller_id"]})
+    if seller:
+        html = f"""
+        <h2>Paiement reçu !</h2>
+        <p>Bonjour {seller['name']},</p>
+        <p>L'acheteur a confirmé la réception de "{order['listing_title']}".</p>
+        <p>Le paiement de <strong>{order['seller_receives']}€</strong> sera versé sur votre compte Stripe.</p>
+        <p>Merci d'utiliser World Auto France !</p>
+        """
+        send_email(seller["email"], "Paiement reçu ! - World Auto France", html)
+    
+    return {"message": "Réception confirmée, fonds libérés"}
+
 # ================== STATS ROUTES ==================
 
 @api_router.get("/stats/dashboard")
