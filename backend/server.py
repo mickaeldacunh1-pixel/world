@@ -49,6 +49,7 @@ SMTP_PORT = int(os.environ.get('SMTP_PORT', '465'))
 SMTP_USER = os.environ.get('SMTP_USER', 'contact@worldautofrance.com')
 SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
 SITE_URL = os.environ.get('SITE_URL', 'https://worldautofrance.com')
+NEWSLETTER_SECRET_KEY = os.environ.get('NEWSLETTER_SECRET_KEY', '')  # Clé secrète pour l'envoi auto
 
 # ================== EMAIL SERVICE ==================
 
