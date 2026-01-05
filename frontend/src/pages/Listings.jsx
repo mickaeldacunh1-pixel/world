@@ -139,6 +139,23 @@ export default function Listings() {
   };
 
   const handleFilterApply = () => {
+    // Update URL with current filter state
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
+    if (subcategory) params.set('subcategory', subcategory);
+    if (compatibleBrand) params.set('compatible_brand', compatibleBrand);
+    if (region) params.set('region', region);
+    if (oemReference) params.set('oem_reference', oemReference);
+    if (search) params.set('search', search);
+    if (minPrice) params.set('min_price', minPrice);
+    if (maxPrice) params.set('max_price', maxPrice);
+    if (condition) params.set('condition', condition);
+    if (sort !== 'recent') params.set('sort', sort);
+    
+    // Update URL without navigation
+    const newUrl = `/annonces${category ? `/${category}` : ''}${params.toString() ? `?${params.toString()}` : ''}`;
+    window.history.pushState({}, '', newUrl);
+    
     fetchListings(true);
     setShowFilters(false);
   };
