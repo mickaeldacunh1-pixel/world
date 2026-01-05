@@ -2082,6 +2082,124 @@ async def get_pending_reviews(current_user: dict = Depends(get_current_user)):
     
     return pending
 
+# ================== UPDATES (CHANGELOG) ROUTES ==================
+
+class UpdateItem(BaseModel):
+    type: str  # "new", "improvement", "fix", "maintenance"
+    text: str
+
+class UpdateCreate(BaseModel):
+    title: str
+    version: str
+    category: str = "general"  # "general", "feature", "security", "performance"
+    image_url: Optional[str] = None
+    items: List[UpdateItem]
+
+@api_router.get("/updates")
+async def get_updates():
+    """Get all updates (changelog) - Public"""
+    updates = await db.updates.find({}, {"_id": 0}).sort("date", -1).to_list(100)
+    return updates
+
+@api_router.get("/updates/{update_id}")
+async def get_update(update_id: str):
+    """Get a single update by ID"""
+    update = await db.updates.find_one({"id": update_id}, {"_id": 0})
+    if not update:
+        raise HTTPException(status_code=404, detail="Actualité non trouvée")
+    return update
+
+@api_router.post("/updates")
+async def create_update(update: UpdateCreate, current_user: dict = Depends(get_current_user)):
+    """Create a new update - Admin only"""
+    update_doc = {
+        "id": str(uuid4()),
+        "title": update.title,
+        "version": update.version,
+        "category": update.category,
+        "image_url": update.image_url,
+        "items": [item.model_dump() for item in update.items],
+        "date": datetime.now(timezone.utc).isoformat(),
+        "created_by": current_user["id"]
+    }
+    await db.updates.insert_one(update_doc)
+    del update_doc["_id"] if "_id" in update_doc else None
+    return update_doc
+
+@api_router.put("/updates/{update_id}")
+async def edit_update(update_id: str, update: UpdateCreate, current_user: dict = Depends(get_current_user)):
+    """Update an existing update - Admin only"""
+    existing = await db.updates.find_one({"id": update_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Actualité non trouvée")
+    
+    update_data = {
+        "title": update.title,
+        "version": update.version,
+        "category": update.category,
+        "image_url": update.image_url,
+        "items": [item.model_dump() for item in update.items],
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "updated_by": current_user["id"]
+    }
+    await db.updates.update_one({"id": update_id}, {"$set": update_data})
+    updated = await db.updates.find_one({"id": update_id}, {"_id": 0})
+    return updated
+
+@api_router.delete("/updates/{update_id}")
+async def delete_update(update_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete an update - Admin only"""
+    result = await db.updates.delete_one({"id": update_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Actualité non trouvée")
+    return {"message": "Actualité supprimée"}
+
+# ================== NEWSLETTER ROUTES ==================
+
+class NewsletterSubscribe(BaseModel):
+    email: str
+    name: Optional[str] = None
+
+@api_router.post("/newsletter/subscribe")
+async def subscribe_newsletter(subscriber: NewsletterSubscribe):
+    """Subscribe to newsletter - Public"""
+    # Validate email format
+    import re
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", subscriber.email):
+        raise HTTPException(status_code=400, detail="Format d'email invalide")
+    
+    # Check if already subscribed
+    existing = await db.newsletter_subscribers.find_one({"email": subscriber.email.lower()})
+    if existing:
+        raise HTTPException(status_code=400, detail="Cet email est déjà inscrit à la newsletter")
+    
+    subscriber_doc = {
+        "id": str(uuid4()),
+        "email": subscriber.email.lower(),
+        "name": subscriber.name,
+        "subscribed_at": datetime.now(timezone.utc).isoformat(),
+        "active": True
+    }
+    await db.newsletter_subscribers.insert_one(subscriber_doc)
+    return {"message": "Inscription réussie !"}
+
+@api_router.get("/newsletter/subscribers")
+async def get_newsletter_subscribers(current_user: dict = Depends(get_current_user)):
+    """Get all newsletter subscribers - Admin only"""
+    subscribers = await db.newsletter_subscribers.find({"active": True}, {"_id": 0}).to_list(10000)
+    return {"subscribers": subscribers, "total": len(subscribers)}
+
+@api_router.delete("/newsletter/unsubscribe/{email}")
+async def unsubscribe_newsletter(email: str):
+    """Unsubscribe from newsletter"""
+    result = await db.newsletter_subscribers.update_one(
+        {"email": email.lower()},
+        {"$set": {"active": False, "unsubscribed_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Email non trouvé")
+    return {"message": "Désabonnement effectué"}
+
 # ================== SETTINGS ROUTES ==================
 
 DEFAULT_HERO_SETTINGS = {
