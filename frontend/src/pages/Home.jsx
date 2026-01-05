@@ -210,7 +210,7 @@ export default function Home() {
             </form>
 
             {/* Quick stats */}
-            <div className="flex flex-wrap gap-6 mt-10 animate-fade-in-up stagger-5">
+            <div className="flex flex-wrap items-center gap-6 mt-10 animate-fade-in-up stagger-5">
               <div className="text-white/70">
                 <span className="text-2xl font-bold text-white">{Object.values(categoryStats).reduce((a, b) => a + b, 0) || '100+'}+</span>
                 <span className="ml-2 text-sm">annonces actives</span>
@@ -218,6 +218,9 @@ export default function Home() {
               <div className="text-white/70">
                 <span className="text-2xl font-bold text-white">5</span>
                 <span className="ml-2 text-sm">catégories</span>
+              </div>
+              <div className="ml-auto">
+                <AITools />
               </div>
             </div>
           </div>
