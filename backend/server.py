@@ -2096,11 +2096,13 @@ async def get_seller_profile(seller_id: str):
         "name": seller["name"],
         "is_professional": seller.get("is_professional", False),
         "is_verified_seller": is_verified_seller,
+        "badges": badges,
         "company_name": seller.get("company_name"),
         "city": seller.get("city"),
         "created_at": seller.get("created_at"),
         "active_listings": len(listings),
         "sold_count": sold_count,
+        "total_listings": total_listings,
         "total_reviews": total_reviews,
         "average_rating": average_rating,
         "reviews": reviews[:10]  # 10 derniers avis
