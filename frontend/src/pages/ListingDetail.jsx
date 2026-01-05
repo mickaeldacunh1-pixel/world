@@ -475,6 +475,12 @@ export default function ListingDetail() {
                   <p className="font-medium flex items-center gap-2 group-hover:text-accent transition-colors">
                     {listing.seller_name}
                     {listing.seller_is_pro && <span className="badge-pro">PRO</span>}
+                    {listing.seller_is_verified && (
+                      <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                        <Shield className="w-3 h-3" />
+                        Vérifié
+                      </span>
+                    )}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Cliquez pour voir le profil vendeur
