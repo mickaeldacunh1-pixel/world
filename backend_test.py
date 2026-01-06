@@ -2850,6 +2850,10 @@ class AutoPiecesAPITester:
         self.test_dashboard_stats()
         self.test_messages_conversations()
         
+        # REFERRAL SYSTEM TESTS (NEW FEATURE)
+        print("\n🎯 Testing Referral System...")
+        self.test_referral_system_complete()
+        
         # Error handling
         self.test_invalid_endpoints()
         
