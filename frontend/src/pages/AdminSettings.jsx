@@ -494,7 +494,7 @@ export default function AdminSettings() {
                 </Button>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Titres avec émojis */}
+                {/* Titres avec couleurs personnalisées */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="hero_title_line1">Titre ligne 1</Label>
@@ -508,9 +508,24 @@ export default function AdminSettings() {
                       />
                       <EmojiPicker onSelect={(emoji) => setSettings({...settings, hero_title_line1: settings.hero_title_line1 + emoji})} />
                     </div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Label className="text-xs text-muted-foreground">Couleur :</Label>
+                      <input
+                        type="color"
+                        value={settings.hero_title_line1_color || "#FFFFFF"}
+                        onChange={(e) => setSettings({...settings, hero_title_line1_color: e.target.value})}
+                        className="w-8 h-8 rounded cursor-pointer border"
+                      />
+                      <Input
+                        value={settings.hero_title_line1_color || "#FFFFFF"}
+                        onChange={(e) => setSettings({...settings, hero_title_line1_color: e.target.value})}
+                        placeholder="#FFFFFF"
+                        className="w-24 text-xs"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="hero_title_line2">Titre ligne 2 (en couleur accent)</Label>
+                    <Label htmlFor="hero_title_line2">Titre ligne 2</Label>
                     <div className="flex gap-2">
                       <Input
                         id="hero_title_line2"
@@ -520,6 +535,21 @@ export default function AdminSettings() {
                         className="flex-1"
                       />
                       <EmojiPicker onSelect={(emoji) => setSettings({...settings, hero_title_line2: settings.hero_title_line2 + emoji})} />
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Label className="text-xs text-muted-foreground">Couleur :</Label>
+                      <input
+                        type="color"
+                        value={settings.hero_title_line2_color || "#F97316"}
+                        onChange={(e) => setSettings({...settings, hero_title_line2_color: e.target.value})}
+                        className="w-8 h-8 rounded cursor-pointer border"
+                      />
+                      <Input
+                        value={settings.hero_title_line2_color || "#F97316"}
+                        onChange={(e) => setSettings({...settings, hero_title_line2_color: e.target.value})}
+                        placeholder="#F97316"
+                        className="w-24 text-xs"
+                      />
                     </div>
                   </div>
                 </div>
