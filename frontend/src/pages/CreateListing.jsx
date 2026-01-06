@@ -157,8 +157,10 @@ export default function CreateListing() {
 
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
-    if (images.length + files.length > 6) {
-      toast.error('Maximum 6 images par annonce');
+    const maxPhotos = photoLimit.max_photos || 5;
+    
+    if (images.length + files.length > maxPhotos) {
+      toast.error(`Maximum ${maxPhotos} photos. Achetez des photos supplémentaires pour en ajouter plus.`);
       return;
     }
 
