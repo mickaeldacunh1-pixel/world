@@ -58,13 +58,41 @@ export default function Auth() {
     address: '',
     city: '',
     postal_code: '',
+    referral_code: searchParams.get('ref') || '',
   });
+  
+  // Referral code validation state
+  const [referralStatus, setReferralStatus] = useState({ checking: false, valid: null, referrer_name: null });
 
   useEffect(() => {
     if (user) {
       navigate('/tableau-de-bord');
     }
   }, [user, navigate]);
+  
+  // Validate referral code
+  useEffect(() => {
+    const code = registerData.referral_code?.trim();
+    if (code && code.length >= 5) {
+      const timeout = setTimeout(async () => {
+        setReferralStatus({ checking: true, valid: null, referrer_name: null });
+        try {
+          const response = await axios.get(`${API}/api/referral/validate/${code}`);
+          setReferralStatus({
+            checking: false,
+            valid: response.data.valid,
+            referrer_name: response.data.referrer_name,
+            bonus_points: response.data.bonus_points
+          });
+        } catch (error) {
+          setReferralStatus({ checking: false, valid: false, referrer_name: null });
+        }
+      }, 500);
+      return () => clearTimeout(timeout);
+    } else {
+      setReferralStatus({ checking: false, valid: null, referrer_name: null });
+    }
+  }, [registerData.referral_code]);
 
   // Fonction de vérification SIRET avec debounce
   const verifySiret = useCallback(async (siret) => {
