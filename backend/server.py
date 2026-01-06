@@ -3928,6 +3928,332 @@ async def estimate_price(request: PriceEstimationRequest):
         logger.error(f"Price estimation error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erreur d'estimation: {str(e)}")
 
+# ================== PLATE SCANNER (OCR) ==================
+
+@api_router.post("/scan-plate")
+async def scan_plate(file: UploadFile = File(...)):
+    """Scanner une plaque d'immatriculation (OCR basique, prêt pour SIV)"""
+    if not file.content_type.startswith('image/'):
+        raise HTTPException(status_code=400, detail="Le fichier doit être une image")
+    
+    try:
+        contents = await file.read()
+        import base64
+        image_base64 = base64.b64encode(contents).decode('utf-8')
+        
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        if not api_key:
+            return {"plate": None, "message": "OCR non disponible"}
+        
+        from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+        
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"plate_{uuid.uuid4()}",
+            system_message="Tu es un expert en reconnaissance de plaques d'immatriculation françaises. Tu dois extraire UNIQUEMENT le numéro de plaque visible sur l'image. Réponds UNIQUEMENT avec le numéro de plaque au format XX-123-XX ou XX123XX, sans aucun autre texte. Si tu ne vois pas de plaque claire, réponds 'NONE'."
+        ).with_model("openai", "gpt-4o")
+        
+        image_content = ImageContent(image_base64=image_base64)
+        user_message = UserMessage(
+            text="Lis la plaque d'immatriculation sur cette image :",
+            file_contents=[image_content]
+        )
+        response = await chat.send_message(user_message)
+        
+        # Clean response
+        plate = response.strip().upper().replace(' ', '').replace('-', '')
+        if plate == 'NONE' or len(plate) < 5 or len(plate) > 10:
+            return {"plate": None, "message": "Plaque non détectée"}
+        
+        # Format plate
+        if len(plate) == 7:
+            formatted = f"{plate[:2]}-{plate[2:5]}-{plate[5:]}"
+        else:
+            formatted = plate
+        
+        return {"plate": formatted, "raw": plate}
+        
+    except Exception as e:
+        logger.error(f"Plate scan error: {str(e)}")
+        return {"plate": None, "message": "Erreur lors du scan"}
+
+# ================== DIAGNOSTIC IA ==================
+
+DIAGNOSTIC_PROMPT = """Tu es Tobi, expert en diagnostic automobile chez World Auto France.
+
+L'utilisateur décrit un problème avec son véhicule. Tu dois :
+1. Analyser les symptômes décrits
+2. Identifier les causes probables (de la plus probable à la moins probable)
+3. Suggérer les pièces qui pourraient être à remplacer
+4. Donner une estimation de l'urgence (⚠️ Urgent, 🟡 Moyen, 🟢 Peut attendre)
+5. Conseiller si l'utilisateur peut intervenir lui-même ou doit aller chez un pro
+
+Véhicule : {vehicle}
+Problème décrit : {problem}
+
+Réponds de manière structurée et accessible, avec des emojis pour la clarté."""
+
+class DiagnosticRequest(BaseModel):
+    problem: str
+    vehicle: Optional[str] = None
+
+@api_router.post("/ai/diagnostic")
+async def ai_diagnostic(request: DiagnosticRequest):
+    """Diagnostic IA d'un problème automobile"""
+    try:
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        if not api_key:
+            raise HTTPException(status_code=500, detail="Clé API non configurée")
+        
+        vehicle_info = request.vehicle or "Non spécifié"
+        prompt = DIAGNOSTIC_PROMPT.format(vehicle=vehicle_info, problem=request.problem)
+        
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"diagnostic_{uuid.uuid4()}",
+            system_message="Tu es un expert mécanicien automobile."
+        ).with_model("openai", "gpt-4o")
+        
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        
+        return {
+            "diagnostic": response,
+            "vehicle": vehicle_info,
+            "problem": request.problem
+        }
+        
+    except Exception as e:
+        logger.error(f"Diagnostic error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur de diagnostic: {str(e)}")
+
+# ================== AUCTIONS (ENCHÈRES) ==================
+
+class AuctionCreate(BaseModel):
+    listing_id: str
+    starting_price: float = Field(..., ge=1)
+    duration: str = Field(..., pattern="^(24h|48h|7d)$")
+
+class BidCreate(BaseModel):
+    amount: float = Field(..., ge=1)
+
+AUCTION_COMMISSION = 0.05  # 5% commission
+
+@api_router.post("/auctions")
+async def create_auction(auction: AuctionCreate, current_user: dict = Depends(get_current_user)):
+    """Créer une nouvelle enchère"""
+    # Verify listing exists and belongs to user
+    listing = await db.listings.find_one({
+        "id": auction.listing_id,
+        "seller_id": current_user["id"]
+    }, {"_id": 0})
+    
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    # Check no active auction for this listing
+    existing = await db.auctions.find_one({
+        "listing_id": auction.listing_id,
+        "status": "active"
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="Une enchère est déjà active pour cette annonce")
+    
+    # Calculate end time
+    duration_hours = {"24h": 24, "48h": 48, "7d": 168}
+    end_time = datetime.now(timezone.utc) + timedelta(hours=duration_hours[auction.duration])
+    
+    auction_doc = {
+        "id": str(uuid.uuid4()),
+        "listing_id": auction.listing_id,
+        "title": listing["title"],
+        "description": listing.get("description", ""),
+        "image": listing.get("images", [None])[0],
+        "vehicle_info": f"{listing.get('vehicle_brand', '')} {listing.get('vehicle_model', '')} {listing.get('vehicle_year', '')}".strip(),
+        "seller_id": current_user["id"],
+        "seller_name": current_user["name"],
+        "starting_price": auction.starting_price,
+        "current_price": auction.starting_price,
+        "bid_count": 0,
+        "bids": [],
+        "highest_bidder_id": None,
+        "highest_bidder_name": None,
+        "status": "active",  # active, ended, cancelled
+        "winner_id": None,
+        "final_price": None,
+        "start_time": datetime.now(timezone.utc).isoformat(),
+        "end_time": end_time.isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.auctions.insert_one(auction_doc)
+    
+    # Mark listing as auction
+    await db.listings.update_one(
+        {"id": auction.listing_id},
+        {"$set": {"is_auction": True, "auction_id": auction_doc["id"]}}
+    )
+    
+    return {k: v for k, v in auction_doc.items() if k != "_id"}
+
+@api_router.get("/auctions")
+async def get_auctions(status: Optional[str] = None):
+    """Récupérer les enchères"""
+    query = {}
+    if status:
+        query["status"] = status
+    
+    auctions = await db.auctions.find(query, {"_id": 0}).sort("end_time", 1).to_list(100)
+    
+    # Update expired auctions
+    now = datetime.now(timezone.utc)
+    for auction in auctions:
+        if auction["status"] == "active" and datetime.fromisoformat(auction["end_time"].replace('Z', '+00:00')) < now:
+            await end_auction(auction["id"])
+            auction["status"] = "ended"
+    
+    return auctions
+
+@api_router.get("/auctions/my")
+async def get_my_auctions(current_user: dict = Depends(get_current_user)):
+    """Récupérer mes enchères (en tant que vendeur)"""
+    auctions = await db.auctions.find(
+        {"seller_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
+    return auctions
+
+@api_router.get("/auctions/my-bids")
+async def get_my_bids(current_user: dict = Depends(get_current_user)):
+    """Récupérer les enchères où j'ai misé"""
+    auctions = await db.auctions.find(
+        {"bids.bidder_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("end_time", 1).to_list(50)
+    return auctions
+
+@api_router.get("/auctions/{auction_id}")
+async def get_auction(auction_id: str):
+    """Récupérer une enchère par ID"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Enchère non trouvée")
+    return auction
+
+@api_router.post("/auctions/{auction_id}/bid")
+async def place_bid(auction_id: str, bid: BidCreate, current_user: dict = Depends(get_current_user)):
+    """Placer une enchère"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Enchère non trouvée")
+    
+    if auction["status"] != "active":
+        raise HTTPException(status_code=400, detail="Cette enchère est terminée")
+    
+    if auction["seller_id"] == current_user["id"]:
+        raise HTTPException(status_code=400, detail="Vous ne pouvez pas enchérir sur votre propre annonce")
+    
+    if bid.amount <= auction["current_price"]:
+        raise HTTPException(status_code=400, detail=f"L'enchère doit être supérieure à {auction['current_price']}€")
+    
+    # Check auction not expired
+    end_time = datetime.fromisoformat(auction["end_time"].replace('Z', '+00:00'))
+    if datetime.now(timezone.utc) >= end_time:
+        await end_auction(auction_id)
+        raise HTTPException(status_code=400, detail="Cette enchère est terminée")
+    
+    bid_doc = {
+        "id": str(uuid.uuid4()),
+        "bidder_id": current_user["id"],
+        "bidder_name": current_user["name"],
+        "amount": bid.amount,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.auctions.update_one(
+        {"id": auction_id},
+        {
+            "$set": {
+                "current_price": bid.amount,
+                "highest_bidder_id": current_user["id"],
+                "highest_bidder_name": current_user["name"],
+            },
+            "$inc": {"bid_count": 1},
+            "$push": {"bids": bid_doc}
+        }
+    )
+    
+    # Notify previous highest bidder
+    if auction["highest_bidder_id"] and auction["highest_bidder_id"] != current_user["id"]:
+        # Send notification via WebSocket or email
+        pass
+    
+    return {"message": "Enchère placée avec succès", "bid": bid_doc}
+
+async def end_auction(auction_id: str):
+    """Terminer une enchère"""
+    auction = await db.auctions.find_one({"id": auction_id})
+    if not auction or auction["status"] != "active":
+        return
+    
+    update_data = {
+        "status": "ended",
+        "ended_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    if auction["highest_bidder_id"]:
+        update_data["winner_id"] = auction["highest_bidder_id"]
+        update_data["final_price"] = auction["current_price"]
+        
+        # Create order for winner
+        commission = auction["current_price"] * AUCTION_COMMISSION
+        
+        # TODO: Create order and handle payment
+    
+    await db.auctions.update_one(
+        {"id": auction_id},
+        {"$set": update_data}
+    )
+    
+    # Update listing
+    await db.listings.update_one(
+        {"id": auction["listing_id"]},
+        {"$set": {"is_auction": False, "auction_ended": True}}
+    )
+
+# ================== VIDEO CALL (WhatsApp Link) ==================
+
+@api_router.post("/video-call/request")
+async def request_video_call(
+    listing_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Demander un appel vidéo pour une annonce"""
+    listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    seller = await db.users.find_one({"id": listing["seller_id"]}, {"_id": 0})
+    if not seller:
+        raise HTTPException(status_code=404, detail="Vendeur non trouvé")
+    
+    seller_phone = seller.get("phone", "").replace(" ", "").replace(".", "")
+    if seller_phone.startswith("0"):
+        seller_phone = "33" + seller_phone[1:]
+    
+    if not seller_phone:
+        raise HTTPException(status_code=400, detail="Le vendeur n'a pas de numéro de téléphone")
+    
+    # Generate WhatsApp link
+    message = f"Bonjour ! Je suis intéressé par votre annonce '{listing['title']}' sur World Auto France. Seriez-vous disponible pour un appel vidéo ?"
+    whatsapp_link = f"https://wa.me/{seller_phone}?text={message.replace(' ', '%20')}"
+    
+    return {
+        "whatsapp_link": whatsapp_link,
+        "seller_name": seller.get("name"),
+        "listing_title": listing["title"]
+    }
+
 # ================== ROOT ==================
 
 @api_router.get("/")
