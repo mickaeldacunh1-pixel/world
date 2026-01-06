@@ -241,6 +241,23 @@ export default function Dashboard() {
                             </TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end gap-2">
+                                {listing.status === 'active' && (
+                                  <Link to={`/promouvoir?listing=${listing.id}`}>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className={listing.is_boosted ? 'text-purple-500' : 'text-accent'}
+                                      title={listing.is_boosted ? 'Déjà boosté' : 'Booster cette annonce'}
+                                    >
+                                      <Rocket className="w-4 h-4" />
+                                    </Button>
+                                  </Link>
+                                )}
+                                <Link to={`/annonce/edit/${listing.id}`}>
+                                  <Button variant="ghost" size="icon">
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                </Link>
                                 <Button
                                   variant="ghost"
                                   size="icon"
