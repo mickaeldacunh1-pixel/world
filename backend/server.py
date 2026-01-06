@@ -3923,6 +3923,18 @@ async def stripe_webhook(request: Request):
                         
                         logger.info(f"Added {photos_count} extra photo credits to user {user_id}")
                 
+                # Check if this is an extended video purchase
+                elif metadata.get("type") == "extended_video":
+                    user_id = metadata.get("user_id")
+                    
+                    if user_id:
+                        await db.users.update_one(
+                            {"id": user_id},
+                            {"$inc": {"extended_video_credits": 1}}
+                        )
+                        
+                        logger.info(f"Added extended video credit to user {user_id}")
+                
                 else:
                     # Regular transaction (credits for listings)
                     await db.payment_transactions.update_one(
