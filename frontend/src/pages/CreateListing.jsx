@@ -91,7 +91,7 @@ export default function CreateListing() {
     
     // Handle photo purchase success/cancel
     if (searchParams.get('photos_success') === 'true') {
-      toast.success('🎉 +10 photos supplémentaires ajoutées !');
+      toast.success('🎉 +15 photos supplémentaires ajoutées !');
       fetchPhotoLimit();
       refreshUser();
     } else if (searchParams.get('photos_cancelled') === 'true') {
