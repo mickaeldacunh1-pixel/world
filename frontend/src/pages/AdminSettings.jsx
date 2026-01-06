@@ -464,10 +464,18 @@ export default function AdminSettings() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5 mb-6">
+          <TabsList className="grid w-full grid-cols-7 mb-6">
             <TabsTrigger value="hero" className="flex items-center gap-2">
               <Image className="w-4 h-4" />
               Hero
+            </TabsTrigger>
+            <TabsTrigger value="navbar" className="flex items-center gap-2">
+              <Menu className="w-4 h-4" />
+              Navbar
+            </TabsTrigger>
+            <TabsTrigger value="footer" className="flex items-center gap-2">
+              <Globe className="w-4 h-4" />
+              Footer
             </TabsTrigger>
             <TabsTrigger value="colors" className="flex items-center gap-2">
               <Palette className="w-4 h-4" />
