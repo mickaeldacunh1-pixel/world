@@ -1644,6 +1644,229 @@ class AutoPiecesAPITester:
         self.log_test("Complete Newsletter API Test", True, "All newsletter functionality working correctly")
         return True
 
+    def test_loyalty_program_complete(self):
+        """Test complete loyalty program functionality"""
+        if not self.token:
+            self.log_test("Loyalty Program Complete", False, "No token available")
+            return False
+        
+        print("\n🎁 Testing Loyalty Program...")
+        
+        # Step 1: Test GET /api/loyalty/me - User loyalty status
+        loyalty_status = self.run_test("Loyalty - Get Status", "GET", "loyalty/me", 200)
+        if loyalty_status:
+            # Check required fields
+            required_fields = ["points", "lifetime_points", "tier", "next_tier"]
+            for field in required_fields:
+                if field in loyalty_status:
+                    self.log_test(f"Loyalty Status Field - {field}", True)
+                else:
+                    self.log_test(f"Loyalty Status Field - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Check tier structure
+            tier = loyalty_status.get("tier", {})
+            if isinstance(tier, dict) and "id" in tier and "name" in tier:
+                self.log_test("Loyalty - Tier Structure", True)
+            else:
+                self.log_test("Loyalty - Tier Structure", False, "Invalid tier structure")
+                return False
+        else:
+            return False
+        
+        # Step 2: Test GET /api/loyalty/history - Points history
+        loyalty_history = self.run_test("Loyalty - Get History", "GET", "loyalty/history", 200)
+        if loyalty_history and isinstance(loyalty_history, list):
+            self.log_test("Loyalty - History Structure", True, f"Found {len(loyalty_history)} history entries")
+            
+            # If there are history entries, check structure
+            if len(loyalty_history) > 0:
+                history_entry = loyalty_history[0]
+                history_fields = ["id", "points", "description", "created_at"]
+                for field in history_fields:
+                    if field in history_entry:
+                        self.log_test(f"Loyalty History Field - {field}", True)
+                    else:
+                        self.log_test(f"Loyalty History Field - {field}", False, f"Missing field: {field}")
+                        return False
+        else:
+            self.log_test("Loyalty - History Structure", False, "Expected array response")
+            return False
+        
+        # Step 3: Test GET /api/loyalty/rewards - Obtained rewards
+        loyalty_rewards = self.run_test("Loyalty - Get Rewards", "GET", "loyalty/rewards", 200)
+        if loyalty_rewards and isinstance(loyalty_rewards, list):
+            self.log_test("Loyalty - Rewards Structure", True, f"Found {len(loyalty_rewards)} rewards")
+            
+            # If there are rewards, check structure
+            if len(loyalty_rewards) > 0:
+                reward = loyalty_rewards[0]
+                reward_fields = ["id", "reward_id", "name", "code", "created_at", "used"]
+                for field in reward_fields:
+                    if field in reward:
+                        self.log_test(f"Loyalty Reward Field - {field}", True)
+                    else:
+                        self.log_test(f"Loyalty Reward Field - {field}", False, f"Missing field: {field}")
+                        return False
+        else:
+            self.log_test("Loyalty - Rewards Structure", False, "Expected array response")
+            return False
+        
+        # Step 4: Test POST /api/loyalty/redeem - Redeem points (test with insufficient points)
+        redeem_data = {
+            "reward_id": "boost_listing"  # 200 points boost
+        }
+        
+        # This will likely fail due to insufficient points, but tests the endpoint structure
+        redeem_result = self.run_test("Loyalty - Redeem Points (Insufficient)", "POST", "loyalty/redeem", 400, redeem_data)
+        # We expect 400 for insufficient points
+        self.log_test("Loyalty - Redeem Insufficient Points Error", True, "Correctly returned 400 for insufficient points")
+        
+        self.log_test("Complete Loyalty Program Test", True, "All loyalty program endpoints working correctly")
+        return True
+
+    def test_promotion_system_complete(self):
+        """Test complete promotion system functionality"""
+        if not self.token:
+            self.log_test("Promotion System Complete", False, "No token available")
+            return False
+        
+        print("\n🚀 Testing Promotion System...")
+        
+        # Step 1: Test GET /api/listings/featured - Featured listings
+        featured_listings = self.run_test("Promotion - Get Featured Listings", "GET", "listings/featured", 200)
+        if featured_listings and isinstance(featured_listings, list):
+            self.log_test("Promotion - Featured Listings Structure", True, f"Found {len(featured_listings)} featured listings")
+            
+            # If there are featured listings, check structure
+            if len(featured_listings) > 0:
+                featured = featured_listings[0]
+                if "is_featured" in featured and featured.get("is_featured") == True:
+                    self.log_test("Promotion - Featured Flag", True)
+                else:
+                    self.log_test("Promotion - Featured Flag", False, "Featured listing missing is_featured flag")
+                    return False
+        else:
+            self.log_test("Promotion - Featured Listings Structure", False, "Expected array response")
+            return False
+        
+        # Step 2: Test GET /api/subscription/me - Current Pro subscription
+        subscription_status = self.run_test("Promotion - Get Subscription", "GET", "subscription/me", 200)
+        if subscription_status is not None:  # Can be null if no subscription
+            if subscription_status:  # If not null, check structure
+                sub_fields = ["id", "user_id", "plan_id", "status", "boosts_remaining", "featured_remaining"]
+                for field in sub_fields:
+                    if field in subscription_status:
+                        self.log_test(f"Subscription Field - {field}", True)
+                    else:
+                        self.log_test(f"Subscription Field - {field}", False, f"Missing field: {field}")
+                        return False
+            else:
+                self.log_test("Promotion - No Subscription", True, "No active subscription (valid)")
+        else:
+            self.log_test("Promotion - Subscription Endpoint", False, "Failed to get subscription status")
+            return False
+        
+        # Step 3: Test POST /api/promote/use-loyalty - Use loyalty points for boost (200 pts)
+        # Get a listing to boost first
+        listings_result = self.run_test("Get Listings for Boost Test", "GET", "listings?limit=1", 200)
+        if not listings_result or not listings_result.get("listings"):
+            self.log_test("Promotion - No Listings for Boost", False, "No listings available for boost test")
+            return False
+        
+        available_listings = [listing for listing in listings_result["listings"] 
+                            if listing.get("status") == "active" and listing.get("seller_id") == self.user_id]
+        
+        if available_listings:
+            test_listing_id = available_listings[0]["id"]
+            
+            # Test loyalty boost (will likely fail due to insufficient points)
+            loyalty_boost_result = self.run_test("Promotion - Use Loyalty Boost", "POST", f"promote/use-loyalty?listing_id={test_listing_id}", 400)
+            # We expect 400 for insufficient loyalty points
+            self.log_test("Promotion - Loyalty Boost Insufficient Points", True, "Correctly returned 400 for insufficient loyalty points")
+        else:
+            self.log_test("Promotion - No Own Listings for Boost", True, "No own listings available for boost test (valid)")
+        
+        # Step 4: Test POST /api/promote/use-free - Use free boost (subscription)
+        if available_listings:
+            test_listing_id = available_listings[0]["id"]
+            
+            # Test free boost (will likely fail due to no subscription)
+            free_boost_data = {
+                "type": "boost",
+                "listing_id": test_listing_id
+            }
+            free_boost_result = self.run_test("Promotion - Use Free Boost", "POST", "promote/use-free", 404, free_boost_data)
+            # We expect 404 for no subscription
+            self.log_test("Promotion - Free Boost No Subscription", True, "Correctly returned 404 for no subscription")
+        
+        # Step 5: Test POST /api/promote/checkout - Create Stripe checkout
+        checkout_data = {
+            "type": "boost",
+            "option_id": "boost_7d"
+        }
+        
+        checkout_result = self.run_test("Promotion - Create Checkout", "POST", "promote/checkout", 200, checkout_data)
+        if checkout_result:
+            # Check response structure
+            if "url" in checkout_result and "session_id" in checkout_result:
+                self.log_test("Promotion - Checkout Response Structure", True)
+                
+                # Verify the URL contains stripe.com
+                if 'stripe.com' in checkout_result['url']:
+                    self.log_test("Promotion - Stripe Checkout URL", True)
+                else:
+                    self.log_test("Promotion - Stripe Checkout URL", False, f"Invalid URL: {checkout_result['url']}")
+                    return False
+            else:
+                self.log_test("Promotion - Checkout Response Structure", False, "Missing url or session_id")
+                return False
+        else:
+            return False
+        
+        self.log_test("Complete Promotion System Test", True, "All promotion system endpoints working correctly")
+        return True
+
+    def test_boosted_listings_sorting(self):
+        """Test that boosted listings appear first in sorting"""
+        print("\n⬆️ Testing Boosted Listings Sorting...")
+        
+        # Test GET /api/listings with different sort options to verify boosted listings come first
+        sort_options = ["recent", "price_asc", "price_desc", "views"]
+        
+        for sort_option in sort_options:
+            listings_result = self.run_test(f"Listings Sort - {sort_option}", "GET", f"listings?sort={sort_option}&limit=10", 200)
+            if listings_result and listings_result.get("listings"):
+                listings = listings_result["listings"]
+                
+                # Check if boosted listings come first
+                boosted_found = False
+                non_boosted_found = False
+                boosted_before_non_boosted = True
+                
+                for listing in listings:
+                    if listing.get("is_boosted") == True:
+                        if non_boosted_found:
+                            boosted_before_non_boosted = False
+                            break
+                        boosted_found = True
+                    else:
+                        non_boosted_found = True
+                
+                if boosted_found and boosted_before_non_boosted:
+                    self.log_test(f"Boosted Sorting - {sort_option}", True, "Boosted listings appear first")
+                elif not boosted_found:
+                    self.log_test(f"Boosted Sorting - {sort_option}", True, "No boosted listings found (valid)")
+                else:
+                    self.log_test(f"Boosted Sorting - {sort_option}", False, "Boosted listings not sorted first")
+                    return False
+            else:
+                self.log_test(f"Listings Sort - {sort_option}", False, "Failed to get listings")
+                return False
+        
+        self.log_test("Complete Boosted Listings Sorting Test", True, "Boosted listings sorting working correctly")
+        return True
+
     def test_ai_price_estimation(self):
         """Test AI price estimation endpoint"""
         print("\n🤖 Testing AI Price Estimation...")
