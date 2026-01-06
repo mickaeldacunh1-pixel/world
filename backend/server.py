@@ -55,24 +55,47 @@ NEWSLETTER_SECRET_KEY = os.environ.get('NEWSLETTER_SECRET_KEY', '')  # Clé secr
 # ================== EMAIL SERVICE ==================
 
 def send_email(to_email: str, subject: str, html_content: str):
-    """Send email via SMTP"""
+    """Send email via SMTP with improved deliverability"""
     try:
         msg = MIMEMultipart('alternative')
         msg['Subject'] = subject
-        msg['From'] = f"World Auto <{SMTP_USER}>"
+        msg['From'] = f"World Auto France <{SMTP_USER}>"
         msg['To'] = to_email
+        msg['Reply-To'] = SMTP_USER
+        msg['X-Mailer'] = 'World Auto France'
+        msg['MIME-Version'] = '1.0'
         
-        html_part = MIMEText(html_content, 'html')
+        # Add plain text version for better deliverability
+        plain_text = html_content.replace('<br>', '\n').replace('<br/>', '\n')
+        import re
+        plain_text = re.sub('<[^<]+?>', '', plain_text)
+        
+        text_part = MIMEText(plain_text, 'plain', 'utf-8')
+        html_part = MIMEText(html_content, 'html', 'utf-8')
+        
+        msg.attach(text_part)
         msg.attach(html_part)
         
-        with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SMTP_USER, to_email, msg.as_string())
+        logging.info(f"Attempting to send email to {to_email} via {SMTP_HOST}:{SMTP_PORT}")
         
-        logging.info(f"Email sent to {to_email}: {subject}")
+        with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=30) as server:
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            result = server.sendmail(SMTP_USER, to_email, msg.as_string())
+            logging.info(f"SMTP sendmail result: {result}")
+        
+        logging.info(f"✅ Email successfully sent to {to_email}: {subject}")
         return True
+    except smtplib.SMTPAuthenticationError as e:
+        logging.error(f"❌ SMTP Authentication error: {e}")
+        return False
+    except smtplib.SMTPRecipientsRefused as e:
+        logging.error(f"❌ Recipient refused: {e}")
+        return False
+    except smtplib.SMTPException as e:
+        logging.error(f"❌ SMTP error sending to {to_email}: {e}")
+        return False
     except Exception as e:
-        logging.error(f"Failed to send email to {to_email}: {e}")
+        logging.error(f"❌ Failed to send email to {to_email}: {type(e).__name__}: {e}")
         return False
 
 def send_welcome_email(user_email: str, user_name: str):
