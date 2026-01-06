@@ -492,6 +492,7 @@ class UserCreate(BaseModel):
     city: Optional[str] = None
     postal_code: Optional[str] = None
     country: str = "France"  # Pays obligatoire
+    referral_code: Optional[str] = None  # Code de parrainage
 
 # Pays autorisés pour l'inscription
 ALLOWED_COUNTRIES = [
