@@ -46,6 +46,8 @@ export default function Profile() {
   // Check Stripe status on mount and after redirect
   useEffect(() => {
     checkStripeStatus();
+    // Refresh user data on mount to ensure fresh data
+    refreshUser();
     
     // Handle Stripe redirect
     if (searchParams.get('stripe_success') === 'true') {
@@ -54,7 +56,7 @@ export default function Profile() {
     } else if (searchParams.get('stripe_refresh') === 'true') {
       toast.info('Veuillez finaliser la configuration de votre compte Stripe');
     }
-  }, [searchParams]);
+  }, [searchParams, lastRefresh]);
 
   const checkStripeStatus = async () => {
     if (!token) return;
