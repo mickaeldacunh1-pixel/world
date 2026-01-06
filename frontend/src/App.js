@@ -39,6 +39,7 @@ import ReturnsPolicy from "./pages/ReturnsPolicy";
 import FAQ from "./pages/FAQ";
 import Updates from "./pages/Updates";
 import Newsletter from "./pages/Newsletter";
+import Auctions from "./pages/Auctions";
 import "./App.css";
 
 const ProtectedRoute = ({ children }) => {
