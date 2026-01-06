@@ -2602,13 +2602,14 @@ class AutoPiecesAPITester:
         
         # Step 3: Test referral leaderboard (public endpoint)
         leaderboard_result = self.run_test("Referral - Get Leaderboard", "GET", "referral/leaderboard", 200)
-        if leaderboard_result and isinstance(leaderboard_result, list):
-            self.log_test("Referral - Leaderboard Structure", True, f"Found {len(leaderboard_result)} entries")
+        if leaderboard_result and "leaderboard" in leaderboard_result:
+            leaderboard_list = leaderboard_result["leaderboard"]
+            self.log_test("Referral - Leaderboard Structure", True, f"Found {len(leaderboard_list)} entries")
             
             # Check if we have at least 1 entry
-            if len(leaderboard_result) >= 1:
-                entry = leaderboard_result[0]
-                required_fields = ["name", "referral_count"]
+            if len(leaderboard_list) >= 1:
+                entry = leaderboard_list[0]
+                required_fields = ["name", "referral_count", "rank"]
                 for field in required_fields:
                     if field in entry:
                         self.log_test(f"Referral Leaderboard - {field}", True)
@@ -2618,7 +2619,7 @@ class AutoPiecesAPITester:
             else:
                 self.log_test("Referral - Leaderboard Entries", True, "Empty leaderboard (valid)")
         else:
-            self.log_test("Referral - Leaderboard Structure", False, "Expected array response")
+            self.log_test("Referral - Leaderboard Structure", False, "Expected object with 'leaderboard' key")
             return False
         
         # Step 4: Test registration with referral code
