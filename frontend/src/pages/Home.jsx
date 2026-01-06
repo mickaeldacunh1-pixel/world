@@ -298,7 +298,7 @@ export default function Home() {
         url="/"
         structuredData={[createOrganizationSchema(), createWebsiteSchema()]}
       />
-      {/* Hero Section - Improved with Dynamic Customization */}
+      {/* Hero Section - Full Customization */}
       <section className={`relative ${HERO_HEIGHT_CLASSES[heroSettings.hero_height] || 'min-h-[600px] md:min-h-[700px]'} flex items-center overflow-hidden`}>
         {/* Background Image */}
         <div className="absolute inset-0">
@@ -307,10 +307,15 @@ export default function Home() {
             alt="Hero background" 
             className="w-full h-full object-cover"
           />
-          <div 
-            className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/50" 
-            style={{ opacity: (heroSettings.hero_overlay_opacity || 50) / 100 }}
-          />
+          {heroSettings.hero_overlay_enabled !== false && (
+            <div 
+              className={`absolute inset-0 ${heroSettings.hero_overlay_gradient ? 'bg-gradient-to-r from-black/90 to-black/50' : ''}`}
+              style={{ 
+                backgroundColor: heroSettings.hero_overlay_gradient ? undefined : heroSettings.hero_overlay_color || '#000000',
+                opacity: (heroSettings.hero_overlay_opacity || 50) / 100 
+              }}
+            />
+          )}
         </div>
         
         {/* Content */}
@@ -322,15 +327,28 @@ export default function Home() {
               'max-w-3xl'
             }`}
           >
-            {/* Badge */}
-            <div className={`inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-6 animate-fade-in-up stagger-1 ${
-              heroSettings.hero_text_align === 'center' ? 'mx-auto' : ''
-            }`}>
-              <Sparkles className="w-4 h-4 text-accent" />
-              <span className="text-sm font-medium">La référence automobile en France</span>
-            </div>
+            {/* Badge - Customizable */}
+            {heroSettings.hero_show_badge !== false && (
+              <div 
+                className={`inline-flex items-center gap-2 backdrop-blur-sm px-4 py-2 rounded-full mb-6 animate-fade-in-up stagger-1 ${
+                  heroSettings.hero_text_align === 'center' ? 'mx-auto' : ''
+                }`}
+                style={{ 
+                  backgroundColor: heroSettings.hero_badge_bg_color || 'rgba(249, 115, 22, 0.2)',
+                  borderColor: heroSettings.hero_badge_border_color || 'rgba(249, 115, 22, 0.3)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid'
+                }}
+              >
+                <span>{heroSettings.hero_badge_icon || '✨'}</span>
+                <span className="text-sm font-medium" style={{ color: heroSettings.hero_badge_text_color || '#F97316' }}>
+                  {heroSettings.hero_badge_text || 'La référence automobile en France'}
+                </span>
+              </div>
+            )}
             
-            <h1 className={`font-heading ${TITLE_SIZE_CLASSES[heroSettings.hero_title_size] || 'text-4xl md:text-5xl lg:text-7xl'} font-black tracking-tight leading-none mb-6 animate-fade-in-up stagger-2`}>
+            {/* Title Line 1 */}
+            <h1 className={`font-heading ${TITLE_SIZE_CLASSES[heroSettings.hero_title_line1_size || heroSettings.hero_title_size] || 'text-4xl md:text-5xl lg:text-7xl'} font-black tracking-tight leading-none mb-6 animate-fade-in-up stagger-2`}>
               <span style={{ color: heroSettings.hero_title_line1_color || '#FFFFFF' }}>
                 <AnimatedText 
                   text={heroSettings.hero_title_line1} 
@@ -338,8 +356,16 @@ export default function Home() {
                   className="block"
                 />
               </span><br />
+              {/* Title Line 2 - with optional gradient */}
               <span 
-                style={{ color: heroSettings.hero_title_line2_color || '#F97316' }}
+                style={heroSettings.hero_title_line2_gradient ? {
+                  backgroundImage: `linear-gradient(90deg, ${heroSettings.hero_title_line2_gradient_from || '#F97316'}, ${heroSettings.hero_title_line2_gradient_to || '#EA580C'})`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                } : { 
+                  color: heroSettings.hero_title_line2_color || '#F97316' 
+                }}
                 className={heroSettings.hero_text_animation === 'glow' ? 'animate-text-glow' : ''}
               >
                 <AnimatedText 
@@ -349,9 +375,14 @@ export default function Home() {
                 />
               </span>
             </h1>
-            <p className={`${DESC_SIZE_CLASSES[heroSettings.hero_description_size] || 'text-lg md:text-xl'} text-white/80 mb-10 animate-fade-in-up stagger-3 ${
-              heroSettings.hero_text_align === 'center' ? 'max-w-2xl mx-auto' : 'max-w-xl'
-            }`}>
+            
+            {/* Description */}
+            <p 
+              className={`${DESC_SIZE_CLASSES[heroSettings.hero_description_size] || 'text-lg md:text-xl'} mb-10 animate-fade-in-up stagger-3 ${
+                heroSettings.hero_text_align === 'center' ? 'max-w-2xl mx-auto' : 'max-w-xl'
+              }`}
+              style={{ color: heroSettings.hero_description_color || 'rgba(255, 255, 255, 0.8)' }}
+            >
               {heroSettings.hero_description}
             </p>
 
@@ -367,7 +398,7 @@ export default function Home() {
                 <div className="relative flex-1">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
-                    placeholder="Rechercher une pièce, un véhicule..."
+                    placeholder={heroSettings.hero_search_placeholder || "Rechercher une pièce, un véhicule..."}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="pl-12 h-14 bg-transparent border-0 text-lg focus-ring rounded-xl"
@@ -386,14 +417,17 @@ export default function Home() {
                     <SelectItem value="accessoires">Accessoires</SelectItem>
                   </SelectContent>
                 </Select>
-                <VoiceSearch onSearch={(q) => navigate(`/annonces?search=${encodeURIComponent(q)}`)} />
+                {heroSettings.hero_show_voice_search !== false && (
+                  <VoiceSearch onSearch={(q) => navigate(`/annonces?search=${encodeURIComponent(q)}`)} />
+                )}
                 <Button 
                   type="submit" 
                   className="h-14 px-8 btn-primary rounded-xl text-base font-semibold" 
                   data-testid="search-btn"
+                  style={{ backgroundColor: heroSettings.hero_search_button_bg }}
                 >
                   <Search className="w-5 h-5 mr-2" />
-                  Rechercher
+                  {heroSettings.hero_search_button_text || 'Rechercher'}
                 </Button>
               </form>
             )}
