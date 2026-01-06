@@ -1739,7 +1739,7 @@ class AutoPiecesAPITester:
         
         # Step 1: Test GET /api/listings/featured - Featured listings
         featured_listings = self.run_test("Promotion - Get Featured Listings", "GET", "listings/featured", 200)
-        if featured_listings and isinstance(featured_listings, list):
+        if featured_listings is not None and isinstance(featured_listings, list):
             self.log_test("Promotion - Featured Listings Structure", True, f"Found {len(featured_listings)} featured listings")
             
             # If there are featured listings, check structure
@@ -1750,6 +1750,8 @@ class AutoPiecesAPITester:
                 else:
                     self.log_test("Promotion - Featured Flag", False, "Featured listing missing is_featured flag")
                     return False
+            else:
+                self.log_test("Promotion - No Featured Listings", True, "No featured listings (valid)")
         else:
             self.log_test("Promotion - Featured Listings Structure", False, "Expected array response")
             return False
