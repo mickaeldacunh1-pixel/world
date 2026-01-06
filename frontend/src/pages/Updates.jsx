@@ -199,12 +199,17 @@ export default function Updates() {
   const fetchUpdates = async () => {
     try {
       const response = await axios.get(`${API}/updates`);
-      // Use dynamic updates if available, otherwise use static updates
-      if (response.data && response.data.length > 0) {
-        setUpdates(response.data);
-      } else {
-        setUpdates(STATIC_UPDATES);
-      }
+      // Combine dynamic updates with static updates, removing duplicates by version
+      const dynamicUpdates = response.data || [];
+      const dynamicVersions = new Set(dynamicUpdates.map(u => u.version));
+      const uniqueStaticUpdates = STATIC_UPDATES.filter(u => !dynamicVersions.has(u.version));
+      
+      // Merge and sort by date (newest first)
+      const allUpdates = [...dynamicUpdates, ...uniqueStaticUpdates].sort((a, b) => 
+        new Date(b.date) - new Date(a.date)
+      );
+      
+      setUpdates(allUpdates);
     } catch (error) {
       console.error('Error fetching updates:', error);
       // Fallback to static updates on error
