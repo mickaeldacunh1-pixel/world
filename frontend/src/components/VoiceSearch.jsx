@@ -68,8 +68,8 @@ export default function VoiceSearch({ onResult, onSearch, className = '' }) {
       
       if (searchTerms) {
         toast.success(`Recherche : "${searchTerms}"`);
-        if (onSearch) {
-          onSearch(searchTerms);
+        if (handleCallback) {
+          handleCallback(searchTerms);
         } else {
           navigate(`/annonces?search=${encodeURIComponent(searchTerms)}`);
         }
@@ -89,17 +89,20 @@ export default function VoiceSearch({ onResult, onSearch, className = '' }) {
     } else if (lowerText.includes('panier')) {
       navigate('/panier');
       toast.success('Mon panier');
+    } else if (lowerText.includes('diagnostic') || lowerText.includes('panne') || lowerText.includes('problème')) {
+      navigate('/diagnostic');
+      toast.success('Diagnostic IA');
     } else if (lowerText.includes('aide') || lowerText.includes('tobi') || lowerText.includes('assistant')) {
       // Open Tobi
       const tobiButton = document.querySelector('[data-tobi-trigger]');
       if (tobiButton) tobiButton.click();
       toast.success('Ouverture de l\'assistant Tobi');
     } else {
-      // Default: search
+      // Default: search or callback
       if (lowerText.length > 2) {
         toast.success(`Recherche : "${lowerText}"`);
-        if (onSearch) {
-          onSearch(lowerText);
+        if (handleCallback) {
+          handleCallback(lowerText);
         } else {
           navigate(`/annonces?search=${encodeURIComponent(lowerText)}`);
         }
