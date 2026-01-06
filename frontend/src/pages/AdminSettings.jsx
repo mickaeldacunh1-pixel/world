@@ -59,6 +59,8 @@ const DEFAULT_SETTINGS = {
   // Hero Section
   hero_title_line1: "La marketplace auto",
   hero_title_line2: "pour tous",
+  hero_title_line1_color: "#FFFFFF",  // White by default
+  hero_title_line2_color: "#F97316",  // Orange accent by default
   hero_description: "Achetez et vendez des pièces détachées, voitures, motos et utilitaires. Pour particuliers et professionnels.",
   hero_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
   hero_cta_text: "Déposer une annonce",
