@@ -4,12 +4,15 @@ import { Button } from './ui/button';
 import { Mic, MicOff, Loader2, Search } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function VoiceSearch({ onSearch, className = '' }) {
+export default function VoiceSearch({ onResult, onSearch, className = '' }) {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [processing, setProcessing] = useState(false);
   const recognitionRef = useRef(null);
   const navigate = useNavigate();
+  
+  // Use onResult if provided, otherwise fall back to onSearch
+  const handleCallback = onResult || onSearch;
 
   useEffect(() => {
     // Check browser support
