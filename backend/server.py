@@ -507,6 +507,135 @@ ALLOWED_COUNTRIES = [
     "Suède"
 ]
 
+# ================== CONTENT MODERATION SYSTEM ==================
+
+# Liste de mots grossiers/interdits (français)
+FORBIDDEN_WORDS = [
+    # Insultes courantes
+    "merde", "putain", "bordel", "connard", "connasse", "salaud", "salope",
+    "enculé", "enculer", "nique", "niquer", "ntm", "fdp", "pd", "pute",
+    "batard", "bâtard", "con", "conne", "couille", "bite", "queue", "chier",
+    "foutre", "baiser", "tg", "ta gueule", "ferme ta gueule", "ftg",
+    "petasse", "pétasse", "trouduc", "trou du cul", "bouffon", "abruti",
+    "debile", "débile", "cretin", "crétin", "imbecile", "imbécile",
+    # Racisme/discrimination
+    "negre", "nègre", "bougnoule", "arabe", "youpin", "feuj", "rebeu",
+    "negro", "bamboula", "bicot", "raton", "sale noir", "sale blanc",
+    "sale arabe", "sale juif", "nazi", "hitler",
+    # Menaces
+    "je vais te tuer", "je te tue", "crever", "mourir", "suicide",
+    "te buter", "te defoncer", "te défoncer", "casser la gueule",
+    # Arnaques
+    "arnaque", "arnaqueur", "escroc", "voleur", "menteur",
+    # Spam/Hors sujet
+    "bitcoin", "crypto", "investissement", "forex", "casino", "porno",
+    "sexe", "xxx", "viagra", "cialis",
+]
+
+# Mots sensibles qui nécessitent une vérification contextuelle
+SENSITIVE_WORDS = [
+    "avocat", "justice", "procès", "plainte", "police", "gendarmerie",
+    "tribunal", "poursuite", "dommages", "remboursement",
+]
+
+def normalize_text(text: str) -> str:
+    """Normalise le texte pour la détection (minuscules, sans accents basiques)"""
+    import unicodedata
+    text = text.lower()
+    # Remplacer les caractères accentués
+    text = unicodedata.normalize('NFD', text)
+    text = ''.join(c for c in text if unicodedata.category(c) != 'Mn')
+    # Supprimer les caractères spéciaux répétés (contournement)
+    text = ''.join(c if c.isalnum() or c.isspace() else ' ' for c in text)
+    return text
+
+def contains_forbidden_words(text: str) -> tuple[bool, list]:
+    """Vérifie si le texte contient des mots interdits"""
+    normalized = normalize_text(text)
+    found_words = []
+    
+    for word in FORBIDDEN_WORDS:
+        normalized_word = normalize_text(word)
+        if normalized_word in normalized:
+            found_words.append(word)
+    
+    return len(found_words) > 0, found_words
+
+def contains_sensitive_words(text: str) -> tuple[bool, list]:
+    """Vérifie si le texte contient des mots sensibles"""
+    normalized = normalize_text(text)
+    found_words = []
+    
+    for word in SENSITIVE_WORDS:
+        normalized_word = normalize_text(word)
+        if normalized_word in normalized:
+            found_words.append(word)
+    
+    return len(found_words) > 0, found_words
+
+async def moderate_content(text: str, context: str = "general") -> dict:
+    """
+    Modère le contenu d'un texte
+    Retourne: {"allowed": bool, "reason": str, "flagged_words": list}
+    """
+    if not text or len(text.strip()) < 2:
+        return {"allowed": False, "reason": "Message trop court", "flagged_words": []}
+    
+    # Vérification des mots interdits
+    has_forbidden, forbidden_list = contains_forbidden_words(text)
+    if has_forbidden:
+        return {
+            "allowed": False,
+            "reason": "Votre message contient des termes inappropriés. Merci de rester courtois.",
+            "flagged_words": forbidden_list
+        }
+    
+    # Vérification des mots sensibles (avertissement mais autorisé)
+    has_sensitive, sensitive_list = contains_sensitive_words(text)
+    
+    # Vérification de la longueur excessive (spam potentiel)
+    if len(text) > 2000:
+        return {
+            "allowed": False,
+            "reason": "Message trop long (max 2000 caractères)",
+            "flagged_words": []
+        }
+    
+    # Vérification des liens suspects
+    suspicious_domains = ["bit.ly", "tinyurl", "t.co", ".ru", ".cn", "forex", "crypto"]
+    text_lower = text.lower()
+    for domain in suspicious_domains:
+        if domain in text_lower:
+            return {
+                "allowed": False,
+                "reason": "Les liens externes ne sont pas autorisés dans les messages",
+                "flagged_words": [domain]
+            }
+    
+    # Vérification des répétitions excessives (spam)
+    words = text.split()
+    if len(words) > 5:
+        word_count = {}
+        for word in words:
+            word_lower = word.lower()
+            word_count[word_lower] = word_count.get(word_lower, 0) + 1
+        
+        for word, count in word_count.items():
+            if count > 5 and len(word) > 2:
+                return {
+                    "allowed": False,
+                    "reason": "Message détecté comme spam (répétitions excessives)",
+                    "flagged_words": [word]
+                }
+    
+    return {
+        "allowed": True,
+        "reason": "OK",
+        "flagged_words": [],
+        "has_sensitive": has_sensitive,
+        "sensitive_words": sensitive_list if has_sensitive else []
+    }
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
