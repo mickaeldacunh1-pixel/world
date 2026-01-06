@@ -2626,6 +2626,12 @@ class AutoPiecesAPITester:
         self.test_updates_api_complete()
         self.test_newsletter_api_complete()
         
+        # LOYALTY PROGRAM AND PROMOTION SYSTEM TESTING (NEW FEATURES)
+        print("\n🎁🚀 Testing Loyalty Program and Promotion System...")
+        self.test_loyalty_program_complete()
+        self.test_promotion_system_complete()
+        self.test_boosted_listings_sorting()
+        
         # AI FEATURES TESTING (NEW)
         print("\n🤖 Testing AI Features...")
         self.test_ai_price_estimation()
