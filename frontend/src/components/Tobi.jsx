@@ -135,10 +135,10 @@ export default function Tobi() {
 
   // Quick suggestions
   const suggestions = [
+    "🔧 J'ai un problème avec ma voiture",
     "Comment trouver une pièce ?",
     "C'est quoi une référence OEM ?",
-    "Comment fonctionne le paiement sécurisé ?",
-    "Livraison en point relais ?"
+    "Comment fonctionne le paiement sécurisé ?"
   ];
 
   if (!isOpen) {
