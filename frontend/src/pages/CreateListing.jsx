@@ -247,9 +247,10 @@ export default function CreateListing() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Check file size (max 50MB)
-    if (file.size > 50 * 1024 * 1024) {
-      toast.error('La vidéo ne doit pas dépasser 50 Mo');
+    // Check file size based on user's limit
+    const maxSizeMb = videoLimit.max_size_mb || 30;
+    if (file.size > maxSizeMb * 1024 * 1024) {
+      toast.error(`La vidéo ne doit pas dépasser ${maxSizeMb} Mo. ${!videoLimit.is_extended ? 'Achetez l\'option vidéo étendue pour 1€ (100 Mo, 2 min).' : ''}`);
       return;
     }
 
@@ -273,9 +274,16 @@ export default function CreateListing() {
       });
 
       setVideoUrl(response.data.url);
-      toast.success('Vidéo uploadée avec succès !');
+      
+      // Refresh video limit if extended credit was used
+      if (response.data.used_extended) {
+        fetchVideoLimit();
+      }
+      
+      toast.success(`🎬 Vidéo uploadée ! (${Math.round(response.data.duration || 0)}s)`);
     } catch (error) {
-      toast.error('Erreur lors de l\'upload de la vidéo');
+      const errorMsg = error.response?.data?.detail || 'Erreur lors de l\'upload de la vidéo';
+      toast.error(errorMsg);
       console.error('Video upload error:', error);
     } finally {
       setUploadingVideo(false);
