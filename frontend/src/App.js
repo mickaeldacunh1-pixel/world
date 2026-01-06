@@ -1,8 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Tobi from "./components/Tobi";
@@ -45,6 +46,17 @@ import Promote from "./pages/Promote";
 import Diagnostic from "./pages/Diagnostic";
 import "./App.css";
 
+// Composant pour scroller en haut à chaque changement de page
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
+  return null;
+}
+
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center">Chargement...</div>;
@@ -55,6 +67,7 @@ const ProtectedRoute = ({ children }) => {
 function AppContent() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <ScrollToTop />
       <Navbar />
       <main className="flex-1">
         <Routes>
