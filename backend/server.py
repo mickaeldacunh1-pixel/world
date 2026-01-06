@@ -910,6 +910,59 @@ async def login(credentials: UserLogin):
 async def get_me(current_user: dict = Depends(get_current_user)):
     return current_user
 
+@api_router.get("/users/me/stats")
+async def get_my_stats(current_user: dict = Depends(get_current_user)):
+    """Get current user's statistics for dashboard"""
+    user_id = current_user["id"]
+    
+    # Count active listings
+    active_listings = await db.listings.count_documents({
+        "seller_id": user_id,
+        "status": "active"
+    })
+    
+    # Count total listings
+    total_listings = await db.listings.count_documents({"seller_id": user_id})
+    
+    # Count total views on user's listings
+    pipeline = [
+        {"$match": {"seller_id": user_id}},
+        {"$group": {"_id": None, "total_views": {"$sum": "$views"}}}
+    ]
+    views_result = await db.listings.aggregate(pipeline).to_list(1)
+    total_views = views_result[0]["total_views"] if views_result else 0
+    
+    # Count messages received
+    messages_count = await db.messages.count_documents({"receiver_id": user_id})
+    
+    # Count sales (orders where user is seller)
+    sales_count = await db.orders.count_documents({
+        "seller_id": user_id,
+        "payment_status": "completed"
+    })
+    
+    # Count purchases (orders where user is buyer)
+    purchases_count = await db.orders.count_documents({
+        "buyer_id": user_id,
+        "payment_status": "completed"
+    })
+    
+    # Get favorites count
+    favorites_count = len(current_user.get("favorites", []))
+    
+    return {
+        "active_listings": active_listings,
+        "total_listings": total_listings,
+        "total_views": total_views,
+        "messages_count": messages_count,
+        "sales_count": sales_count,
+        "purchases_count": purchases_count,
+        "favorites_count": favorites_count,
+        "loyalty_points": current_user.get("loyalty_points", 0),
+        "diagnostic_credits": current_user.get("diagnostic_credits", 0),
+        "referral_count": current_user.get("referral_count", 0)
+    }
+
 # ================== SIRET VERIFICATION ==================
 
 @api_router.get("/verify-siret/{siret}")
