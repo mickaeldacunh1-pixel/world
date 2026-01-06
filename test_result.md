@@ -765,7 +765,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "World Auto France Level 1 Features Testing Completed"
+    - "Referral System Testing Completed"
   stuck_tasks:
     - "Admin Updates Management"
     - "AI Part Recognition"
