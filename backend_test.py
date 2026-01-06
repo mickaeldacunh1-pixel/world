@@ -3139,6 +3139,7 @@ class AutoPiecesAPITester:
         print("\n🆕 Testing New Features...")
         self.test_seller_public_profile()
         self.test_hero_settings_api()
+        self.test_hero_advanced_customization_api()
         self.test_shipping_slip_pdf_generation()
         self.test_carriers_list_api()
         
