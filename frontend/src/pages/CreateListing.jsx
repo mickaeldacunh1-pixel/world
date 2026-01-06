@@ -823,9 +823,28 @@ export default function CreateListing() {
                   <Video className="w-4 h-4" />
                   Vidéo de présentation (optionnel)
                 </Label>
-                <p className="text-sm text-muted-foreground">
-                  Ajoutez une vidéo pour mieux présenter votre article (MP4, MOV, WebM - max 50MB)
-                </p>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-muted-foreground">
+                    {videoLimit.is_extended || videoLimit.is_pro ? (
+                      <>🎬 Limite : <span className="font-medium text-green-600">{videoLimit.max_duration}s / {videoLimit.max_size_mb} Mo</span> {videoLimit.is_pro && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full ml-1">PRO</span>}</>
+                    ) : (
+                      <>🎬 Limite gratuite : <span className="font-medium">{videoLimit.max_duration}s / {videoLimit.max_size_mb} Mo</span></>
+                    )}
+                  </p>
+                  {!videoLimit.is_extended && !videoLimit.is_pro && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleBuyExtendedVideo}
+                      disabled={buyingVideo}
+                      className="text-xs"
+                    >
+                      {buyingVideo ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Sparkles className="w-3 h-3 mr-1" />}
+                      2 min / 100 Mo pour 1€
+                    </Button>
+                  )}
+                </div>
                 
                 {/* Video Preview */}
                 {videoUrl && (
@@ -871,7 +890,7 @@ export default function CreateListing() {
                           <Video className="w-8 h-8 text-muted-foreground" />
                           <span className="text-sm font-medium">Cliquez pour ajouter une vidéo</span>
                           <span className="text-xs text-muted-foreground">
-                            Max 50 Mo • MP4, MOV, WebM
+                            Max {videoLimit.max_size_mb} Mo • {videoLimit.max_duration}s • MP4, MOV, WebM
                           </span>
                         </div>
                       )}
