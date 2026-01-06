@@ -586,6 +586,8 @@ frontend:
 agent_communication:
     - agent: "main"
     - message: "Implemented paid Diagnostic IA system. Pricing: 0.99€ single, 3.99€ pack of 5, or 100 loyalty points. Free unlimited access for users with at least 1 active listing. Backend validates access and deducts credits/points. Stripe integration for purchases. Need to test: 1) Access check endpoint, 2) Diagnostic with points, 3) Diagnostic with credits, 4) Payment flow, 5) Free access for users with listings."
+    - agent: "testing"
+    - message: "Paid Diagnostic IA System testing completed successfully. ✅ WORKING: 1) Diagnostic Access Check API - All required fields present (has_free_access, diagnostic_credits, loyalty_points, can_use_points, pricing). Pricing structure correct: 0.99€ single, 3.99€ pack_5, 100 points cost. 2) Paid Diagnostic Endpoint - Payment validation working: returns 402 without payment, successfully processes with 100 loyalty points, correctly deducts points, generates quality AI diagnostic content. ❌ ISSUE: Purchase Diagnostic Credits - Endpoint structure correct but fails due to invalid Stripe API key 'sk_test_emergent'. Returns 'Erreur de paiement' error. Needs valid Stripe configuration. Core diagnostic functionality (access check, payment validation, AI processing, points system) working perfectly. Only payment processing blocked by Stripe configuration."
 
 agent_communication:
     - agent: "main"
