@@ -804,6 +804,447 @@ export default function AdminSettings() {
             </Card>
           </TabsContent>
 
+          {/* Navbar Tab */}
+          <TabsContent value="navbar" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Menu className="w-5 h-5" />
+                  Configuration de la barre de navigation
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Logo et texte */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Logo & Texte</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Texte du logo</Label>
+                      <Input
+                        value={settings.navbar_logo_text}
+                        onChange={(e) => setSettings({...settings, navbar_logo_text: e.target.value})}
+                        placeholder="World Auto"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Couleurs */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Couleurs</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Couleur de fond</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="color"
+                          value={settings.navbar_bg_color}
+                          onChange={(e) => setSettings({...settings, navbar_bg_color: e.target.value})}
+                          className="w-12 h-10 p-1 cursor-pointer"
+                        />
+                        <Input
+                          value={settings.navbar_bg_color}
+                          onChange={(e) => setSettings({...settings, navbar_bg_color: e.target.value})}
+                          placeholder="#FFFFFF"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Couleur du texte</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="color"
+                          value={settings.navbar_text_color}
+                          onChange={(e) => setSettings({...settings, navbar_text_color: e.target.value})}
+                          className="w-12 h-10 p-1 cursor-pointer"
+                        />
+                        <Input
+                          value={settings.navbar_text_color}
+                          onChange={(e) => setSettings({...settings, navbar_text_color: e.target.value})}
+                          placeholder="#0F172A"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Éléments à afficher */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Éléments à afficher</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">Menu Catégories</p>
+                        <p className="text-xs text-muted-foreground">Dropdown des catégories</p>
+                      </div>
+                      <Switch
+                        checked={settings.navbar_show_categories_dropdown}
+                        onCheckedChange={(checked) => setSettings({...settings, navbar_show_categories_dropdown: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">Lien Tarifs</p>
+                        <p className="text-xs text-muted-foreground">Page des prix</p>
+                      </div>
+                      <Switch
+                        checked={settings.navbar_show_tarifs_link}
+                        onCheckedChange={(checked) => setSettings({...settings, navbar_show_tarifs_link: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">Mode sombre</p>
+                        <p className="text-xs text-muted-foreground">Bouton toggle</p>
+                      </div>
+                      <Switch
+                        checked={settings.navbar_show_dark_mode_toggle}
+                        onCheckedChange={(checked) => setSettings({...settings, navbar_show_dark_mode_toggle: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">Notifications</p>
+                        <p className="text-xs text-muted-foreground">Icône cloche</p>
+                      </div>
+                      <Switch
+                        checked={settings.navbar_show_notifications}
+                        onCheckedChange={(checked) => setSettings({...settings, navbar_show_notifications: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">Navbar fixe</p>
+                        <p className="text-xs text-muted-foreground">Reste en haut au scroll</p>
+                      </div>
+                      <Switch
+                        checked={settings.navbar_sticky}
+                        onCheckedChange={(checked) => setSettings({...settings, navbar_sticky: checked})}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Liens personnalisés */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-sm">Liens personnalisés</h4>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSettings({
+                        ...settings,
+                        navbar_custom_links: [...(settings.navbar_custom_links || []), { text: '', url: '' }]
+                      })}
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Ajouter
+                    </Button>
+                  </div>
+                  {(settings.navbar_custom_links || []).map((link, index) => (
+                    <div key={index} className="flex gap-2 items-center">
+                      <Input
+                        value={link.text}
+                        onChange={(e) => {
+                          const newLinks = [...settings.navbar_custom_links];
+                          newLinks[index].text = e.target.value;
+                          setSettings({...settings, navbar_custom_links: newLinks});
+                        }}
+                        placeholder="Texte du lien"
+                        className="flex-1"
+                      />
+                      <Input
+                        value={link.url}
+                        onChange={(e) => {
+                          const newLinks = [...settings.navbar_custom_links];
+                          newLinks[index].url = e.target.value;
+                          setSettings({...settings, navbar_custom_links: newLinks});
+                        }}
+                        placeholder="/page ou https://..."
+                        className="flex-1"
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const newLinks = settings.navbar_custom_links.filter((_, i) => i !== index);
+                          setSettings({...settings, navbar_custom_links: newLinks});
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Footer Tab */}
+          <TabsContent value="footer" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="w-5 h-5" />
+                  Configuration du pied de page
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Textes principaux */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Textes</h4>
+                  <div className="space-y-3">
+                    <div className="space-y-2">
+                      <Label>Description du site</Label>
+                      <Textarea
+                        value={settings.footer_text}
+                        onChange={(e) => setSettings({...settings, footer_text: e.target.value})}
+                        placeholder="World Auto France - La marketplace..."
+                        rows={2}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Texte copyright</Label>
+                      <Input
+                        value={settings.footer_copyright_text}
+                        onChange={(e) => setSettings({...settings, footer_copyright_text: e.target.value})}
+                        placeholder="© 2025 World Auto France. Tous droits réservés."
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Couleurs */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Couleurs</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Couleur de fond</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="color"
+                          value={settings.footer_bg_color}
+                          onChange={(e) => setSettings({...settings, footer_bg_color: e.target.value})}
+                          className="w-12 h-10 p-1 cursor-pointer"
+                        />
+                        <Input
+                          value={settings.footer_bg_color}
+                          onChange={(e) => setSettings({...settings, footer_bg_color: e.target.value})}
+                          placeholder="#1E3A5F"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Couleur du texte</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="color"
+                          value={settings.footer_text_color}
+                          onChange={(e) => setSettings({...settings, footer_text_color: e.target.value})}
+                          className="w-12 h-10 p-1 cursor-pointer"
+                        />
+                        <Input
+                          value={settings.footer_text_color}
+                          onChange={(e) => setSettings({...settings, footer_text_color: e.target.value})}
+                          placeholder="#FFFFFF"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Informations de contact</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Mail className="w-4 h-4" />
+                        Email
+                      </Label>
+                      <Input
+                        value={settings.footer_email}
+                        onChange={(e) => setSettings({...settings, footer_email: e.target.value})}
+                        placeholder="contact@worldautofrance.com"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Phone className="w-4 h-4" />
+                        Téléphone
+                      </Label>
+                      <Input
+                        value={settings.footer_phone}
+                        onChange={(e) => setSettings({...settings, footer_phone: e.target.value})}
+                        placeholder="01 23 45 67 89"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Réseaux sociaux */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Réseaux sociaux</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Facebook className="w-4 h-4" />
+                        Facebook
+                      </Label>
+                      <Input
+                        value={settings.footer_facebook_url}
+                        onChange={(e) => setSettings({...settings, footer_facebook_url: e.target.value})}
+                        placeholder="https://facebook.com/..."
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Instagram className="w-4 h-4" />
+                        Instagram
+                      </Label>
+                      <Input
+                        value={settings.footer_instagram_url}
+                        onChange={(e) => setSettings({...settings, footer_instagram_url: e.target.value})}
+                        placeholder="https://instagram.com/..."
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Twitter className="w-4 h-4" />
+                        Twitter / X
+                      </Label>
+                      <Input
+                        value={settings.footer_twitter_url}
+                        onChange={(e) => setSettings({...settings, footer_twitter_url: e.target.value})}
+                        placeholder="https://twitter.com/..."
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Youtube className="w-4 h-4" />
+                        YouTube
+                      </Label>
+                      <Input
+                        value={settings.footer_youtube_url}
+                        onChange={(e) => setSettings({...settings, footer_youtube_url: e.target.value})}
+                        placeholder="https://youtube.com/..."
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sections à afficher */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Sections à afficher</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">Newsletter</p>
+                        <p className="text-xs text-muted-foreground">Formulaire d'inscription</p>
+                      </div>
+                      <Switch
+                        checked={settings.footer_show_newsletter}
+                        onCheckedChange={(checked) => setSettings({...settings, footer_show_newsletter: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">Catégories</p>
+                        <p className="text-xs text-muted-foreground">Liste des catégories</p>
+                      </div>
+                      <Switch
+                        checked={settings.footer_show_categories}
+                        onCheckedChange={(checked) => setSettings({...settings, footer_show_categories: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">Liens utiles</p>
+                        <p className="text-xs text-muted-foreground">Nouveautés, À propos, etc.</p>
+                      </div>
+                      <Switch
+                        checked={settings.footer_show_useful_links}
+                        onCheckedChange={(checked) => setSettings({...settings, footer_show_useful_links: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">Contact</p>
+                        <p className="text-xs text-muted-foreground">Email et téléphone</p>
+                      </div>
+                      <Switch
+                        checked={settings.footer_show_contact}
+                        onCheckedChange={(checked) => setSettings({...settings, footer_show_contact: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">Réseaux sociaux</p>
+                        <p className="text-xs text-muted-foreground">Icônes des réseaux</p>
+                      </div>
+                      <Switch
+                        checked={settings.footer_show_social}
+                        onCheckedChange={(checked) => setSettings({...settings, footer_show_social: checked})}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Liens personnalisés */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-sm">Liens personnalisés</h4>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSettings({
+                        ...settings,
+                        footer_custom_links: [...(settings.footer_custom_links || []), { text: '', url: '' }]
+                      })}
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Ajouter
+                    </Button>
+                  </div>
+                  {(settings.footer_custom_links || []).map((link, index) => (
+                    <div key={index} className="flex gap-2 items-center">
+                      <Input
+                        value={link.text}
+                        onChange={(e) => {
+                          const newLinks = [...settings.footer_custom_links];
+                          newLinks[index].text = e.target.value;
+                          setSettings({...settings, footer_custom_links: newLinks});
+                        }}
+                        placeholder="Texte du lien"
+                        className="flex-1"
+                      />
+                      <Input
+                        value={link.url}
+                        onChange={(e) => {
+                          const newLinks = [...settings.footer_custom_links];
+                          newLinks[index].url = e.target.value;
+                          setSettings({...settings, footer_custom_links: newLinks});
+                        }}
+                        placeholder="/page ou https://..."
+                        className="flex-1"
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const newLinks = settings.footer_custom_links.filter((_, i) => i !== index);
+                          setSettings({...settings, footer_custom_links: newLinks});
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* Colors Tab */}
           <TabsContent value="colors" className="space-y-6">
             {/* Quick Color Presets Card */}
