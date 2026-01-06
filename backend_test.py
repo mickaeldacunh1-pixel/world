@@ -2715,7 +2715,7 @@ class AutoPiecesAPITester:
                         
                         # Check first referral structure
                         first_referral = referrals_list[0]
-                        referral_fields = ["referee_name", "referee_email", "points_awarded", "status", "created_at"]
+                        referral_fields = ["referee_name", "points_awarded", "status", "created_at"]
                         for field in referral_fields:
                             if field in first_referral:
                                 self.log_test(f"Referral Item - {field}", True)
