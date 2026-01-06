@@ -3692,7 +3692,7 @@ async def create_report(report: ReportCreate, current_user: dict = Depends(get_c
         raise HTTPException(status_code=400, detail="Vous avez déjà signalé cet élément")
     
     report_doc = {
-        "id": str(uuid4()),
+        "id": str(uuid.uuid4()),
         "reporter_id": current_user["id"],
         "reporter_name": current_user["name"],
         "target_type": report.target_type,
