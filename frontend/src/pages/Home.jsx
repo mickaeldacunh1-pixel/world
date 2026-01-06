@@ -48,12 +48,15 @@ const DEFAULT_HERO = {
 
 export default function Home() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [oemSearch, setOemSearch] = useState('');
   const [categoryStats, setCategoryStats] = useState({});
   const [recentListings, setRecentListings] = useState([]);
   const [heroSettings, setHeroSettings] = useState(DEFAULT_HERO);
+  const [referralData, setReferralData] = useState(null);
+  const [copiedCode, setCopiedCode] = useState(false);
 
   useEffect(() => {
     const fetchHeroSettings = async () => {
@@ -89,6 +92,46 @@ export default function Home() {
     fetchRecentListings();
     fetchHeroSettings();
   }, []);
+
+  // Fetch referral data if user is logged in
+  useEffect(() => {
+    if (user) {
+      const fetchReferralData = async () => {
+        try {
+          const response = await axios.get(`${API}/referral/me`);
+          setReferralData(response.data);
+        } catch (error) {
+          console.error('Error fetching referral data:', error);
+        }
+      };
+      fetchReferralData();
+    }
+  }, [user]);
+
+  const copyReferralCode = () => {
+    if (referralData?.referral_code) {
+      navigator.clipboard.writeText(referralData.referral_code);
+      setCopiedCode(true);
+      toast.success('Code copié !');
+      setTimeout(() => setCopiedCode(false), 2000);
+    }
+  };
+
+  const shareReferral = async () => {
+    if (navigator.share && referralData) {
+      try {
+        await navigator.share({
+          title: 'Rejoins World Auto France !',
+          text: `Utilise mon code ${referralData.referral_code} et reçois 50 points de bienvenue !`,
+          url: referralData.referral_link
+        });
+      } catch (error) {
+        copyReferralCode();
+      }
+    } else {
+      copyReferralCode();
+    }
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
