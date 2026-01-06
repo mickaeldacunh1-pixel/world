@@ -1811,9 +1811,10 @@ class AutoPiecesAPITester:
             self.log_test("Promotion - No Listings for Free Boost", True, "No listings available for free boost test (valid)")
         
         # Step 5: Test POST /api/promote/checkout - Create Stripe checkout
+        # For boost/featured, we need a listing_id, so test with subscription instead
         checkout_data = {
-            "type": "boost",
-            "option_id": "boost_7d"
+            "type": "subscription",
+            "option_id": "pro_starter"
         }
         
         checkout_result = self.run_test("Promotion - Create Checkout", "POST", "promote/checkout", 200, checkout_data)
