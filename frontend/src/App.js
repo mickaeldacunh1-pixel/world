@@ -40,6 +40,7 @@ import FAQ from "./pages/FAQ";
 import Updates from "./pages/Updates";
 import Newsletter from "./pages/Newsletter";
 import Auctions from "./pages/Auctions";
+import Loyalty from "./pages/Loyalty";
 import "./App.css";
 
 const ProtectedRoute = ({ children }) => {
