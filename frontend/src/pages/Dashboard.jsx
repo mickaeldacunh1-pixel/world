@@ -20,20 +20,22 @@ const statusLabels = {
 };
 
 export default function Dashboard() {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, lastRefresh } = useAuth();
   const [stats, setStats] = useState(null);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [lastRefresh]); // Refresh data when lastRefresh changes (after login)
 
   const fetchData = async () => {
     try {
+      // Add cache-busting parameter
+      const cacheBuster = `?_t=${Date.now()}`;
       const [statsRes, listingsRes] = await Promise.all([
-        axios.get(`${API}/stats/dashboard`),
-        axios.get(`${API}/my-listings`),
+        axios.get(`${API}/stats/dashboard${cacheBuster}`),
+        axios.get(`${API}/my-listings${cacheBuster}`),
       ]);
       setStats(statsRes.data);
       setListings(listingsRes.data);
