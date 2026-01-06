@@ -1812,6 +1812,18 @@ async def update_order_status(order_id: str, status: str, background_tasks: Back
         seller = await db.users.find_one({"id": order["seller_id"]}, {"_id": 0, "password": 0})
         if seller:
             background_tasks.add_task(send_order_delivered_email, seller.get("email"), seller.get("name"), order)
+        
+        # Add loyalty points to buyer (1 point per euro spent)
+        order_amount = order.get("total_amount") or order.get("price", 0)
+        if order_amount > 0:
+            points_to_add = int(order_amount)  # 1 point per euro
+            background_tasks.add_task(
+                add_loyalty_points,
+                current_user["id"],
+                points_to_add,
+                f"Achat: {order.get('listing_title', 'Commande')}",
+                order_id
+            )
     else:
         raise HTTPException(status_code=403, detail="Action non autorisée")
     
