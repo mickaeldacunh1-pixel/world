@@ -1798,11 +1798,8 @@ class AutoPiecesAPITester:
             test_listing_id = available_listings[0]["id"]
             
             # Test free boost (will likely fail due to no subscription)
-            free_boost_data = {
-                "type": "boost",
-                "listing_id": test_listing_id
-            }
-            free_boost_result = self.run_test("Promotion - Use Free Boost", "POST", "promote/use-free", 404, free_boost_data)
+            # Note: This endpoint expects query parameters, not JSON body
+            free_boost_result = self.run_test("Promotion - Use Free Boost", "POST", f"promote/use-free?type=boost&listing_id={test_listing_id}", 404)
             # We expect 404 for no subscription
             self.log_test("Promotion - Free Boost No Subscription", True, "Correctly returned 404 for no subscription")
         
