@@ -2401,6 +2401,12 @@ class ReviewCreate(BaseModel):
 @api_router.post("/reviews")
 async def create_review(review: ReviewCreate, current_user: dict = Depends(get_current_user)):
     """Créer un avis après une commande livrée"""
+    # Modération du commentaire si présent
+    if review.comment:
+        moderation = await moderate_content(review.comment, context="review")
+        if not moderation["allowed"]:
+            raise HTTPException(status_code=400, detail=moderation["reason"])
+    
     # Verify order exists and belongs to buyer
     order = await db.orders.find_one({
         "id": review.order_id,
@@ -2427,6 +2433,7 @@ async def create_review(review: ReviewCreate, current_user: dict = Depends(get_c
         "buyer_name": current_user["name"],
         "rating": review.rating,
         "comment": review.comment,
+        "moderated": True,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
