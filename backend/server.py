@@ -1302,10 +1302,10 @@ async def get_listings(
             query["$or"] = search_conditions
     
     sort_options = {
-        "recent": [("created_at", -1)],
-        "price_asc": [("price", 1)],
-        "price_desc": [("price", -1)],
-        "views": [("views", -1)]
+        "recent": [("is_boosted", -1), ("created_at", -1)],
+        "price_asc": [("is_boosted", -1), ("price", 1)],
+        "price_desc": [("is_boosted", -1), ("price", -1)],
+        "views": [("is_boosted", -1), ("views", -1)]
     }
     
     skip = (page - 1) * limit
