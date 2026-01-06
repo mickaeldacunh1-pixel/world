@@ -50,6 +50,8 @@ export default function Orders() {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewedOrders, setReviewedOrders] = useState([]);
   const [buyerReviewedOrders, setBuyerReviewedOrders] = useState([]);
+  const [creatingLabel, setCreatingLabel] = useState(null);
+  const [trackingInfo, setTrackingInfo] = useState({});
 
   useEffect(() => {
     fetchData();
