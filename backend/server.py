@@ -1803,6 +1803,11 @@ async def check_and_send_alerts(listing: dict, background_tasks: BackgroundTasks
 
 @api_router.post("/messages")
 async def send_message(message: MessageCreate, current_user: dict = Depends(get_current_user)):
+    # Modération du contenu
+    moderation = await moderate_content(message.content, context="message")
+    if not moderation["allowed"]:
+        raise HTTPException(status_code=400, detail=moderation["reason"])
+    
     # Get receiver info
     receiver = await db.users.find_one({"id": message.receiver_id}, {"_id": 0, "password": 0})
     if not receiver:
@@ -1817,6 +1822,8 @@ async def send_message(message: MessageCreate, current_user: dict = Depends(get_
         "receiver_name": receiver["name"],
         "content": message.content,
         "read": False,
+        "moderated": True,
+        "has_sensitive_words": moderation.get("has_sensitive", False),
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
