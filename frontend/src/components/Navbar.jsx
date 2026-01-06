@@ -120,6 +120,12 @@ export default function Navbar() {
             {user ? (
               <>
                 {/* Quick action icons */}
+                <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Gift className="w-5 h-5 text-accent" />
+                  </Button>
+                </Link>
+
                 <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
                   <Button variant="ghost" size="icon" className="relative">
                     <Heart className="w-5 h-5" />
