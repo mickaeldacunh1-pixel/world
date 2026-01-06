@@ -1376,11 +1376,47 @@ async def reset_password(request: PasswordResetConfirm):
 
 # ================== LISTINGS ROUTES ==================
 
+def get_user_max_photos(user: dict) -> int:
+    """Calculate maximum photos allowed for a user based on their subscription/package"""
+    # Pro users get more photos
+    if user.get("is_professional") or user.get("has_pro_subscription"):
+        return PRO_MAX_PHOTOS
+    
+    # Check for extra photo credits
+    extra_photos = user.get("extra_photo_credits", 0)
+    
+    # Base limit + extras
+    return DEFAULT_MAX_PHOTOS + extra_photos
+
+@api_router.get("/users/me/photo-limit")
+async def get_photo_limit(current_user: dict = Depends(get_current_user)):
+    """Get current user's photo limit information"""
+    max_photos = get_user_max_photos(current_user)
+    extra_credits = current_user.get("extra_photo_credits", 0)
+    is_pro = current_user.get("is_professional") or current_user.get("has_pro_subscription")
+    
+    return {
+        "max_photos": max_photos,
+        "base_limit": PRO_MAX_PHOTOS if is_pro else DEFAULT_MAX_PHOTOS,
+        "extra_credits": extra_credits,
+        "is_pro": is_pro,
+        "extra_photos_price": EXTRA_PHOTOS_PACKAGE["price"],
+        "extra_photos_count": EXTRA_PHOTOS_PACKAGE["photos"]
+    }
+
 @api_router.post("/listings", response_model=ListingResponse)
 async def create_listing(listing: ListingCreate, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
     # Check credits
     if current_user.get("credits", 0) <= 0:
         raise HTTPException(status_code=402, detail="Crédits insuffisants. Veuillez acheter un pack d'annonces.")
+    
+    # Check photo limit
+    max_photos = get_user_max_photos(current_user)
+    if len(listing.images) > max_photos:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Vous avez dépassé la limite de {max_photos} photos. Achetez des photos supplémentaires ou réduisez le nombre d'images."
+        )
     
     listing_doc = {
         "id": str(uuid.uuid4()),
