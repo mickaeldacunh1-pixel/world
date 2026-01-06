@@ -15,7 +15,7 @@ import SEO from '../components/SEO';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Profile() {
-  const { user, token, refreshUser, logout } = useAuth();
+  const { user, token, refreshUser, logout, lastRefresh } = useAuth();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
