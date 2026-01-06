@@ -4568,6 +4568,125 @@ async def use_loyalty_code(code: str, order_id: str, current_user: dict = Depend
     
     return {"message": "Code appliqué avec succès"}
 
+# ================== REFERRAL SYSTEM (PARRAINAGE) ==================
+
+@api_router.get("/referral/me")
+async def get_referral_info(current_user: dict = Depends(get_current_user)):
+    """Get current user's referral information"""
+    referral_code = current_user.get("referral_code")
+    
+    # Generate code if user doesn't have one (for existing users)
+    if not referral_code:
+        referral_code = generate_referral_code(current_user["name"])
+        while await db.users.find_one({"referral_code": referral_code}):
+            referral_code = generate_referral_code(current_user["name"])
+        
+        await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$set": {"referral_code": referral_code, "referral_count": 0}}
+        )
+    
+    # Get referral stats
+    referrals = await db.referrals.find(
+        {"referrer_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    total_points_earned = sum(r.get("points_awarded", 0) for r in referrals)
+    
+    # Get referred by info
+    referred_by_name = None
+    if current_user.get("referred_by"):
+        referrer = await db.users.find_one(
+            {"id": current_user["referred_by"]},
+            {"_id": 0, "name": 1}
+        )
+        if referrer:
+            referred_by_name = referrer["name"]
+    
+    return {
+        "referral_code": referral_code,
+        "referral_link": f"{SITE_URL}/auth?ref={referral_code}",
+        "referral_count": current_user.get("referral_count", 0),
+        "total_points_earned": total_points_earned,
+        "referred_by": referred_by_name,
+        "rewards_config": {
+            "referrer_points": REFERRAL_REWARDS["referrer_points"],
+            "referee_points": REFERRAL_REWARDS["referee_points"],
+            "bonus_per_purchase": REFERRAL_REWARDS["referrer_bonus_per_purchase"]
+        }
+    }
+
+@api_router.get("/referral/my-referrals")
+async def get_my_referrals(current_user: dict = Depends(get_current_user), limit: int = 50):
+    """Get list of users referred by current user"""
+    referrals = await db.referrals.find(
+        {"referrer_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    # Get stats for each referral
+    enriched_referrals = []
+    for ref in referrals:
+        # Get referee's order count
+        orders_count = await db.orders.count_documents({
+            "buyer_id": ref["referee_id"],
+            "payment_status": "completed"
+        })
+        
+        enriched_referrals.append({
+            "id": ref["id"],
+            "referee_name": ref.get("referee_name", "Utilisateur"),
+            "points_awarded": ref.get("points_awarded", 0),
+            "bonus_points": ref.get("bonus_points", 0),
+            "orders_count": orders_count,
+            "status": ref.get("status", "active"),
+            "created_at": ref["created_at"]
+        })
+    
+    return {
+        "referrals": enriched_referrals,
+        "total": len(enriched_referrals)
+    }
+
+@api_router.get("/referral/validate/{code}")
+async def validate_referral_code(code: str):
+    """Validate a referral code (public endpoint)"""
+    user = await db.users.find_one(
+        {"referral_code": code.upper()},
+        {"_id": 0, "name": 1, "referral_code": 1}
+    )
+    
+    if not user:
+        return {"valid": False, "message": "Code de parrainage invalide"}
+    
+    return {
+        "valid": True,
+        "referrer_name": user["name"],
+        "bonus_points": REFERRAL_REWARDS["referee_points"],
+        "message": f"Code valide ! Vous recevrez {REFERRAL_REWARDS['referee_points']} points de bienvenue"
+    }
+
+@api_router.get("/referral/leaderboard")
+async def get_referral_leaderboard(limit: int = 10):
+    """Get top referrers leaderboard"""
+    # Get users with most referrals
+    top_referrers = await db.users.find(
+        {"referral_count": {"$gt": 0}},
+        {"_id": 0, "name": 1, "referral_count": 1}
+    ).sort("referral_count", -1).to_list(limit)
+    
+    leaderboard = []
+    for i, user in enumerate(top_referrers, 1):
+        leaderboard.append({
+            "rank": i,
+            "name": user["name"][:2] + "***" + user["name"][-1:] if len(user["name"]) > 3 else user["name"][:1] + "***",
+            "referral_count": user["referral_count"]
+        })
+    
+    return {"leaderboard": leaderboard}
+
+
 # ================== PROMOTE / BOOST SYSTEM ==================
 
 BOOST_OPTIONS = {
