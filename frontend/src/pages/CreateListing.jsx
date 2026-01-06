@@ -87,7 +87,38 @@ export default function CreateListing() {
   useEffect(() => {
     fetchSubcategories();
     fetchCarBrands();
-  }, []);
+    fetchPhotoLimit();
+    
+    // Handle photo purchase success/cancel
+    if (searchParams.get('photos_success') === 'true') {
+      toast.success('🎉 +10 photos supplémentaires ajoutées !');
+      fetchPhotoLimit();
+      refreshUser();
+    } else if (searchParams.get('photos_cancelled') === 'true') {
+      toast.info('Achat de photos annulé');
+    }
+  }, [searchParams]);
+
+  const fetchPhotoLimit = async () => {
+    try {
+      const response = await axios.get(`${API}/users/me/photo-limit`);
+      setPhotoLimit(response.data);
+    } catch (error) {
+      console.error('Error fetching photo limit:', error);
+    }
+  };
+
+  const handleBuyExtraPhotos = async () => {
+    setBuyingPhotos(true);
+    try {
+      const response = await axios.post(`${API}/photos/create-checkout-session`);
+      window.location.href = response.data.checkout_url;
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+      toast.error('Erreur lors de la création du paiement');
+      setBuyingPhotos(false);
+    }
+  };
 
   const fetchSubcategories = async () => {
     try {
