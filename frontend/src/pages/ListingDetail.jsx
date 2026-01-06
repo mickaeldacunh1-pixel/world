@@ -47,6 +47,7 @@ export default function ListingDetail() {
   const [reportReason, setReportReason] = useState('');
   const [reportDescription, setReportDescription] = useState('');
   const [reportLoading, setReportLoading] = useState(false);
+  const [videoCallLoading, setVideoCallLoading] = useState(false);
 
   const REPORT_REASONS = [
     { value: 'spam', label: 'Spam ou publicité' },
@@ -57,6 +58,31 @@ export default function ListingDetail() {
     { value: 'duplicate', label: 'Annonce en double' },
     { value: 'other', label: 'Autre raison' }
   ];
+
+  const handleVideoCall = async () => {
+    if (!user) {
+      toast.error('Connectez-vous pour demander un appel vidéo');
+      navigate('/auth');
+      return;
+    }
+
+    setVideoCallLoading(true);
+    try {
+      const response = await axios.post(`${API}/video-call/request?listing_id=${listing.id}`);
+      const { whatsapp_link, seller_name } = response.data;
+      
+      toast.success(`Ouverture WhatsApp pour contacter ${seller_name}`);
+      window.open(whatsapp_link, '_blank');
+    } catch (error) {
+      if (error.response?.data?.detail?.includes('pas de numéro')) {
+        toast.error('Le vendeur n\'a pas de numéro de téléphone enregistré');
+      } else {
+        toast.error('Erreur lors de la demande');
+      }
+    } finally {
+      setVideoCallLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchListing();
