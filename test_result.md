@@ -514,14 +514,57 @@ frontend:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 3
+  test_sequence: 4
   run_ui: true
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Referral System (Système de Parrainage)"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+backend:
+  - task: "Referral System API"
+    implemented: true
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented complete referral system: GET /api/referral/me (get user's referral info), GET /api/referral/my-referrals (list user's referrals), GET /api/referral/validate/{code} (validate referral code), GET /api/referral/leaderboard (top referrers). Modified registration to accept referral_code, award points to referrer (100 pts) and referee (50 pts)."
+
+frontend:
+  - task: "Referral Tab in Loyalty Page"
+    implemented: true
+    working: "NA"
+    file: "pages/Loyalty.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Added new 'Parrainage' tab in Loyalty page with: referral code display, shareable link, share button, stats cards (filleuls count, points earned), how it works section, my referrals list, leaderboard."
+
+  - task: "Referral Code in Registration Form"
+    implemented: true
+    working: "NA"
+    file: "pages/Auth.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Added referral code field to registration form. Pre-fills from URL param (?ref=CODE). Real-time validation with visual feedback (checkmark/X). Shows referrer name and bonus points message when valid."
+
+agent_communication:
+    - agent: "main"
+    - message: "Implemented complete Referral System (Système de Parrainage). Backend: 4 new endpoints for referral management, modified registration to handle referral codes and award loyalty points. Frontend: New 'Parrainage' tab in Loyalty.jsx with referral code, share functionality, stats, referrals list, and leaderboard. Auth.jsx updated with referral code field with real-time validation. Rewards: Referrer gets 100 points, Referee gets 50 points. Need to test: 1) Registration with/without referral code, 2) Points awarded correctly, 3) Referral validation endpoint, 4) My referrals list, 5) Leaderboard, 6) Frontend display of all components."
 
 agent_communication:
     - agent: "main"
