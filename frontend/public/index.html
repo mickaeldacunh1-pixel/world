@@ -183,17 +183,41 @@
                 person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well
             });
         </script>
-        <!-- Service Worker Registration -->
+        <!-- Service Worker Registration with Auto-Update -->
         <script>
             if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                    navigator.serviceWorker.register('/sw.js')
-                        .then(function(registration) {
-                            console.log('SW registered: ', registration);
-                        })
-                        .catch(function(error) {
-                            console.log('SW registration failed: ', error);
+                window.addEventListener('load', async function() {
+                    try {
+                        // First, clear ALL old caches to force fresh data
+                        if ('caches' in window) {
+                            const cacheNames = await caches.keys();
+                            await Promise.all(
+                                cacheNames.map(cacheName => {
+                                    console.log('Clearing cache:', cacheName);
+                                    return caches.delete(cacheName);
+                                })
+                            );
+                        }
+                        
+                        // Unregister old service workers first
+                        const registrations = await navigator.serviceWorker.getRegistrations();
+                        for (let registration of registrations) {
+                            await registration.unregister();
+                            console.log('SW unregistered for update');
+                        }
+                        
+                        // Register fresh service worker
+                        const registration = await navigator.serviceWorker.register('/sw.js', {
+                            updateViaCache: 'none'
                         });
+                        console.log('SW registered fresh: ', registration);
+                        
+                        // Force update check
+                        registration.update();
+                        
+                    } catch (error) {
+                        console.log('SW setup error: ', error);
+                    }
                 });
             }
         </script>
