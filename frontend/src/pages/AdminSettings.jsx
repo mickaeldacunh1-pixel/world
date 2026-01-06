@@ -56,34 +56,115 @@ const HERO_TEXT_ANIMATIONS = [
 ];
 
 const DEFAULT_SETTINGS = {
-  // Hero Section
+  // ============== HERO SECTION COMPLET ==============
+  
+  // Badge (petit texte au-dessus du titre)
+  hero_badge_enabled: true,
+  hero_badge_text: "La référence automobile en France",
+  hero_badge_icon: "✨",
+  hero_badge_bg_color: "rgba(249, 115, 22, 0.2)",
+  hero_badge_text_color: "#F97316",
+  hero_badge_border_color: "rgba(249, 115, 22, 0.3)",
+  
+  // Titre ligne 1
   hero_title_line1: "La marketplace auto",
+  hero_title_line1_color: "#FFFFFF",
+  hero_title_line1_size: "large",
+  
+  // Titre ligne 2
   hero_title_line2: "pour tous",
-  hero_title_line1_color: "#FFFFFF",  // White by default
-  hero_title_line2_color: "#F97316",  // Orange accent by default
+  hero_title_line2_color: "#F97316",
+  hero_title_line2_size: "large",
+  hero_title_line2_gradient: false,
+  hero_title_line2_gradient_from: "#F97316",
+  hero_title_line2_gradient_to: "#EA580C",
+  
+  // Description
   hero_description: "Achetez et vendez des pièces détachées, voitures, motos et utilitaires. Pour particuliers et professionnels.",
-  hero_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
-  hero_cta_text: "Déposer une annonce",
-  hero_cta_link: "/deposer",
-  hero_cta2_text: "",
-  hero_cta2_link: "",
-  hero_overlay_opacity: 50,
-  hero_overlay_color: "#000000",
-  hero_text_animation: "none",
-  hero_title_size: "large",
+  hero_description_color: "rgba(255, 255, 255, 0.8)",
   hero_description_size: "medium",
-  hero_text_align: "center",
+  
+  // Bouton CTA 1
+  hero_cta1_enabled: true,
+  hero_cta1_text: "Déposer une annonce",
+  hero_cta1_link: "/deposer",
+  hero_cta1_icon: "📝",
+  hero_cta1_bg_color: "#F97316",
+  hero_cta1_text_color: "#FFFFFF",
+  hero_cta1_style: "filled",
+  
+  // Bouton CTA 2
+  hero_cta2_enabled: true,
+  hero_cta2_text: "Enchères en direct",
+  hero_cta2_link: "/encheres",
+  hero_cta2_icon: "⚡",
+  hero_cta2_bg_color: "transparent",
+  hero_cta2_text_color: "#FFFFFF",
+  hero_cta2_border_color: "rgba(255, 255, 255, 0.3)",
+  hero_cta2_style: "outline",
+  
+  // Image de fond
+  hero_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
+  hero_overlay_enabled: true,
+  hero_overlay_color: "#000000",
+  hero_overlay_opacity: 50,
+  hero_overlay_gradient: true,
+  hero_overlay_gradient_direction: "to-r",
+  
+  // Layout
   hero_height: "large",
+  hero_text_align: "left",
+  hero_content_position: "left",
+  hero_content_max_width: "3xl",
+  hero_padding_top: "20",
+  hero_padding_bottom: "32",
+  
+  // Animations
+  hero_text_animation: "none",
+  hero_animation_speed: "normal",
+  
+  // Éléments à afficher/masquer
+  hero_show_badge: true,
   hero_show_search: true,
+  hero_show_plate_scanner: true,
+  hero_show_voice_search: true,
+  hero_show_stats: true,
+  hero_show_ai_tools: true,
   hero_show_categories: true,
+  
+  // Barre de recherche
+  hero_search_placeholder: "Rechercher une pièce, un véhicule...",
+  hero_search_bg_color: "rgba(255, 255, 255, 0.1)",
+  hero_search_text_color: "#FFFFFF",
+  hero_search_button_text: "Rechercher",
+  hero_search_button_bg: "#F97316",
+  
+  // Stats (chiffres affichés)
+  hero_stats_enabled: true,
+  hero_stat1_number: "100+",
+  hero_stat1_label: "annonces actives",
+  hero_stat1_icon: "📦",
+  hero_stat2_number: "5",
+  hero_stat2_label: "catégories",
+  hero_stat2_icon: "📂",
+  hero_stat3_enabled: false,
+  hero_stat3_number: "",
+  hero_stat3_label: "",
+  hero_stat3_icon: "",
+  hero_stats_color: "rgba(255, 255, 255, 0.7)",
+  hero_stats_number_color: "#FFFFFF",
+  
+  // Mode aperçu
   preview_mode: "desktop",
   
-  // Categories Images (petites catégories)
+  // Categories Images (mini-catégories sous le hero)
   category_pieces_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=400&fit=crop",
   category_voitures_image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop",
   category_motos_image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&h=400&fit=crop",
   category_utilitaires_image: "https://images.unsplash.com/photo-1532581140115-3e355d1ed1de?w=600&h=400&fit=crop",
   category_accessoires_image: "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=600&h=400&fit=crop",
+  
+  // ============== AUTRES SECTIONS ==============
   
   // Announcement Bar
   announcement_enabled: false,
