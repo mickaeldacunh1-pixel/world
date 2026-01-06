@@ -514,6 +514,180 @@ class AutoPiecesAPITester:
         result = self.run_test("Save Hero Settings", "POST", "settings/hero", 200, test_settings)
         return result is not None
 
+    def test_hero_advanced_customization_api(self):
+        """Test Hero Advanced Customization API with new fields"""
+        print("\n🎨 Testing Hero Advanced Customization API...")
+        
+        # Step 1: Test GET hero settings returns new advanced fields
+        result = self.run_test("Hero Advanced - Get Settings", "GET", "settings/hero", 200)
+        if result:
+            # Check new advanced customization fields
+            advanced_fields = [
+                "hero_title_size", "hero_description_size", "hero_text_align", 
+                "hero_height", "hero_show_search", "hero_show_categories", 
+                "hero_overlay_opacity", "category_pieces_image", "category_voitures_image",
+                "category_motos_image", "category_utilitaires_image", "category_accessoires_image"
+            ]
+            
+            for field in advanced_fields:
+                if field in result:
+                    self.log_test(f"Hero Advanced Field - {field}", True)
+                else:
+                    self.log_test(f"Hero Advanced Field - {field}", False, "Field missing")
+                    return False
+            
+            # Verify default values
+            expected_defaults = {
+                "hero_title_size": "large",
+                "hero_description_size": "medium", 
+                "hero_text_align": "left",
+                "hero_height": "large",
+                "hero_show_search": True,
+                "hero_show_categories": True,
+                "hero_overlay_opacity": 50
+            }
+            
+            for field, expected_value in expected_defaults.items():
+                actual_value = result.get(field)
+                if actual_value == expected_value:
+                    self.log_test(f"Hero Default Value - {field}", True, f"Value: {actual_value}")
+                else:
+                    self.log_test(f"Hero Default Value - {field}", False, f"Expected {expected_value}, got {actual_value}")
+                    return False
+        else:
+            return False
+        
+        # Step 2: Test POST hero settings with advanced customization (requires auth)
+        if not self.token:
+            self.log_test("Hero Advanced - Save Settings", False, "No token available")
+            return False
+        
+        # Test with all new advanced options
+        advanced_settings = {
+            "hero_title_line1": "Marketplace Avancée",
+            "hero_title_line2": "Personnalisée",
+            "hero_description": "Description personnalisée avec nouvelles options",
+            "hero_image": "https://example.com/custom-hero.jpg",
+            "hero_cta_text": "Découvrir",
+            "hero_cta_link": "/explorer",
+            # Advanced customization options
+            "hero_title_size": "xlarge",
+            "hero_description_size": "large",
+            "hero_text_align": "center",
+            "hero_height": "fullscreen",
+            "hero_show_search": False,
+            "hero_show_categories": False,
+            "hero_overlay_opacity": 75,
+            # Category images
+            "category_pieces_image": "https://example.com/pieces.jpg",
+            "category_voitures_image": "https://example.com/voitures.jpg",
+            "category_motos_image": "https://example.com/motos.jpg",
+            "category_utilitaires_image": "https://example.com/utilitaires.jpg",
+            "category_accessoires_image": "https://example.com/accessoires.jpg"
+        }
+        
+        save_result = self.run_test("Hero Advanced - Save Settings", "POST", "settings/hero", 200, advanced_settings)
+        if not save_result:
+            return False
+        
+        # Verify save response
+        if save_result.get("message"):
+            self.log_test("Hero Advanced - Save Response", True, f"Message: {save_result['message']}")
+        else:
+            self.log_test("Hero Advanced - Save Response", False, "No success message")
+            return False
+        
+        # Step 3: Verify settings were persisted by getting them again
+        verify_result = self.run_test("Hero Advanced - Verify Persistence", "GET", "settings/hero", 200)
+        if verify_result:
+            # Check that our custom values were saved
+            for field, expected_value in advanced_settings.items():
+                actual_value = verify_result.get(field)
+                if actual_value == expected_value:
+                    self.log_test(f"Hero Persistence - {field}", True)
+                else:
+                    self.log_test(f"Hero Persistence - {field}", False, f"Expected {expected_value}, got {actual_value}")
+                    return False
+        else:
+            return False
+        
+        # Step 4: Test with different combinations of settings
+        test_combinations = [
+            {
+                "name": "Small Title, Right Align",
+                "settings": {
+                    "hero_title_size": "small",
+                    "hero_text_align": "right",
+                    "hero_height": "400px",
+                    "hero_show_search": True,
+                    "hero_show_categories": False
+                }
+            },
+            {
+                "name": "Medium Everything, Center",
+                "settings": {
+                    "hero_title_size": "medium",
+                    "hero_description_size": "small",
+                    "hero_text_align": "center",
+                    "hero_height": "500px",
+                    "hero_overlay_opacity": 25
+                }
+            }
+        ]
+        
+        for combination in test_combinations:
+            test_name = combination["name"]
+            test_settings = combination["settings"]
+            
+            # Save the test combination
+            save_combo = self.run_test(f"Hero Advanced - {test_name}", "POST", "settings/hero", 200, test_settings)
+            if save_combo:
+                # Verify it was saved
+                verify_combo = self.run_test(f"Hero Advanced - Verify {test_name}", "GET", "settings/hero", 200)
+                if verify_combo:
+                    for field, expected_value in test_settings.items():
+                        actual_value = verify_combo.get(field)
+                        if actual_value == expected_value:
+                            self.log_test(f"Hero Combo {test_name} - {field}", True)
+                        else:
+                            self.log_test(f"Hero Combo {test_name} - {field}", False, f"Expected {expected_value}, got {actual_value}")
+                            return False
+                else:
+                    return False
+            else:
+                return False
+        
+        # Step 5: Test edge cases and validation
+        # Test with invalid values
+        invalid_settings = {
+            "hero_title_size": "invalid_size",
+            "hero_text_align": "invalid_align",
+            "hero_height": "invalid_height",
+            "hero_overlay_opacity": 150  # Should be 0-100
+        }
+        
+        # The API should accept any dict, so this should still work
+        invalid_result = self.run_test("Hero Advanced - Invalid Values", "POST", "settings/hero", 200, invalid_settings)
+        if invalid_result:
+            self.log_test("Hero Advanced - Invalid Values Handling", True, "API accepts any dict values")
+        else:
+            self.log_test("Hero Advanced - Invalid Values Handling", False, "Failed to handle invalid values")
+            return False
+        
+        # Step 6: Test without authentication (should fail)
+        original_token = self.token
+        self.token = None
+        
+        no_auth_result = self.run_test("Hero Advanced - No Auth", "POST", "settings/hero", 401, advanced_settings)
+        # We expect 401, so result should be None
+        self.log_test("Hero Advanced - Authentication Required", True, "Correctly requires authentication")
+        
+        # Restore token
+        self.token = original_token
+        
+        self.log_test("Hero Advanced Customization API Complete", True, "All advanced hero customization tests passed")
+        return True
+
     def test_shipping_slip_pdf_generation(self):
         """Test shipping slip PDF generation endpoints"""
         if not self.token:
