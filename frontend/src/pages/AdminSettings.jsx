@@ -646,6 +646,246 @@ export default function AdminSettings() {
                     />
                   </div>
                 </div>
+
+                {/* Options avancées de mise en page */}
+                <div className="border-t pt-6 mt-6">
+                  <h4 className="font-semibold mb-4 flex items-center gap-2">
+                    ⚙️ Options avancées de mise en page
+                  </h4>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                      <Label>📏 Taille du titre</Label>
+                      <Select 
+                        value={settings.hero_title_size || "large"} 
+                        onValueChange={(v) => setSettings({...settings, hero_title_size: v})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choisir une taille" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {TITLE_SIZE_OPTIONS.map(opt => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>📝 Taille de la description</Label>
+                      <Select 
+                        value={settings.hero_description_size || "medium"} 
+                        onValueChange={(v) => setSettings({...settings, hero_description_size: v})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choisir une taille" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {DESC_SIZE_OPTIONS.map(opt => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>↔️ Alignement du texte</Label>
+                      <Select 
+                        value={settings.hero_text_align || "center"} 
+                        onValueChange={(v) => setSettings({...settings, hero_text_align: v})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choisir l'alignement" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {TEXT_ALIGN_OPTIONS.map(opt => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>📐 Hauteur du Hero</Label>
+                      <Select 
+                        value={settings.hero_height || "large"} 
+                        onValueChange={(v) => setSettings({...settings, hero_height: v})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choisir la hauteur" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {HERO_HEIGHT_OPTIONS.map(opt => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* Toggles for search and categories */}
+                  <div className="grid md:grid-cols-2 gap-4 mt-4">
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <Label>🔍 Afficher la barre de recherche</Label>
+                        <p className="text-xs text-muted-foreground">Dans la section Hero</p>
+                      </div>
+                      <Switch
+                        checked={settings.hero_show_search !== false}
+                        onCheckedChange={(checked) => setSettings({...settings, hero_show_search: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <Label>📂 Afficher les mini-catégories</Label>
+                        <p className="text-xs text-muted-foreground">Sous le Hero</p>
+                      </div>
+                      <Switch
+                        checked={settings.hero_show_categories !== false}
+                        onCheckedChange={(checked) => setSettings({...settings, hero_show_categories: checked})}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Category Images Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  🏷️ Images des catégories
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Personnalisez les images affichées pour chaque catégorie de produits
+                </p>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Pièces détachées */}
+                  <div className="space-y-2">
+                    <Label>Pièces détachées</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={settings.category_pieces_image}
+                        onChange={(e) => setSettings({...settings, category_pieces_image: e.target.value})}
+                        placeholder="URL de l'image"
+                        className="flex-1 text-xs"
+                      />
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => triggerImageUpload('category_pieces_image')}
+                        disabled={uploadingImage}
+                      >
+                        <Upload className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    {settings.category_pieces_image && (
+                      <img src={settings.category_pieces_image} alt="Pièces" className="w-full h-20 object-cover rounded-lg" />
+                    )}
+                  </div>
+
+                  {/* Voitures */}
+                  <div className="space-y-2">
+                    <Label>Voitures</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={settings.category_voitures_image}
+                        onChange={(e) => setSettings({...settings, category_voitures_image: e.target.value})}
+                        placeholder="URL de l'image"
+                        className="flex-1 text-xs"
+                      />
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => triggerImageUpload('category_voitures_image')}
+                        disabled={uploadingImage}
+                      >
+                        <Upload className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    {settings.category_voitures_image && (
+                      <img src={settings.category_voitures_image} alt="Voitures" className="w-full h-20 object-cover rounded-lg" />
+                    )}
+                  </div>
+
+                  {/* Motos */}
+                  <div className="space-y-2">
+                    <Label>Motos</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={settings.category_motos_image}
+                        onChange={(e) => setSettings({...settings, category_motos_image: e.target.value})}
+                        placeholder="URL de l'image"
+                        className="flex-1 text-xs"
+                      />
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => triggerImageUpload('category_motos_image')}
+                        disabled={uploadingImage}
+                      >
+                        <Upload className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    {settings.category_motos_image && (
+                      <img src={settings.category_motos_image} alt="Motos" className="w-full h-20 object-cover rounded-lg" />
+                    )}
+                  </div>
+
+                  {/* Utilitaires */}
+                  <div className="space-y-2">
+                    <Label>Utilitaires</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={settings.category_utilitaires_image}
+                        onChange={(e) => setSettings({...settings, category_utilitaires_image: e.target.value})}
+                        placeholder="URL de l'image"
+                        className="flex-1 text-xs"
+                      />
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => triggerImageUpload('category_utilitaires_image')}
+                        disabled={uploadingImage}
+                      >
+                        <Upload className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    {settings.category_utilitaires_image && (
+                      <img src={settings.category_utilitaires_image} alt="Utilitaires" className="w-full h-20 object-cover rounded-lg" />
+                    )}
+                  </div>
+
+                  {/* Accessoires */}
+                  <div className="space-y-2">
+                    <Label>Accessoires</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={settings.category_accessoires_image}
+                        onChange={(e) => setSettings({...settings, category_accessoires_image: e.target.value})}
+                        placeholder="URL de l'image"
+                        className="flex-1 text-xs"
+                      />
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => triggerImageUpload('category_accessoires_image')}
+                        disabled={uploadingImage}
+                      >
+                        <Upload className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    {settings.category_accessoires_image && (
+                      <img src={settings.category_accessoires_image} alt="Accessoires" className="w-full h-20 object-cover rounded-lg" />
+                    )}
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
