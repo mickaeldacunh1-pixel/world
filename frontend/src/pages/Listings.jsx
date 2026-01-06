@@ -128,6 +128,18 @@ export default function Listings() {
     fetchListings();
   }, [category, page, sort, subcategory, compatibleBrand, region, oemReference]);
 
+  // Auto-refresh listings when component mounts or tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchListings();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [category, page, sort, subcategory, compatibleBrand, region, oemReference]);
+
   const fetchSubcategories = async () => {
     try {
       const endpoint = category === 'accessoires' ? 'accessoires' : 'pieces';
@@ -163,6 +175,8 @@ export default function Listings() {
       params.set('sort', sort);
       params.set('page', resetPage ? '1' : String(page));
       params.set('limit', '12');
+      // Add cache-busting parameter
+      params.set('_t', Date.now().toString());
 
       const response = await axios.get(`${API}/listings?${params.toString()}`);
       setListings(response.data.listings || []);
