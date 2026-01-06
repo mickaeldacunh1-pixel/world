@@ -735,6 +735,119 @@ export default function Home() {
         </div>
       </section>
 
+      {/* REFERRAL BANNER - Grande bannière de parrainage */}
+      <section className="py-16 md:py-20 bg-gradient-to-r from-accent via-orange-500 to-amber-500 relative overflow-hidden">
+        {/* Background decorations */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl" />
+        </div>
+
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            {/* Left side - Icon and text */}
+            <div className="flex-1 text-center lg:text-left">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl mb-6">
+                <Gift className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
+                Parrainez vos amis,<br />
+                <span className="text-yellow-200">Gagnez des récompenses !</span>
+              </h2>
+              <p className="text-white/90 text-lg md:text-xl max-w-xl mb-6">
+                Invitez vos proches sur World Auto France et recevez <strong>100 points</strong> par filleul. 
+                Eux aussi reçoivent <strong>50 points</strong> de bienvenue !
+              </p>
+
+              {/* Benefits badges */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-3 mb-8">
+                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2">
+                  <UserPlus className="w-5 h-5 text-yellow-200" />
+                  <span className="text-white font-medium">+100 pts / filleul</span>
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2">
+                  <Gift className="w-5 h-5 text-yellow-200" />
+                  <span className="text-white font-medium">+50 pts pour eux</span>
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-yellow-200" />
+                  <span className="text-white font-medium">Illimité</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right side - Referral code card */}
+            <div className="w-full lg:w-auto">
+              {user && referralData ? (
+                <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 min-w-[320px] md:min-w-[380px]">
+                  <div className="text-center mb-6">
+                    <p className="text-muted-foreground text-sm mb-2">Votre code de parrainage</p>
+                    <div className="flex items-center justify-center gap-3">
+                      <span className="font-mono text-3xl md:text-4xl font-black text-primary tracking-wider">
+                        {referralData.referral_code}
+                      </span>
+                      <button 
+                        onClick={copyReferralCode}
+                        className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
+                      >
+                        {copiedCode ? (
+                          <Check className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <Copy className="w-5 h-5 text-muted-foreground" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="bg-secondary/50 rounded-xl p-4 text-center">
+                      <p className="text-2xl font-bold text-primary">{referralData.referral_count || 0}</p>
+                      <p className="text-sm text-muted-foreground">Filleuls</p>
+                    </div>
+                    <div className="bg-secondary/50 rounded-xl p-4 text-center">
+                      <p className="text-2xl font-bold text-green-600">{referralData.total_points_earned || 0}</p>
+                      <p className="text-sm text-muted-foreground">Points gagnés</p>
+                    </div>
+                  </div>
+
+                  <Button 
+                    onClick={shareReferral}
+                    className="w-full h-12 bg-accent hover:bg-accent/90 text-white font-semibold text-lg gap-2"
+                  >
+                    <UserPlus className="w-5 h-5" />
+                    Inviter mes amis
+                  </Button>
+
+                  <Link to="/fidelite" className="block mt-4 text-center text-accent hover:underline text-sm font-medium">
+                    Voir tous mes filleuls →
+                  </Link>
+                </div>
+              ) : (
+                <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 min-w-[320px] md:min-w-[380px] text-center">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <UserPlus className="w-8 h-8 text-accent" />
+                  </div>
+                  <h3 className="font-heading text-xl font-bold mb-2">Rejoignez le programme !</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Créez votre compte pour obtenir votre code de parrainage personnel.
+                  </p>
+                  <Link to="/auth?mode=register">
+                    <Button className="w-full h-12 bg-accent hover:bg-accent/90 text-white font-semibold text-lg">
+                      Créer mon compte
+                    </Button>
+                  </Link>
+                  <p className="mt-4 text-sm text-muted-foreground">
+                    Vous avez un code ? <Link to="/auth?mode=register" className="text-accent hover:underline">Inscrivez-vous ici</Link>
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section - Improved */}
       <section className="py-20 md:py-28 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary to-slate-800" />
