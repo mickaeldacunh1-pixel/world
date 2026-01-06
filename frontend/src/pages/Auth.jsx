@@ -501,6 +501,40 @@ export default function Auth() {
                     </div>
                   )}
 
+                  {/* Referral Code */}
+                  <div className="space-y-2">
+                    <Label htmlFor="referral-code">Code de parrainage (optionnel)</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="referral-code"
+                        placeholder="Ex: JEA12345"
+                        className="pl-10 pr-10"
+                        value={registerData.referral_code}
+                        onChange={(e) => setRegisterData({ ...registerData, referral_code: e.target.value.toUpperCase() })}
+                      />
+                      {referralStatus.checking && (
+                        <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-muted-foreground" />
+                      )}
+                      {!referralStatus.checking && referralStatus.valid === true && (
+                        <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-500" />
+                      )}
+                      {!referralStatus.checking && referralStatus.valid === false && (
+                        <XCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-red-500" />
+                      )}
+                    </div>
+                    {referralStatus.valid === true && referralStatus.referrer_name && (
+                      <p className="text-sm text-green-600">
+                        ✨ Parrainé par {referralStatus.referrer_name} ! Vous recevrez {referralStatus.bonus_points || 50} points de bienvenue.
+                      </p>
+                    )}
+                    {referralStatus.valid === false && registerData.referral_code && (
+                      <p className="text-sm text-red-500">
+                        Ce code de parrainage n'est pas valide
+                      </p>
+                    )}
+                  </div>
+
                   <Button 
                     type="submit" 
                     className="w-full h-11 bg-accent hover:bg-accent/90"
