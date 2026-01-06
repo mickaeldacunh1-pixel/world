@@ -85,10 +85,17 @@ export default function Loyalty() {
   const [loading, setLoading] = useState(true);
   const [redeemingId, setRedeemingId] = useState(null);
   const [copiedCode, setCopiedCode] = useState(null);
+  
+  // Referral states
+  const [referralData, setReferralData] = useState(null);
+  const [myReferrals, setMyReferrals] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [copiedReferral, setCopiedReferral] = useState(false);
 
   useEffect(() => {
     if (user) {
       fetchLoyaltyData();
+      fetchReferralData();
     }
   }, [user]);
 
@@ -106,6 +113,21 @@ export default function Loyalty() {
       console.error('Error fetching loyalty data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchReferralData = async () => {
+    try {
+      const [referralRes, myReferralsRes, leaderboardRes] = await Promise.all([
+        axios.get(`${API}/referral/me`),
+        axios.get(`${API}/referral/my-referrals`),
+        axios.get(`${API}/referral/leaderboard`)
+      ]);
+      setReferralData(referralRes.data);
+      setMyReferrals(myReferralsRes.data.referrals || []);
+      setLeaderboard(leaderboardRes.data.leaderboard || []);
+    } catch (error) {
+      console.error('Error fetching referral data:', error);
     }
   };
 
