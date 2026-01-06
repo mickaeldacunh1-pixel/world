@@ -784,6 +784,20 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
     if existing:
         raise HTTPException(status_code=400, detail="Email déjà utilisé")
     
+    # Generate unique referral code for new user
+    my_referral_code = generate_referral_code(user.name)
+    # Make sure it's unique
+    while await db.users.find_one({"referral_code": my_referral_code}):
+        my_referral_code = generate_referral_code(user.name)
+    
+    # Check if referral code is provided and valid
+    referred_by = None
+    referrer = None
+    if user.referral_code:
+        referrer = await db.users.find_one({"referral_code": user.referral_code.upper()}, {"_id": 0})
+        if referrer:
+            referred_by = referrer["id"]
+    
     user_doc = {
         "id": str(uuid.uuid4()),
         "email": user.email,
@@ -798,11 +812,63 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
         "postal_code": user.postal_code,
         "country": user.country,
         "credits": 0,
+        "referral_code": my_referral_code,
+        "referred_by": referred_by,
+        "referral_count": 0,
+        "loyalty_points": REFERRAL_REWARDS["referee_points"] if referred_by else 0,
+        "loyalty_lifetime_points": REFERRAL_REWARDS["referee_points"] if referred_by else 0,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
     await db.users.insert_one(user_doc)
     token = create_token(user_doc["id"], user_doc["email"])
+    
+    # Handle referral rewards
+    if referrer:
+        # Give points to referrer
+        await db.users.update_one(
+            {"id": referrer["id"]},
+            {
+                "$inc": {
+                    "loyalty_points": REFERRAL_REWARDS["referrer_points"],
+                    "loyalty_lifetime_points": REFERRAL_REWARDS["referrer_points"],
+                    "referral_count": 1
+                }
+            }
+        )
+        
+        # Create referral record
+        referral_doc = {
+            "id": str(uuid.uuid4()),
+            "referrer_id": referrer["id"],
+            "referee_id": user_doc["id"],
+            "referee_name": user_doc["name"],
+            "referee_email": user_doc["email"],
+            "points_awarded": REFERRAL_REWARDS["referrer_points"],
+            "status": "active",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.referrals.insert_one(referral_doc)
+        
+        # Add to referrer's loyalty history
+        await db.loyalty_history.insert_one({
+            "id": str(uuid.uuid4()),
+            "user_id": referrer["id"],
+            "points": REFERRAL_REWARDS["referrer_points"],
+            "description": f"Parrainage: {user_doc['name']} a rejoint World Auto",
+            "type": "referral",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        # Add to new user's loyalty history
+        await db.loyalty_history.insert_one({
+            "id": str(uuid.uuid4()),
+            "user_id": user_doc["id"],
+            "points": REFERRAL_REWARDS["referee_points"],
+            "description": f"Bonus de bienvenue: Parrainé par {referrer['name']}",
+            "type": "referral_bonus",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
     
     # Send welcome email in background
     background_tasks.add_task(send_welcome_email, user_doc["email"], user_doc["name"])
@@ -815,7 +881,9 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
             "name": user_doc["name"],
             "is_professional": user_doc["is_professional"],
             "country": user_doc["country"],
-            "credits": 0
+            "credits": 0,
+            "referral_code": my_referral_code,
+            "loyalty_points": user_doc["loyalty_points"]
         }
     }
 
