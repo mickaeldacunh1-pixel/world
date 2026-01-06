@@ -1238,6 +1238,19 @@ async def upload_video(file: UploadFile = File(...), current_user: dict = Depend
         logging.error(f"Cloudinary video upload error: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de l'upload de la vidéo")
 
+@api_router.get("/listings/featured")
+async def get_featured_listings(limit: int = 6):
+    """Get featured listings for homepage"""
+    now = datetime.now(timezone.utc).isoformat()
+    
+    listings = await db.listings.find({
+        "status": "active",
+        "is_featured": True,
+        "featured_end": {"$gt": now}
+    }, {"_id": 0}).sort("featured_end", 1).to_list(limit)
+    
+    return listings
+
 @api_router.get("/listings")
 async def get_listings(
     category: Optional[str] = None,
