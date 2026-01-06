@@ -1676,7 +1676,7 @@ class AutoPiecesAPITester:
         
         # Step 2: Test GET /api/loyalty/history - Points history
         loyalty_history = self.run_test("Loyalty - Get History", "GET", "loyalty/history", 200)
-        if loyalty_history and isinstance(loyalty_history, list):
+        if loyalty_history is not None and isinstance(loyalty_history, list):
             self.log_test("Loyalty - History Structure", True, f"Found {len(loyalty_history)} history entries")
             
             # If there are history entries, check structure
@@ -1689,13 +1689,15 @@ class AutoPiecesAPITester:
                     else:
                         self.log_test(f"Loyalty History Field - {field}", False, f"Missing field: {field}")
                         return False
+            else:
+                self.log_test("Loyalty - History Empty", True, "No history entries (valid for new user)")
         else:
             self.log_test("Loyalty - History Structure", False, "Expected array response")
             return False
         
         # Step 3: Test GET /api/loyalty/rewards - Obtained rewards
         loyalty_rewards = self.run_test("Loyalty - Get Rewards", "GET", "loyalty/rewards", 200)
-        if loyalty_rewards and isinstance(loyalty_rewards, list):
+        if loyalty_rewards is not None and isinstance(loyalty_rewards, list):
             self.log_test("Loyalty - Rewards Structure", True, f"Found {len(loyalty_rewards)} rewards")
             
             # If there are rewards, check structure
@@ -1708,6 +1710,8 @@ class AutoPiecesAPITester:
                     else:
                         self.log_test(f"Loyalty Reward Field - {field}", False, f"Missing field: {field}")
                         return False
+            else:
+                self.log_test("Loyalty - Rewards Empty", True, "No rewards (valid for new user)")
         else:
             self.log_test("Loyalty - Rewards Structure", False, "Expected array response")
             return False
