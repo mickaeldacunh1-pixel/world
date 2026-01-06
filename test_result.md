@@ -1093,7 +1093,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Hero Advanced Customization Testing"
+    - "Hero Advanced Customization Testing Completed"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
