@@ -519,7 +519,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Paid Diagnostic IA System"
+    - "Paid Diagnostic IA System Testing Completed"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
