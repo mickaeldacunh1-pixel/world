@@ -90,6 +90,7 @@ export default function CreateListing() {
     fetchSubcategories();
     fetchCarBrands();
     fetchPhotoLimit();
+    fetchVideoLimit();
     
     // Handle photo purchase success/cancel
     if (searchParams.get('photos_success') === 'true') {
@@ -98,6 +99,15 @@ export default function CreateListing() {
       refreshUser();
     } else if (searchParams.get('photos_cancelled') === 'true') {
       toast.info('Achat de photos annulé');
+    }
+    
+    // Handle video purchase success/cancel
+    if (searchParams.get('video_success') === 'true') {
+      toast.success('🎬 Option vidéo étendue activée ! (2 min / 100 Mo)');
+      fetchVideoLimit();
+      refreshUser();
+    } else if (searchParams.get('video_cancelled') === 'true') {
+      toast.info('Achat vidéo annulé');
     }
   }, [searchParams]);
 
@@ -110,6 +120,15 @@ export default function CreateListing() {
     }
   };
 
+  const fetchVideoLimit = async () => {
+    try {
+      const response = await axios.get(`${API}/users/me/video-limit`);
+      setVideoLimit(response.data);
+    } catch (error) {
+      console.error('Error fetching video limit:', error);
+    }
+  };
+
   const handleBuyExtraPhotos = async () => {
     setBuyingPhotos(true);
     try {
@@ -119,6 +138,18 @@ export default function CreateListing() {
       console.error('Error creating checkout:', error);
       toast.error('Erreur lors de la création du paiement');
       setBuyingPhotos(false);
+    }
+  };
+
+  const handleBuyExtendedVideo = async () => {
+    setBuyingVideo(true);
+    try {
+      const response = await axios.post(`${API}/video/create-checkout-session`);
+      window.location.href = response.data.checkout_url;
+    } catch (error) {
+      console.error('Error creating video checkout:', error);
+      toast.error('Erreur lors de la création du paiement');
+      setBuyingVideo(false);
     }
   };
 
