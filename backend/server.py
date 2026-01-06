@@ -1529,35 +1529,142 @@ async def delete_image(public_id: str, current_user: dict = Depends(get_current_
         logging.error(f"Cloudinary delete error: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la suppression de l'image")
 
+# Video limits
+VIDEO_FREE_LIMIT = {
+    "max_duration": 30,  # seconds
+    "max_size_mb": 30,
+    "max_count": 1
+}
+
+VIDEO_EXTENDED_LIMIT = {
+    "max_duration": 120,  # 2 minutes
+    "max_size_mb": 100,
+    "max_count": 1
+}
+
+VIDEO_EXTENSION_PRICE = 1.00  # euros
+
 @api_router.post("/upload/video")
 async def upload_video(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
-    """Upload a video to Cloudinary"""
+    """Upload a video to Cloudinary with limits based on user plan"""
     if not file.content_type.startswith('video/'):
         raise HTTPException(status_code=400, detail="Le fichier doit être une vidéo")
     
-    # Check file size (max 50MB)
+    # Check if user has extended video credits
+    has_extended = current_user.get("extended_video_credits", 0) > 0 or current_user.get("is_professional", False)
+    
+    # Set limits based on user plan
+    if has_extended:
+        max_size = VIDEO_EXTENDED_LIMIT["max_size_mb"] * 1024 * 1024
+        max_duration = VIDEO_EXTENDED_LIMIT["max_duration"]
+        limit_label = "2 minutes / 100 Mo"
+    else:
+        max_size = VIDEO_FREE_LIMIT["max_size_mb"] * 1024 * 1024
+        max_duration = VIDEO_FREE_LIMIT["max_duration"]
+        limit_label = "30 secondes / 30 Mo"
+    
+    # Check file size
     contents = await file.read()
-    if len(contents) > 50 * 1024 * 1024:
-        raise HTTPException(status_code=400, detail="La vidéo ne doit pas dépasser 50 Mo")
+    if len(contents) > max_size:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Vidéo trop volumineuse. Limite: {limit_label}. Achetez l'option vidéo étendue pour 1€."
+        )
     
     try:
+        # Upload to Cloudinary
         result = cloudinary.uploader.upload(
             contents,
             resource_type="video",
             folder="worldauto_videos",
             eager=[
-                {"format": "mp4", "video_codec": "h264"}
+                {"format": "mp4", "video_codec": "h264", "quality": "auto:good"}
             ]
         )
+        
+        # Check duration after upload
+        duration = result.get('duration', 0)
+        if duration > max_duration:
+            # Delete the uploaded video
+            cloudinary.uploader.destroy(result['public_id'], resource_type="video")
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Vidéo trop longue ({int(duration)}s). Limite: {max_duration}s. Achetez l'option vidéo étendue pour 1€."
+            )
+        
+        # Deduct extended video credit if used
+        if has_extended and not current_user.get("is_professional", False):
+            await db.users.update_one(
+                {"id": current_user["id"]},
+                {"$inc": {"extended_video_credits": -1}}
+            )
+        
         return {
             "url": result['secure_url'],
             "public_id": result['public_id'],
-            "duration": result.get('duration'),
-            "format": result.get('format')
+            "duration": duration,
+            "format": result.get('format'),
+            "used_extended": has_extended
         }
     except cloudinary.exceptions.Error as e:
         logging.error(f"Cloudinary video upload error: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de l'upload de la vidéo")
+
+@api_router.get("/users/me/video-limit")
+async def get_video_limit(current_user: dict = Depends(get_current_user)):
+    """Get user's video upload limits"""
+    has_extended = current_user.get("extended_video_credits", 0) > 0 or current_user.get("is_professional", False)
+    
+    if has_extended:
+        return {
+            "max_duration": VIDEO_EXTENDED_LIMIT["max_duration"],
+            "max_size_mb": VIDEO_EXTENDED_LIMIT["max_size_mb"],
+            "is_extended": True,
+            "extended_credits": current_user.get("extended_video_credits", 0),
+            "is_pro": current_user.get("is_professional", False)
+        }
+    else:
+        return {
+            "max_duration": VIDEO_FREE_LIMIT["max_duration"],
+            "max_size_mb": VIDEO_FREE_LIMIT["max_size_mb"],
+            "is_extended": False,
+            "extended_credits": 0,
+            "is_pro": False,
+            "extension_price": VIDEO_EXTENSION_PRICE
+        }
+
+@api_router.post("/video/create-checkout-session")
+async def create_video_extension_checkout(current_user: dict = Depends(get_current_user)):
+    """Create Stripe checkout session for extended video option"""
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'eur',
+                    'product_data': {
+                        'name': 'Option Vidéo Étendue',
+                        'description': 'Vidéo jusqu\'à 2 minutes et 100 Mo pour votre annonce',
+                    },
+                    'unit_amount': int(VIDEO_EXTENSION_PRICE * 100),
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=f"{SITE_URL}/deposer?video_success=true",
+            cancel_url=f"{SITE_URL}/deposer?video_cancelled=true",
+            metadata={
+                "user_id": current_user["id"],
+                "type": "extended_video"
+            },
+            customer_email=current_user.get("email")
+        )
+        
+        return {"checkout_url": checkout_session.url}
+        
+    except Exception as e:
+        logging.error(f"Stripe video checkout error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/listings/featured")
 async def get_featured_listings(limit: int = 6):
