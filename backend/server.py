@@ -3229,6 +3229,54 @@ async def save_hero_settings(settings: dict, current_user: dict = Depends(get_cu
     
     return {"message": "Paramètres sauvegardés"}
 
+# ================== EMAIL TEST ROUTE ==================
+
+class EmailTestRequest(BaseModel):
+    to_email: str
+
+@api_router.post("/admin/test-email")
+async def test_email_sending(request: EmailTestRequest, current_user: dict = Depends(get_current_user)):
+    """Test endpoint to verify email configuration (admin only)"""
+    # Check if user is admin
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    test_html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #1E3A5F;">🧪 Test d'envoi email - World Auto France</h2>
+        <p>Ceci est un email de test envoyé depuis le panneau d'administration.</p>
+        <p><strong>Configuration actuelle :</strong></p>
+        <ul>
+            <li>SMTP Host: {SMTP_HOST}</li>
+            <li>SMTP Port: {SMTP_PORT}</li>
+            <li>From: {SMTP_USER}</li>
+            <li>To: {request.to_email}</li>
+        </ul>
+        <p>Date: {datetime.now(timezone.utc).strftime('%d/%m/%Y %H:%M:%S UTC')}</p>
+        <hr>
+        <p style="color: #666; font-size: 12px;">Si vous recevez cet email, la configuration SMTP fonctionne correctement.</p>
+    </div>
+    """
+    
+    success = send_email(request.to_email, "🧪 Test Email - World Auto France", test_html)
+    
+    if success:
+        return {
+            "success": True,
+            "message": f"Email de test envoyé à {request.to_email}",
+            "smtp_config": {
+                "host": SMTP_HOST,
+                "port": SMTP_PORT,
+                "user": SMTP_USER
+            }
+        }
+    else:
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Échec de l'envoi. Vérifiez les logs du serveur pour plus de détails."
+        )
+
 # ================== SHIPPING ROUTES ==================
 
 CARRIERS = {
