@@ -257,18 +257,21 @@ export default function Listings() {
               <h2 className="font-heading font-bold text-lg mb-6">Filtres</h2>
               
               <form onSubmit={handleSearch} className="space-y-6">
-                {/* Search */}
+                {/* Search with Voice */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">Recherche</label>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Mots-clés..."
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      className="pl-9"
-                      data-testid="filter-search"
-                    />
+                  <div className="relative flex gap-2">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Mots-clés..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="pl-9"
+                        data-testid="filter-search"
+                      />
+                    </div>
+                    <VoiceSearch onResult={(text) => setSearch(text)} />
                   </div>
                 </div>
 
