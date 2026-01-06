@@ -4404,6 +4404,7 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
     listings = await db.listings.find({"seller_id": current_user["id"]}, {"_id": 0}).to_list(1000)
     
     active_count = sum(1 for l in listings if l.get("status") == "active")
+    sold_count = sum(1 for l in listings if l.get("status") == "sold")
     total_views = sum(l.get("views", 0) for l in listings)
     
     # Get unread messages count
@@ -4412,15 +4413,55 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
         "read": False
     })
     
-    # Get user credits
-    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0, "credits": 1})
+    # Get total messages received (for conversion rate)
+    total_messages_received = await db.messages.count_documents({
+        "receiver_id": current_user["id"]
+    })
+    
+    # Get user credits and loyalty points
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0, "credits": 1, "loyalty_points": 1})
+    
+    # PRO Stats: Top 5 performing listings
+    active_listings = [l for l in listings if l.get("status") == "active"]
+    top_listings = sorted(active_listings, key=lambda x: x.get("views", 0), reverse=True)[:5]
+    
+    # PRO Stats: Listings with no views in last 7 days (needs attention)
+    seven_days_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    listings_needing_attention = [
+        {"id": l["id"], "title": l["title"], "views": l.get("views", 0), "created_at": l.get("created_at")}
+        for l in active_listings 
+        if l.get("views", 0) < 5 and l.get("created_at", "") < seven_days_ago
+    ][:5]
+    
+    # PRO Stats: Conversion rate (messages / views)
+    conversion_rate = round((total_messages_received / total_views * 100), 1) if total_views > 0 else 0
+    
+    # PRO Stats: Average views per listing
+    avg_views = round(total_views / len(active_listings), 1) if active_listings else 0
+    
+    # PRO Stats: Boosted listings count
+    boosted_count = sum(1 for l in listings if l.get("is_boosted"))
+    featured_count = sum(1 for l in listings if l.get("is_featured"))
     
     return {
         "active_listings": active_count,
         "total_listings": len(listings),
+        "sold_listings": sold_count,
         "total_views": total_views,
         "unread_messages": unread_messages,
-        "credits": user.get("credits", 0)
+        "credits": user.get("credits", 0),
+        "loyalty_points": user.get("loyalty_points", 0),
+        # PRO Stats
+        "conversion_rate": conversion_rate,
+        "avg_views_per_listing": avg_views,
+        "boosted_count": boosted_count,
+        "featured_count": featured_count,
+        "top_listings": [
+            {"id": l["id"], "title": l["title"][:40], "views": l.get("views", 0), "price": l.get("price", 0)}
+            for l in top_listings
+        ],
+        "listings_needing_attention": listings_needing_attention,
+        "total_messages_received": total_messages_received
     }
 
 @api_router.get("/categories/stats")
