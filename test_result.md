@@ -777,12 +777,59 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Referral System Testing Completed"
+    - "Video Monetization System Testing"
   stuck_tasks:
     - "Admin Updates Management"
-    - "AI Part Recognition"
   test_all: false
   test_priority: "high_first"
+
+backend:
+  - task: "Video Upload with Size Limits"
+    implemented: true
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented video upload with size/duration limits. Free: 30s/30MB. Extended (1€): 2min/100MB. Endpoints: GET /api/users/me/video-limit (returns current limits), POST /api/upload/video (validates size/duration), POST /api/video/create-checkout-session (Stripe checkout for extended option). Need testing: 1) Video limit endpoint returns correct data for free users, 2) Upload rejects files too large (>30MB), 3) Stripe checkout creates session (with valid key), 4) Frontend displays limits and buy button correctly."
+
+  - task: "Video Extension Stripe Checkout"
+    implemented: true
+    working: false
+    file: "server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Added stripe.api_key assignment to create_video_extension_checkout function. Stripe checkout will work only with valid API key (sk_test_emergent is placeholder). Structure is correct but payment processing requires real Stripe key."
+        - working: false
+        - agent: "main"
+        - comment: "Stripe checkout returns 'Invalid API Key' because sk_test_emergent is a placeholder. This is expected - same issue as other Stripe endpoints."
+
+frontend:
+  - task: "Video Upload UI with Limits Display"
+    implemented: true
+    working: true
+    file: "pages/CreateListing.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Frontend correctly displays video section with: 1) Current limit (30s/30Mo for free users), 2) Buy button '2 min / 100 Mo pour 1€' with Sparkles icon, 3) Upload zone with max size info. Verified via screenshot - UI is correct."
+        - working: true
+        - agent: "main"
+        - comment: "Screenshot confirmed: Video section visible, limits displayed correctly (30s/30Mo), buy button present with price (1€), upload zone shows constraints."
+
+agent_communication:
+    - agent: "main"
+    - message: "Testing Video Monetization System. Backend endpoints implemented: GET /api/users/me/video-limit (working), POST /api/upload/video (validates size/duration), POST /api/video/create-checkout-session (needs valid Stripe key). Frontend UI verified via screenshot - correctly shows limits and buy button. Need testing agent to: 1) Test video limit endpoint for authenticated user, 2) Test that oversized uploads are rejected with proper error, 3) Verify Stripe webhook handles 'extended_video' metadata type."
 
 backend:
   - task: "AI Part Recognition"
