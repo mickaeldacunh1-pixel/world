@@ -39,7 +39,7 @@ export default function MondialRelayPicker({ onSelect, selectedRelay, postalCode
     // Initialize widget
     $(widgetRef.current).MR_ParcelShopPicker({
       Target: "#MR_Selected_ID",
-      Brand: "BDTEST", // Code de test - À remplacer par votre code client en production
+      Brand: "CC23S7ZB", // Code Enseigne Mondial Relay Production
       Country: "FR",
       PostCode: searchPostal || "",
       ColLivMod: "24R", // Mode de livraison (Point Relais)
