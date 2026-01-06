@@ -42,10 +42,10 @@
         .bg-glow-2 { background: #3b82f6; bottom: 200px; left: -150px; opacity: 0.2; }
         .bg-glow-3 { background: #f97316; bottom: -100px; right: -100px; opacity: 0.2; }
         
-        /* Header */
+        /* Header with Logo */
         .header {
             position: relative;
-            padding: 30px 40px 20px;
+            padding: 25px 40px 15px;
             text-align: center;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
@@ -54,34 +54,57 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px;
+            gap: 12px;
+            margin-bottom: 8px;
         }
         
-        .logo-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            border-radius: 16px;
+        .logo-circle {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #1E3A5F, #2C5282);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            box-shadow: 0 10px 40px rgba(249, 115, 22, 0.4);
+            border: 3px solid #f97316;
+            box-shadow: 0 8px 30px rgba(249, 115, 22, 0.4);
+        }
+        
+        .logo-circle-inner {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
         }
         
         .logo-text {
             font-family: 'Montserrat', sans-serif;
             font-weight: 900;
-            font-size: 36px;
-            background: linear-gradient(135deg, #fff 0%, #f97316 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 32px;
             letter-spacing: -1px;
         }
         
+        .logo-text .world-auto {
+            color: #fff;
+        }
+        
+        .logo-text .france {
+            background: linear-gradient(90deg, #0055A4 0%, #0055A4 33%, #FFFFFF 33%, #FFFFFF 66%, #EF4135 66%, #EF4135 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+        
         .tagline {
-            font-size: 14px;
+            font-size: 13px;
             color: #94a3b8;
             font-weight: 500;
             letter-spacing: 2px;
@@ -91,7 +114,7 @@
         /* Hero */
         .hero {
             position: relative;
-            padding: 30px 40px;
+            padding: 25px 40px 20px;
             text-align: center;
         }
         
@@ -106,55 +129,93 @@
             font-size: 12px;
             font-weight: 600;
             color: #f97316;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .hero h1 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 900;
             line-height: 1.2;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .hero h1 span {
             color: #f97316;
         }
         
-        .hero p {
+        .hero-subtitle {
+            font-size: 15px;
+            color: #e2e8f0;
+            max-width: 520px;
+            margin: 0 auto 10px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        
+        .hero-points {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        
+        .hero-point {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #22c55e;
+            font-weight: 600;
+        }
+        
+        /* Accroche Section */
+        .accroche {
+            background: linear-gradient(90deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.2), rgba(249, 115, 22, 0.1));
+            border-top: 1px solid rgba(249, 115, 22, 0.3);
+            border-bottom: 1px solid rgba(249, 115, 22, 0.3);
+            padding: 15px 30px;
+            text-align: center;
+        }
+        
+        .accroche-text {
+            font-family: 'Montserrat', sans-serif;
             font-size: 16px;
-            color: #94a3b8;
-            max-width: 500px;
-            margin: 0 auto;
-            line-height: 1.6;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .accroche-text span {
+            color: #f97316;
         }
         
         /* Features Grid */
         .features {
             position: relative;
-            padding: 20px 30px;
+            padding: 18px 25px;
         }
         
         .features-title {
             text-align: center;
             font-family: 'Montserrat', sans-serif;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: #f97316;
         }
         
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
         }
         
         .feature-card {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: 14px;
+            padding: 12px;
             transition: all 0.3s;
         }
         
@@ -164,14 +225,14 @@
         }
         
         .feature-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            margin-bottom: 10px;
+            font-size: 18px;
+            margin-bottom: 8px;
         }
         
         .feature-icon.orange { background: linear-gradient(135deg, #f97316, #ea580c); }
@@ -183,127 +244,176 @@
         
         .feature-card h3 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
         
         .feature-card p {
-            font-size: 11px;
+            font-size: 9px;
             color: #94a3b8;
-            line-height: 1.5;
+            line-height: 1.4;
         }
         
         .feature-badge {
             display: inline-block;
             background: rgba(249, 115, 22, 0.2);
             color: #f97316;
-            font-size: 9px;
+            font-size: 8px;
             font-weight: 700;
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 20px;
-            margin-top: 8px;
+            margin-top: 6px;
         }
         
-        /* Comparison */
-        .comparison {
+        /* Why Choose Us */
+        .why-us {
+            padding: 15px 30px;
+        }
+        
+        .why-us-title {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        
+        .why-us-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .why-card {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .why-card .emoji {
+            font-size: 20px;
+        }
+        
+        .why-card h4 {
+            font-size: 11px;
+            font-weight: 700;
+            color: #22c55e;
+            margin-bottom: 2px;
+        }
+        
+        .why-card p {
+            font-size: 9px;
+            color: #94a3b8;
+            line-height: 1.3;
+        }
+        
+        /* Stats */
+        .stats {
             position: relative;
-            padding: 20px 30px;
+            padding: 15px 30px;
             background: rgba(249, 115, 22, 0.05);
             border-top: 1px solid rgba(249, 115, 22, 0.2);
             border-bottom: 1px solid rgba(249, 115, 22, 0.2);
         }
         
-        .comparison-title {
-            text-align: center;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-        
-        .comparison-grid {
+        .stats-grid {
             display: flex;
-            justify-content: center;
-            gap: 30px;
+            justify-content: space-around;
             flex-wrap: wrap;
         }
         
-        .comparison-item {
+        .stat-item {
             text-align: center;
         }
         
-        .comparison-item .number {
+        .stat-item .number {
             font-family: 'Montserrat', sans-serif;
-            font-size: 36px;
+            font-size: 28px;
             font-weight: 900;
             color: #f97316;
         }
         
-        .comparison-item .label {
-            font-size: 11px;
+        .stat-item .label {
+            font-size: 10px;
             color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         
         /* CTA */
         .cta {
             position: relative;
-            padding: 25px 40px;
+            padding: 20px 35px;
             text-align: center;
         }
         
         .cta-box {
             background: linear-gradient(135deg, #f97316, #ea580c);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 20px 60px rgba(249, 115, 22, 0.3);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 15px 50px rgba(249, 115, 22, 0.3);
         }
         
         .cta h2 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         
-        .cta p {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 15px;
+        .cta-subtitle {
+            font-size: 13px;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+        
+        .cta-bonus {
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 8px 15px;
+            margin: 10px auto;
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
         }
         
         .cta-url {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background: #fff;
             color: #0f172a;
-            padding: 12px 30px;
+            padding: 10px 25px;
             border-radius: 50px;
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             text-decoration: none;
+            margin-top: 10px;
         }
         
         .qr-section {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-            padding-top: 20px;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
             border-top: 1px solid rgba(255,255,255,0.2);
         }
         
         .qr-code {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             background: #fff;
-            border-radius: 10px;
-            padding: 5px;
+            border-radius: 8px;
+            padding: 4px;
         }
         
         .qr-code img {
@@ -312,84 +422,52 @@
         }
         
         .qr-text {
-            font-size: 12px;
+            font-size: 11px;
             text-align: left;
         }
         
         .qr-text strong {
             display: block;
-            font-size: 14px;
+            font-size: 12px;
+        }
+        
+        /* Testimonial */
+        .testimonial {
+            padding: 12px 30px;
+            text-align: center;
+        }
+        
+        .testimonial-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 12px 20px;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            font-size: 12px;
+            color: #e2e8f0;
+            margin-bottom: 8px;
+        }
+        
+        .testimonial-author {
+            font-size: 10px;
+            color: #f97316;
+            font-weight: 600;
         }
         
         /* Footer */
         .footer {
             position: relative;
-            padding: 20px 40px;
+            padding: 12px 40px;
             text-align: center;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
         
         .footer-credits {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 11px;
-            color: #64748b;
-        }
-        
-        .emergent-logo {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255,255,255,0.05);
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .emergent-logo img {
-            height: 18px;
-        }
-        
-        .emergent-logo span {
-            font-weight: 600;
-            color: #94a3b8;
-        }
-        
-        /* Exclusive badge */
-        .exclusive-features {
-            position: relative;
-            padding: 15px 30px;
-        }
-        
-        .exclusive-title {
-            text-align: center;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #64748b;
-            margin-bottom: 10px;
-        }
-        
-        .exclusive-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .exclusive-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            padding: 5px 12px;
-            border-radius: 20px;
             font-size: 10px;
-            color: #22c55e;
-            font-weight: 600;
+            color: #64748b;
         }
         
         @media print {
@@ -411,11 +489,15 @@
         <div class="bg-glow bg-glow-2"></div>
         <div class="bg-glow bg-glow-3"></div>
         
-        <!-- Header -->
+        <!-- Header with Logo -->
         <header class="header">
             <div class="logo-container">
-                <div class="logo-icon">🚗</div>
-                <div class="logo-text">World Auto France</div>
+                <div class="logo-circle">
+                    <div class="logo-circle-inner">WA</div>
+                </div>
+                <div class="logo-text">
+                    <span class="world-auto">World Auto </span><span class="france">France</span>
+                </div>
             </div>
             <p class="tagline">La marketplace automobile nouvelle génération</p>
         </header>
@@ -423,107 +505,154 @@
         <!-- Hero -->
         <section class="hero">
             <div class="hero-badge">
-                ✨ Propulsé par l'Intelligence Artificielle
+                ✨ 100% Français • Propulsé par l'IA
             </div>
             <h1>
-                Achetez, Vendez, Échangez<br>
-                <span>Comme Jamais Auparavant</span>
+                Vous cherchez une pièce auto ?<br>
+                <span>On révolutionne votre recherche !</span>
             </h1>
-            <p>
-                La première plateforme française qui combine marketplace automobile 
-                et technologies de pointe pour une expérience unique.
+            <p class="hero-subtitle">
+                Fini les heures à chercher la bonne pièce. Notre assistant IA <strong>Tobi</strong> 
+                diagnostique vos pannes et trouve les pièces compatibles en quelques secondes.
+            </p>
+            <div class="hero-points">
+                <span class="hero-point">✓ Gratuit pour les acheteurs</span>
+                <span class="hero-point">✓ Paiement 100% sécurisé</span>
+                <span class="hero-point">✓ Livraison Mondial Relay</span>
+            </div>
+        </section>
+        
+        <!-- Accroche -->
+        <section class="accroche">
+            <p class="accroche-text">
+                🔥 Particuliers ou Pros, vendez vos pièces <span>à partir de 2€</span> seulement !
             </p>
         </section>
         
         <!-- Features Grid -->
         <section class="features">
-            <h2 class="features-title">🚀 Nos Technologies Exclusives</h2>
+            <h2 class="features-title">🚀 Nos fonctionnalités qui changent tout</h2>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon orange">🤖</div>
-                    <h3>Diagnostic IA "Tobi"</h3>
-                    <p>Décrivez votre panne, notre IA analyse et identifie les causes probables instantanément.</p>
-                    <span class="feature-badge">EXCLUSIF</span>
+                    <h3>Assistant Tobi</h3>
+                    <p>Décrivez votre panne, il trouve la solution et les pièces.</p>
+                    <span class="feature-badge">IA EXCLUSIVE</span>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon blue">🎁</div>
-                    <h3>Programme Parrainage</h3>
-                    <p>Invitez vos amis et gagnez 100 points. Vos filleuls reçoivent 50 points de bienvenue !</p>
-                    <span class="feature-badge">GAGNEZ DES RÉCOMPENSES</span>
+                    <div class="feature-icon blue">📷</div>
+                    <h3>Scan Plaque</h3>
+                    <p>Scannez une plaque = pièces compatibles instantanément.</p>
+                    <span class="feature-badge">MAGIQUE</span>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon green">⚡</div>
-                    <h3>Enchères en Direct</h3>
-                    <p>Système d'enchères live avec timer. Faites de bonnes affaires en temps réel.</p>
-                    <span class="feature-badge">TEMPS RÉEL</span>
+                    <h3>Enchères Live</h3>
+                    <p>Enchérissez en temps réel. Faites des affaires en or !</p>
+                    <span class="feature-badge">EXCITANT</span>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon purple">🎤</div>
                     <h3>Recherche Vocale</h3>
-                    <p>Dites simplement ce que vous cherchez. Notre IA comprend et trouve pour vous.</p>
-                    <span class="feature-badge">INNOVATION</span>
+                    <p>Parlez, on trouve ! Plus besoin de taper.</p>
+                    <span class="feature-badge">PRATIQUE</span>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon pink">📷</div>
-                    <h3>Scan Plaque Immat</h3>
-                    <p>Scannez une plaque et trouvez instantanément les pièces compatibles.</p>
-                    <span class="feature-badge">GAIN DE TEMPS</span>
+                    <div class="feature-icon pink">🎁</div>
+                    <h3>Parrainage</h3>
+                    <p>Invitez vos amis = 100 points offerts à chaque parrainage.</p>
+                    <span class="feature-badge">RENTABLE</span>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon cyan">📦</div>
-                    <h3>Mondial Relay Intégré</h3>
-                    <p>Création d'étiquettes et suivi de colis automatique. Livraison simplifiée.</p>
-                    <span class="feature-badge">TOUT-EN-UN</span>
+                    <h3>Mondial Relay</h3>
+                    <p>Étiquettes automatiques + suivi intégré. Zéro stress.</p>
+                    <span class="feature-badge">SIMPLIFIÉ</span>
                 </div>
             </div>
         </section>
         
-        <!-- Exclusive features list -->
-        <section class="exclusive-features">
-            <p class="exclusive-title">Également inclus</p>
-            <div class="exclusive-list">
-                <span class="exclusive-item">✓ Chat temps réel</span>
-                <span class="exclusive-item">✓ Programme fidélité</span>
-                <span class="exclusive-item">✓ Notation acheteurs</span>
-                <span class="exclusive-item">✓ Paiement sécurisé</span>
-                <span class="exclusive-item">✓ Appel vidéo vendeur</span>
-                <span class="exclusive-item">✓ Boost d'annonces</span>
+        <!-- Why Choose Us -->
+        <section class="why-us">
+            <h2 class="why-us-title">💡 Pourquoi choisir World Auto France ?</h2>
+            <div class="why-us-grid">
+                <div class="why-card">
+                    <span class="emoji">💰</span>
+                    <div>
+                        <h4>Économisez jusqu'à 70%</h4>
+                        <p>Sur vos pièces détachées par rapport aux concessionnaires</p>
+                    </div>
+                </div>
+                <div class="why-card">
+                    <span class="emoji">🛡️</span>
+                    <div>
+                        <h4>Paiement ultra-sécurisé</h4>
+                        <p>Stripe protège chaque transaction. Remboursement garanti.</p>
+                    </div>
+                </div>
+                <div class="why-card">
+                    <span class="emoji">⏱️</span>
+                    <div>
+                        <h4>Gain de temps énorme</h4>
+                        <p>Notre IA trouve en 10 sec ce que vous cherchez en 1h ailleurs</p>
+                    </div>
+                </div>
+                <div class="why-card">
+                    <span class="emoji">🇫🇷</span>
+                    <div>
+                        <h4>100% Made in France</h4>
+                        <p>Plateforme française, données hébergées en France</p>
+                    </div>
+                </div>
             </div>
         </section>
         
-        <!-- Comparison -->
-        <section class="comparison">
-            <h2 class="comparison-title">Ce que World Auto vous offre de plus</h2>
-            <div class="comparison-grid">
-                <div class="comparison-item">
+        <!-- Stats -->
+        <section class="stats">
+            <div class="stats-grid">
+                <div class="stat-item">
                     <div class="number">10+</div>
-                    <div class="label">Fonctionnalités<br>exclusives</div>
+                    <div class="label">Technologies<br>exclusives</div>
                 </div>
-                <div class="comparison-item">
+                <div class="stat-item">
                     <div class="number">0€</div>
                     <div class="label">Commission<br>acheteur</div>
                 </div>
-                <div class="comparison-item">
+                <div class="stat-item">
                     <div class="number">24/7</div>
                     <div class="label">Assistant IA<br>disponible</div>
                 </div>
-                <div class="comparison-item">
-                    <div class="number">100%</div>
-                    <div class="label">Paiement<br>sécurisé</div>
+                <div class="stat-item">
+                    <div class="number">2€</div>
+                    <div class="label">Par annonce<br>seulement</div>
                 </div>
+            </div>
+        </section>
+        
+        <!-- Testimonial -->
+        <section class="testimonial">
+            <div class="testimonial-box">
+                <p class="testimonial-text">
+                    "J'ai trouvé mon alternateur BMW en 30 secondes grâce à Tobi. 
+                    J'ai économisé 200€ par rapport au garage. Incroyable !"
+                </p>
+                <p class="testimonial-author">— Thomas, utilisateur satisfait</p>
             </div>
         </section>
         
         <!-- CTA -->
         <section class="cta">
             <div class="cta-box">
-                <h2>🎉 Inscrivez-vous Maintenant !</h2>
-                <p>Rejoignez la révolution automobile française</p>
+                <h2>🎉 Rejoignez-nous maintenant !</h2>
+                <p class="cta-subtitle">L'inscription est gratuite et prend 30 secondes</p>
+                <div class="cta-bonus">
+                    🎁 50 points de fidélité offerts à l'inscription !
+                </div>
                 <a href="https://worldautofrance.com" class="cta-url">
                     🌐 worldautofrance.com
                 </a>
@@ -532,7 +661,7 @@
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://worldautofrance.com" alt="QR Code">
                     </div>
                     <div class="qr-text">
-                        <strong>Scannez pour visiter</strong>
+                        <strong>📱 Scannez pour visiter</strong>
                         Ou tapez worldautofrance.com<br>dans votre navigateur
                     </div>
                 </div>
@@ -541,14 +670,8 @@
         
         <!-- Footer -->
         <footer class="footer">
-            <div class="footer-credits">
-                <span>Créé et développé avec</span>
-                <div class="emergent-logo">
-                    <span>🧠 Emergent (Kimi)</span>
-                </div>
-            </div>
-            <p style="font-size: 10px; color: #475569; margin-top: 10px;">
-                © 2026 World Auto France - Tous droits réservés
+            <p class="footer-credits">
+                © 2026 World Auto France - La révolution automobile française 🇫🇷
             </p>
         </footer>
     </div>
