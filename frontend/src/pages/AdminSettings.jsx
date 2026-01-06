@@ -1033,8 +1033,8 @@ export default function AdminSettings() {
                       } ${settings.hero_text_animation ? `animate-${settings.hero_text_animation}` : ''}`}
                       style={{ fontFamily: settings.font_heading }}
                     >
-                      {settings.hero_title_line1}<br />
-                      <span style={{ color: settings.color_accent }}>{settings.hero_title_line2}</span>
+                      <span style={{ color: settings.hero_title_line1_color || '#FFFFFF' }}>{settings.hero_title_line1}</span><br />
+                      <span style={{ color: settings.hero_title_line2_color || settings.color_accent }}>{settings.hero_title_line2}</span>
                     </h1>
                     <p 
                       className={`text-white/80 mb-4 ${settings.hero_text_align === 'center' ? 'mx-auto' : ''} max-w-md ${
