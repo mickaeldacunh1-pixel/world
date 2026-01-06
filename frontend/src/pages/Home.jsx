@@ -32,28 +32,90 @@ const features = [
 ];
 
 const DEFAULT_HERO = {
+  // Badge
+  hero_show_badge: true,
+  hero_badge_text: "La référence automobile en France",
+  hero_badge_icon: "✨",
+  hero_badge_bg_color: "rgba(249, 115, 22, 0.2)",
+  hero_badge_text_color: "#F97316",
+  
+  // Titles
   hero_title_line1: "La marketplace auto",
-  hero_title_line2: "pour tous",
   hero_title_line1_color: "#FFFFFF",
+  hero_title_line1_size: "large",
+  hero_title_line2: "pour tous",
   hero_title_line2_color: "#F97316",
+  hero_title_line2_size: "large",
+  hero_title_line2_gradient: false,
+  hero_title_line2_gradient_from: "#F97316",
+  hero_title_line2_gradient_to: "#EA580C",
+  
+  // Description
   hero_description: "Achetez et vendez des pièces détachées, voitures, motos et utilitaires. Pour particuliers et professionnels.",
+  hero_description_color: "rgba(255, 255, 255, 0.8)",
+  hero_description_size: "medium",
+  
+  // CTA Buttons
+  hero_cta1_enabled: true,
+  hero_cta1_text: "Déposer une annonce",
+  hero_cta1_link: "/deposer",
+  hero_cta1_icon: "📝",
+  hero_cta1_bg_color: "#F97316",
+  hero_cta1_text_color: "#FFFFFF",
+  hero_cta1_style: "filled",
+  
+  hero_cta2_enabled: true,
+  hero_cta2_text: "Enchères en direct",
+  hero_cta2_link: "/encheres",
+  hero_cta2_icon: "⚡",
+  hero_cta2_bg_color: "transparent",
+  hero_cta2_text_color: "#FFFFFF",
+  hero_cta2_border_color: "rgba(255, 255, 255, 0.3)",
+  hero_cta2_style: "outline",
+  
+  // Background
   hero_image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2832&auto=format&fit=crop",
-  hero_cta_text: "Déposer une annonce",
-  hero_cta_link: "/deposer",
+  hero_overlay_enabled: true,
+  hero_overlay_color: "#000000",
+  hero_overlay_opacity: 50,
+  hero_overlay_gradient: true,
+  
+  // Layout
+  hero_height: "large",
+  hero_text_align: "left",
+  hero_text_animation: "none",
+  
+  // Elements visibility
+  hero_show_search: true,
+  hero_show_plate_scanner: true,
+  hero_show_voice_search: true,
+  hero_show_stats: true,
+  hero_show_ai_tools: true,
+  hero_show_categories: true,
+  
+  // Search
+  hero_search_placeholder: "Rechercher une pièce, un véhicule...",
+  hero_search_button_text: "Rechercher",
+  
+  // Stats
+  hero_stat1_number: "100+",
+  hero_stat1_label: "annonces actives",
+  hero_stat1_icon: "📦",
+  hero_stat2_number: "5",
+  hero_stat2_label: "catégories",
+  hero_stat2_icon: "📂",
+  hero_stat3_enabled: false,
+  hero_stats_number_color: "#FFFFFF",
+  hero_stats_color: "rgba(255, 255, 255, 0.7)",
+  
+  // Announcement bar
   seasonal_animation: "",
   announcement_enabled: false,
   announcement_text: "",
   announcement_link: "",
   announcement_bg_color: "#e74c3c",
   announcement_text_color: "#ffffff",
-  // New customization options
-  hero_title_size: "large",
-  hero_description_size: "medium",
-  hero_text_align: "left",
-  hero_height: "large",
-  hero_show_search: true,
-  hero_show_categories: true,
-  hero_overlay_opacity: 50,
+  
   // Category images
   category_pieces_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=400&fit=crop",
   category_voitures_image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop",
