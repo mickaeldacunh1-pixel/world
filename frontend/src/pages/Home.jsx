@@ -201,6 +201,7 @@ export default function Home() {
                   <SelectItem value="accessoires">Accessoires</SelectItem>
                 </SelectContent>
               </Select>
+              <VoiceSearch onSearch={(q) => navigate(`/annonces?search=${encodeURIComponent(q)}`)} />
               <Button 
                 type="submit" 
                 className="h-14 px-8 btn-primary rounded-xl text-base font-semibold" 
@@ -211,8 +212,21 @@ export default function Home() {
               </Button>
             </form>
 
+            {/* Plate Scanner & Quick Tools */}
+            <div className="flex flex-wrap items-center gap-4 mt-6 animate-fade-in-up stagger-4">
+              <PlateScanner onVehicleSelect={(v) => {
+                navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
+              }} />
+              <Link to="/encheres">
+                <Button variant="outline" className="gap-2 border-white/30 text-white hover:bg-white/10">
+                  <Gavel className="w-5 h-5" />
+                  Enchères en direct
+                </Button>
+              </Link>
+            </div>
+
             {/* Quick stats */}
-            <div className="flex flex-wrap items-center gap-6 mt-10 animate-fade-in-up stagger-5">
+            <div className="flex flex-wrap items-center gap-6 mt-8 animate-fade-in-up stagger-5">
               <div className="text-white/70">
                 <span className="text-2xl font-bold text-white">{Object.values(categoryStats).reduce((a, b) => a + b, 0) || '100+'}+</span>
                 <span className="ml-2 text-sm">annonces actives</span>
