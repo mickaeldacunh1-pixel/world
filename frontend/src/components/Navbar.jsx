@@ -143,11 +143,11 @@ export default function Navbar() {
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="flex items-center gap-2" data-testid="user-menu">
+                    <Button variant="outline" size="sm" className="flex items-center gap-1.5 px-2 sm:px-3" data-testid="user-menu">
                       <User className="w-4 h-4" />
-                      <span className="hidden sm:inline">{user.name}</span>
+                      <span className="hidden sm:inline max-w-[100px] truncate">{user.name}</span>
                       {user.credits > 0 && (
-                        <span className="bg-accent text-accent-foreground text-xs px-2 py-0.5 rounded-full">
+                        <span className="bg-accent text-accent-foreground text-xs px-1.5 py-0.5 rounded-full">
                           {user.credits}
                         </span>
                       )}
