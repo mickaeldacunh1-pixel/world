@@ -3796,6 +3796,26 @@ async def stripe_webhook(request: Request):
                         })
                         
                         logger.info(f"Added {credits} diagnostic credits to user {user_id}")
+                
+                # Check if this is an extra photos purchase
+                elif metadata.get("type") == "extra_photos":
+                    user_id = metadata.get("user_id")
+                    photos_count = int(metadata.get("photos_count", 0))
+                    
+                    if user_id and photos_count > 0:
+                        await db.users.update_one(
+                            {"id": user_id},
+                            {"$inc": {"extra_photo_credits": photos_count}}
+                        )
+                        
+                        # Update transaction status
+                        await db.transactions.update_one(
+                            {"stripe_session_id": session_id},
+                            {"$set": {"status": "completed", "completed_at": datetime.now(timezone.utc).isoformat()}}
+                        )
+                        
+                        logger.info(f"Added {photos_count} extra photo credits to user {user_id}")
+                
                 else:
                     # Regular transaction (credits for listings)
                     await db.payment_transactions.update_one(
