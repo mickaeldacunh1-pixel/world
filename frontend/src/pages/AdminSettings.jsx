@@ -63,9 +63,25 @@ const DEFAULT_SETTINGS = {
   hero_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
   hero_cta_text: "Déposer une annonce",
   hero_cta_link: "/deposer",
+  hero_cta2_text: "",
+  hero_cta2_link: "",
   hero_overlay_opacity: 50,
+  hero_overlay_color: "#000000",
   hero_text_animation: "none",
+  hero_title_size: "large",
+  hero_description_size: "medium",
+  hero_text_align: "center",
+  hero_height: "large",
+  hero_show_search: true,
+  hero_show_categories: true,
   preview_mode: "desktop",
+  
+  // Categories Images (petites catégories)
+  category_pieces_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=400&fit=crop",
+  category_voitures_image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop",
+  category_motos_image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&h=400&fit=crop",
+  category_utilitaires_image: "https://images.unsplash.com/photo-1532581140115-3e355d1ed1de?w=600&h=400&fit=crop",
+  category_accessoires_image: "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=600&h=400&fit=crop",
   
   // Announcement Bar
   announcement_enabled: false,
@@ -104,6 +120,36 @@ const DEFAULT_SETTINGS = {
   show_categories_section: true,
   show_regions_section: true,
 };
+
+// Options de taille de titre
+const TITLE_SIZE_OPTIONS = [
+  { value: 'small', label: 'Petit', class: 'text-2xl md:text-3xl' },
+  { value: 'medium', label: 'Moyen', class: 'text-3xl md:text-4xl' },
+  { value: 'large', label: 'Grand', class: 'text-4xl md:text-5xl lg:text-6xl' },
+  { value: 'xlarge', label: 'Très grand', class: 'text-5xl md:text-6xl lg:text-7xl' },
+];
+
+// Options de taille de description
+const DESC_SIZE_OPTIONS = [
+  { value: 'small', label: 'Petit', class: 'text-sm md:text-base' },
+  { value: 'medium', label: 'Moyen', class: 'text-base md:text-lg' },
+  { value: 'large', label: 'Grand', class: 'text-lg md:text-xl' },
+];
+
+// Options d'alignement
+const TEXT_ALIGN_OPTIONS = [
+  { value: 'left', label: 'Gauche' },
+  { value: 'center', label: 'Centre' },
+  { value: 'right', label: 'Droite' },
+];
+
+// Options de hauteur du Hero
+const HERO_HEIGHT_OPTIONS = [
+  { value: 'small', label: 'Petit (400px)', class: 'min-h-[400px]' },
+  { value: 'medium', label: 'Moyen (500px)', class: 'min-h-[500px]' },
+  { value: 'large', label: 'Grand (600px)', class: 'min-h-[600px]' },
+  { value: 'full', label: 'Plein écran', class: 'min-h-screen' },
+];
 
 const FONT_OPTIONS = [
   { value: 'Montserrat', label: 'Montserrat' },
