@@ -4087,13 +4087,199 @@ Problème décrit : {problem}
 
 Réponds de manière structurée et accessible, avec des emojis pour la clarté."""
 
+# Diagnostic pricing configuration
+DIAGNOSTIC_PRICING = {
+    "single_price": 0.99,  # Prix unitaire en euros
+    "pack_5_price": 3.99,  # Pack 5 diagnostics
+    "points_cost": 100,    # Points fidélité pour 1 diagnostic
+}
+
 class DiagnosticRequest(BaseModel):
     problem: str
     vehicle: Optional[str] = None
+    use_credits: bool = False  # Utiliser les crédits diagnostics
+    use_points: bool = False   # Utiliser les points fidélité
+
+@api_router.get("/ai/diagnostic/access")
+async def check_diagnostic_access(current_user: dict = Depends(get_current_user)):
+    """Vérifie si l'utilisateur a accès gratuit au diagnostic"""
+    # Vérifier si l'utilisateur a au moins une annonce active
+    active_listings_count = await db.listings.count_documents({
+        "seller_id": current_user["id"],
+        "status": "active"
+    })
+    
+    has_free_access = active_listings_count > 0
+    diagnostic_credits = current_user.get("diagnostic_credits", 0)
+    loyalty_points = current_user.get("loyalty_points", 0)
+    can_use_points = loyalty_points >= DIAGNOSTIC_PRICING["points_cost"]
+    
+    return {
+        "has_free_access": has_free_access,
+        "active_listings_count": active_listings_count,
+        "diagnostic_credits": diagnostic_credits,
+        "loyalty_points": loyalty_points,
+        "can_use_points": can_use_points,
+        "pricing": {
+            "single": DIAGNOSTIC_PRICING["single_price"],
+            "pack_5": DIAGNOSTIC_PRICING["pack_5_price"],
+            "points_cost": DIAGNOSTIC_PRICING["points_cost"]
+        }
+    }
+
+@api_router.post("/ai/diagnostic/purchase")
+async def purchase_diagnostic_credits(
+    pack: str = "single",
+    current_user: dict = Depends(get_current_user)
+):
+    """Acheter des crédits de diagnostic via Stripe"""
+    import stripe
+    stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
+    
+    if pack == "single":
+        amount = int(DIAGNOSTIC_PRICING["single_price"] * 100)  # en centimes
+        credits = 1
+        description = "1 Diagnostic IA"
+    elif pack == "pack_5":
+        amount = int(DIAGNOSTIC_PRICING["pack_5_price"] * 100)
+        credits = 5
+        description = "Pack 5 Diagnostics IA"
+    else:
+        raise HTTPException(status_code=400, detail="Pack invalide")
+    
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'eur',
+                    'product_data': {
+                        'name': description,
+                        'description': f"Diagnostic automobile par Tobi IA - World Auto France",
+                    },
+                    'unit_amount': amount,
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=f"{SITE_URL}/diagnostic?success=true&credits={credits}",
+            cancel_url=f"{SITE_URL}/diagnostic?canceled=true",
+            metadata={
+                'user_id': current_user["id"],
+                'type': 'diagnostic_credits',
+                'credits': str(credits)
+            }
+        )
+        
+        return {"checkout_url": checkout_session.url, "session_id": checkout_session.id}
+        
+    except Exception as e:
+        logger.error(f"Stripe error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur de paiement")
+
+@api_router.post("/ai/diagnostic/use-points")
+async def use_points_for_diagnostic(current_user: dict = Depends(get_current_user)):
+    """Échanger des points fidélité contre un crédit de diagnostic"""
+    points_cost = DIAGNOSTIC_PRICING["points_cost"]
+    current_points = current_user.get("loyalty_points", 0)
+    
+    if current_points < points_cost:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Points insuffisants. Vous avez {current_points} points, il en faut {points_cost}."
+        )
+    
+    # Déduire les points et ajouter un crédit
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {
+            "$inc": {
+                "loyalty_points": -points_cost,
+                "diagnostic_credits": 1
+            }
+        }
+    )
+    
+    # Ajouter à l'historique fidélité
+    await db.loyalty_history.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "points": -points_cost,
+        "description": "Échange contre 1 Diagnostic IA",
+        "type": "diagnostic_exchange",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    return {
+        "message": "Crédit de diagnostic ajouté !",
+        "diagnostic_credits": current_user.get("diagnostic_credits", 0) + 1,
+        "remaining_points": current_points - points_cost
+    }
 
 @api_router.post("/ai/diagnostic")
-async def ai_diagnostic(request: DiagnosticRequest):
-    """Diagnostic IA d'un problème automobile"""
+async def ai_diagnostic(request: DiagnosticRequest, current_user: dict = Depends(get_current_user)):
+    """Diagnostic IA d'un problème automobile - Payant sauf si annonce active"""
+    
+    # Vérifier l'accès gratuit (a au moins une annonce active)
+    active_listings_count = await db.listings.count_documents({
+        "seller_id": current_user["id"],
+        "status": "active"
+    })
+    has_free_access = active_listings_count > 0
+    
+    # Si pas d'accès gratuit, vérifier les crédits ou points
+    if not has_free_access:
+        diagnostic_credits = current_user.get("diagnostic_credits", 0)
+        
+        if request.use_credits and diagnostic_credits > 0:
+            # Utiliser un crédit
+            await db.users.update_one(
+                {"id": current_user["id"]},
+                {"$inc": {"diagnostic_credits": -1}}
+            )
+        elif request.use_points:
+            # Vérifier et utiliser les points
+            points_cost = DIAGNOSTIC_PRICING["points_cost"]
+            current_points = current_user.get("loyalty_points", 0)
+            
+            if current_points < points_cost:
+                raise HTTPException(
+                    status_code=402,
+                    detail={
+                        "error": "insufficient_points",
+                        "message": f"Points insuffisants ({current_points}/{points_cost})",
+                        "required_points": points_cost,
+                        "current_points": current_points
+                    }
+                )
+            
+            await db.users.update_one(
+                {"id": current_user["id"]},
+                {"$inc": {"loyalty_points": -points_cost}}
+            )
+            
+            await db.loyalty_history.insert_one({
+                "id": str(uuid.uuid4()),
+                "user_id": current_user["id"],
+                "points": -points_cost,
+                "description": "Diagnostic IA utilisé",
+                "type": "diagnostic_used",
+                "created_at": datetime.now(timezone.utc).isoformat()
+            })
+        else:
+            # Pas d'accès, pas de crédits, pas de points utilisés
+            raise HTTPException(
+                status_code=402,
+                detail={
+                    "error": "payment_required",
+                    "message": "Diagnostic payant - Achetez des crédits ou utilisez vos points fidélité",
+                    "pricing": DIAGNOSTIC_PRICING,
+                    "diagnostic_credits": diagnostic_credits,
+                    "loyalty_points": current_user.get("loyalty_points", 0)
+                }
+            )
+    
+    # Exécuter le diagnostic
     try:
         api_key = os.environ.get('EMERGENT_LLM_KEY')
         if not api_key:
@@ -4111,12 +4297,26 @@ async def ai_diagnostic(request: DiagnosticRequest):
         user_message = UserMessage(text=prompt)
         response = await chat.send_message(user_message)
         
+        # Enregistrer l'utilisation
+        await db.diagnostic_history.insert_one({
+            "id": str(uuid.uuid4()),
+            "user_id": current_user["id"],
+            "vehicle": vehicle_info,
+            "problem": request.problem,
+            "diagnostic": response,
+            "free_access": has_free_access,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
         return {
             "diagnostic": response,
             "vehicle": vehicle_info,
-            "problem": request.problem
+            "problem": request.problem,
+            "free_access": has_free_access
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Diagnostic error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erreur de diagnostic: {str(e)}")
