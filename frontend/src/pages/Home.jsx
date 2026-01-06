@@ -709,6 +709,114 @@ export default function Home() {
         </section>
       )}
 
+      {/* DIAGNOSTIC IA BANNER - Section mise en avant */}
+      <section className="py-12 md:py-16 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-72 h-72 bg-accent/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.03\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50" />
+        </div>
+
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            {/* Left - Content */}
+            <div className="flex-1 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 bg-accent/20 text-accent px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <Sparkles className="w-4 h-4" />
+                Nouveau : Intelligence Artificielle
+              </div>
+              
+              <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+                Diagnostic Auto<br />
+                <span className="text-accent">par Tobi IA</span>
+              </h2>
+              
+              <p className="text-slate-300 text-lg md:text-xl mb-6 max-w-xl">
+                Décrivez votre problème automobile et notre IA analyse les symptômes, 
+                identifie les causes probables et vous conseille sur les réparations.
+              </p>
+
+              {/* Features list */}
+              <div className="grid grid-cols-2 gap-4 mb-8 text-left">
+                <div className="flex items-center gap-3 text-slate-300">
+                  <div className="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center">
+                    <Stethoscope className="w-4 h-4 text-accent" />
+                  </div>
+                  <span className="text-sm">Analyse des symptômes</span>
+                </div>
+                <div className="flex items-center gap-3 text-slate-300">
+                  <div className="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center">
+                    <Car className="w-4 h-4 text-accent" />
+                  </div>
+                  <span className="text-sm">Toutes marques</span>
+                </div>
+                <div className="flex items-center gap-3 text-slate-300">
+                  <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <Gift className="w-4 h-4 text-green-400" />
+                  </div>
+                  <span className="text-sm">Gratuit avec annonce</span>
+                </div>
+                <div className="flex items-center gap-3 text-slate-300">
+                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <span className="text-sm">Réponse instantanée</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Link to="/diagnostic">
+                  <Button size="lg" className="bg-accent hover:bg-accent/90 text-white h-12 px-8 text-lg gap-2">
+                    <Stethoscope className="w-5 h-5" />
+                    Lancer un diagnostic
+                  </Button>
+                </Link>
+                <Link to="/deposer">
+                  <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 h-12 px-8">
+                    Déposer une annonce = Gratuit illimité
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right - Visual / Demo card */}
+            <div className="w-full lg:w-auto">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 max-w-sm mx-auto">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-accent to-orange-500 rounded-xl flex items-center justify-center">
+                    <Stethoscope className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white">Tobi Diagnostic</h4>
+                    <p className="text-sm text-slate-400">Assistant IA</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="bg-white/5 rounded-lg p-3">
+                    <p className="text-sm text-slate-300">🚗 "Ma voiture fait un bruit au freinage..."</p>
+                  </div>
+                  <div className="bg-accent/20 rounded-lg p-3 border-l-2 border-accent">
+                    <p className="text-sm text-white font-medium mb-1">⚠️ Analyse Tobi :</p>
+                    <p className="text-xs text-slate-300">
+                      Causes probables : Plaquettes usées, disques voilés. 
+                      <strong className="text-accent"> Urgence : Moyenne</strong>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-white/10 text-center">
+                  <p className="text-xs text-slate-400">
+                    💡 <strong className="text-white">0.99€</strong> / diagnostic ou <strong className="text-green-400">GRATUIT</strong> avec une annonce
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features - Improved */}
       <section className="py-16 md:py-24 bg-gradient-to-b from-background to-secondary/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
