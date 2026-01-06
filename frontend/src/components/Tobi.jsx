@@ -353,20 +353,35 @@ export default function Tobi() {
       )}
 
       {/* Input */}
-      <form onSubmit={sendMessage} className="p-4 border-t bg-background">
+      <form onSubmit={sendMessage} data-tobi-form className="p-4 border-t bg-background">
         <div className="flex gap-2">
           <Input
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Posez votre question..."
+            placeholder={isListening ? "🎙️ Écoute en cours..." : "Posez votre question..."}
             disabled={isLoading}
-            className="flex-1"
+            className={`flex-1 ${isListening ? 'border-red-500 animate-pulse' : ''}`}
           />
+          <Button
+            type="button"
+            variant={isListening ? "destructive" : "outline"}
+            size="icon"
+            onClick={toggleListening}
+            disabled={isLoading}
+            className={`flex-shrink-0 ${isListening ? 'animate-pulse' : ''}`}
+            title={isListening ? "Arrêter" : "Parler à Tobi"}
+          >
+            {isListening ? (
+              <MicOff className="w-4 h-4" />
+            ) : (
+              <Mic className="w-4 h-4" />
+            )}
+          </Button>
           <Button 
             type="submit" 
             disabled={isLoading || !input.trim()}
-            className="bg-accent hover:bg-accent/90"
+            className="bg-accent hover:bg-accent/90 flex-shrink-0"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
