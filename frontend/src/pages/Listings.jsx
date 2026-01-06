@@ -554,6 +554,18 @@ export default function Listings() {
                         
                         {/* Badges */}
                         <div className="absolute top-3 left-3 flex gap-2">
+                          {listing.is_boosted && (
+                            <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
+                              <Zap className="w-3 h-3 mr-1" />
+                              Boosté
+                            </Badge>
+                          )}
+                          {listing.is_featured && (
+                            <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+                              <Star className="w-3 h-3 mr-1" />
+                              À la Une
+                            </Badge>
+                          )}
                           {listing.seller_is_pro && (
                             <span className="badge-pro">PRO</span>
                           )}
