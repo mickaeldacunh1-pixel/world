@@ -514,68 +514,69 @@ frontend:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 4
+  test_sequence: 5
   run_ui: true
 
 test_plan:
   current_focus:
-    - "Referral System (Système de Parrainage)"
+    - "Paid Diagnostic IA System"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 backend:
-  - task: "Referral System API"
+  - task: "Diagnostic Access Check API"
     implemented: true
-    working: true
+    working: "NA"
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "NA"
         - agent: "main"
-        - comment: "Implemented complete referral system: GET /api/referral/me (get user's referral info), GET /api/referral/my-referrals (list user's referrals), GET /api/referral/validate/{code} (validate referral code), GET /api/referral/leaderboard (top referrers). Modified registration to accept referral_code, award points to referrer (100 pts) and referee (50 pts)."
-        - working: true
-        - agent: "testing"
-        - comment: "Referral System API testing completed successfully. All 5 endpoints working correctly: 1) GET /api/referral/validate/{code} - Validates referral codes correctly (JEADL1ES returns valid=true, referrer_name='Jean Parrain', bonus_points=50; INVALID123 returns valid=false). 2) GET /api/referral/leaderboard - Returns leaderboard with proper structure (leaderboard array with rank, name, referral_count fields). 3) POST /api/auth/register with referral_code - New users receive 50 welcome points when using valid referral code, referrer gets 100 points added. 4) GET /api/referral/me (authenticated) - Returns complete referral info: referral_code, referral_link, referral_count, total_points_earned, rewards_config. 5) GET /api/referral/my-referrals (authenticated) - Returns referrals list with proper structure (referee_name, points_awarded, status, created_at). Tested with parrain@test.com account showing 3 referrals including Marie Filleul. All authentication, validation, and point awarding working correctly. Ready for production use."
+        - comment: "GET /api/ai/diagnostic/access - Returns has_free_access (if user has active listing), diagnostic_credits count, loyalty_points, can_use_points, and pricing info."
+
+  - task: "Paid Diagnostic Endpoint"
+    implemented: true
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "POST /api/ai/diagnostic - Now requires payment (credits or points) unless user has active listing. Parameters: problem, vehicle, use_credits, use_points. Returns 402 if payment required."
+
+  - task: "Purchase Diagnostic Credits"
+    implemented: true
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "POST /api/ai/diagnostic/purchase?pack=single|pack_5 - Creates Stripe checkout session. single=0.99€, pack_5=3.99€"
 
 frontend:
-  - task: "Referral Tab in Loyalty Page"
+  - task: "Diagnostic Page"
     implemented: true
     working: "NA"
-    file: "pages/Loyalty.jsx"
+    file: "pages/Diagnostic.jsx"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
     status_history:
         - working: "NA"
         - agent: "main"
-        - comment: "Added new 'Parrainage' tab in Loyalty page with: referral code display, shareable link, share button, stats cards (filleuls count, points earned), how it works section, my referrals list, leaderboard."
-        - working: "NA"
-        - agent: "testing"
-        - comment: "Frontend testing not performed as per system limitations. Backend API endpoints are fully functional and ready to support frontend implementation."
-
-  - task: "Referral Code in Registration Form"
-    implemented: true
-    working: "NA"
-    file: "pages/Auth.jsx"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: true
-    status_history:
-        - working: "NA"
-        - agent: "main"
-        - comment: "Added referral code field to registration form. Pre-fills from URL param (?ref=CODE). Real-time validation with visual feedback (checkmark/X). Shows referrer name and bonus points message when valid."
-        - working: "NA"
-        - agent: "testing"
-        - comment: "Frontend testing not performed as per system limitations. Backend API endpoints are fully functional and ready to support frontend implementation."
+        - comment: "New /diagnostic page with access status display, diagnostic form, payment modal with options (use points, use credits, buy single, buy pack), result display."
 
 agent_communication:
     - agent: "main"
-    - message: "Implemented complete Referral System (Système de Parrainage). Backend: 4 new endpoints for referral management, modified registration to handle referral codes and award loyalty points. Frontend: New 'Parrainage' tab in Loyalty.jsx with referral code, share functionality, stats, referrals list, and leaderboard. Auth.jsx updated with referral code field with real-time validation. Rewards: Referrer gets 100 points, Referee gets 50 points. Need to test: 1) Registration with/without referral code, 2) Points awarded correctly, 3) Referral validation endpoint, 4) My referrals list, 5) Leaderboard, 6) Frontend display of all components."
-    - agent: "testing"
-    - message: "Referral System backend testing completed successfully. ✅ ALL 5 BACKEND ENDPOINTS WORKING: 1) GET /api/referral/validate/{code} - Correctly validates referral codes (JEADL1ES returns valid=true with Jean Parrain, 50 bonus points; INVALID123 returns valid=false). 2) GET /api/referral/leaderboard - Returns proper leaderboard structure with rank, name, referral_count. 3) POST /api/auth/register with referral_code - New users receive 50 welcome points, referrers get 100 points. 4) GET /api/referral/me (authenticated) - Returns complete referral info including referral_code, referral_link, referral_count (3), total_points_earned (300+), rewards_config. 5) GET /api/referral/my-referrals (authenticated) - Returns referrals list with proper structure. Tested with parrain@test.com showing 3 referrals including Marie Filleul. All authentication, validation, point awarding, and data structures working correctly. Frontend testing not performed due to system limitations. Backend API fully ready for production use."
+    - message: "Implemented paid Diagnostic IA system. Pricing: 0.99€ single, 3.99€ pack of 5, or 100 loyalty points. Free unlimited access for users with at least 1 active listing. Backend validates access and deducts credits/points. Stripe integration for purchases. Need to test: 1) Access check endpoint, 2) Diagnostic with points, 3) Diagnostic with credits, 4) Payment flow, 5) Free access for users with listings."
 
 agent_communication:
     - agent: "main"
