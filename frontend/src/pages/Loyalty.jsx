@@ -8,10 +8,12 @@ import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
 import { 
   Gift, Star, Trophy, Crown, Zap, TrendingUp, 
   ShoppingBag, Users, ArrowRight, Sparkles, 
-  History, Award, Target, Percent, Copy, Check
+  History, Award, Target, Percent, Copy, Check,
+  Share2, UserPlus, Link as LinkIcon, Medal
 } from 'lucide-react';
 import { toast } from 'sonner';
 
