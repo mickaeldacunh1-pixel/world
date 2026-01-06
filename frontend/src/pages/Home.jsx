@@ -43,7 +43,44 @@ const DEFAULT_HERO = {
   announcement_text: "",
   announcement_link: "",
   announcement_bg_color: "#e74c3c",
-  announcement_text_color: "#ffffff"
+  announcement_text_color: "#ffffff",
+  // New customization options
+  hero_title_size: "large",
+  hero_description_size: "medium",
+  hero_text_align: "left",
+  hero_height: "large",
+  hero_show_search: true,
+  hero_show_categories: true,
+  hero_overlay_opacity: 50,
+  // Category images
+  category_pieces_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=400&fit=crop",
+  category_voitures_image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop",
+  category_motos_image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&h=400&fit=crop",
+  category_utilitaires_image: "https://images.unsplash.com/photo-1532581140115-3e355d1ed1de?w=600&h=400&fit=crop",
+  category_accessoires_image: "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=600&h=400&fit=crop",
+};
+
+// Title size classes
+const TITLE_SIZE_CLASSES = {
+  small: 'text-2xl md:text-3xl lg:text-4xl',
+  medium: 'text-3xl md:text-4xl lg:text-5xl',
+  large: 'text-4xl md:text-5xl lg:text-7xl',
+  xlarge: 'text-5xl md:text-6xl lg:text-8xl',
+};
+
+// Description size classes
+const DESC_SIZE_CLASSES = {
+  small: 'text-sm md:text-base',
+  medium: 'text-base md:text-lg',
+  large: 'text-lg md:text-xl',
+};
+
+// Hero height classes
+const HERO_HEIGHT_CLASSES = {
+  small: 'min-h-[400px]',
+  medium: 'min-h-[500px]',
+  large: 'min-h-[600px] md:min-h-[700px]',
+  full: 'min-h-screen',
 };
 
 export default function Home() {
