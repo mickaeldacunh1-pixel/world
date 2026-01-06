@@ -41,6 +41,7 @@ import Updates from "./pages/Updates";
 import Newsletter from "./pages/Newsletter";
 import Auctions from "./pages/Auctions";
 import Loyalty from "./pages/Loyalty";
+import Promote from "./pages/Promote";
 import "./App.css";
 
 const ProtectedRoute = ({ children }) => {
