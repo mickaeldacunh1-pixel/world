@@ -4,7 +4,8 @@ import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { ScrollArea } from './ui/scroll-area';
-import { MessageCircle, X, Send, Bot, User, Sparkles, Loader2, Trash2, Minimize2 } from 'lucide-react';
+import { MessageCircle, X, Send, Bot, User, Sparkles, Loader2, Trash2, Minimize2, Mic, MicOff } from 'lucide-react';
+import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -20,8 +21,73 @@ export default function Tobi() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState(null);
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const recognitionRef = useRef(null);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'fr-FR';
+
+      recognitionRef.current.onresult = (event) => {
+        const current = event.resultIndex;
+        const result = event.results[current];
+        const text = result[0].transcript;
+        setInput(text);
+
+        if (result.isFinal) {
+          setIsListening(false);
+          // Auto-send after voice input
+          setTimeout(() => {
+            const form = document.querySelector('[data-tobi-form]');
+            if (form) form.requestSubmit();
+          }, 300);
+        }
+      };
+
+      recognitionRef.current.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        if (event.error === 'not-allowed') {
+          toast.error('Veuillez autoriser l\'accès au microphone');
+        }
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, []);
+
+  const toggleListening = () => {
+    if (!recognitionRef.current) {
+      toast.error('La reconnaissance vocale n\'est pas supportée par votre navigateur');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      setInput('');
+      recognitionRef.current.start();
+      setIsListening(true);
+      toast.info('🎙️ Parlez à Tobi...', { duration: 2000 });
+    }
+  };
 
   // Generate session ID on mount
   useEffect(() => {
