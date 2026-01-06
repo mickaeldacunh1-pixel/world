@@ -332,6 +332,233 @@ export default function Loyalty() {
             </div>
           </TabsContent>
 
+          {/* Onglet Parrainage */}
+          <TabsContent value="referral">
+            <div className="space-y-6">
+              {/* Carte principale - Mon code de parrainage */}
+              <Card className="overflow-hidden">
+                <div className="bg-gradient-to-r from-accent to-orange-500 p-6 text-white">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="bg-white/20 rounded-full p-3">
+                      <UserPlus className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold">Parrainez vos amis</h2>
+                      <p className="text-white/80">
+                        Gagnez {referralData?.rewards_config?.referrer_points || 100} points par filleul !
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground block mb-2">
+                        Votre code de parrainage
+                      </label>
+                      <div className="flex gap-2">
+                        <div className="flex-1 bg-secondary/50 rounded-lg px-4 py-3 font-mono text-xl font-bold text-center">
+                          {referralData?.referral_code || '...'}
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          onClick={copyReferralCode}
+                          className="px-4"
+                        >
+                          {copiedReferral ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground block mb-2">
+                        Ou partagez votre lien
+                      </label>
+                      <div className="flex gap-2">
+                        <Input 
+                          readOnly 
+                          value={referralData?.referral_link || ''} 
+                          className="font-mono text-sm"
+                        />
+                        <Button 
+                          variant="outline" 
+                          onClick={copyReferralLink}
+                          className="px-4"
+                        >
+                          <LinkIcon className="w-5 h-5" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 pt-2">
+                      <Button 
+                        onClick={shareReferral}
+                        className="flex-1 bg-accent hover:bg-accent/90 gap-2"
+                      >
+                        <Share2 className="w-5 h-5" />
+                        Partager
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Statistiques */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="p-6 text-center">
+                  <div className="bg-accent/10 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Users className="w-7 h-7 text-accent" />
+                  </div>
+                  <p className="text-3xl font-bold">{referralData?.referral_count || 0}</p>
+                  <p className="text-muted-foreground">Filleuls</p>
+                </Card>
+                <Card className="p-6 text-center">
+                  <div className="bg-green-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Sparkles className="w-7 h-7 text-green-600" />
+                  </div>
+                  <p className="text-3xl font-bold">{referralData?.total_points_earned || 0}</p>
+                  <p className="text-muted-foreground">Points gagnés</p>
+                </Card>
+                <Card className="p-6 text-center">
+                  <div className="bg-purple-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Gift className="w-7 h-7 text-purple-600" />
+                  </div>
+                  <p className="text-3xl font-bold">+{referralData?.rewards_config?.referrer_points || 100}</p>
+                  <p className="text-muted-foreground">Points/filleul</p>
+                </Card>
+              </div>
+
+              {/* Comment ça marche */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="w-5 h-5 text-accent" />
+                    Comment ça marche ?
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="text-center">
+                      <div className="bg-accent/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-xl font-bold text-accent">1</span>
+                      </div>
+                      <h4 className="font-bold mb-1">Partagez votre code</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Envoyez votre code ou lien à vos amis
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <div className="bg-accent/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-xl font-bold text-accent">2</span>
+                      </div>
+                      <h4 className="font-bold mb-1">Ils s'inscrivent</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Vos amis créent leur compte avec votre code
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <div className="bg-accent/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-xl font-bold text-accent">3</span>
+                      </div>
+                      <h4 className="font-bold mb-1">Gagnez des points</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Vous recevez {referralData?.rewards_config?.referrer_points || 100} points, eux {referralData?.rewards_config?.referee_points || 50} !
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Mes filleuls */}
+              {myReferrals.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5 text-accent" />
+                      Mes filleuls ({myReferrals.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="divide-y">
+                      {myReferrals.map((referral) => (
+                        <div key={referral.id} className="p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="bg-accent/10 rounded-full p-2">
+                              <UserPlus className="w-4 h-4 text-accent" />
+                            </div>
+                            <div>
+                              <p className="font-medium">{referral.referee_name}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {new Date(referral.created_at).toLocaleDateString('fr-FR')}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <Badge variant="outline" className="bg-green-50 text-green-700">
+                              +{referral.points_awarded} pts
+                            </Badge>
+                            {referral.orders_count > 0 && (
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {referral.orders_count} commande{referral.orders_count > 1 ? 's' : ''}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Leaderboard */}
+              {leaderboard.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Medal className="w-5 h-5 text-yellow-500" />
+                      Top Parrains
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="divide-y">
+                      {leaderboard.map((entry) => (
+                        <div key={entry.rank} className="p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
+                              entry.rank === 1 ? 'bg-yellow-100 text-yellow-700' :
+                              entry.rank === 2 ? 'bg-gray-100 text-gray-700' :
+                              entry.rank === 3 ? 'bg-orange-100 text-orange-700' :
+                              'bg-secondary text-muted-foreground'
+                            }`}>
+                              {entry.rank}
+                            </div>
+                            <p className="font-medium">{entry.name}</p>
+                          </div>
+                          <Badge variant="outline">
+                            {entry.referral_count} filleuls
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Si parrainé par quelqu'un */}
+              {referralData?.referred_by && (
+                <Card className="bg-accent/5 border-accent/20">
+                  <CardContent className="p-4 flex items-center gap-3">
+                    <Gift className="w-6 h-6 text-accent" />
+                    <p>
+                      Vous avez été parrainé par <strong>{referralData.referred_by}</strong> et avez reçu{' '}
+                      <strong>{referralData.rewards_config?.referee_points || 50} points</strong> de bienvenue !
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
           {/* Mes récompenses obtenues */}
           <TabsContent value="my-rewards">
             {rewards.length > 0 ? (
