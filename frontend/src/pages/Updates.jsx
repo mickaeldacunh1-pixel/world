@@ -25,6 +25,24 @@ const CATEGORY_LABELS = {
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-1',
+    date: '2026-01-06',
+    version: '2.9.0',
+    title: 'Tobi parle, Photos limitées & Performance',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🎤 Tobi a maintenant un micro ! Parlez-lui directement pour poser vos questions' },
+      { type: 'new', text: '📸 Système de limitation de photos : 6 photos de base par annonce' },
+      { type: 'new', text: '💰 Option +15 photos supplémentaires pour seulement 1€' },
+      { type: 'new', text: '🎨 Personnalisation avancée du Hero : couleur et texte des titres modifiables' },
+      { type: 'new', text: '📐 Options de mise en page Hero : taille polices, alignement, hauteur, images catégories' },
+      { type: 'new', text: '📄 Nouveau flyer promotionnel avec QR code (worldautofrance.com/flyer-worldauto.html)' },
+      { type: 'improvement', text: '🖼️ Images des annonces affichées en entier (plus de recadrage) + zoom au clic' },
+      { type: 'fix', text: '🔄 Correction majeure du cache : les annonces s\'affichent instantanément sans rechargement' },
+      { type: 'fix', text: '⚡ Service Worker optimisé : ne cache plus les données dynamiques (API)' },
+    ]
+  },
+  {
     id: 'static-0',
     date: '2026-01-06',
     version: '2.8.0',
