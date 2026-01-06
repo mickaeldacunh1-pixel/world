@@ -2558,6 +2558,196 @@ class AutoPiecesAPITester:
             self.log_test("Video Call Endpoint Structure", True, "Endpoint accepts listing_id parameter")
             return True
 
+    def test_referral_system_complete(self):
+        """Test complete referral system functionality"""
+        print("\n🎯 Testing Referral System (Système de Parrainage)...")
+        
+        # Step 1: Test referral code validation (public endpoint)
+        # Test with valid referral code "JEADL1ES" 
+        valid_code_result = self.run_test("Referral - Validate Valid Code", "GET", "referral/validate/JEADL1ES", 200)
+        if valid_code_result:
+            # Check response structure
+            if valid_code_result.get("valid") == True:
+                self.log_test("Referral - Valid Code Flag", True)
+            else:
+                self.log_test("Referral - Valid Code Flag", False, f"Expected valid=true, got {valid_code_result.get('valid')}")
+                return False
+            
+            # Check referrer name
+            if valid_code_result.get("referrer_name") == "Jean Parrain":
+                self.log_test("Referral - Referrer Name", True, "Found Jean Parrain")
+            else:
+                self.log_test("Referral - Referrer Name", False, f"Expected 'Jean Parrain', got '{valid_code_result.get('referrer_name')}'")
+                return False
+            
+            # Check bonus points
+            if valid_code_result.get("bonus_points") == 50:
+                self.log_test("Referral - Bonus Points", True, "50 points bonus")
+            else:
+                self.log_test("Referral - Bonus Points", False, f"Expected 50, got {valid_code_result.get('bonus_points')}")
+                return False
+        else:
+            return False
+        
+        # Step 2: Test with invalid referral code
+        invalid_code_result = self.run_test("Referral - Validate Invalid Code", "GET", "referral/validate/INVALID123", 200)
+        if invalid_code_result:
+            if invalid_code_result.get("valid") == False:
+                self.log_test("Referral - Invalid Code Flag", True, "Correctly identified as invalid")
+            else:
+                self.log_test("Referral - Invalid Code Flag", False, f"Expected valid=false, got {invalid_code_result.get('valid')}")
+                return False
+        else:
+            return False
+        
+        # Step 3: Test referral leaderboard (public endpoint)
+        leaderboard_result = self.run_test("Referral - Get Leaderboard", "GET", "referral/leaderboard", 200)
+        if leaderboard_result and isinstance(leaderboard_result, list):
+            self.log_test("Referral - Leaderboard Structure", True, f"Found {len(leaderboard_result)} entries")
+            
+            # Check if we have at least 1 entry
+            if len(leaderboard_result) >= 1:
+                entry = leaderboard_result[0]
+                required_fields = ["name", "referral_count"]
+                for field in required_fields:
+                    if field in entry:
+                        self.log_test(f"Referral Leaderboard - {field}", True)
+                    else:
+                        self.log_test(f"Referral Leaderboard - {field}", False, f"Missing field: {field}")
+                        return False
+            else:
+                self.log_test("Referral - Leaderboard Entries", True, "Empty leaderboard (valid)")
+        else:
+            self.log_test("Referral - Leaderboard Structure", False, "Expected array response")
+            return False
+        
+        # Step 4: Test registration with referral code
+        timestamp = datetime.now().strftime('%H%M%S')
+        new_user_with_referral = {
+            "name": f"Referral Test User {timestamp}",
+            "email": f"referral{timestamp}@example.com",
+            "password": "TestPass123!",
+            "phone": "0612345678",
+            "is_professional": False,
+            "referral_code": "JEADL1ES"  # Use the valid referral code
+        }
+        
+        reg_result = self.run_test("Referral - Register with Code", "POST", "auth/register", 200, new_user_with_referral)
+        if reg_result and 'token' in reg_result:
+            # Store the new user's token for further tests
+            new_user_token = reg_result['token']
+            new_user_id = reg_result['user']['id']
+            
+            # Check if new user got welcome points
+            if reg_result['user'].get('loyalty_points') == 50:
+                self.log_test("Referral - New User Welcome Points", True, "Received 50 welcome points")
+            else:
+                self.log_test("Referral - New User Welcome Points", False, f"Expected 50, got {reg_result['user'].get('loyalty_points')}")
+                return False
+            
+            # Check if referral code is set
+            if reg_result['user'].get('referral_code'):
+                self.log_test("Referral - New User Referral Code", True, f"Generated code: {reg_result['user']['referral_code']}")
+            else:
+                self.log_test("Referral - New User Referral Code", False, "No referral code generated")
+                return False
+        else:
+            return False
+        
+        # Step 5: Login as parrain@test.com to test authenticated endpoints
+        parrain_login = {
+            "email": "parrain@test.com",
+            "password": "test1234"
+        }
+        
+        parrain_result = self.run_test("Referral - Login Parrain", "POST", "auth/login", 200, parrain_login)
+        if parrain_result and 'token' in parrain_result:
+            # Store original token and switch to parrain token
+            original_token = self.token
+            self.token = parrain_result['token']
+            
+            # Step 6: Test GET /api/referral/me
+            my_referral_result = self.run_test("Referral - Get My Info", "GET", "referral/me", 200)
+            if my_referral_result:
+                # Check required fields
+                required_fields = ["referral_code", "referral_link", "referral_count", "total_points_earned", "rewards_config"]
+                for field in required_fields:
+                    if field in my_referral_result:
+                        self.log_test(f"Referral My Info - {field}", True)
+                    else:
+                        self.log_test(f"Referral My Info - {field}", False, f"Missing field: {field}")
+                        self.token = original_token
+                        return False
+                
+                # Check if referral count is at least 1 (should have Marie Filleul)
+                if my_referral_result.get("referral_count", 0) >= 1:
+                    self.log_test("Referral - My Referral Count", True, f"Count: {my_referral_result['referral_count']}")
+                else:
+                    self.log_test("Referral - My Referral Count", False, f"Expected >= 1, got {my_referral_result.get('referral_count')}")
+                
+                # Check if total points earned is at least 100
+                if my_referral_result.get("total_points_earned", 0) >= 100:
+                    self.log_test("Referral - Total Points Earned", True, f"Points: {my_referral_result['total_points_earned']}")
+                else:
+                    self.log_test("Referral - Total Points Earned", False, f"Expected >= 100, got {my_referral_result.get('total_points_earned')}")
+                
+                # Check rewards config
+                rewards_config = my_referral_result.get("rewards_config", {})
+                if rewards_config.get("referrer_points") == 100 and rewards_config.get("referee_points") == 50:
+                    self.log_test("Referral - Rewards Config", True, "Correct reward amounts")
+                else:
+                    self.log_test("Referral - Rewards Config", False, f"Unexpected rewards config: {rewards_config}")
+            else:
+                self.token = original_token
+                return False
+            
+            # Step 7: Test GET /api/referral/my-referrals
+            my_referrals_result = self.run_test("Referral - Get My Referrals", "GET", "referral/my-referrals", 200)
+            if my_referrals_result:
+                # Check response structure
+                if "referrals" in my_referrals_result and "total" in my_referrals_result:
+                    self.log_test("Referral - My Referrals Structure", True)
+                    
+                    referrals_list = my_referrals_result["referrals"]
+                    if isinstance(referrals_list, list) and len(referrals_list) >= 1:
+                        self.log_test("Referral - My Referrals List", True, f"Found {len(referrals_list)} referrals")
+                        
+                        # Check first referral structure
+                        first_referral = referrals_list[0]
+                        referral_fields = ["referee_name", "referee_email", "points_awarded", "status", "created_at"]
+                        for field in referral_fields:
+                            if field in first_referral:
+                                self.log_test(f"Referral Item - {field}", True)
+                            else:
+                                self.log_test(f"Referral Item - {field}", False, f"Missing field: {field}")
+                                self.token = original_token
+                                return False
+                        
+                        # Check if Marie Filleul is in the list
+                        marie_found = any(ref.get("referee_name") == "Marie Filleul" for ref in referrals_list)
+                        if marie_found:
+                            self.log_test("Referral - Marie Filleul Found", True, "Marie Filleul in referrals list")
+                        else:
+                            self.log_test("Referral - Marie Filleul Found", False, "Marie Filleul not found in referrals")
+                    else:
+                        self.log_test("Referral - My Referrals List", False, f"Expected array with >= 1 items, got {len(referrals_list) if isinstance(referrals_list, list) else 'not array'}")
+                else:
+                    self.log_test("Referral - My Referrals Structure", False, "Missing 'referrals' or 'total' fields")
+                    self.token = original_token
+                    return False
+            else:
+                self.token = original_token
+                return False
+            
+            # Restore original token
+            self.token = original_token
+        else:
+            self.log_test("Referral - Login Parrain Failed", False, "Could not login as parrain@test.com")
+            return False
+        
+        self.log_test("Complete Referral System Test", True, "All referral functionality working correctly")
+        return True
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting World Auto API Tests...")
