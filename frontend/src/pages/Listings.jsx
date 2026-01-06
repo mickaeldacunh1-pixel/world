@@ -7,8 +7,9 @@ import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Skeleton } from '../components/ui/skeleton';
-import { Search, Filter, Grid3X3, List, MapPin, Eye, ChevronLeft, ChevronRight, Car, Zap, Star } from 'lucide-react';
+import { Search, Filter, Grid3X3, List, MapPin, Eye, ChevronLeft, ChevronRight, Car, Zap, Star, Mic } from 'lucide-react';
 import SEO, { createBreadcrumbSchema } from '../components/SEO';
+import VoiceSearch from '../components/VoiceSearch';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
