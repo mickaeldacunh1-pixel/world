@@ -4468,6 +4468,323 @@ async def use_loyalty_code(code: str, order_id: str, current_user: dict = Depend
     
     return {"message": "Code appliqué avec succès"}
 
+# ================== PROMOTE / BOOST SYSTEM ==================
+
+BOOST_OPTIONS = {
+    "boost_24h": {"name": "Boost 24h", "duration_days": 1, "price": 299, "type": "boost"},
+    "boost_7d": {"name": "Boost 7 jours", "duration_days": 7, "price": 699, "type": "boost"},
+    "boost_30d": {"name": "Boost 30 jours", "duration_days": 30, "price": 1499, "type": "boost"},
+    "featured_24h": {"name": "À la Une 24h", "duration_days": 1, "price": 499, "type": "featured"},
+    "featured_7d": {"name": "À la Une 7 jours", "duration_days": 7, "price": 1499, "type": "featured"},
+    "featured_30d": {"name": "À la Une 30 jours", "duration_days": 30, "price": 3999, "type": "featured"},
+}
+
+PRO_SUBSCRIPTIONS = {
+    "pro_starter": {"name": "Starter", "price": 999, "boosts_per_month": 3, "featured_per_month": 0},
+    "pro_business": {"name": "Business", "price": 2499, "boosts_per_month": 10, "featured_per_month": 1},
+    "pro_premium": {"name": "Premium", "price": 4999, "boosts_per_month": -1, "featured_per_month": 8},  # -1 = unlimited
+}
+
+class PromoteCheckoutRequest(BaseModel):
+    type: str  # 'boost', 'featured', 'subscription'
+    option_id: str
+    listing_id: Optional[str] = None
+
+@api_router.post("/promote/checkout")
+async def create_promote_checkout(request: PromoteCheckoutRequest, current_user: dict = Depends(get_current_user)):
+    """Create Stripe checkout for boost/featured/subscription"""
+    import stripe
+    stripe.api_key = os.environ.get('STRIPE_API_KEY')
+    
+    site_url = os.environ.get('SITE_URL', 'https://worldautofrance.com')
+    
+    if request.type in ['boost', 'featured']:
+        option = BOOST_OPTIONS.get(request.option_id)
+        if not option:
+            raise HTTPException(status_code=400, detail="Option invalide")
+        
+        if not request.listing_id:
+            raise HTTPException(status_code=400, detail="ID d'annonce requis")
+        
+        # Verify listing belongs to user
+        listing = await db.listings.find_one({
+            "id": request.listing_id,
+            "seller_id": current_user["id"]
+        })
+        if not listing:
+            raise HTTPException(status_code=404, detail="Annonce non trouvée")
+        
+        # Create Stripe checkout
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'eur',
+                    'unit_amount': option["price"],
+                    'product_data': {
+                        'name': option["name"],
+                        'description': f'Promotion pour: {listing["title"]}'
+                    },
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=f'{site_url}/promote/success?session_id={{CHECKOUT_SESSION_ID}}',
+            cancel_url=f'{site_url}/promouvoir?listing={request.listing_id}',
+            metadata={
+                'type': request.type,
+                'option_id': request.option_id,
+                'listing_id': request.listing_id,
+                'user_id': current_user["id"],
+                'duration_days': option["duration_days"]
+            }
+        )
+        
+        return {"checkout_url": checkout_session.url}
+    
+    elif request.type == 'subscription':
+        plan = PRO_SUBSCRIPTIONS.get(request.option_id)
+        if not plan:
+            raise HTTPException(status_code=400, detail="Plan invalide")
+        
+        # Create Stripe subscription checkout
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'eur',
+                    'unit_amount': plan["price"],
+                    'product_data': {
+                        'name': f'Abonnement {plan["name"]}',
+                        'description': 'Abonnement mensuel World Auto France Pro'
+                    },
+                    'recurring': {'interval': 'month'}
+                },
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url=f'{site_url}/promote/success?session_id={{CHECKOUT_SESSION_ID}}',
+            cancel_url=f'{site_url}/promouvoir',
+            metadata={
+                'type': 'subscription',
+                'plan_id': request.option_id,
+                'user_id': current_user["id"]
+            }
+        )
+        
+        return {"checkout_url": checkout_session.url}
+    
+    raise HTTPException(status_code=400, detail="Type de promotion invalide")
+
+@api_router.get("/promote/success")
+async def promote_success(session_id: str, current_user: dict = Depends(get_current_user)):
+    """Handle successful promotion payment"""
+    import stripe
+    stripe.api_key = os.environ.get('STRIPE_API_KEY')
+    
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        metadata = session.metadata
+        
+        if session.payment_status != 'paid' and session.status != 'complete':
+            raise HTTPException(status_code=400, detail="Paiement non complété")
+        
+        promo_type = metadata.get('type')
+        
+        if promo_type in ['boost', 'featured']:
+            listing_id = metadata.get('listing_id')
+            duration_days = int(metadata.get('duration_days', 7))
+            option_id = metadata.get('option_id')
+            
+            end_time = datetime.now(timezone.utc) + timedelta(days=duration_days)
+            
+            update_data = {}
+            if promo_type == 'boost':
+                update_data = {
+                    "is_boosted": True,
+                    "boost_end": end_time.isoformat(),
+                    "boost_option": option_id
+                }
+            else:
+                update_data = {
+                    "is_featured": True,
+                    "featured_end": end_time.isoformat(),
+                    "featured_option": option_id
+                }
+            
+            await db.listings.update_one(
+                {"id": listing_id},
+                {"$set": update_data}
+            )
+            
+            # Log promotion
+            promo_doc = {
+                "id": str(uuid.uuid4()),
+                "user_id": current_user["id"],
+                "listing_id": listing_id,
+                "type": promo_type,
+                "option_id": option_id,
+                "stripe_session_id": session_id,
+                "amount": session.amount_total,
+                "start_time": datetime.now(timezone.utc).isoformat(),
+                "end_time": end_time.isoformat(),
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.promotions.insert_one(promo_doc)
+            
+            return {"message": "Promotion activée", "end_time": end_time.isoformat()}
+        
+        elif promo_type == 'subscription':
+            plan_id = metadata.get('plan_id')
+            plan = PRO_SUBSCRIPTIONS.get(plan_id)
+            
+            # Create/update subscription
+            sub_doc = {
+                "id": str(uuid.uuid4()),
+                "user_id": current_user["id"],
+                "plan_id": plan_id,
+                "plan_name": plan["name"],
+                "stripe_session_id": session_id,
+                "stripe_subscription_id": session.subscription,
+                "boosts_per_month": plan["boosts_per_month"],
+                "boosts_remaining": plan["boosts_per_month"],
+                "featured_per_month": plan["featured_per_month"],
+                "featured_remaining": plan["featured_per_month"],
+                "status": "active",
+                "current_period_start": datetime.now(timezone.utc).isoformat(),
+                "current_period_end": (datetime.now(timezone.utc) + timedelta(days=30)).isoformat(),
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            
+            # Upsert subscription
+            await db.subscriptions.update_one(
+                {"user_id": current_user["id"]},
+                {"$set": sub_doc},
+                upsert=True
+            )
+            
+            # Update user as pro
+            await db.users.update_one(
+                {"id": current_user["id"]},
+                {"$set": {"is_pro": True, "pro_plan": plan_id}}
+            )
+            
+            return {"message": "Abonnement activé", "plan": plan["name"]}
+        
+    except stripe.error.StripeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@api_router.get("/subscription/me")
+async def get_my_subscription(current_user: dict = Depends(get_current_user)):
+    """Get current user's subscription"""
+    sub = await db.subscriptions.find_one(
+        {"user_id": current_user["id"], "status": "active"},
+        {"_id": 0}
+    )
+    return sub
+
+@api_router.post("/promote/use-free")
+async def use_free_boost(type: str, listing_id: str, current_user: dict = Depends(get_current_user)):
+    """Use a free boost from subscription"""
+    sub = await db.subscriptions.find_one({
+        "user_id": current_user["id"],
+        "status": "active"
+    })
+    
+    if not sub:
+        raise HTTPException(status_code=400, detail="Aucun abonnement actif")
+    
+    # Verify listing
+    listing = await db.listings.find_one({"id": listing_id, "seller_id": current_user["id"]})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    if type == 'boost':
+        if sub.get("boosts_remaining", 0) == 0 and sub.get("boosts_per_month") != -1:
+            raise HTTPException(status_code=400, detail="Plus de boosts disponibles ce mois")
+        
+        end_time = datetime.now(timezone.utc) + timedelta(days=7)
+        await db.listings.update_one(
+            {"id": listing_id},
+            {"$set": {"is_boosted": True, "boost_end": end_time.isoformat()}}
+        )
+        
+        if sub.get("boosts_per_month") != -1:
+            await db.subscriptions.update_one(
+                {"user_id": current_user["id"]},
+                {"$inc": {"boosts_remaining": -1}}
+            )
+    
+    elif type == 'featured':
+        if sub.get("featured_remaining", 0) == 0:
+            raise HTTPException(status_code=400, detail="Plus de mises en avant disponibles ce mois")
+        
+        end_time = datetime.now(timezone.utc) + timedelta(days=7)
+        await db.listings.update_one(
+            {"id": listing_id},
+            {"$set": {"is_featured": True, "featured_end": end_time.isoformat()}}
+        )
+        
+        await db.subscriptions.update_one(
+            {"user_id": current_user["id"]},
+            {"$inc": {"featured_remaining": -1}}
+        )
+    
+    return {"message": "Promotion appliquée", "type": type}
+
+@api_router.post("/promote/use-loyalty")
+async def use_loyalty_boost(listing_id: str, current_user: dict = Depends(get_current_user)):
+    """Use loyalty points for a 7-day boost (200 points)"""
+    LOYALTY_BOOST_COST = 200
+    
+    user_points = current_user.get("loyalty_points", 0)
+    if user_points < LOYALTY_BOOST_COST:
+        raise HTTPException(status_code=400, detail=f"Vous avez besoin de {LOYALTY_BOOST_COST} points")
+    
+    # Verify listing
+    listing = await db.listings.find_one({"id": listing_id, "seller_id": current_user["id"]})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    # Apply boost
+    end_time = datetime.now(timezone.utc) + timedelta(days=7)
+    await db.listings.update_one(
+        {"id": listing_id},
+        {"$set": {"is_boosted": True, "boost_end": end_time.isoformat(), "boost_source": "loyalty"}}
+    )
+    
+    # Deduct points
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$inc": {"loyalty_points": -LOYALTY_BOOST_COST}}
+    )
+    
+    # Add to loyalty history
+    history_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "points": -LOYALTY_BOOST_COST,
+        "description": f"Boost 7 jours: {listing.get('title', 'Annonce')}",
+        "listing_id": listing_id,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.loyalty_history.insert_one(history_doc)
+    
+    return {"message": "Boost fidélité appliqué (7 jours)", "end_time": end_time.isoformat()}
+
+@api_router.get("/listings/featured")
+async def get_featured_listings(limit: int = 6):
+    """Get featured listings for homepage"""
+    now = datetime.now(timezone.utc).isoformat()
+    
+    listings = await db.listings.find({
+        "status": "active",
+        "is_featured": True,
+        "featured_end": {"$gt": now}
+    }, {"_id": 0}).sort("featured_end", 1).to_list(limit)
+    
+    return listings
+
 # ================== ROOT ==================
 
 @api_router.get("/")
