@@ -120,6 +120,8 @@ export default function CreateListing() {
     }
   };
 
+  const maxPhotos = photoLimit.max_photos || 6;
+
   const fetchSubcategories = async () => {
     try {
       const [piecesRes, accessoiresRes] = await Promise.all([
