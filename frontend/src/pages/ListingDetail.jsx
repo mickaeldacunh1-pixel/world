@@ -641,6 +641,25 @@ export default function ListingDetail() {
                   Panier
                 </Button>
               )}
+
+              {/* Video Call Button */}
+              {user?.id !== listing.seller_id && (
+                <Button 
+                  variant="outline" 
+                  className="h-12 border-green-500 text-green-600 hover:bg-green-50" 
+                  onClick={handleVideoCall}
+                  disabled={videoCallLoading}
+                >
+                  {videoCallLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <>
+                      <Video className="w-5 h-5 mr-2" />
+                      Appel vidéo
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
 
             {/* Secure Payment Button */}
