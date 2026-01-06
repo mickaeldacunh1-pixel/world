@@ -561,10 +561,58 @@ export default function Orders() {
                                   Laisser un avis
                                 </Button>
                               )}
+                              
+                              {/* Suivre le colis */}
+                              {order.tracking_number && (
+                                <a 
+                                  href={order.tracking_url || `https://www.mondialrelay.fr/suivi-de-colis/?NumColis=${order.tracking_number}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Button size="sm" className="bg-orange-500 hover:bg-orange-600">
+                                    <Truck className="w-4 h-4 mr-1" />
+                                    Suivre mon colis
+                                  </Button>
+                                </a>
+                              )}
                             </div>
                           </div>
+                          
+                          {/* Info Point Relais & Tracking pour acheteur */}
+                          {(order.relay_point || order.tracking_number) && (
+                            <div className="mt-3 pt-3 border-t space-y-2">
+                              {order.relay_point && (
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <MapPin className="w-4 h-4 text-orange-500" />
+                                  <span>
+                                    Livraison en Point Relais: <strong>{order.relay_point.name}</strong>
+                                    <br />
+                                    <span className="text-xs">{order.relay_point.address}, {order.relay_point.postalCode} {order.relay_point.city}</span>
+                                  </span>
+                                </div>
+                              )}
+                              {order.tracking_number && (
+                                <div className="flex items-center gap-2 text-sm bg-orange-50 p-2 rounded">
+                                  <Truck className="w-4 h-4 text-orange-600" />
+                                  <span>
+                                    N° de suivi: <strong className="font-mono">{order.tracking_number}</strong>
+                                  </span>
+                                  <a 
+                                    href={`https://www.mondialrelay.fr/suivi-de-colis/?NumColis=${order.tracking_number}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="ml-auto text-orange-600 hover:underline flex items-center gap-1"
+                                  >
+                                    Voir le suivi <ExternalLink className="w-3 h-3" />
+                                  </a>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          
                           <p className="text-xs text-muted-foreground mt-2">
                             Commandé le {new Date(order.created_at).toLocaleDateString('fr-FR')}
+                            {order.shipped_at && ` • Expédié le ${new Date(order.shipped_at).toLocaleDateString('fr-FR')}`}
                           </p>
                         </div>
                       );
