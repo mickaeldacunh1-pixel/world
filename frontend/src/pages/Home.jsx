@@ -225,8 +225,8 @@ export default function Home() {
         url="/"
         structuredData={[createOrganizationSchema(), createWebsiteSchema()]}
       />
-      {/* Hero Section - Improved */}
-      <section className="relative min-h-[600px] md:min-h-[700px] flex items-center overflow-hidden">
+      {/* Hero Section - Improved with Dynamic Customization */}
+      <section className={`relative ${HERO_HEIGHT_CLASSES[heroSettings.hero_height] || 'min-h-[600px] md:min-h-[700px]'} flex items-center overflow-hidden`}>
         {/* Background Image */}
         <div className="absolute inset-0">
           <img 
@@ -234,19 +234,30 @@ export default function Home() {
             alt="Hero background" 
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 hero-gradient" />
+          <div 
+            className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/50" 
+            style={{ opacity: (heroSettings.hero_overlay_opacity || 50) / 100 }}
+          />
         </div>
         
         {/* Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 w-full">
-          <div className="max-w-3xl animate-fade-in-up">
+          <div 
+            className={`animate-fade-in-up ${
+              heroSettings.hero_text_align === 'center' ? 'mx-auto text-center max-w-4xl' : 
+              heroSettings.hero_text_align === 'right' ? 'ml-auto text-right max-w-3xl' : 
+              'max-w-3xl'
+            }`}
+          >
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-6 animate-fade-in-up stagger-1">
+            <div className={`inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-6 animate-fade-in-up stagger-1 ${
+              heroSettings.hero_text_align === 'center' ? 'mx-auto' : ''
+            }`}>
               <Sparkles className="w-4 h-4 text-accent" />
               <span className="text-sm font-medium">La référence automobile en France</span>
             </div>
             
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tight leading-none mb-6 animate-fade-in-up stagger-2">
+            <h1 className={`font-heading ${TITLE_SIZE_CLASSES[heroSettings.hero_title_size] || 'text-4xl md:text-5xl lg:text-7xl'} font-black text-white tracking-tight leading-none mb-6 animate-fade-in-up stagger-2`}>
               <AnimatedText 
                 text={heroSettings.hero_title_line1} 
                 animation={heroSettings.hero_text_animation}
@@ -260,51 +271,60 @@ export default function Home() {
                 />
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-white/80 mb-10 max-w-xl animate-fade-in-up stagger-3">
+            <p className={`${DESC_SIZE_CLASSES[heroSettings.hero_description_size] || 'text-lg md:text-xl'} text-white/80 mb-10 animate-fade-in-up stagger-3 ${
+              heroSettings.hero_text_align === 'center' ? 'max-w-2xl mx-auto' : 'max-w-xl'
+            }`}>
               {heroSettings.hero_description}
             </p>
 
             {/* Search Form - Glass effect */}
-            <form 
-              onSubmit={handleSearch} 
-              className="flex flex-col sm:flex-row gap-3 animate-fade-in-up stagger-4 glass p-2 rounded-2xl"
-              data-testid="search-form"
-            >
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input
-                  placeholder="Rechercher une pièce, un véhicule..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-12 h-14 bg-transparent border-0 text-lg focus-ring rounded-xl"
-                  data-testid="search-input"
-                />
-              </div>
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-full sm:w-52 h-14 bg-transparent border-0 text-base rounded-xl focus-ring" data-testid="category-select">
-                  <SelectValue placeholder="Catégorie" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pieces">Pièces Détachées</SelectItem>
-                  <SelectItem value="voitures">Voitures</SelectItem>
-                  <SelectItem value="motos">Motos</SelectItem>
-                  <SelectItem value="utilitaires">Utilitaires</SelectItem>
-                  <SelectItem value="accessoires">Accessoires</SelectItem>
-                </SelectContent>
-              </Select>
-              <VoiceSearch onSearch={(q) => navigate(`/annonces?search=${encodeURIComponent(q)}`)} />
-              <Button 
-                type="submit" 
-                className="h-14 px-8 btn-primary rounded-xl text-base font-semibold" 
-                data-testid="search-btn"
+            {heroSettings.hero_show_search !== false && (
+              <form 
+                onSubmit={handleSearch} 
+                className={`flex flex-col sm:flex-row gap-3 animate-fade-in-up stagger-4 glass p-2 rounded-2xl ${
+                  heroSettings.hero_text_align === 'center' ? 'max-w-3xl mx-auto' : ''
+                }`}
+                data-testid="search-form"
               >
-                <Search className="w-5 h-5 mr-2" />
-                Rechercher
-              </Button>
-            </form>
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    placeholder="Rechercher une pièce, un véhicule..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="pl-12 h-14 bg-transparent border-0 text-lg focus-ring rounded-xl"
+                    data-testid="search-input"
+                  />
+                </div>
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger className="w-full sm:w-52 h-14 bg-transparent border-0 text-base rounded-xl focus-ring" data-testid="category-select">
+                    <SelectValue placeholder="Catégorie" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pieces">Pièces Détachées</SelectItem>
+                    <SelectItem value="voitures">Voitures</SelectItem>
+                    <SelectItem value="motos">Motos</SelectItem>
+                    <SelectItem value="utilitaires">Utilitaires</SelectItem>
+                    <SelectItem value="accessoires">Accessoires</SelectItem>
+                  </SelectContent>
+                </Select>
+                <VoiceSearch onSearch={(q) => navigate(`/annonces?search=${encodeURIComponent(q)}`)} />
+                <Button 
+                  type="submit" 
+                  className="h-14 px-8 btn-primary rounded-xl text-base font-semibold" 
+                  data-testid="search-btn"
+                >
+                  <Search className="w-5 h-5 mr-2" />
+                  Rechercher
+                </Button>
+              </form>
+            )}
 
             {/* Plate Scanner & Quick Tools */}
-            <div className="flex flex-wrap items-center gap-4 mt-6 animate-fade-in-up stagger-4">
+            <div className={`flex flex-wrap items-center gap-4 mt-6 animate-fade-in-up stagger-4 ${
+              heroSettings.hero_text_align === 'center' ? 'justify-center' : 
+              heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
+            }`}>
               <PlateScanner onVehicleSelect={(v) => {
                 navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
               }} />
@@ -317,7 +337,10 @@ export default function Home() {
             </div>
 
             {/* Quick stats */}
-            <div className="flex flex-wrap items-center gap-6 mt-8 animate-fade-in-up stagger-5">
+            <div className={`flex flex-wrap items-center gap-6 mt-8 animate-fade-in-up stagger-5 ${
+              heroSettings.hero_text_align === 'center' ? 'justify-center' : 
+              heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
+            }`}>
               <div className="text-white/70">
                 <span className="text-2xl font-bold text-white">{Object.values(categoryStats).reduce((a, b) => a + b, 0) || '100+'}+</span>
                 <span className="ml-2 text-sm">annonces actives</span>
@@ -326,7 +349,7 @@ export default function Home() {
                 <span className="text-2xl font-bold text-white">5</span>
                 <span className="ml-2 text-sm">catégories</span>
               </div>
-              <div className="ml-auto">
+              <div className={heroSettings.hero_text_align !== 'center' ? 'ml-auto' : ''}>
                 <AITools />
               </div>
             </div>
