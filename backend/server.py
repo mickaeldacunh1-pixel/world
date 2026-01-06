@@ -4254,6 +4254,208 @@ async def request_video_call(
         "listing_title": listing["title"]
     }
 
+# ================== LOYALTY PROGRAM (FIDÉLITÉ) ==================
+
+LOYALTY_TIERS = [
+    {"id": "bronze", "name": "Bronze", "min_points": 0, "multiplier": 1},
+    {"id": "silver", "name": "Argent", "min_points": 500, "multiplier": 1.5},
+    {"id": "gold", "name": "Or", "min_points": 2000, "multiplier": 2},
+    {"id": "platinum", "name": "Platine", "min_points": 5000, "multiplier": 3},
+]
+
+LOYALTY_REWARDS = [
+    {"id": "discount_5", "name": "5€ de réduction", "points": 100, "type": "discount", "value": 5},
+    {"id": "discount_10", "name": "10€ de réduction", "points": 180, "type": "discount", "value": 10},
+    {"id": "discount_25", "name": "25€ de réduction", "points": 400, "type": "discount", "value": 25},
+    {"id": "discount_50", "name": "50€ de réduction", "points": 750, "type": "discount", "value": 50},
+    {"id": "free_shipping", "name": "Livraison gratuite", "points": 150, "type": "shipping", "value": 0},
+    {"id": "boost_listing", "name": "Boost annonce 7 jours", "points": 200, "type": "boost", "value": 7},
+]
+
+def get_user_tier(lifetime_points: int):
+    """Get user's loyalty tier based on lifetime points"""
+    tier = LOYALTY_TIERS[0]
+    for t in LOYALTY_TIERS:
+        if lifetime_points >= t["min_points"]:
+            tier = t
+    return tier
+
+def generate_reward_code():
+    """Generate a unique reward code"""
+    import random
+    import string
+    return 'WAF-' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+async def add_loyalty_points(user_id: str, points: int, description: str, order_id: str = None):
+    """Add loyalty points to a user"""
+    # Get user
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        return
+    
+    # Get current tier multiplier
+    lifetime_points = user.get("loyalty_lifetime_points", 0)
+    tier = get_user_tier(lifetime_points)
+    
+    # Apply multiplier
+    actual_points = int(points * tier["multiplier"])
+    
+    # Update user points
+    await db.users.update_one(
+        {"id": user_id},
+        {
+            "$inc": {
+                "loyalty_points": actual_points,
+                "loyalty_lifetime_points": actual_points
+            },
+            "$set": {
+                "loyalty_tier": tier["id"]
+            }
+        }
+    )
+    
+    # Add to history
+    history_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "points": actual_points,
+        "description": description,
+        "order_id": order_id,
+        "tier_multiplier": tier["multiplier"],
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.loyalty_history.insert_one(history_doc)
+    
+    return actual_points
+
+@api_router.get("/loyalty/me")
+async def get_loyalty_status(current_user: dict = Depends(get_current_user)):
+    """Get current user's loyalty status"""
+    points = current_user.get("loyalty_points", 0)
+    lifetime_points = current_user.get("loyalty_lifetime_points", 0)
+    tier = get_user_tier(lifetime_points)
+    
+    return {
+        "points": points,
+        "lifetime_points": lifetime_points,
+        "tier": tier,
+        "next_tier": next((t for t in LOYALTY_TIERS if t["min_points"] > lifetime_points), None)
+    }
+
+@api_router.get("/loyalty/history")
+async def get_loyalty_history(current_user: dict = Depends(get_current_user), limit: int = 50):
+    """Get user's loyalty points history"""
+    history = await db.loyalty_history.find(
+        {"user_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    return history
+
+@api_router.get("/loyalty/rewards")
+async def get_user_rewards(current_user: dict = Depends(get_current_user)):
+    """Get user's redeemed rewards"""
+    rewards = await db.loyalty_rewards.find(
+        {"user_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
+    return rewards
+
+class RedeemRequest(BaseModel):
+    reward_id: str
+
+@api_router.post("/loyalty/redeem")
+async def redeem_reward(request: RedeemRequest, current_user: dict = Depends(get_current_user)):
+    """Redeem points for a reward"""
+    # Find reward
+    reward_template = next((r for r in LOYALTY_REWARDS if r["id"] == request.reward_id), None)
+    if not reward_template:
+        raise HTTPException(status_code=404, detail="Récompense non trouvée")
+    
+    # Check points
+    user_points = current_user.get("loyalty_points", 0)
+    if user_points < reward_template["points"]:
+        raise HTTPException(status_code=400, detail="Points insuffisants")
+    
+    # Create reward
+    code = generate_reward_code()
+    reward_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "reward_id": reward_template["id"],
+        "name": reward_template["name"],
+        "type": reward_template["type"],
+        "value": reward_template["value"],
+        "code": code,
+        "used": False,
+        "expires_at": (datetime.now(timezone.utc) + timedelta(days=90)).isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.loyalty_rewards.insert_one(reward_doc)
+    
+    # Deduct points
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$inc": {"loyalty_points": -reward_template["points"]}}
+    )
+    
+    # Add to history
+    history_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "points": -reward_template["points"],
+        "description": f"Échange: {reward_template['name']}",
+        "reward_id": reward_doc["id"],
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.loyalty_history.insert_one(history_doc)
+    
+    return {
+        "message": "Récompense obtenue !",
+        "reward": {k: v for k, v in reward_doc.items() if k != "_id"}
+    }
+
+@api_router.post("/loyalty/apply-code")
+async def apply_loyalty_code(code: str, current_user: dict = Depends(get_current_user)):
+    """Apply a loyalty reward code to check validity"""
+    reward = await db.loyalty_rewards.find_one({
+        "code": code,
+        "user_id": current_user["id"],
+        "used": False
+    }, {"_id": 0})
+    
+    if not reward:
+        raise HTTPException(status_code=404, detail="Code invalide ou déjà utilisé")
+    
+    # Check expiration
+    expires_at = datetime.fromisoformat(reward["expires_at"].replace('Z', '+00:00'))
+    if datetime.now(timezone.utc) > expires_at:
+        raise HTTPException(status_code=400, detail="Ce code a expiré")
+    
+    return reward
+
+@api_router.post("/loyalty/use-code")
+async def use_loyalty_code(code: str, order_id: str, current_user: dict = Depends(get_current_user)):
+    """Mark a loyalty code as used"""
+    result = await db.loyalty_rewards.update_one(
+        {
+            "code": code,
+            "user_id": current_user["id"],
+            "used": False
+        },
+        {
+            "$set": {
+                "used": True,
+                "used_at": datetime.now(timezone.utc).isoformat(),
+                "used_order_id": order_id
+            }
+        }
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Code invalide ou déjà utilisé")
+    
+    return {"message": "Code appliqué avec succès"}
+
 # ================== ROOT ==================
 
 @api_router.get("/")
