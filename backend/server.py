@@ -3324,6 +3324,65 @@ async def test_email_sending(request: EmailTestRequest, current_user: dict = Dep
             detail=f"Échec de l'envoi. Vérifiez les logs du serveur pour plus de détails."
         )
 
+# ================== EXTRA PHOTOS PURCHASE ==================
+
+@api_router.post("/photos/create-checkout-session")
+async def create_extra_photos_checkout(current_user: dict = Depends(get_current_user)):
+    """Create Stripe checkout session for extra photos"""
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'eur',
+                    'product_data': {
+                        'name': EXTRA_PHOTOS_PACKAGE["name"],
+                        'description': f'Ajoutez {EXTRA_PHOTOS_PACKAGE["photos"]} photos supplémentaires à vos annonces',
+                    },
+                    'unit_amount': int(EXTRA_PHOTOS_PACKAGE["price"] * 100),
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=f"{SITE_URL}/deposer?photos_success=true",
+            cancel_url=f"{SITE_URL}/deposer?photos_cancelled=true",
+            metadata={
+                "user_id": current_user["id"],
+                "type": "extra_photos",
+                "photos_count": str(EXTRA_PHOTOS_PACKAGE["photos"])
+            },
+            customer_email=current_user.get("email")
+        )
+        
+        # Save transaction
+        await db.transactions.insert_one({
+            "id": str(uuid.uuid4()),
+            "user_id": current_user["id"],
+            "type": "extra_photos",
+            "photos_count": EXTRA_PHOTOS_PACKAGE["photos"],
+            "amount": EXTRA_PHOTOS_PACKAGE["price"],
+            "status": "pending",
+            "stripe_session_id": checkout_session.id,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        return {"checkout_url": checkout_session.url}
+        
+    except Exception as e:
+        logging.error(f"Stripe checkout error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/photos/package-info")
+async def get_extra_photos_info():
+    """Get extra photos package information"""
+    return {
+        "price": EXTRA_PHOTOS_PACKAGE["price"],
+        "photos": EXTRA_PHOTOS_PACKAGE["photos"],
+        "name": EXTRA_PHOTOS_PACKAGE["name"],
+        "default_limit": DEFAULT_MAX_PHOTOS,
+        "pro_limit": PRO_MAX_PHOTOS
+    }
+
 # ================== SHIPPING ROUTES ==================
 
 CARRIERS = {
