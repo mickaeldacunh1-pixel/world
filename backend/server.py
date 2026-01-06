@@ -3166,7 +3166,21 @@ DEFAULT_HERO_SETTINGS = {
     "hero_description": "Achetez et vendez des pièces détachées, voitures, motos et utilitaires. Pour particuliers et professionnels.",
     "hero_image": "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
     "hero_cta_text": "Déposer une annonce",
-    "hero_cta_link": "/deposer"
+    "hero_cta_link": "/deposer",
+    # New customization options
+    "hero_title_size": "large",
+    "hero_description_size": "medium",
+    "hero_text_align": "left",
+    "hero_height": "large",
+    "hero_show_search": True,
+    "hero_show_categories": True,
+    "hero_overlay_opacity": 50,
+    # Category images
+    "category_pieces_image": "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=400&fit=crop",
+    "category_voitures_image": "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop",
+    "category_motos_image": "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&h=400&fit=crop",
+    "category_utilitaires_image": "https://images.unsplash.com/photo-1532581140115-3e355d1ed1de?w=600&h=400&fit=crop",
+    "category_accessoires_image": "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=600&h=400&fit=crop",
 }
 
 @api_router.get("/settings/hero")
