@@ -25,6 +25,22 @@ const CATEGORY_LABELS = {
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-2',
+    date: '2026-01-06',
+    version: '3.0.0',
+    title: 'Éditeur Hero Ultra Complet',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🎨 Éditeur Hero COMPLET : personnalisez TOUT sans code !' },
+      { type: 'new', text: '📝 Onglet Textes : badge, titres, description, boutons CTA, stats personnalisables' },
+      { type: 'new', text: '🎨 Onglet Couleurs : couleurs individuelles pour chaque élément + dégradés' },
+      { type: 'new', text: '📐 Onglet Layout : hauteur, alignement, position, animations' },
+      { type: 'new', text: '👁️ Onglet Éléments : toggles pour afficher/masquer chaque composant' },
+      { type: 'new', text: '🖼️ Onglet Images : image de fond + images des 5 catégories' },
+      { type: 'improvement', text: '✨ Interface admin redessinée avec sections pliables' },
+    ]
+  },
+  {
     id: 'static-new-1',
     date: '2026-01-06',
     version: '2.9.0',
