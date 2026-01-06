@@ -14,7 +14,8 @@ import { Switch } from '../components/ui/switch';
 import { 
   Save, Eye, Image, Type, RefreshCw, Palette, Layout, 
   Plus, Trash2, MoveUp, MoveDown, Upload, Settings, 
-  AlertCircle, CheckCircle, Loader2, Sparkles
+  AlertCircle, CheckCircle, Loader2, Sparkles,
+  Menu, Globe, Facebook, Instagram, Twitter, Youtube, Link2, Mail, Phone
 } from 'lucide-react';
 import EmojiPicker from '../components/EmojiPicker';
 import { ANIMATION_OPTIONS } from '../components/SeasonalAnimation';
