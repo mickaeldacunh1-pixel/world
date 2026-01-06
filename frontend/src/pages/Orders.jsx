@@ -333,6 +333,38 @@ export default function Orders() {
                                 Facture
                               </Button>
                               
+                              {/* Créer étiquette Mondial Relay */}
+                              {order.relay_point && !order.tracking_number && order.status !== 'delivered' && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => createMondialRelayLabel(order.id)}
+                                  disabled={creatingLabel === order.id}
+                                  className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                                >
+                                  {creatingLabel === order.id ? (
+                                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                                  ) : (
+                                    <Printer className="w-4 h-4 mr-1" />
+                                  )}
+                                  Étiquette MR
+                                </Button>
+                              )}
+                              
+                              {/* Voir étiquette existante */}
+                              {order.tracking_number && (
+                                <a 
+                                  href={`https://www.mondialrelay.com/ww2/pdf/etiquettes.aspx?ens=CC23S7ZB&expedition=${order.tracking_number}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Button size="sm" variant="outline" className="border-green-300 text-green-600 hover:bg-green-50">
+                                    <Printer className="w-4 h-4 mr-1" />
+                                    Réimprimer
+                                  </Button>
+                                </a>
+                              )}
+                              
                               {/* Marquer comme expédié */}
                               {order.status === 'confirmed' && (
                                 <Button
@@ -364,6 +396,29 @@ export default function Orders() {
                               )}
                             </div>
                           </div>
+                          
+                          {/* Info Point Relais & Tracking */}
+                          {order.relay_point && (
+                            <div className="mt-3 pt-3 border-t flex flex-wrap items-center gap-4 text-sm">
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <MapPin className="w-4 h-4 text-orange-500" />
+                                <span>Point Relais: <strong>{order.relay_point.name}</strong> - {order.relay_point.city}</span>
+                              </div>
+                              {order.tracking_number && (
+                                <a 
+                                  href={order.tracking_url || `https://www.mondialrelay.fr/suivi-de-colis/?NumColis=${order.tracking_number}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-1 text-accent hover:underline"
+                                >
+                                  <Truck className="w-4 h-4" />
+                                  Suivi: {order.tracking_number}
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              )}
+                            </div>
+                          )}
+                          
                           <p className="text-xs text-muted-foreground mt-2">
                             Commandé le {new Date(order.created_at).toLocaleDateString('fr-FR')}
                             {order.shipped_at && ` • Expédié le ${new Date(order.shipped_at).toLocaleDateString('fr-FR')}`}
