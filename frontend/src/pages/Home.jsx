@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Card } from '../components/ui/card';
-import { Search, Car, Wrench, Bike, Truck, Settings, ArrowRight, Shield, Users, Clock, MapPin, Eye, Sparkles, Gavel } from 'lucide-react';
+import { Search, Car, Wrench, Bike, Truck, Settings, ArrowRight, Shield, Users, Clock, MapPin, Eye, Sparkles, Gavel, Gift, UserPlus, Copy, Check } from 'lucide-react';
 import SEO, { createOrganizationSchema, createWebsiteSchema } from '../components/SEO';
 import SeasonalAnimation from '../components/SeasonalAnimation';
 import AITools from '../components/AITools';
 import PlateScanner from '../components/PlateScanner';
 import VoiceSearch from '../components/VoiceSearch';
 import AnimatedText from '../components/AnimatedText';
+import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
