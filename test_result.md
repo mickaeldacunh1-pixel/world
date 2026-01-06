@@ -1040,3 +1040,51 @@ frontend:
         - working: "NA"
         - agent: "main"
         - comment: "Created RateBuyerModal component for sellers to rate buyers after delivery. 5-star rating system with emoji feedback, optional comment. Integrated in Orders page for delivered orders."
+agent_communication:
+    - agent: "main"
+    - message: "Implemented Hero section advanced customization options. New features added: 1) Title size selector (small/medium/large/xlarge), 2) Description size selector (small/medium/large), 3) Text alignment (left/center/right), 4) Hero height (400px/500px/600px/fullscreen), 5) Toggle for search bar visibility, 6) Toggle for categories section visibility, 7) Category images customization (5 categories: pieces, voitures, motos, utilitaires, accessoires). All options are available in AdminSettings.jsx under the Hero tab with live preview. Home.jsx has been updated to dynamically apply these settings. Backend DEFAULT_HERO_SETTINGS updated with new fields. Need to test: 1) Admin panel displays all new controls, 2) Settings are saved correctly, 3) Home page applies the customizations dynamically, 4) Preview reflects changes in real-time."
+
+backend:
+  - task: "Hero Advanced Settings API"
+    implemented: true
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Extended DEFAULT_HERO_SETTINGS with new fields: hero_title_size, hero_description_size, hero_text_align, hero_height, hero_show_search, hero_show_categories, hero_overlay_opacity, and category images (5 categories). Backend accepts any dict and stores in MongoDB."
+
+frontend:
+  - task: "Hero Advanced Customization UI"
+    implemented: true
+    working: "NA"
+    file: "pages/AdminSettings.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Added new UI controls in AdminSettings.jsx: 1) Options avancées de mise en page section with 4 dropdowns (title size, description size, text align, hero height), 2) Two toggles (search bar, categories visibility), 3) Images des catégories section with 5 image URL inputs and upload buttons. Live preview updated to reflect all new options."
+
+  - task: "Dynamic Hero on Home Page"
+    implemented: true
+    working: "NA"
+    file: "pages/Home.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Updated Home.jsx to use new hero settings: 1) Dynamic height based on hero_height setting, 2) Dynamic title size based on hero_title_size, 3) Dynamic description size based on hero_description_size, 4) Text alignment based on hero_text_align, 5) Conditional rendering of search form based on hero_show_search, 6) Conditional rendering of categories based on hero_show_categories, 7) Dynamic category images from settings."
+
+test_plan:
+  current_focus:
+    - "Hero Advanced Customization Testing"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
