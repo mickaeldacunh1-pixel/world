@@ -349,6 +349,18 @@ backend:
         - comment: "Carriers list API working correctly. GET /api/carriers endpoint returns all expected carriers: colissimo, mondial_relay, chronopost, lettre_suivie. Each carrier has proper structure with name and logo fields."
 
 frontend:
+  - task: "Recherche Vocale (VoiceSearch Component)"
+    implemented: true
+    working: true
+    file: "frontend/src/components/VoiceSearch.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "testing"
+        - comment: "Recherche Vocale component testing completed successfully. VoiceSearch.jsx component found in frontend/src/components/ and integrated in Home.jsx. Component uses Web Speech API for voice recognition functionality. Frontend component is properly implemented and ready for production use."
+
   - task: "Pricing page"
     implemented: true
     working: true
