@@ -879,7 +879,7 @@ class ConversationResponse(BaseModel):
 
 # Pricing packages (Opisto-style)
 PRICING_PACKAGES = {
-    "single": {"name": "Annonce Unique", "price": 2.00, "credits": 1, "duration": 30, "max_photos": 5},
+    "single": {"name": "Annonce Unique", "price": 2.00, "credits": 1, "duration": 30, "max_photos": 6},
     "pack5": {"name": "Pack 5 Annonces", "price": 8.00, "credits": 5, "duration": 30, "max_photos": 10},
     "pack20": {"name": "Pack 20 Annonces", "price": 25.00, "credits": 20, "duration": 30, "max_photos": 15},
     "pack50": {"name": "Pack 50 Annonces", "price": 39.00, "credits": 50, "duration": 30, "max_photos": 20},
