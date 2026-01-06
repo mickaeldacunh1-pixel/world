@@ -201,6 +201,37 @@ export default function Orders() {
     setReviewDialogOpen(true);
   };
 
+  const createMondialRelayLabel = async (orderId) => {
+    setCreatingLabel(orderId);
+    try {
+      const response = await axios.post(`${API}/shipping/mondial-relay/create-label?order_id=${orderId}`);
+      toast.success('Étiquette Mondial Relay créée !');
+      
+      // Open label in new tab
+      if (response.data.label_url) {
+        window.open(response.data.label_url, '_blank');
+      }
+      
+      // Refresh orders
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la création de l\'étiquette');
+    } finally {
+      setCreatingLabel(null);
+    }
+  };
+
+  const fetchTracking = async (trackingNumber) => {
+    if (trackingInfo[trackingNumber]) return; // Already fetched
+    
+    try {
+      const response = await axios.get(`${API}/shipping/mondial-relay/tracking/${trackingNumber}`);
+      setTrackingInfo(prev => ({ ...prev, [trackingNumber]: response.data }));
+    } catch (error) {
+      console.error('Error fetching tracking:', error);
+    }
+  };
+
   const sellerOrders = orders.filter(o => o.role === 'seller');
   const buyerOrders = orders.filter(o => o.role === 'buyer');
 
