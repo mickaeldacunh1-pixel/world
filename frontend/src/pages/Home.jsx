@@ -268,13 +268,18 @@ export default function Home() {
               <span className="text-sm font-medium">La référence automobile en France</span>
             </div>
             
-            <h1 className={`font-heading ${TITLE_SIZE_CLASSES[heroSettings.hero_title_size] || 'text-4xl md:text-5xl lg:text-7xl'} font-black text-white tracking-tight leading-none mb-6 animate-fade-in-up stagger-2`}>
-              <AnimatedText 
-                text={heroSettings.hero_title_line1} 
-                animation={heroSettings.hero_text_animation}
-                className="block"
-              /><br />
-              <span className={`text-transparent bg-clip-text bg-gradient-to-r from-accent to-orange-400 ${heroSettings.hero_text_animation === 'glow' ? 'animate-text-glow' : ''}`}>
+            <h1 className={`font-heading ${TITLE_SIZE_CLASSES[heroSettings.hero_title_size] || 'text-4xl md:text-5xl lg:text-7xl'} font-black tracking-tight leading-none mb-6 animate-fade-in-up stagger-2`}>
+              <span style={{ color: heroSettings.hero_title_line1_color || '#FFFFFF' }}>
+                <AnimatedText 
+                  text={heroSettings.hero_title_line1} 
+                  animation={heroSettings.hero_text_animation}
+                  className="block"
+                />
+              </span><br />
+              <span 
+                style={{ color: heroSettings.hero_title_line2_color || '#F97316' }}
+                className={heroSettings.hero_text_animation === 'glow' ? 'animate-text-glow' : ''}
+              >
                 <AnimatedText 
                   text={heroSettings.hero_title_line2} 
                   animation={heroSettings.hero_text_animation}
