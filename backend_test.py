@@ -2335,9 +2335,12 @@ class AutoPiecesAPITester:
 
     def run_all_tests(self):
         """Run all API tests"""
-        print("🚀 Starting AutoPièces API Tests...")
+        print("🚀 Starting World Auto API Tests...")
         print(f"Testing against: {self.base_url}")
         print("=" * 60)
+        
+        # PRIORITY: Test World Auto France Level 1 Features FIRST
+        self.test_world_auto_level1_features()
         
         # Basic endpoints
         self.test_root_endpoint()
