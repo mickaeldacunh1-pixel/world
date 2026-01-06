@@ -1047,15 +1047,18 @@ agent_communication:
 backend:
   - task: "Hero Advanced Settings API"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Extended DEFAULT_HERO_SETTINGS with new fields: hero_title_size, hero_description_size, hero_text_align, hero_height, hero_show_search, hero_show_categories, hero_overlay_opacity, and category images (5 categories). Backend accepts any dict and stores in MongoDB."
+        - working: true
+        - agent: "testing"
+        - comment: "Hero Advanced Settings API testing completed successfully. All 12 advanced customization fields present in GET /api/settings/hero response: hero_title_size, hero_description_size, hero_text_align, hero_height, hero_show_search, hero_show_categories, hero_overlay_opacity, and 5 category images (pieces, voitures, motos, utilitaires, accessoires). Default values correctly set (title_size: large, description_size: medium, text_align: left, height: large, show_search: true, show_categories: true, overlay_opacity: 50). POST /api/settings/hero successfully saves all advanced settings with authentication required. Settings persistence verified - all custom values correctly stored and retrieved. Authentication properly enforced (401 without token). Complete advanced hero customization API ready for production use."
 
 frontend:
   - task: "Hero Advanced Customization UI"
