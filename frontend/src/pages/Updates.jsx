@@ -25,6 +25,69 @@ const CATEGORY_LABELS = {
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-0',
+    date: '2026-01-06',
+    version: '2.8.0',
+    title: 'Diagnostic IA Payant & Améliorations',
+    category: 'feature',
+    items: [
+      { type: 'new', text: 'Diagnostic IA par Tobi : analysez vos problèmes automobiles avec l\'intelligence artificielle' },
+      { type: 'new', text: 'Système de tarification : 0.99€/diagnostic, Pack 5 à 3.99€, ou 100 points fidélité' },
+      { type: 'new', text: 'Accès gratuit illimité au diagnostic pour les utilisateurs avec une annonce active' },
+      { type: 'new', text: 'Bannière Diagnostic IA sur la page d\'accueil' },
+      { type: 'new', text: 'Endpoint /api/users/me/stats pour les statistiques utilisateur' },
+      { type: 'improvement', text: 'Réorganisation des icônes dans la navbar (favoris, messages, panier à droite)' },
+    ]
+  },
+  {
+    id: 'static-01',
+    date: '2026-01-06',
+    version: '2.7.0',
+    title: 'Système de Parrainage',
+    category: 'feature',
+    items: [
+      { type: 'new', text: 'Programme de parrainage complet : invitez vos amis et gagnez des points' },
+      { type: 'new', text: 'Code de parrainage unique généré automatiquement pour chaque utilisateur' },
+      { type: 'new', text: 'Récompenses : 100 points pour le parrain, 50 points pour le filleul' },
+      { type: 'new', text: 'Nouvel onglet "Parrainage" dans la page Fidélité' },
+      { type: 'new', text: 'Validation en temps réel du code de parrainage à l\'inscription' },
+      { type: 'new', text: 'Leaderboard des meilleurs parrains' },
+      { type: 'new', text: 'Grande bannière de parrainage sur la page d\'accueil' },
+      { type: 'improvement', text: 'Champ code parrainage pré-rempli depuis l\'URL (?ref=CODE)' },
+    ]
+  },
+  {
+    id: 'static-02',
+    date: '2026-01-05',
+    version: '2.6.0',
+    title: 'Monétisation & Programme Fidélité',
+    category: 'feature',
+    items: [
+      { type: 'new', text: 'Système de mise en avant des annonces : Boost, À la Une, Packs Pro' },
+      { type: 'new', text: 'Programme de fidélité complet avec points, niveaux (Bronze à Diamant) et récompenses' },
+      { type: 'new', text: 'Page /promouvoir pour booster ses annonces' },
+      { type: 'new', text: 'Page /fidelite avec historique des points et récompenses à échanger' },
+      { type: 'new', text: 'Intégration Stripe pour les abonnements et boosts' },
+    ]
+  },
+  {
+    id: 'static-03',
+    date: '2026-01-04',
+    version: '2.5.5',
+    title: 'Innovations Niveau 1',
+    category: 'feature',
+    items: [
+      { type: 'new', text: 'Scan de plaque d\'immatriculation (OCR + sélection manuelle)' },
+      { type: 'new', text: 'Recherche vocale avec Web Speech API' },
+      { type: 'new', text: 'Système d\'enchères en direct avec timer' },
+      { type: 'new', text: 'Appel vidéo vendeur via WhatsApp' },
+      { type: 'new', text: 'Notation des acheteurs par les vendeurs' },
+      { type: 'new', text: 'Profil public acheteur (/acheteur/:id)' },
+      { type: 'improvement', text: 'Chat en temps réel migré vers WebSockets' },
+      { type: 'improvement', text: 'Indicateur "en train d\'écrire..." et sélecteur d\'émojis' },
+    ]
+  },
+  {
     id: 'static-1',
     date: '2026-01-05',
     version: '2.5.0',
