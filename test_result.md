@@ -527,39 +527,48 @@ test_plan:
 backend:
   - task: "Diagnostic Access Check API"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "GET /api/ai/diagnostic/access - Returns has_free_access (if user has active listing), diagnostic_credits count, loyalty_points, can_use_points, and pricing info."
+        - working: true
+        - agent: "testing"
+        - comment: "Diagnostic Access Check API testing completed successfully. All required fields present: has_free_access, diagnostic_credits, loyalty_points, can_use_points, pricing. Pricing structure correct: 0.99€ single, 3.99€ pack_5, 100 points cost. API correctly identifies users without active listings as having no free access. Tested with parrain@test.com user (100 loyalty points). All validation and response structure working correctly."
 
   - task: "Paid Diagnostic Endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "POST /api/ai/diagnostic - Now requires payment (credits or points) unless user has active listing. Parameters: problem, vehicle, use_credits, use_points. Returns 402 if payment required."
+        - working: true
+        - agent: "testing"
+        - comment: "Paid Diagnostic Endpoint testing completed successfully. All scenarios tested: 1) WITHOUT payment - correctly returns 402 payment_required error. 2) WITH points (100 loyalty points) - successfully processes diagnostic request, returns complete response with diagnostic, vehicle, problem, free_access fields. AI generates quality diagnostic content (200+ characters). Points correctly deducted (100 points reduced to 0). 3) Payment validation working correctly. All authentication, validation, and AI integration working properly."
 
   - task: "Purchase Diagnostic Credits"
     implemented: true
-    working: "NA"
+    working: false
     file: "server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "POST /api/ai/diagnostic/purchase?pack=single|pack_5 - Creates Stripe checkout session. single=0.99€, pack_5=3.99€"
+        - working: false
+        - agent: "testing"
+        - comment: "Purchase Diagnostic Credits endpoint implemented correctly but fails due to invalid Stripe API key configuration. Endpoint structure correct: accepts pack parameter (single/pack_5), validates pack types (returns 400 for invalid pack), should return checkout_url and session_id. Code structure is correct but Stripe integration fails with 'Erreur de paiement' due to invalid API key 'sk_test_emergent'. Needs valid Stripe API key configuration."
 
 frontend:
   - task: "Diagnostic Page"
