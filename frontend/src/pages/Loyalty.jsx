@@ -171,6 +171,38 @@ export default function Loyalty() {
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
+  const copyReferralCode = () => {
+    if (referralData?.referral_code) {
+      navigator.clipboard.writeText(referralData.referral_code);
+      setCopiedReferral(true);
+      toast.success('Code de parrainage copié !');
+      setTimeout(() => setCopiedReferral(false), 2000);
+    }
+  };
+
+  const copyReferralLink = () => {
+    if (referralData?.referral_link) {
+      navigator.clipboard.writeText(referralData.referral_link);
+      toast.success('Lien de parrainage copié !');
+    }
+  };
+
+  const shareReferral = async () => {
+    if (navigator.share && referralData) {
+      try {
+        await navigator.share({
+          title: 'Rejoins World Auto France !',
+          text: `Utilise mon code ${referralData.referral_code} et reçois ${referralData.rewards_config?.referee_points || 50} points de bienvenue !`,
+          url: referralData.referral_link
+        });
+      } catch (error) {
+        copyReferralLink();
+      }
+    } else {
+      copyReferralLink();
+    }
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen bg-secondary/30 flex items-center justify-center p-4">
