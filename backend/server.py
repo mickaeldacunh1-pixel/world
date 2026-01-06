@@ -4785,19 +4785,6 @@ async def use_loyalty_boost(listing_id: str, current_user: dict = Depends(get_cu
     
     return {"message": "Boost fidélité appliqué (7 jours)", "end_time": end_time.isoformat()}
 
-@api_router.get("/listings/featured")
-async def get_featured_listings(limit: int = 6):
-    """Get featured listings for homepage"""
-    now = datetime.now(timezone.utc).isoformat()
-    
-    listings = await db.listings.find({
-        "status": "active",
-        "is_featured": True,
-        "featured_end": {"$gt": now}
-    }, {"_id": 0}).sort("featured_end", 1).to_list(limit)
-    
-    return listings
-
 # ================== ROOT ==================
 
 @api_router.get("/")
