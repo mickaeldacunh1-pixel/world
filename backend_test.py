@@ -3018,6 +3018,10 @@ class AutoPiecesAPITester:
         print("\n🎯 Testing Referral System...")
         self.test_referral_system_complete()
         
+        # PAID DIAGNOSTIC IA SYSTEM TESTS (NEW FEATURE)
+        print("\n🧠 Testing Paid Diagnostic IA System...")
+        self.test_paid_diagnostic_ia_system()
+        
         # Error handling
         self.test_invalid_endpoints()
         
