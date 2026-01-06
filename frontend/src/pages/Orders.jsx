@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Package, Download, Truck, CheckCircle, RotateCcw, Clock, AlertCircle, Star, User } from 'lucide-react';
+import { Package, Download, Truck, CheckCircle, RotateCcw, Clock, AlertCircle, Star, User, MapPin, ExternalLink, Loader2, Printer } from 'lucide-react';
 import RateBuyerModal from '../components/RateBuyerModal';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
