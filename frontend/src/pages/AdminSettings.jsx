@@ -974,7 +974,7 @@ export default function AdminSettings() {
                 <div 
                   className={`relative rounded-lg overflow-hidden transition-all duration-300 mx-auto ${
                     settings.preview_mode === 'mobile' ? 'max-w-[375px]' : 'w-full'
-                  }`}
+                  } ${HERO_HEIGHT_OPTIONS.find(h => h.value === (settings.hero_height || 'large'))?.class || 'min-h-[600px]'}`}
                 >
                   {/* Background Image with Opacity */}
                   <div className="absolute inset-0">
@@ -989,10 +989,15 @@ export default function AdminSettings() {
                   </div>
                   
                   {/* Content */}
-                  <div className={`relative ${settings.preview_mode === 'mobile' ? 'p-4' : 'p-8'}`}>
+                  <div 
+                    className={`relative h-full flex flex-col justify-center ${settings.preview_mode === 'mobile' ? 'p-4' : 'p-8'}`}
+                    style={{ textAlign: settings.hero_text_align || 'center' }}
+                  >
                     <h1 
                       className={`font-black text-white leading-tight mb-3 ${
-                        settings.preview_mode === 'mobile' ? 'text-xl' : 'text-2xl md:text-3xl'
+                        settings.preview_mode === 'mobile' 
+                          ? 'text-xl' 
+                          : TITLE_SIZE_OPTIONS.find(t => t.value === (settings.hero_title_size || 'large'))?.class || 'text-4xl md:text-5xl lg:text-6xl'
                       } ${settings.hero_text_animation ? `animate-${settings.hero_text_animation}` : ''}`}
                       style={{ fontFamily: settings.font_heading }}
                     >
@@ -1000,19 +1005,66 @@ export default function AdminSettings() {
                       <span style={{ color: settings.color_accent }}>{settings.hero_title_line2}</span>
                     </h1>
                     <p 
-                      className={`text-white/80 mb-4 max-w-md ${settings.preview_mode === 'mobile' ? 'text-xs' : 'text-sm'}`}
+                      className={`text-white/80 mb-4 ${settings.hero_text_align === 'center' ? 'mx-auto' : ''} max-w-md ${
+                        settings.preview_mode === 'mobile' 
+                          ? 'text-xs' 
+                          : DESC_SIZE_OPTIONS.find(d => d.value === (settings.hero_description_size || 'medium'))?.class || 'text-base md:text-lg'
+                      }`}
                       style={{ fontFamily: settings.font_body }}
                     >
                       {settings.hero_description}
                     </p>
-                    <Button 
-                      style={{ backgroundColor: settings.color_accent }} 
-                      className={`text-white ${settings.preview_mode === 'mobile' ? 'text-xs h-8 px-3' : 'text-sm'}`}
-                    >
-                      {settings.hero_cta_text}
-                    </Button>
+                    <div className={settings.hero_text_align === 'center' ? 'mx-auto' : ''}>
+                      <Button 
+                        style={{ backgroundColor: settings.color_accent }} 
+                        className={`text-white ${settings.preview_mode === 'mobile' ? 'text-xs h-8 px-3' : 'text-sm'}`}
+                      >
+                        {settings.hero_cta_text}
+                      </Button>
+                    </div>
+                    
+                    {/* Search bar preview */}
+                    {settings.hero_show_search !== false && (
+                      <div className={`mt-6 ${settings.hero_text_align === 'center' ? 'mx-auto' : ''} max-w-xl`}>
+                        <div className="bg-white/90 rounded-lg p-2 flex items-center gap-2 shadow-lg">
+                          <input 
+                            type="text" 
+                            placeholder="Rechercher une pièce..." 
+                            className="flex-1 px-3 py-2 bg-transparent text-gray-800 text-sm outline-none"
+                            disabled
+                          />
+                          <Button size="sm" style={{ backgroundColor: settings.color_accent }} className="text-white">
+                            Rechercher
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
+                
+                {/* Categories Preview */}
+                {settings.hero_show_categories !== false && (
+                  <div className="mt-4 grid grid-cols-5 gap-2">
+                    {[
+                      { label: 'Pièces', img: settings.category_pieces_image },
+                      { label: 'Voitures', img: settings.category_voitures_image },
+                      { label: 'Motos', img: settings.category_motos_image },
+                      { label: 'Utilitaires', img: settings.category_utilitaires_image },
+                      { label: 'Accessoires', img: settings.category_accessoires_image },
+                    ].map((cat, idx) => (
+                      <div key={idx} className="relative rounded-lg overflow-hidden aspect-video group">
+                        <img 
+                          src={cat.img || 'https://via.placeholder.com/150'} 
+                          alt={cat.label} 
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                          <span className="text-white text-xs font-semibold">{cat.label}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 
                 {/* Preview Info */}
                 <p className="text-xs text-muted-foreground mt-4 text-center">
