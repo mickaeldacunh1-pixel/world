@@ -670,9 +670,19 @@ export default function CreateListing() {
 
               {/* Images */}
               <div className="space-y-4">
-                <Label>Photos de l'annonce</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Photos de l'annonce</Label>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm font-medium ${images.length >= maxPhotos ? 'text-orange-500' : 'text-muted-foreground'}`}>
+                      {images.length}/{maxPhotos} photos
+                    </span>
+                    {photoLimit.is_pro && (
+                      <span className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-0.5 rounded-full">PRO</span>
+                    )}
+                  </div>
+                </div>
                 <p className="text-sm text-muted-foreground">
-                  Ajoutez jusqu'à 6 photos (JPG, PNG, WebP - max 10MB chacune)
+                  Ajoutez jusqu'à {maxPhotos} photos (JPG, PNG, WebP - max 10MB chacune)
                 </p>
                 
                 {/* Image Preview Grid */}
@@ -705,7 +715,7 @@ export default function CreateListing() {
                 )}
 
                 {/* Upload Button */}
-                {images.length < 6 && (
+                {images.length < maxPhotos && (
                   <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-accent transition-colors">
                     <input
                       type="file"
@@ -727,11 +737,41 @@ export default function CreateListing() {
                           <Upload className="w-8 h-8 text-muted-foreground" />
                           <span className="text-sm font-medium">Cliquez pour ajouter des photos</span>
                           <span className="text-xs text-muted-foreground">
-                            {images.length}/6 photos ajoutées
+                            {images.length}/{maxPhotos} photos ajoutées
                           </span>
                         </div>
                       )}
                     </label>
+                  </div>
+                )}
+
+                {/* Buy Extra Photos Option */}
+                {images.length >= maxPhotos && !photoLimit.is_pro && (
+                  <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
+                          <Camera className="w-5 h-5 text-orange-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">Besoin de plus de photos ?</p>
+                          <p className="text-xs text-muted-foreground">+15 photos supplémentaires pour seulement 1€</p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={handleBuyExtraPhotos}
+                        disabled={buyingPhotos}
+                        className="bg-orange-500 hover:bg-orange-600 text-white"
+                      >
+                        {buyingPhotos ? (
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        ) : (
+                          <Plus className="w-4 h-4 mr-2" />
+                        )}
+                        Acheter +15 photos
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
