@@ -1063,15 +1063,18 @@ backend:
 frontend:
   - task: "Hero Advanced Customization UI"
     implemented: true
-    working: "NA"
+    working: true
     file: "pages/AdminSettings.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "main"
         - comment: "Added new UI controls in AdminSettings.jsx: 1) Options avancées de mise en page section with 4 dropdowns (title size, description size, text align, hero height), 2) Two toggles (search bar, categories visibility), 3) Images des catégories section with 5 image URL inputs and upload buttons. Live preview updated to reflect all new options."
+        - working: true
+        - agent: "testing"
+        - comment: "Hero Advanced Customization UI testing completed successfully. Admin settings page accessible at /admin/parametres with React app properly loaded. All advanced customization controls implemented: 1) 'Options avancées de mise en page' section with 4 dropdowns (Taille du titre, Taille de la description, Alignement du texte, Hauteur du Hero) with proper options (small/medium/large/xlarge for title, small/medium/large for description, left/center/right for alignment, small/medium/large/full for height). 2) Two toggles for 'Afficher la barre de recherche' and 'Afficher les mini-catégories'. 3) 'Images des catégories' section with 5 category image inputs (Pièces détachées, Voitures, Motos, Utilitaires, Accessoires). Live preview functionality implemented with desktop/mobile toggle. All UI controls properly connected to settings state and API integration. Frontend ready for production use."
 
   - task: "Dynamic Hero on Home Page"
     implemented: true
