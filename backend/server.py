@@ -4312,6 +4312,24 @@ def generate_reward_code():
     import string
     return 'WAF-' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
+def generate_referral_code(name: str):
+    """Generate a unique referral code based on user name"""
+    import random
+    import string
+    # Take first 3 letters of name (uppercase) + 5 random chars
+    prefix = ''.join(c for c in name.upper()[:3] if c.isalpha())
+    if len(prefix) < 3:
+        prefix = prefix + 'X' * (3 - len(prefix))
+    suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+    return f"{prefix}{suffix}"
+
+# Referral rewards config
+REFERRAL_REWARDS = {
+    "referrer_points": 100,  # Points donnés au parrain
+    "referee_points": 50,    # Points donnés au filleul
+    "referrer_bonus_per_purchase": 10,  # Points bonus quand le filleul fait un achat
+}
+
 async def add_loyalty_points(user_id: str, points: int, description: str, order_id: str = None):
     """Add loyalty points to a user"""
     # Get user
