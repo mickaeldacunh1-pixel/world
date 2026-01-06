@@ -273,10 +273,14 @@ export default function Loyalty() {
         </div>
 
         <Tabs defaultValue="rewards" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="rewards" className="gap-2">
               <Gift className="w-4 h-4" />
               <span className="hidden sm:inline">Récompenses</span>
+            </TabsTrigger>
+            <TabsTrigger value="referral" className="gap-2">
+              <Users className="w-4 h-4" />
+              <span className="hidden sm:inline">Parrainage</span>
             </TabsTrigger>
             <TabsTrigger value="my-rewards" className="gap-2">
               <Sparkles className="w-4 h-4" />
