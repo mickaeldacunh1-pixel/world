@@ -432,39 +432,97 @@ export default function Home() {
               </form>
             )}
 
-            {/* Plate Scanner & Quick Tools */}
+            {/* CTA Buttons - Fully Customizable */}
             <div className={`flex flex-wrap items-center gap-4 mt-6 animate-fade-in-up stagger-4 ${
               heroSettings.hero_text_align === 'center' ? 'justify-center' : 
               heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
             }`}>
-              <PlateScanner onVehicleSelect={(v) => {
-                navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
-              }} />
-              <Link to="/encheres">
-                <Button variant="outline" className="gap-2 border-white/30 text-white hover:bg-white/10">
-                  <Gavel className="w-5 h-5" />
-                  Enchères en direct
-                </Button>
-              </Link>
+              {/* Plate Scanner */}
+              {heroSettings.hero_show_plate_scanner !== false && (
+                <PlateScanner onVehicleSelect={(v) => {
+                  navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
+                }} />
+              )}
+              
+              {/* CTA Button 1 */}
+              {heroSettings.hero_cta1_enabled !== false && heroSettings.hero_cta1_text && (
+                <Link to={heroSettings.hero_cta1_link || '/deposer'}>
+                  <Button 
+                    className={`gap-2 ${heroSettings.hero_cta1_style === 'outline' ? 'bg-transparent border-2' : heroSettings.hero_cta1_style === 'ghost' ? 'bg-transparent' : ''}`}
+                    style={{ 
+                      backgroundColor: heroSettings.hero_cta1_style === 'filled' ? (heroSettings.hero_cta1_bg_color || '#F97316') : 'transparent',
+                      color: heroSettings.hero_cta1_text_color || '#FFFFFF',
+                      borderColor: heroSettings.hero_cta1_style === 'outline' ? (heroSettings.hero_cta1_bg_color || '#F97316') : undefined
+                    }}
+                  >
+                    {heroSettings.hero_cta1_icon && <span>{heroSettings.hero_cta1_icon}</span>}
+                    {heroSettings.hero_cta1_text}
+                  </Button>
+                </Link>
+              )}
+              
+              {/* CTA Button 2 */}
+              {heroSettings.hero_cta2_enabled && heroSettings.hero_cta2_text && (
+                <Link to={heroSettings.hero_cta2_link || '/encheres'}>
+                  <Button 
+                    variant="outline" 
+                    className="gap-2"
+                    style={{ 
+                      backgroundColor: heroSettings.hero_cta2_style === 'filled' ? (heroSettings.hero_cta2_bg_color || 'transparent') : 'transparent',
+                      color: heroSettings.hero_cta2_text_color || '#FFFFFF',
+                      borderColor: heroSettings.hero_cta2_border_color || 'rgba(255, 255, 255, 0.3)'
+                    }}
+                  >
+                    {heroSettings.hero_cta2_icon && <span>{heroSettings.hero_cta2_icon}</span>}
+                    {heroSettings.hero_cta2_text}
+                  </Button>
+                </Link>
+              )}
             </div>
 
-            {/* Quick stats */}
-            <div className={`flex flex-wrap items-center gap-6 mt-8 animate-fade-in-up stagger-5 ${
-              heroSettings.hero_text_align === 'center' ? 'justify-center' : 
-              heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
-            }`}>
-              <div className="text-white/70">
-                <span className="text-2xl font-bold text-white">{Object.values(categoryStats).reduce((a, b) => a + b, 0) || '100+'}+</span>
-                <span className="ml-2 text-sm">annonces actives</span>
+            {/* Quick stats - Customizable */}
+            {heroSettings.hero_show_stats !== false && (
+              <div className={`flex flex-wrap items-center gap-6 mt-8 animate-fade-in-up stagger-5 ${
+                heroSettings.hero_text_align === 'center' ? 'justify-center' : 
+                heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
+              }`}>
+                {/* Stat 1 */}
+                <div style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
+                  {heroSettings.hero_stat1_icon && <span className="mr-1">{heroSettings.hero_stat1_icon}</span>}
+                  <span className="text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
+                    {heroSettings.hero_stat1_number || Object.values(categoryStats).reduce((a, b) => a + b, 0) || '100+'}
+                  </span>
+                  <span className="ml-2 text-sm">{heroSettings.hero_stat1_label || 'annonces actives'}</span>
+                </div>
+                
+                {/* Stat 2 */}
+                <div style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
+                  {heroSettings.hero_stat2_icon && <span className="mr-1">{heroSettings.hero_stat2_icon}</span>}
+                  <span className="text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
+                    {heroSettings.hero_stat2_number || '5'}
+                  </span>
+                  <span className="ml-2 text-sm">{heroSettings.hero_stat2_label || 'catégories'}</span>
+                </div>
+                
+                {/* Stat 3 (optional) */}
+                {heroSettings.hero_stat3_enabled && heroSettings.hero_stat3_number && (
+                  <div style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
+                    {heroSettings.hero_stat3_icon && <span className="mr-1">{heroSettings.hero_stat3_icon}</span>}
+                    <span className="text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
+                      {heroSettings.hero_stat3_number}
+                    </span>
+                    <span className="ml-2 text-sm">{heroSettings.hero_stat3_label}</span>
+                  </div>
+                )}
+                
+                {/* AI Tools */}
+                {heroSettings.hero_show_ai_tools !== false && (
+                  <div className={heroSettings.hero_text_align !== 'center' ? 'ml-auto' : ''}>
+                    <AITools />
+                  </div>
+                )}
               </div>
-              <div className="text-white/70">
-                <span className="text-2xl font-bold text-white">5</span>
-                <span className="ml-2 text-sm">catégories</span>
-              </div>
-              <div className={heroSettings.hero_text_align !== 'center' ? 'ml-auto' : ''}>
-                <AITools />
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
