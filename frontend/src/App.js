@@ -98,6 +98,9 @@ function AppContent() {
           <Route path="/acheteur/:buyerId" element={<BuyerProfile />} />
           <Route path="/encheres" element={<Auctions />} />
           <Route path="/fidelite" element={<Loyalty />} />
+          <Route path="/promouvoir" element={
+            <ProtectedRoute><Promote /></ProtectedRoute>
+          } />
           <Route path="/admin/parametres" element={
             <ProtectedRoute><AdminSettings /></ProtectedRoute>
           } />
