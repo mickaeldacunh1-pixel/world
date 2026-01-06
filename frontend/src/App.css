@@ -32,3 +32,121 @@
         transform: rotate(360deg);
     }
 }
+
+/* ========== TEXT ANIMATIONS ========== */
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@keyframes text-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes text-slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes text-slide-down {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes text-slide-left {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes text-slide-right {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes text-zoom-in {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes text-bounce-in {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes text-flip-in {
+  from { opacity: 0; transform: perspective(400px) rotateX(90deg); }
+  to { opacity: 1; transform: perspective(400px) rotateX(0); }
+}
+
+@keyframes text-glow {
+  0%, 100% { text-shadow: 0 0 10px rgba(249, 115, 22, 0.5), 0 0 20px rgba(249, 115, 22, 0.3); }
+  50% { text-shadow: 0 0 20px rgba(249, 115, 22, 0.8), 0 0 40px rgba(249, 115, 22, 0.5); }
+}
+
+@keyframes text-gradient-shift {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes text-wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-text-blink {
+  animation: blink 0.7s infinite;
+}
+
+.animate-text-fade {
+  animation: text-fade-in 0.8s ease-out forwards;
+}
+
+.animate-text-slide-up {
+  animation: text-slide-up 0.8s ease-out forwards;
+}
+
+.animate-text-slide-down {
+  animation: text-slide-down 0.8s ease-out forwards;
+}
+
+.animate-text-slide-left {
+  animation: text-slide-left 0.8s ease-out forwards;
+}
+
+.animate-text-slide-right {
+  animation: text-slide-right 0.8s ease-out forwards;
+}
+
+.animate-text-zoom {
+  animation: text-zoom-in 0.6s ease-out forwards;
+}
+
+.animate-text-bounce {
+  animation: text-bounce-in 0.8s ease-out forwards;
+}
+
+.animate-text-flip {
+  animation: text-flip-in 0.8s ease-out forwards;
+}
+
+.animate-text-glow {
+  animation: text-glow 2s ease-in-out infinite;
+}
+
+.animate-text-gradient {
+  background: linear-gradient(90deg, #fff, #f97316, #fff);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-gradient-shift 3s linear infinite;
+}
+
+.animate-text-wave {
+  animation: text-wave 1s ease-in-out infinite;
+}
+
