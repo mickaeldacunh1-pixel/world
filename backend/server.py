@@ -1636,6 +1636,7 @@ async def get_video_limit(current_user: dict = Depends(get_current_user)):
 @api_router.post("/video/create-checkout-session")
 async def create_video_extension_checkout(current_user: dict = Depends(get_current_user)):
     """Create Stripe checkout session for extended video option"""
+    stripe.api_key = STRIPE_API_KEY
     try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
