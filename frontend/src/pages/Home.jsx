@@ -358,6 +358,7 @@ export default function Home() {
       </section>
 
       {/* Categories Bento Grid - Improved */}
+      {heroSettings.hero_show_categories !== false && (
       <section className="py-16 md:py-24 bg-gradient-to-b from-secondary/50 to-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 animate-fade-in-up">
@@ -370,44 +371,57 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-            {categories.map((cat, index) => (
-              <Link
-                key={cat.slug}
-                to={`/annonces/${cat.slug}`}
-                className={`group relative overflow-hidden rounded-2xl hover-lift animate-fade-in-up stagger-${index + 1} ${
-                  index === 0 ? 'col-span-2 row-span-2' : ''
-                }`}
-                data-testid={`category-${cat.slug}`}
-              >
-                <div className={`relative ${index === 0 ? 'h-80 md:h-[420px]' : 'h-44 md:h-52'}`}>
-                  <img
-                    src={cat.image}
-                    alt={cat.name}
-                    className="absolute inset-0 w-full h-full object-cover img-zoom"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
-                  
-                  {/* Content */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-lg`}>
-                        <cat.icon className="w-5 h-5 text-white" />
+            {categories.map((cat, index) => {
+              // Get customized image from settings if available
+              const categoryImageMap = {
+                pieces: heroSettings.category_pieces_image,
+                voitures: heroSettings.category_voitures_image,
+                motos: heroSettings.category_motos_image,
+                utilitaires: heroSettings.category_utilitaires_image,
+                accessoires: heroSettings.category_accessoires_image,
+              };
+              const categoryImage = categoryImageMap[cat.slug] || cat.image;
+              
+              return (
+                <Link
+                  key={cat.slug}
+                  to={`/annonces/${cat.slug}`}
+                  className={`group relative overflow-hidden rounded-2xl hover-lift animate-fade-in-up stagger-${index + 1} ${
+                    index === 0 ? 'col-span-2 row-span-2' : ''
+                  }`}
+                  data-testid={`category-${cat.slug}`}
+                >
+                  <div className={`relative ${index === 0 ? 'h-80 md:h-[420px]' : 'h-44 md:h-52'}`}>
+                    <img
+                      src={categoryImage}
+                      alt={cat.name}
+                      className="absolute inset-0 w-full h-full object-cover img-zoom"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                    <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
+                    
+                    {/* Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-lg`}>
+                          <cat.icon className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="text-white font-heading font-bold text-lg md:text-xl drop-shadow-lg">
+                          {cat.name}
+                        </span>
                       </div>
-                      <span className="text-white font-heading font-bold text-lg md:text-xl drop-shadow-lg">
-                        {cat.name}
-                      </span>
+                      <p className="text-white/80 text-sm font-medium">
+                        {categoryStats[cat.slug] || 0} annonces
+                      </p>
                     </div>
-                    <p className="text-white/80 text-sm font-medium">
-                      {categoryStats[cat.slug] || 0} annonces
-                    </p>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
+      )}
 
       {/* Search by Brand Section */}
       <section className="py-16 md:py-20 bg-background">
