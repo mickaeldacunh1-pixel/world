@@ -1,183 +1,183 @@
 <analysis>**original_problem_statement:**
-L'utilisateur a demandé la création d'un site de type Opisto pour la vente de pièces automobiles. Au fil des sessions, la demande a évolué pour transformer le site en une référence en ajoutant de nombreuses fonctionnalités avancées, notamment :
-- Un assistant IA nommé Tobi.
-- Des fonctionnalités avancées (Mode Sombre, PWA, Vidéos, Gamification, Reconnaissance IA de pièce, Estimation de prix IA).
-- Un Niveau 1 d'innovations pour surpasser la concurrence : Scan de plaque d'immatriculation, Recherche Vocale, Diagnostic IA, Enchères en direct, Appel Vidéo.
-- Un Niveau 2 de fonctionnalités de fidélisation : Programme de fidélité, Système de parrainage.
-- Un système de monétisation pour la mise en avant des annonces et les fonctionnalités IA.
+L'utilisateur a demandé la création d'un site de type Opisto pour la vente de pièces automobiles, qui a évolué en une plateforme de référence avec de nombreuses fonctionnalités avancées.
+
 PRODUCT REQUIREMENTS:
-- Correction de bugs visuels et fonctionnels sur l'ensemble du site.
-- Implémentation d'un système de modération pour les commentaires.
-- Ajout de bannières promotionnelles pour les nouvelles fonctionnalités.
-- Amélioration de l'interface d'administration pour permettre plus de personnalisation.
-- Finalisation des intégrations tierces (Mondial Relay).
-- Amélioration de l'expérience utilisateur sur mobile et tablette.
+- Un assistant IA nommé Tobi.
+- Fonctionnalités avancées : Mode Sombre, PWA, Vidéos, Gamification, Reconnaissance IA de pièce, Estimation de prix IA.
+- Niveau 1 d'innovations : Scan de plaque, Recherche Vocale, Diagnostic IA, Enchères, Appel Vidéo.
+- Niveau 2 de fidélisation : Programme de fidélité, Système de parrainage.
+- Monétisation pour la mise en avant des annonces et les fonctionnalités IA.
+- Correction de bugs, modération de contenu, bannières promotionnelles, améliorations de l'interface d'administration et de l'expérience mobile.
 
 **User's preferred language**: français
 
 **what currently exists?**
-Une application full-stack (React/FastAPI/MongoDB) très avancée. Le site dispose d'un système de paiement sécurisé (Stripe), d'une gestion des annonces, d'un panel d'administration, d'un chat en temps réel (WebSockets), d'un assistant IA Tobi.
-Les fonctionnalités majeures suivantes ont été ajoutées dans cette session :
-- **Système de Parrainage complet** (backend/frontend) avec points, leaderboard et bannière sur l'accueil.
-- **Diagnostic IA monétisé** : accessible via une nouvelle page (), payant par crédits (Stripe) ou points de fidélité, et gratuit pour les utilisateurs avec une annonce active. Une bannière a aussi été ajoutée sur la page d'accueil.
-- **Intégration Mondial Relay finalisée** : le widget de sélection de point relais utilise les clés de production. Le backend gère désormais la recherche de points relais, la création d'étiquettes et le suivi de colis via l'API. L'interface de commandes a été mise à jour pour le vendeur (créer étiquette) et l'acheteur (suivre colis).
-- **Système de modération de contenu** (commentaires, avis, messages) qui bloque les insultes, le spam et les liens suspects.
-- **Flyer promotionnel** généré et accessible à l'URL .
+Une application full-stack (React/FastAPI/MongoDB) fonctionnelle avec paiement (Stripe), gestion d'annonces, panel d'administration, chat, et un assistant IA Tobi.
+Dans cette session, les fonctionnalités suivantes ont été ajoutées ou finalisées :
+- **Éditeur de Hero Ultra Complet** : Un nouvel éditeur dans le panneau d'administration, permettant une personnalisation totale de la section Hero (textes, couleurs, layout, images, etc.) sans toucher au code.
+- **Correction Majeure du Cache** : Le problème de rafraîchissement des données (annonces non visibles, etc.) a été résolu en reconfigurant le Service Worker pour ne plus mettre en cache les appels API, en ajoutant des en-têtes  côté backend, et en forçant la mise à jour des données côté client.
+- **Monétisation des Médias** :
+    - **Photos** : Limite de 6 photos par défaut pour les annonces, avec une option payante (1€) pour ajouter 15 photos supplémentaires.
+    - **Vidéos** : Implémentation d'un système où 1 vidéo (max 30s / 30Mo) est gratuite, avec une option payante (1€) pour passer à une vidéo plus longue (max 2min / 100Mo).
+- **Améliorations Fonctionnelles** :
+    - Un bouton microphone a été ajouté à l'assistant Tobi pour la recherche vocale.
+    - Le problème des images coupées sur les annonces a été corrigé.
+    - Le flyer promotionnel a été entièrement revu avec un design plus percutant.
+    - La page Nouveautés a été mise à jour avec toutes ces améliorations.
 
 **Last working item**:
-L'utilisateur a demandé d'ajouter plus d'options de personnalisation pour la section Hero de la page d'accueil, comme la possibilité de changer la taille des polices, les images des catégories, les couleurs, etc.
+L'utilisateur a demandé d'implémenter un système pour limiter l'upload de vidéos afin de maîtriser les coûts de stockage. L'agent a mis en place une solution de monétisation.
 
-- **Last item agent was working**: L'agent a commencé à implémenter ces nouvelles options de personnalisation. Il a modifié le composant  pour ajouter la logique de state () pour les nouveaux paramètres (tailles de police, couleurs, images des catégories, etc.).
+- **Last item agent was working**: Implémentation d'un système de limite et de monétisation pour les vidéos. **Gratuit** : 1 vidéo, 30 sec, 30 Mo. **Payant (1€)** : 1 vidéo, 2 min, 100 Mo. L'agent a modifié le backend () pour ajouter la logique de prix, les endpoints de paiement Stripe et la validation. Le frontend () a été mis à jour pour afficher les limites, la taille du fichier et le bouton d'achat.
 - **Status**: IN PROGRESS
 - **Agent Testing Done**: N
-- **Which testing method agent to use?**: both.
-  - **Frontend**: Utiliser  sur la page  pour vérifier que les nouveaux contrôles (sliders, color pickers, etc.) s'affichent et fonctionnent.
-  - **Backend**: Utiliser  pour tester l'endpoint de sauvegarde des paramètres et s'assurer que les nouvelles valeurs sont bien enregistrées en base de données.
+- **Which testing method agent to use?**: both. Le testing agent doit être utilisé pour simuler le flux complet sur le frontend : upload d'une vidéo gratuite, tentative d'upload d'une vidéo trop grande (échec attendu), achat de l'option payante via Stripe, et nouvelle tentative d'upload de la vidéo trop grande (succès attendu). Pour le backend, un test  sur le nouvel endpoint de création de session de paiement () est nécessaire.
 - **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
-- **Issue 1**:  Finaliser la personnalisation de la section Hero. (Priority: P0)
-- **Issue 2**:  La réception des emails de bienvenue ne fonctionne pas pour l'utilisateur. (Priority: P2)
+- **Issue 1**:  Finaliser et tester le système de monétisation des vidéos. (Priority: P0)
+- **Issue 2**:  Les emails de bienvenue et de notification arrivent dans le dossier spam de l'utilisateur. (Priority: P2)
 
   **Issues Detail:**
   - **Issue 1**: 
-     - **Attempted fixes**: L'agent a préparé le state dans  pour accueillir les nouvelles options de personnalisation du Hero.
+     - **Attempted fixes**: Le code pour la fonctionnalité a été écrit (backend et frontend) mais n'a pas été testé.
      - **Next debug checklist**:
-        1. Dans , ajouter les éléments JSX (sliders pour les polices, inputs pour les images, color pickers) dans l'onglet Hero.
-        2. Dans , modifier l'endpoint  pour qu'il accepte, sauvegarde et renvoie ces nouveaux champs de configuration.
-        3. Dans , récupérer ces nouveaux paramètres et les utiliser pour styliser dynamiquement la section Hero.
-     - **Why fix this issue and what will be achieved with this fix?**: L'utilisateur souhaite un contrôle total sur l'apparence de sa page d'accueil pour la rendre plus attractive.
+        1. Tester le flux frontend sur la page  :
+           - Vérifier que la limite par défaut (30 Mo) est affichée.
+           - Essayer d'uploader une vidéo > 30 Mo et s'assurer que l'upload est bloqué.
+           - Cliquer sur le bouton d'achat de l'option vidéo.
+           - Compléter le paiement Stripe.
+           - Essayer à nouveau d'uploader la vidéo > 30 Mo et s'assurer que cela fonctionne.
+        2. Vérifier les logs du backend pour confirmer que le webhook Stripe met correctement à jour les droits de l'utilisateur.
+     - **Why fix this issue and what will be achieved with this fix?**: Mettre en place une nouvelle source de revenus tout en contrôlant les coûts d'infrastructure liés au stockage des vidéos.
      - **Status**: IN PROGRESS
      - **Is recurring issue?**: N
      - **Should Test frontend/backend/both after fix?**: both
      - **Blocked on other issue**: None
 
   - **Issue 2**: 
-     - **Attempted fixes**: L'agent a corrigé une faute de frappe ( -> ) dans le fichier  du VPS de l'utilisateur. Les logs du backend () confirment que le serveur tente bien d'envoyer les emails (Email sent to...). Cependant, les emails de test vers des adresses inexistantes () ont généré un bounce. L'utilisateur a testé avec une vraie adresse mais n'a rien reçu, ni en boîte de réception, ni dans les spams. L'utilisateur a demandé de déprioriser ce problème.
+     - **Attempted fixes**: L'utilisateur a confirmé qu'il trouvait les emails dans son dossier spam. L'agent a expliqué que c'était probablement dû à l'envoi et à la réception depuis la même adresse email () ou à un problème de réputation de domaine/IP. L'agent a conseillé à l'utilisateur de marquer les emails comme non-spam et de vérifier ses enregistrements DNS (SPF, DKIM, DMARC) sur Hostinger.
      - **Next debug checklist**:
-        1. Demander à l'utilisateur de retester avec une adresse email personnelle fiable (ex: Gmail) et de vérifier attentivement le dossier spam.
-        2. Si le problème persiste, vérifier la réputation du domaine et de l'IP du serveur d'envoi (Hostinger) auprès des principaux fournisseurs de messagerie.
-        3. Inspecter les logs SMTP plus détaillés côté Hostinger si possible.
-     - **Why fix this issue and what will be achieved with this fix?**: Assure que les nouveaux utilisateurs reçoivent bien la confirmation d'inscription, ce qui est crucial pour l'expérience utilisateur et la rétention.
-     - **Status**: IN PROGRESS
+        1. Confirmer avec l'utilisateur si le fait de marquer les emails comme non-spam a résolu le problème pour les nouveaux emails.
+        2. Si le problème persiste, proposer à l'utilisateur de créer une adresse email dédiée aux notifications (ex: ) pour séparer l'expéditeur du destinataire.
+     - **Why fix this issue and what will be achieved with this fix?**: Garantir que les notifications critiques (nouvelles annonces, inscriptions) sont reçues de manière fiable par l'administrateur.
+     - **Status**: USER VERIFICATION PENDING
      - **Is recurring issue?**: Y
      - **Should Test frontend/backend/both after fix?**: backend
      - **Blocked on other issue**: None
 
 **In progress Task List**:
-  - **Task 1**: Implémenter la personnalisation avancée de la section Hero (Priority: P0)
+- **Task 1**: Tester de bout en bout la fonctionnalité de monétisation des vidéos. (Priority: P0)
   **Task Detail:**
   - **Task 1**: 
-     - **Where to resume**: Le fichier  a été modifié pour inclure le state des nouveaux paramètres. La prochaine étape est d'ajouter les contrôles UI dans le JSX de ce même fichier.
-     - **What will be achieved with this?**: L'administrateur pourra modifier la taille des polices, les couleurs, les images des catégories et d'autres aspects visuels de la section Hero directement depuis le panneau d'administration.
-     - **Status**: IN PROGRESS
+     - **Where to resume**: La phase d'implémentation est terminée. Il faut maintenant lancer une session de test complète comme décrit dans Issue 1.
+     - **What will be achieved with this?**: Valider la fonctionnalité avant de la présenter comme terminée à l'utilisateur.
+     - **Status**: TESTING PENDING
      - **Should Test frontend/backend/both after fix?**: both
      - **Blocked on something**: Non.
 
 **Upcoming and Future Tasks**
-- **Upcoming Tasks (Niveau 2):**
-    - (P1) **Alertes Prix Intelligentes**: Permettre aux utilisateurs de créer des alertes pour être notifiés des baisses de prix sur des pièces spécifiques.
+- **Upcoming Tasks:**
+    - (P1) **Alertes Prix Intelligentes**: Permettre aux utilisateurs de créer des alertes pour être notifiés des baisses de prix.
     - (P1) **Tableau de Bord Pro**: Créer un tableau de bord avec des statistiques avancées pour les vendeurs professionnels.
 - **Future Tasks:**
-    - (P1) **Intégration API SIV**: Remplacer le système actuel de scan de plaque (OCR + manuel) par une intégration directe avec l'API SIV officielle dès que l'utilisateur obtiendra ses accès.
-    - (P2) **Niveau 3 - Confiance & Garantie**:
-        - Certification Pièce Vérifiée par un expert.
-        - Historique & Traçabilité des pièces.
-        - Garantie World Auto.
+    - (P1) **Intégration API SIV**: Remplacer le système actuel de scan de plaque par une intégration avec l'API officielle.
+    - (P2) **Niveau 3 - Confiance & Garantie**: Mettre en place une certification Pièce Vérifiée, un historique des pièces et une garantie World Auto.
 
 **Completed work in this session**
-- **Correction Bug Animation**: L'animation de texte sur la section Hero est maintenant fonctionnelle et sa valeur est correctement lue depuis la DB.
-- **Système de Parrainage**: Implémentation complète (Backend & Frontend) avec points, leaderboard et une bannière promotionnelle sur la page d'accueil.
-- **Diagnostic IA Monétisé**: Création d'une page dédiée  avec un système de paiement par crédits (Stripe) ou points de fidélité. Accès gratuit pour les utilisateurs avec annonce active. Ajout d'une bannière sur la page d'accueil.
-- **Finalisation Mondial Relay**: Intégration complète avec les clés de production. Le backend gère la création d'étiquettes et le suivi. L'UI de la page commandes est mise à jour pour les vendeurs et les acheteurs.
-- **Modération de Contenu**: Mise en place d'un filtre automatique (mots-clés, spam) pour les messages, avis vendeurs et avis acheteurs.
-- **Flyer Promotionnel**: Création d'un flyer HTML () avec QR code.
-- **Corrections UI/UX**:
-    - Correction du bug de scroll qui n'allait pas en haut de page lors de la navigation.
-    - Réorganisation de la navbar (déplacement icônes panier, messages, favoris).
-    - Amélioration de l'affichage de la navbar sur mobile et tablette.
-    - Ajout du bouton de recherche vocale dans la barre de recherche des annonces.
-- **Mise à jour de la page Nouveautés**: Ajout de toutes les nouvelles fonctionnalités.
-- **Correction de bugs**: Résolution d'une erreur 404 sur  et d'une faute de frappe dans la config SMTP sur le VPS de l'utilisateur.
+- **Correction du Cache** : Résolution définitive du problème de rafraîchissement des pages en reconfigurant le Service Worker et en ajoutant des en-têtes anti-cache.
+- **Éditeur de Hero Complet** : Création d'un éditeur ultra complet et modulaire () dans le panel admin pour une personnalisation totale de la page d'accueil.
+- **Monétisation des Photos** : Implémentation et test d'un système de 6 photos gratuites + 15 photos payantes pour 1€.
+- **Amélioration de Tobi** : Ajout d'un bouton de saisie vocale à l'assistant IA.
+- **Amélioration des Images** : Correction de l'affichage des images d'annonces pour qu'elles ne soient plus coupées.
+- **Refonte du Flyer** : Le design du flyer promotionnel a été entièrement modernisé.
+- **Mise à jour de la page Nouveautés** : Toutes les nouvelles fonctionnalités (versions 2.9.0 et 3.0.0) ont été ajoutées.
+
+**Earlier issues found/mentioned but not fixed**
+- Aucun.
+
+**Known issue recurrence from previous fork**
+- **Issue recurrence in previous fork**: Problèmes de délivrabilité des emails (arrivent en spam).
+- **Recurrence count**: 2
+- **Status**: USER VERIFICATION PENDING. Le problème a été identifié (emails atterrissant en spam) et des solutions ont été proposées. L'utilisateur doit confirmer si le problème est résolu de son côté.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **SOAP API (zeep)**: Nouvelle dépendance Python pour communiquer avec le WebService de Mondial Relay.
--   **Monétisation avancée**: Système de crédits virtuels () achetables via Stripe ou échangeables contre des points de fidélité.
--   **Content Moderation**: Combinaison d'une liste de mots-clés interdits et d'une analyse IA pour valider la pertinence du contenu textuel.
+- **Service Worker Caching**: Modification profonde du  pour adopter une stratégie network-first pour les API, et mise en place d'un script de nettoyage des anciens caches pour les utilisateurs existants.
+- **Monétisation Modulaire (Stripe)**: Extension de Stripe pour gérer des achats uniques liés à des actions spécifiques (photos, vidéos) via des métadonnées dans les sessions de paiement et le webhook.
+- **Refactoring en Composants**: Extraction d'une fonctionnalité complexe (l'éditeur Hero) de  vers un composant dédié  pour améliorer la lisibilité et la maintenance.
 
 **key DB schema**
--   **users**: ajout de .  est maintenant utilisé pour le parrainage et l'achat de diagnostics. Ajout de  et .
--   **settings**: la collection qui contient les  va être étendue avec de nouveaux champs (ex: , , etc.).
--   **updates**: nouvelle collection pour gérer les entrées de la page Nouveautés.
+- **users**: Le champ  a été ajouté pour gérer les achats de vidéos. *Note: Ce design pourrait être amélioré pour lier l'achat à une annonce spécifique plutôt qu'à l'utilisateur.*
+- **settings**: Le document de la collection  avec  a été massivement étendu pour inclure des dizaines de nouvelles clés de configuration provenant du nouvel éditeur Hero.
+
+**changes in tech stack**
+- Aucune.
 
 **All files of reference**
--   : En cours de modification pour la personnalisation du Hero. **Point de départ pour la prochaine tâche.**
--   : Devra être modifié pour appliquer les nouveaux paramètres du Hero.
--   : Fichier central qui a reçu la plupart des modifications (parrainage, diagnostic, mondial relay, modération).
--   : Nouvelle page pour la fonctionnalité de diagnostic IA.
--   : Contient la nouvelle logique UI pour Mondial Relay.
--   : Fichier statique du flyer promotionnel.
+- : Contient la logique pour la monétisation des photos et vidéos.
+- : Contient l'interface pour la limite de photos et vidéos.
+- : Le nouvel éditeur complet pour la section Hero.
+- : La page d'administration qui intègre le nouvel éditeur.
+- : La page d'accueil qui affiche la section Hero ultra-personnalisable.
+-  et : Fichiers clés pour la résolution du problème de cache.
 
 **Areas that need refactoring**:
--   Le fichier  dépasse maintenant les 6000 lignes. Une refactorisation en plusieurs fichiers (routes, services, models) devient critique pour la maintenabilité du projet. C'est une dette technique importante à adresser.
+- ****: Ce fichier monolithique a encore grossi. Sa refactorisation en plusieurs modules (routes, services, modèles) devient urgente pour assurer la maintenabilité du projet.
+- **Logique d'achat vidéo**: Le système actuel donne un pass à l'utilisateur () au lieu de lier l'achat à une annonce spécifique. Cela pourrait causer des comportements inattendus. Il serait plus robuste de stocker ce droit d'accès sur l'annonce elle-même.
 
 **key api endpoints**
--    (GET): Récupère les informations de parrainage de l'utilisateur.
--    (GET): Récupère le classement des parrains.
--    (GET): Vérifie l'accès de l'utilisateur au diagnostic.
--    (POST): Lance un diagnostic (payant par points ou crédit).
--    (POST): Crée une session Stripe pour acheter des crédits de diagnostic.
--    (GET): Recherche les points relais.
--    (POST): Crée une étiquette d'expédition.
--    (GET): Suit un colis.
--    (GET): Nouvel endpoint qui renvoie diverses statistiques sur l'utilisateur.
+-  (GET): Récupère les options de prix et les limites pour les vidéos.
+-  (POST): Crée une session de paiement Stripe pour l'achat de l'option vidéo étendue.
+-  (POST): A été modifié pour gérer la métadonnée .
+-  (POST): A été modifié pour valider la taille et la durée de la vidéo en fonction des droits de l'utilisateur.
+- Toutes les routes API renvoient désormais les en-têtes .
 
 **Critical Info for New Agent**
--   **Priorité immédiate**: L'utilisateur attend la finalisation de la personnalisation de la section Hero. C'est la tâche P0.
--   **Déploiement**: L'utilisateur gère son propre déploiement sur un VPS avec . Fournissez toujours la commande complète et claire : .
--   **Backend Monolithe**: Soyez extrêmement prudent en modifiant . Une refactorisation doit être proposée à l'utilisateur lors de la prochaine planification.
--   **Problème Email**: L'envoi d'email est un problème latent. Bien que dépriorisé par l'utilisateur, gardez-le en tête car il est essentiel. Ne pas y passer trop de temps si l'utilisateur ne le demande pas explicitement.
+- **Priorité P0**: La fonctionnalité de monétisation des vidéos est implémentée mais **non testée**. La première action doit être de tester de manière exhaustive ce flux.
+- **Cache résolu**: Un problème de cache majeur a été résolu en modifiant le Service Worker (). L'application utilise désormais une stratégie qui ne met jamais en cache les appels API. C'est un changement fondamental.
+- **Refactoring Backend**: Le fichier  est une bombe à retardement. Il faut planifier sa refactorisation avec l'utilisateur dès que les tâches urgentes seront terminées.
+- **Éditeur Hero**: L'utilisateur est très satisfait du nouvel éditeur de Hero ultra-complet. C'est une fonctionnalité clé à préserver.
 
 **documents and test reports created in this job**
--    a été mis à jour par le testing agent pour valider les systèmes de parrainage et de diagnostic.
--    a été créé.
+-  a été entièrement repensé.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: Demande de corriger plusieurs bugs (sous-catégories, scroll sur mobile, taille bouton profil, visibilité recherche vocale). (Status: DONE)
-2.  **User**: Fait remarquer que le mot France manque sur le logo en version tablette. (Status: DONE)
-3.  **User**: Confirme que les corrections fonctionnent, mais signale que l'email de bienvenue n'est pas reçu. (Status: IN PROGRESS)
-4.  **User**: Partage sa configuration  du VPS, révélant une faute de frappe (). (Status: DONE)
-5.  **User**: Après correction, demande une commande rapide pour tester l'email. (Status: DONE)
-6.  **User**: Signale qu'il ne reçoit toujours rien. (Status: IN PROGRESS)
-7.  **User**: Décide de déprioriser le problème d'email et demande une nouvelle fonctionnalité : plus de personnalisation pour la section Hero. (Status: IN PROGRESS)
-8.  **User**: Demande la création d'un flyer promotionnel. (Status: DONE)
-9.  **User**: Demande la mise en place d'une modération des commentaires. (Status: DONE)
-10. **User**: Approuve les dernières modifications et se prépare à .
+1.  **User**: Demande de clarifier si la mise à jour de la page Nouveautés est bien dans la dernière . (Status: Agent a clarifié)
+2.  **User**: Demande la mise à jour de la page Nouveautés avec l'éditeur Hero. (Status: DONE)
+3.  **User**: Exprime sa satisfaction pour le nouvel éditeur Hero. (Status: Noté)
+4.  **User**: Exprime sa gratitude et encourage l'agent pendant la création de l'éditeur Hero. (Status: Noté)
+5.  **User**: Demande un éditeur Hero ultra complet. (Status: DONE)
+6.  **User**: Signale que la page Nouveautés n'affiche toujours pas les dernières modifications. (Status: DONE, agent a corrigé le bug)
+7.  **User**: Demande de mettre à jour la page Nouveautés. (Status: IN PROGRESS, agent a fait une première tentative)
+8.  **User**: Confirme que le problème de cache est résolu. (Status: Noté)
+9.  **User**: Demande si la dernière build contient bien les modifications manquantes de la page Nouveautés. (Status: Agent a clarifié)
+10. **User**: Demande de mettre en place une limite pour les vidéos pour éviter la surcharge du cloud. (Status: IN PROGRESS, )
 
 **Project Health Check:**
--   **Broken**: Aucun.
--   **Mocked**: Le scan de plaque (OCR+manuel) est un placeholder en attendant l'accès à l'API SIV.
+- **Broken**: Aucun.
+- **Mocked**: Le scan de plaque (OCR+manuel) est un placeholder en attendant l'accès à l'API SIV.
 
 **3rd Party Integrations**
--   **Stripe (Checkout & Connect)** — Intégré et live.
--   **Cloudinary (Image Storage)** — Intégré et live.
--   **Hostinger SMTP (Emailing)** — Intégré, mais la réception des emails est problématique (potentiellement un souci de spam/réputation).
--   **recherche-entreprises.api.gouv.fr (SIRET verification)** — Intégré et live.
--   **Mondial Relay (WebService API)** — Intégration complète (widget et backend).
--   **OpenAI GPT-4o** — Intégré via  (utilise Emergent LLM Key).
--   **Web Speech API** (Browser Native) — Intégré pour la recherche vocale.
+- **Stripe (Checkout & Connect)** — Intégration étendue pour gérer les achats de médias.
+- **Cloudinary (Image Storage)** — Intégré et live.
+- **Hostinger SMTP (Emailing)** — Intégré, mais la délivrabilité est à surveiller (problème de spam).
+- **recherche-entreprises.api.gouv.fr (SIRET verification)** — Intégré et live.
+- **Mondial Relay (WebService API)** — Intégration complète.
+- **OpenAI GPT-4o** — Intégré via .
+- **Web Speech API** (Browser Native) — Intégré pour la recherche vocale et Tobi.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES. Utilisé pour valider le système de parrainage et le système de diagnostic payant.
--   **Troubleshoot agent used after agent stuck in loop**: NO
--   **Test files created**: []
--   **Known regressions**: Aucun.
+- **Testing agent used after significant changes**: YES
+- **Troubleshoot agent used after agent stuck in loop**: NO
+- **Test files created**: []
+- **Known regressions**: Aucun.
 
 **Credentials to test flow:**
--   Le login se fait via la page . Un utilisateur peut être créé avec  et  via les outils de l'agent ou manuellement sur l'interface. Pour tester les fonctionnalités admin, l'utilisateur a un compte .
+- Le login se fait via la page . Un utilisateur de test peut être créé. Le compte admin est .
 
 **What agent forgot to execute**
-- L'agent n'a rien oublié mais a été interrompu par l'utilisateur au milieu de l'implémentation de la personnalisation de la section Hero. La tâche est en cours et doit être reprise.</analysis>
+- L'agent n'a pas testé la fonctionnalité de monétisation des vidéos après son implémentation.
+- L'agent n'a pas testé la fonctionnalité de monétisation des photos avec un utilisateur standard (non-PRO) pour valider le flux d'achat.</analysis>
