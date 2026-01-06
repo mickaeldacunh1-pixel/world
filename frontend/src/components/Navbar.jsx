@@ -242,6 +242,13 @@ export default function Navbar() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+
+                {/* Panier - à droite du profil */}
+                <Link to="/panier" className="hidden sm:flex" title="Panier">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <ShoppingCart className="w-5 h-5" />
+                  </Button>
+                </Link>
               </>
             ) : (
               <>
