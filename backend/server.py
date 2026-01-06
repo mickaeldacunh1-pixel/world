@@ -3051,10 +3051,242 @@ CARRIERS = {
     "lettre_suivie": {"name": "Lettre Suivie", "logo": "✉️"}
 }
 
+# Mondial Relay API Configuration
+MONDIAL_RELAY_WSDL = "https://api.mondialrelay.com/Web_Services.asmx?WSDL"
+MONDIAL_RELAY_ENSEIGNE = os.environ.get("MONDIAL_RELAY_ENSEIGNE", "")
+MONDIAL_RELAY_PRIVATE_KEY = os.environ.get("MONDIAL_RELAY_PRIVATE_KEY", "")
+MONDIAL_RELAY_BRAND = os.environ.get("MONDIAL_RELAY_BRAND", "")
+
+def mondial_relay_security_hash(*args):
+    """Generate MD5 security hash for Mondial Relay API"""
+    import hashlib
+    concat = "".join(str(arg) for arg in args) + MONDIAL_RELAY_PRIVATE_KEY
+    return hashlib.md5(concat.encode()).hexdigest().upper()
+
 @api_router.get("/carriers")
 async def get_carriers():
     """Liste des transporteurs disponibles"""
     return CARRIERS
+
+@api_router.post("/shipping/mondial-relay/create-label")
+async def create_mondial_relay_label(
+    order_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Créer une étiquette Mondial Relay pour une commande"""
+    from zeep import Client
+    from zeep.exceptions import Fault
+    
+    # Get order
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Commande non trouvée")
+    
+    # Check authorization (only seller can create label)
+    if order.get("seller_id") != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Non autorisé")
+    
+    # Check if relay point is selected
+    relay_info = order.get("relay_point")
+    if not relay_info:
+        raise HTTPException(status_code=400, detail="Aucun point relais sélectionné")
+    
+    # Get buyer info
+    buyer = await db.users.find_one({"id": order["buyer_id"]}, {"_id": 0})
+    if not buyer:
+        raise HTTPException(status_code=404, detail="Acheteur non trouvé")
+    
+    # Get listing info for weight
+    listing = await db.listings.find_one({"id": order["listing_id"]}, {"_id": 0})
+    weight = int((listing.get("weight", 1) or 1) * 1000)  # Convert kg to grams
+    
+    try:
+        client = Client(MONDIAL_RELAY_WSDL)
+        
+        # Prepare parameters
+        params = {
+            "Enseigne": MONDIAL_RELAY_ENSEIGNE,
+            "ModeCol": "REL",  # Collection mode: Point Relais
+            "ModeLiv": "24R",  # Delivery mode: Point Relais
+            "NDossier": order_id[:15],  # Reference (max 15 chars)
+            "NClient": buyer["id"][:9],  # Client number (max 9 chars)
+            "Expe_Langage": "FR",
+            "Expe_Ad1": current_user.get("company_name", current_user["name"])[:32],
+            "Expe_Ad3": current_user.get("address", "")[:32],
+            "Expe_Ville": current_user.get("city", "")[:26],
+            "Expe_CP": current_user.get("postal_code", "")[:5],
+            "Expe_Pays": "FR",
+            "Expe_Tel1": current_user.get("phone", "")[:10].replace(" ", ""),
+            "Expe_Mail": current_user["email"][:70],
+            "Dest_Langage": "FR",
+            "Dest_Ad1": buyer["name"][:32],
+            "Dest_Ad3": relay_info.get("address", "")[:32],
+            "Dest_Ville": relay_info.get("city", "")[:26],
+            "Dest_CP": relay_info.get("postalCode", "")[:5],
+            "Dest_Pays": "FR",
+            "Dest_Tel1": buyer.get("phone", "")[:10].replace(" ", ""),
+            "Dest_Mail": buyer["email"][:70],
+            "Poids": str(weight),  # Weight in grams
+            "NbColis": "1",
+            "LIV_Rel_Pays": "FR",
+            "LIV_Rel": relay_info.get("id", ""),  # Relay point ID
+            "Texte": listing.get("title", "")[:30],
+        }
+        
+        # Generate security hash
+        security_string = (
+            params["Enseigne"] + params["ModeCol"] + params["ModeLiv"] +
+            params["NDossier"] + params["NClient"] + params["Expe_Langage"] +
+            params["Expe_Ad1"] + params["Expe_Ad3"] + params["Expe_Ville"] +
+            params["Expe_CP"] + params["Expe_Pays"] + params["Expe_Tel1"] +
+            params["Expe_Mail"] + params["Dest_Langage"] + params["Dest_Ad1"] +
+            params["Dest_Ad3"] + params["Dest_Ville"] + params["Dest_CP"] +
+            params["Dest_Pays"] + params["Dest_Tel1"] + params["Dest_Mail"] +
+            params["Poids"] + params["NbColis"] + params["LIV_Rel_Pays"] +
+            params["LIV_Rel"] + params["Texte"]
+        )
+        params["Security"] = mondial_relay_security_hash(security_string)
+        
+        # Call API
+        result = client.service.WSI2_CreationEtiquette(**params)
+        
+        if result.STAT != "0":
+            error_messages = {
+                "1": "Enseigne invalide",
+                "2": "Numéro d'expédition non trouvé",
+                "3": "Erreur de sécurité",
+                "80": "Code postal invalide",
+                "81": "Ville invalide",
+                "82": "Pays invalide",
+                "97": "Point relais invalide",
+            }
+            error_msg = error_messages.get(str(result.STAT), f"Erreur Mondial Relay: {result.STAT}")
+            raise HTTPException(status_code=400, detail=error_msg)
+        
+        # Save tracking info to order
+        tracking_number = result.ExpeditionNum
+        label_url = f"https://www.mondialrelay.fr/suivi-de-colis/?NumColis={tracking_number}"
+        
+        await db.orders.update_one(
+            {"id": order_id},
+            {
+                "$set": {
+                    "tracking_number": tracking_number,
+                    "tracking_url": label_url,
+                    "carrier": "mondial_relay",
+                    "label_created_at": datetime.now(timezone.utc).isoformat(),
+                    "status": "shipped"
+                }
+            }
+        )
+        
+        return {
+            "success": True,
+            "tracking_number": tracking_number,
+            "label_url": f"https://www.mondialrelay.com/ww2/pdf/etiquettes.aspx?ens={MONDIAL_RELAY_ENSEIGNE}&expedition={tracking_number}",
+            "tracking_url": label_url
+        }
+        
+    except Fault as e:
+        logger.error(f"Mondial Relay SOAP error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur Mondial Relay: {str(e)}")
+    except Exception as e:
+        logger.error(f"Mondial Relay error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur lors de la création de l'étiquette: {str(e)}")
+
+@api_router.get("/shipping/mondial-relay/tracking/{tracking_number}")
+async def get_mondial_relay_tracking(tracking_number: str):
+    """Suivre un colis Mondial Relay"""
+    from zeep import Client
+    from zeep.exceptions import Fault
+    
+    try:
+        client = Client(MONDIAL_RELAY_WSDL)
+        
+        # Generate security hash
+        security = mondial_relay_security_hash(MONDIAL_RELAY_ENSEIGNE, tracking_number)
+        
+        # Call tracking API
+        result = client.service.WSI2_TracingColisDetaille(
+            Enseigne=MONDIAL_RELAY_ENSEIGNE,
+            Expedition=tracking_number,
+            Langue="FR",
+            Security=security
+        )
+        
+        if result.STAT != "0":
+            raise HTTPException(status_code=404, detail="Colis non trouvé")
+        
+        # Parse tracking events
+        events = []
+        if hasattr(result, 'Tracing') and result.Tracing:
+            for trace in result.Tracing.ret_WSI2_sub_TracingColisDetaille:
+                events.append({
+                    "date": trace.Date,
+                    "location": trace.Libelle,
+                    "status": trace.Libelle_Statut,
+                })
+        
+        return {
+            "tracking_number": tracking_number,
+            "status": result.Libelle if hasattr(result, 'Libelle') else "En cours",
+            "events": events,
+            "tracking_url": f"https://www.mondialrelay.fr/suivi-de-colis/?NumColis={tracking_number}"
+        }
+        
+    except Fault as e:
+        logger.error(f"Mondial Relay tracking error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur de suivi: {str(e)}")
+    except Exception as e:
+        logger.error(f"Tracking error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/shipping/mondial-relay/points")
+async def search_mondial_relay_points(postal_code: str, country: str = "FR"):
+    """Rechercher des points relais Mondial Relay"""
+    from zeep import Client
+    from zeep.exceptions import Fault
+    
+    try:
+        client = Client(MONDIAL_RELAY_WSDL)
+        
+        # Generate security hash
+        security = mondial_relay_security_hash(
+            MONDIAL_RELAY_ENSEIGNE, country, postal_code, "24R"
+        )
+        
+        # Call API
+        result = client.service.WSI4_PointRelais_Recherche(
+            Enseigne=MONDIAL_RELAY_ENSEIGNE,
+            Pays=country,
+            CP=postal_code,
+            Action="24R",
+            NombreResultats="10",
+            Security=security
+        )
+        
+        if result.STAT != "0":
+            return {"points": [], "error": f"Erreur: {result.STAT}"}
+        
+        points = []
+        if hasattr(result, 'PointsRelais') and result.PointsRelais:
+            for point in result.PointsRelais.PointRelais_Details:
+                points.append({
+                    "id": point.Num,
+                    "name": point.LgAdr1,
+                    "address": point.LgAdr3,
+                    "postal_code": point.CP,
+                    "city": point.Ville,
+                    "country": point.Pays,
+                    "latitude": point.Latitude,
+                    "longitude": point.Longitude,
+                })
+        
+        return {"points": points}
+        
+    except Exception as e:
+        logger.error(f"Point relais search error: {str(e)}")
+        return {"points": [], "error": str(e)}
 
 # ================== PAYMENT ROUTES ==================
 
