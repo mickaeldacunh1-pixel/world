@@ -891,12 +891,12 @@ PRICING_PACKAGES = {
 # Extra photos package
 EXTRA_PHOTOS_PACKAGE = {
     "price": 1.00,
-    "photos": 10,
-    "name": "+10 Photos supplémentaires"
+    "photos": 15,
+    "name": "+15 Photos supplémentaires"
 }
 
 # Default photo limits
-DEFAULT_MAX_PHOTOS = 5  # For users without a specific package
+DEFAULT_MAX_PHOTOS = 6  # For users without a specific package
 PRO_MAX_PHOTOS = 50     # For pro users
 
 # ================== AUTH HELPERS ==================
