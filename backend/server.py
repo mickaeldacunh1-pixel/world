@@ -879,14 +879,25 @@ class ConversationResponse(BaseModel):
 
 # Pricing packages (Opisto-style)
 PRICING_PACKAGES = {
-    "single": {"name": "Annonce Unique", "price": 2.00, "credits": 1, "duration": 30},
-    "pack5": {"name": "Pack 5 Annonces", "price": 8.00, "credits": 5, "duration": 30},
-    "pack20": {"name": "Pack 20 Annonces", "price": 25.00, "credits": 20, "duration": 30},
-    "pack50": {"name": "Pack 50 Annonces", "price": 39.00, "credits": 50, "duration": 30},
-    "pro_monthly": {"name": "Pro Illimité (1 mois)", "price": 49.00, "credits": 999, "duration": 30, "is_pro": True},
-    "pro_3months": {"name": "Pro Illimité (3 mois)", "price": 99.00, "credits": 999, "duration": 90, "is_pro": True},
-    "pro_6months": {"name": "Pro Illimité (6 mois)", "price": 179.00, "credits": 999, "duration": 180, "is_pro": True}
+    "single": {"name": "Annonce Unique", "price": 2.00, "credits": 1, "duration": 30, "max_photos": 5},
+    "pack5": {"name": "Pack 5 Annonces", "price": 8.00, "credits": 5, "duration": 30, "max_photos": 10},
+    "pack20": {"name": "Pack 20 Annonces", "price": 25.00, "credits": 20, "duration": 30, "max_photos": 15},
+    "pack50": {"name": "Pack 50 Annonces", "price": 39.00, "credits": 50, "duration": 30, "max_photos": 20},
+    "pro_monthly": {"name": "Pro Illimité (1 mois)", "price": 49.00, "credits": 999, "duration": 30, "is_pro": True, "max_photos": 50},
+    "pro_3months": {"name": "Pro Illimité (3 mois)", "price": 99.00, "credits": 999, "duration": 90, "is_pro": True, "max_photos": 50},
+    "pro_6months": {"name": "Pro Illimité (6 mois)", "price": 179.00, "credits": 999, "duration": 180, "is_pro": True, "max_photos": 50}
 }
+
+# Extra photos package
+EXTRA_PHOTOS_PACKAGE = {
+    "price": 1.00,
+    "photos": 10,
+    "name": "+10 Photos supplémentaires"
+}
+
+# Default photo limits
+DEFAULT_MAX_PHOTOS = 5  # For users without a specific package
+PRO_MAX_PHOTOS = 50     # For pro users
 
 # ================== AUTH HELPERS ==================
 
