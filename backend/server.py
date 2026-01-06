@@ -3145,22 +3145,46 @@ async def stripe_webhook(request: Request):
             session_data = event["data"]["object"]
             session_id = session_data["id"]
             payment_status = session_data.get("payment_status", "")
+            metadata = session_data.get("metadata", {})
             
             if payment_status == "paid":
-                # Update transaction
-                await db.payment_transactions.update_one(
-                    {"session_id": session_id},
-                    {"$set": {"payment_status": "paid", "paid_at": datetime.now(timezone.utc).isoformat()}}
-                )
-                
-                # Get transaction to add credits
-                transaction = await db.payment_transactions.find_one({"session_id": session_id})
-                if transaction:
-                    credits_to_add = transaction.get("credits_count") or transaction.get("listings_count", 0)
-                    await db.users.update_one(
-                        {"id": transaction["user_id"]},
-                        {"$inc": {"credits": credits_to_add}}
+                # Check if this is a diagnostic credits purchase
+                if metadata.get("type") == "diagnostic_credits":
+                    user_id = metadata.get("user_id")
+                    credits = int(metadata.get("credits", 0))
+                    
+                    if user_id and credits > 0:
+                        await db.users.update_one(
+                            {"id": user_id},
+                            {"$inc": {"diagnostic_credits": credits}}
+                        )
+                        
+                        # Log the purchase
+                        await db.diagnostic_purchases.insert_one({
+                            "id": str(uuid.uuid4()),
+                            "user_id": user_id,
+                            "credits": credits,
+                            "session_id": session_id,
+                            "amount": session_data.get("amount_total", 0) / 100,
+                            "created_at": datetime.now(timezone.utc).isoformat()
+                        })
+                        
+                        logger.info(f"Added {credits} diagnostic credits to user {user_id}")
+                else:
+                    # Regular transaction (credits for listings)
+                    await db.payment_transactions.update_one(
+                        {"session_id": session_id},
+                        {"$set": {"payment_status": "paid", "paid_at": datetime.now(timezone.utc).isoformat()}}
                     )
+                    
+                    # Get transaction to add credits
+                    transaction = await db.payment_transactions.find_one({"session_id": session_id})
+                    if transaction:
+                        credits_to_add = transaction.get("credits_count") or transaction.get("listings_count", 0)
+                        await db.users.update_one(
+                            {"id": transaction["user_id"]},
+                            {"$inc": {"credits": credits_to_add}}
+                        )
         
         return {"status": "success"}
     except Exception as e:
