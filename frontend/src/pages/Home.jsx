@@ -95,39 +95,48 @@ export default function Home() {
   const [referralData, setReferralData] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
 
+  const fetchAllData = async () => {
+    const cacheBuster = `?_t=${Date.now()}`;
+    
+    // Fetch hero settings
+    try {
+      const response = await axios.get(`${API}/settings/hero${cacheBuster}`);
+      if (response.data) {
+        setHeroSettings({ ...DEFAULT_HERO, ...response.data });
+      }
+    } catch (error) {
+      console.error('Error fetching hero settings:', error);
+    }
+
+    // Fetch category stats
+    try {
+      const response = await axios.get(`${API}/categories/stats${cacheBuster}`);
+      setCategoryStats(response.data);
+    } catch (error) {
+      console.error('Error fetching category stats:', error);
+    }
+
+    // Fetch recent listings
+    try {
+      const response = await axios.get(`${API}/listings?limit=6&_t=${Date.now()}`);
+      setRecentListings(response.data.listings || []);
+    } catch (error) {
+      console.error('Error fetching recent listings:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchHeroSettings = async () => {
-      try {
-        const response = await axios.get(`${API}/settings/hero`);
-        if (response.data) {
-          setHeroSettings({ ...DEFAULT_HERO, ...response.data });
-        }
-      } catch (error) {
-        console.error('Error fetching hero settings:', error);
+    fetchAllData();
+    
+    // Auto-refresh when tab becomes visible
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchAllData();
       }
     };
-
-    const fetchCategoryStats = async () => {
-      try {
-        const response = await axios.get(`${API}/categories/stats`);
-        setCategoryStats(response.data);
-      } catch (error) {
-        console.error('Error fetching category stats:', error);
-      }
-    };
-
-    const fetchRecentListings = async () => {
-      try {
-        const response = await axios.get(`${API}/listings?limit=6`);
-        setRecentListings(response.data.listings || []);
-      } catch (error) {
-        console.error('Error fetching recent listings:', error);
-      }
-    };
-
-    fetchCategoryStats();
-    fetchRecentListings();
-    fetchHeroSettings();
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
   // Fetch referral data if user is logged in
@@ -135,7 +144,7 @@ export default function Home() {
     if (user) {
       const fetchReferralData = async () => {
         try {
-          const response = await axios.get(`${API}/referral/me`);
+          const response = await axios.get(`${API}/referral/me?_t=${Date.now()}`);
           setReferralData(response.data);
         } catch (error) {
           console.error('Error fetching referral data:', error);
