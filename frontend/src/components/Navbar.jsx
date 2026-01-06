@@ -64,11 +64,13 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-border" data-testid="navbar">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2" data-testid="logo-link">
-            <WorldAutoLogo className="w-10 h-10" />
-            <span className="font-heading font-bold text-xl text-primary">World Auto <FranceText /></span>
+        <div className="flex items-center justify-between h-14 sm:h-16">
+          {/* Logo - Plus compact sur mobile */}
+          <Link to="/" className="flex items-center gap-1.5 sm:gap-2 shrink-0" data-testid="logo-link">
+            <WorldAutoLogo className="w-8 h-8 sm:w-10 sm:h-10" />
+            <span className="font-heading font-bold text-base sm:text-xl text-primary whitespace-nowrap">
+              World Auto <span className="hidden xs:inline"><FranceText /></span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
