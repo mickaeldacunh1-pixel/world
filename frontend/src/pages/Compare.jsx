@@ -179,7 +179,7 @@ export default function Compare() {
                           <span className={`${isBest ? 'text-green-600 dark:text-green-400 font-semibold' : ''}`}>
                             {attr.format(value)}
                             {isBest && attr.key === 'price' && (
-                              <span className="ml-1 text-xs">✓ Meilleur prix</span>
+                              <span className="ml-1 text-xs">✓ {t('compare.best_price')}</span>
                             )}
                           </span>
                         </td>
@@ -198,7 +198,7 @@ export default function Compare() {
                       <Link to={`/annonce/${item.id}`}>
                         <Button className="w-full" size="sm">
                           <Eye className="w-4 h-4 mr-2" />
-                          Voir l'annonce
+                          {t('compare.view_listing')}
                         </Button>
                       </Link>
                       <Button variant="outline" size="sm" className="w-full" onClick={() => {
@@ -213,11 +213,11 @@ export default function Compare() {
                           });
                           localStorage.setItem('worldauto_cart', JSON.stringify(cart));
                           window.dispatchEvent(new Event('cartUpdated'));
-                          import('sonner').then(m => m.toast.success('Ajouté au panier'));
+                          import('sonner').then(m => m.toast.success(t('compare.added')));
                         }
                       }}>
                         <ShoppingCart className="w-4 h-4 mr-2" />
-                        Ajouter au panier
+                        {t('compare.add_to_cart')}
                       </Button>
                     </div>
                   </td>
