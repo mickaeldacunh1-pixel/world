@@ -801,7 +801,7 @@ export default function ListingDetail() {
                   <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                       <AlertTriangle className="w-5 h-5 text-orange-500" />
-                      Signaler l'annonce
+                      Signaler l&apos;annonce
                     </DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4 mt-4">
