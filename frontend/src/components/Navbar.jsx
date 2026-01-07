@@ -305,6 +305,44 @@ export default function Navbar() {
           </div>
         </div>
 
+        {/* Ligne 2: Menu Catégories + Déposer une annonce (Desktop uniquement) */}
+        <div className="hidden md:flex items-center gap-4 py-2 border-t border-border/50">
+          {/* Dropdown Catégories */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2">
+                <Menu className="w-4 h-4" />
+                {t('nav.categories')}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56">
+              {categories.map((cat) => (
+                <DropdownMenuItem key={cat.slug} asChild>
+                  <Link to={`/annonces/${cat.slug}`} className="flex items-center gap-2 cursor-pointer">
+                    <cat.icon className="w-4 h-4" />
+                    {cat.name}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Bouton Déposer une annonce */}
+          {user && (
+            <Link to="/deposer">
+              <Button className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground btn-primary" data-testid="create-listing-btn">
+                <Plus className="w-4 h-4" />
+                {t('nav.newListing')}
+              </Button>
+            </Link>
+          )}
+
+          {/* Lien Tarifs */}
+          <Link to="/tarifs" className="text-muted-foreground hover:text-foreground transition-colors ml-auto" data-testid="pricing-link">
+            {t('nav.pricing')}
+          </Link>
+        </div>
+
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
