@@ -190,7 +190,7 @@ export default function Listings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [category, subcategory, compatibleBrand, region, oemReference, search, minPrice, maxPrice, condition, sort, page]);
 
   const handleSearch = (e) => {
     e.preventDefault();
