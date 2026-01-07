@@ -563,7 +563,7 @@ export default function Profile() {
             <Card>
               <CardHeader>
                 <CardTitle className="font-heading">Changer le mot de passe</CardTitle>
-                <CardDescription>Assurez-vous d'utiliser un mot de passe fort et unique</CardDescription>
+                <CardDescription>Assurez-vous d&apos;utiliser un mot de passe fort et unique</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-md">
