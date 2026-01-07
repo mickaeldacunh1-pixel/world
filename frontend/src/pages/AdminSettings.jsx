@@ -1112,6 +1112,7 @@ export default function AdminSettings() {
                     { key: 'category_voitures_image', label: 'Voitures', emoji: '🚗' },
                     { key: 'category_motos_image', label: 'Motos', emoji: '🏍️' },
                     { key: 'category_utilitaires_image', label: 'Utilitaires', emoji: '🚚' },
+                    { key: 'category_engins_image', label: 'Engins', emoji: '🚜' },
                     { key: 'category_accessoires_image', label: 'Accessoires', emoji: '⚙️' },
                   ].map((cat) => (
                     <div key={cat.key} className="space-y-2">
