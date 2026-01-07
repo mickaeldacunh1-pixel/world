@@ -94,6 +94,13 @@ export default function Messages() {
           // Play sound if message is from someone else
           if (msg.sender_id !== user?.id) {
             playNotificationSound();
+            // Show push notification if page is not focused
+            if (document.hidden) {
+              showAppNotification(NotificationTypes.NEW_MESSAGE, {
+                senderName: msg.sender_name || 'Quelqu\'un',
+                messageId: msg.id
+              }, showNotification);
+            }
             // Clear typing indicator
             setOtherUserTyping(false);
           }
