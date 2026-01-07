@@ -570,7 +570,7 @@ export default function Home() {
               Explorez nos catégories
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Trouvez exactement ce que vous cherchez parmi des milliers d'annonces vérifiées
+              Trouvez exactement ce que vous cherchez parmi des milliers d&apos;annonces vérifiées
             </p>
           </div>
 
@@ -1246,7 +1246,7 @@ export default function Home() {
               Prêt à vendre votre véhicule ?
             </h2>
             <p className="text-white/70 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
-              Déposez votre annonce en quelques minutes et touchez des milliers d'acheteurs potentiels dans toute la France.
+              Déposez votre annonce en quelques minutes et touchez des milliers d&apos;acheteurs potentiels dans toute la France.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/deposer">
