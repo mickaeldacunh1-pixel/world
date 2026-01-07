@@ -106,26 +106,16 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="font-medium" data-testid="categories-dropdown">
-                  {t('nav.categories')}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center" className="w-56">
-                {categories.map((cat) => (
-                  <DropdownMenuItem key={cat.slug} asChild>
-                    <Link to={`/annonces/${cat.slug}`} className="flex items-center gap-2 cursor-pointer">
-                      <cat.icon className="w-4 h-4" />
-                      {cat.name}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {/* Promo Banner - Desktop only */}
+          <div className="hidden lg:block ml-4">
+            <PromoBanner 
+              bgColor={navbarSettings.promo_bg_color} 
+              textColor={navbarSettings.promo_text_color} 
+            />
+          </div>
 
+          {/* Desktop Navigation - Only Pricing now, Categories moved below */}
+          <div className="hidden md:flex items-center gap-6">
             <Link to="/tarifs" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="pricing-link">
               {t('nav.pricing')}
             </Link>
