@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
@@ -11,6 +12,7 @@ import { Tag, Loader2, Percent, Send } from 'lucide-react';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function MakeOfferButton({ listing, onSuccess }) {
+  const { t } = useTranslation();
   const { user, token } = useAuth();
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState('');
