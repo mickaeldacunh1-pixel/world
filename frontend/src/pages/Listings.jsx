@@ -213,6 +213,17 @@ export default function Listings() {
     // Update search params
     setSearchParams(params);
     
+    // Save search to history
+    saveSearch({
+      query: search,
+      category: category,
+      brand: compatibleBrand,
+      model: compatibleModel,
+      region: region,
+      min_price: minPrice ? parseFloat(minPrice) : null,
+      max_price: maxPrice ? parseFloat(maxPrice) : null
+    });
+    
     fetchListings(true);
     setShowFilters(false);
   };
