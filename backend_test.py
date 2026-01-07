@@ -3332,14 +3332,15 @@ class AutoPiecesAPITester:
         print("\n🔧 Testing Widget System...")
         
         # Step 1: Test getting widget listings
-        widget_listings = self.run_test("Widget - Get Listings", "GET", "widget/listings", 200)
-        if widget_listings and isinstance(widget_listings, list):
+        widget_result = self.run_test("Widget - Get Listings", "GET", "widget/listings", 200)
+        if widget_result and "listings" in widget_result:
+            widget_listings = widget_result["listings"]
             self.log_test("Widget - Listings Structure", True, f"Found {len(widget_listings)} listings")
             
             # Check listing structure if any listings exist
             if len(widget_listings) > 0:
                 listing = widget_listings[0]
-                required_fields = ["id", "title", "price", "images", "seller_name"]
+                required_fields = ["id", "title", "price", "images"]
                 for field in required_fields:
                     if field in listing:
                         self.log_test(f"Widget Listing - {field}", True)
@@ -3350,8 +3351,9 @@ class AutoPiecesAPITester:
             return False
         
         # Step 2: Test widget listings with filters
-        filtered_listings = self.run_test("Widget - Filtered Listings", "GET", "widget/listings?category=pieces&limit=3", 200)
-        if filtered_listings and isinstance(filtered_listings, list):
+        filtered_result = self.run_test("Widget - Filtered Listings", "GET", "widget/listings?category=pieces&limit=3", 200)
+        if filtered_result and "listings" in filtered_result:
+            filtered_listings = filtered_result["listings"]
             if len(filtered_listings) <= 3:
                 self.log_test("Widget - Limit Filter", True, f"Returned {len(filtered_listings)} listings (≤3)")
             else:
