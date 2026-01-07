@@ -6573,6 +6573,503 @@ async def use_loyalty_boost(listing_id: str, current_user: dict = Depends(get_cu
     
     return {"message": "Boost fidélité appliqué (7 jours)", "end_time": end_time.isoformat()}
 
+# ================== FAIRE UNE OFFRE ==================
+
+class OfferCreate(BaseModel):
+    listing_id: str
+    amount: float
+    message: Optional[str] = None
+
+class OfferResponse(BaseModel):
+    accept: bool
+    counter_amount: Optional[float] = None
+
+@api_router.post("/offers")
+async def create_offer(offer: OfferCreate, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
+    """Faire une offre sur une annonce"""
+    listing = await db.listings.find_one({"id": offer.listing_id})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    if listing["seller_id"] == current_user["id"]:
+        raise HTTPException(status_code=400, detail="Vous ne pouvez pas faire une offre sur votre propre annonce")
+    
+    if listing.get("status") != "active":
+        raise HTTPException(status_code=400, detail="Cette annonce n'est plus disponible")
+    
+    # Vérifier que l'offre est raisonnable (min 50% du prix)
+    if offer.amount < listing["price"] * 0.5:
+        raise HTTPException(status_code=400, detail="L'offre doit être d'au moins 50% du prix demandé")
+    
+    offer_doc = {
+        "id": str(uuid.uuid4()),
+        "listing_id": offer.listing_id,
+        "buyer_id": current_user["id"],
+        "buyer_name": current_user.get("name", "Acheteur"),
+        "seller_id": listing["seller_id"],
+        "original_price": listing["price"],
+        "offered_amount": offer.amount,
+        "message": offer.message,
+        "status": "pending",  # pending, accepted, rejected, countered, expired
+        "counter_amount": None,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "expires_at": (datetime.now(timezone.utc) + timedelta(days=2)).isoformat()
+    }
+    
+    await db.offers.insert_one(offer_doc)
+    
+    # Notifier le vendeur par email
+    seller = await db.users.find_one({"id": listing["seller_id"]})
+    if seller and seller.get("email"):
+        discount_percent = round((1 - offer.amount / listing["price"]) * 100)
+        background_tasks.add_task(
+            send_email,
+            seller["email"],
+            f"💰 Nouvelle offre sur votre annonce - {listing['title'][:30]}",
+            f"""
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: #f97316; padding: 20px; text-align: center;">
+                    <h1 style="color: white; margin: 0;">World Auto</h1>
+                </div>
+                <div style="padding: 30px; background: #fff;">
+                    <h2>Nouvelle offre reçue !</h2>
+                    <p><strong>{current_user.get('name', 'Un acheteur')}</strong> vous fait une offre :</p>
+                    <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                        <p style="margin: 0; color: #666;">Prix demandé : <s>{listing['price']:.2f} €</s></p>
+                        <p style="margin: 10px 0; font-size: 28px; color: #f97316; font-weight: bold;">{offer.amount:.2f} €</p>
+                        <p style="margin: 0; color: #666;">(-{discount_percent}%)</p>
+                    </div>
+                    {f'<p><em>Message : "{offer.message}"</em></p>' if offer.message else ''}
+                    <a href="{SITE_URL}/mes-offres" style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 20px;">Voir l'offre</a>
+                    <p style="margin-top: 20px; font-size: 12px; color: #666;">Cette offre expire dans 48h.</p>
+                </div>
+            </div>
+            """
+        )
+    
+    return {"id": offer_doc["id"], "message": "Offre envoyée", "expires_at": offer_doc["expires_at"]}
+
+@api_router.get("/offers/received")
+async def get_received_offers(current_user: dict = Depends(get_current_user)):
+    """Récupérer les offres reçues (vendeur)"""
+    offers = await db.offers.find(
+        {"seller_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    # Enrichir avec les infos des annonces
+    for offer in offers:
+        listing = await db.listings.find_one({"id": offer["listing_id"]}, {"_id": 0, "title": 1, "images": 1, "price": 1})
+        offer["listing"] = listing
+    
+    return offers
+
+@api_router.get("/offers/sent")
+async def get_sent_offers(current_user: dict = Depends(get_current_user)):
+    """Récupérer les offres envoyées (acheteur)"""
+    offers = await db.offers.find(
+        {"buyer_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    # Enrichir avec les infos des annonces
+    for offer in offers:
+        listing = await db.listings.find_one({"id": offer["listing_id"]}, {"_id": 0, "title": 1, "images": 1, "price": 1})
+        offer["listing"] = listing
+    
+    return offers
+
+@api_router.post("/offers/{offer_id}/respond")
+async def respond_to_offer(offer_id: str, response: OfferResponse, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
+    """Répondre à une offre (accepter, refuser, contre-offre)"""
+    offer = await db.offers.find_one({"id": offer_id})
+    if not offer:
+        raise HTTPException(status_code=404, detail="Offre non trouvée")
+    
+    if offer["seller_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Vous n'êtes pas le vendeur")
+    
+    if offer["status"] != "pending":
+        raise HTTPException(status_code=400, detail="Cette offre a déjà été traitée")
+    
+    buyer = await db.users.find_one({"id": offer["buyer_id"]})
+    listing = await db.listings.find_one({"id": offer["listing_id"]})
+    
+    if response.accept:
+        # Accepter l'offre
+        await db.offers.update_one(
+            {"id": offer_id},
+            {"$set": {"status": "accepted", "responded_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        # Notifier l'acheteur
+        if buyer and buyer.get("email"):
+            background_tasks.add_task(
+                send_email,
+                buyer["email"],
+                f"✅ Votre offre a été acceptée !",
+                f"""
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <div style="background: #22c55e; padding: 20px; text-align: center;">
+                        <h1 style="color: white; margin: 0;">Offre acceptée !</h1>
+                    </div>
+                    <div style="padding: 30px; background: #fff;">
+                        <p>Bonne nouvelle ! Votre offre de <strong>{offer['offered_amount']:.2f} €</strong> pour <strong>{listing['title']}</strong> a été acceptée.</p>
+                        <a href="{SITE_URL}/annonce/{listing['id']}" style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 20px;">Finaliser l'achat</a>
+                    </div>
+                </div>
+                """
+            )
+        
+        return {"message": "Offre acceptée", "status": "accepted"}
+    
+    elif response.counter_amount:
+        # Contre-offre
+        if response.counter_amount <= offer["offered_amount"]:
+            raise HTTPException(status_code=400, detail="La contre-offre doit être supérieure à l'offre reçue")
+        
+        await db.offers.update_one(
+            {"id": offer_id},
+            {"$set": {
+                "status": "countered",
+                "counter_amount": response.counter_amount,
+                "responded_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        # Notifier l'acheteur
+        if buyer and buyer.get("email"):
+            background_tasks.add_task(
+                send_email,
+                buyer["email"],
+                f"↩️ Contre-offre reçue",
+                f"""
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <div style="background: #f97316; padding: 20px; text-align: center;">
+                        <h1 style="color: white; margin: 0;">Contre-offre</h1>
+                    </div>
+                    <div style="padding: 30px; background: #fff;">
+                        <p>Le vendeur a fait une contre-offre pour <strong>{listing['title']}</strong> :</p>
+                        <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                            <p style="margin: 0; color: #666;">Votre offre : <s>{offer['offered_amount']:.2f} €</s></p>
+                            <p style="margin: 10px 0; font-size: 28px; color: #f97316; font-weight: bold;">{response.counter_amount:.2f} €</p>
+                        </div>
+                        <a href="{SITE_URL}/mes-offres" style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 20px;">Voir la contre-offre</a>
+                    </div>
+                </div>
+                """
+            )
+        
+        return {"message": "Contre-offre envoyée", "status": "countered", "counter_amount": response.counter_amount}
+    
+    else:
+        # Refuser
+        await db.offers.update_one(
+            {"id": offer_id},
+            {"$set": {"status": "rejected", "responded_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        return {"message": "Offre refusée", "status": "rejected"}
+
+@api_router.post("/offers/{offer_id}/accept-counter")
+async def accept_counter_offer(offer_id: str, current_user: dict = Depends(get_current_user)):
+    """Accepter une contre-offre (acheteur)"""
+    offer = await db.offers.find_one({"id": offer_id})
+    if not offer:
+        raise HTTPException(status_code=404, detail="Offre non trouvée")
+    
+    if offer["buyer_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Vous n'êtes pas l'acheteur")
+    
+    if offer["status"] != "countered":
+        raise HTTPException(status_code=400, detail="Pas de contre-offre en attente")
+    
+    await db.offers.update_one(
+        {"id": offer_id},
+        {"$set": {"status": "accepted", "final_amount": offer["counter_amount"]}}
+    )
+    
+    return {"message": "Contre-offre acceptée", "final_amount": offer["counter_amount"]}
+
+# ================== LOTS DE PIÈCES ==================
+
+class BundleCreate(BaseModel):
+    title: str
+    description: str
+    listing_ids: List[str]
+    bundle_price: float  # Prix du lot (remise appliquée)
+
+@api_router.post("/bundles")
+async def create_bundle(bundle: BundleCreate, current_user: dict = Depends(get_current_user)):
+    """Créer un lot de pièces"""
+    if len(bundle.listing_ids) < 2:
+        raise HTTPException(status_code=400, detail="Un lot doit contenir au moins 2 annonces")
+    
+    # Vérifier que toutes les annonces appartiennent au vendeur
+    listings = []
+    total_original_price = 0
+    for lid in bundle.listing_ids:
+        listing = await db.listings.find_one({"id": lid, "seller_id": current_user["id"]})
+        if not listing:
+            raise HTTPException(status_code=400, detail=f"Annonce {lid} non trouvée ou ne vous appartient pas")
+        if listing.get("status") != "active":
+            raise HTTPException(status_code=400, detail=f"L'annonce '{listing['title']}' n'est plus active")
+        listings.append(listing)
+        total_original_price += listing["price"]
+    
+    # Le prix du lot doit être inférieur au total
+    if bundle.bundle_price >= total_original_price:
+        raise HTTPException(status_code=400, detail="Le prix du lot doit être inférieur au total des pièces")
+    
+    discount_percent = round((1 - bundle.bundle_price / total_original_price) * 100)
+    
+    bundle_doc = {
+        "id": str(uuid.uuid4()),
+        "seller_id": current_user["id"],
+        "seller_name": current_user.get("name", "Vendeur"),
+        "title": bundle.title,
+        "description": bundle.description,
+        "listing_ids": bundle.listing_ids,
+        "listings": [{"id": l["id"], "title": l["title"], "price": l["price"], "images": l.get("images", [])} for l in listings],
+        "original_total": total_original_price,
+        "bundle_price": bundle.bundle_price,
+        "discount_percent": discount_percent,
+        "status": "active",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.bundles.insert_one(bundle_doc)
+    
+    return {"id": bundle_doc["id"], "message": "Lot créé", "discount_percent": discount_percent}
+
+@api_router.get("/bundles")
+async def get_bundles(seller_id: Optional[str] = None, limit: int = 20):
+    """Récupérer les lots disponibles"""
+    query = {"status": "active"}
+    if seller_id:
+        query["seller_id"] = seller_id
+    
+    bundles = await db.bundles.find(query, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(limit)
+    return bundles
+
+@api_router.get("/bundles/{bundle_id}")
+async def get_bundle(bundle_id: str):
+    """Récupérer un lot"""
+    bundle = await db.bundles.find_one({"id": bundle_id}, {"_id": 0})
+    if not bundle:
+        raise HTTPException(status_code=404, detail="Lot non trouvé")
+    return bundle
+
+@api_router.delete("/bundles/{bundle_id}")
+async def delete_bundle(bundle_id: str, current_user: dict = Depends(get_current_user)):
+    """Supprimer un lot"""
+    bundle = await db.bundles.find_one({"id": bundle_id})
+    if not bundle:
+        raise HTTPException(status_code=404, detail="Lot non trouvé")
+    
+    if bundle["seller_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Vous ne pouvez pas supprimer ce lot")
+    
+    await db.bundles.delete_one({"id": bundle_id})
+    return {"message": "Lot supprimé"}
+
+# ================== COMPTEUR LIVE ==================
+
+@api_router.get("/stats/live")
+async def get_live_stats():
+    """Récupérer les statistiques en temps réel pour le Hero"""
+    # Compter les annonces actives
+    listings_count = await db.listings.count_documents({"status": "active"})
+    
+    # Compter les utilisateurs
+    users_count = await db.users.count_documents({})
+    
+    # Compter les ventes réalisées
+    sales_count = await db.orders.count_documents({"status": {"$in": ["paid", "shipped", "delivered"]}})
+    
+    # Vendeurs actifs (qui ont au moins une annonce)
+    sellers_count = len(await db.listings.distinct("seller_id", {"status": "active"}))
+    
+    return {
+        "listings_count": listings_count,
+        "users_count": users_count,
+        "sales_count": sales_count,
+        "sellers_count": sellers_count
+    }
+
+# ================== RELANCE PANIER ABANDONNÉ ==================
+
+class AbandonedCartItem(BaseModel):
+    listing_id: str
+    title: str
+    price: float
+    image: Optional[str] = None
+
+class AbandonedCartCreate(BaseModel):
+    items: List[AbandonedCartItem]
+    email: Optional[str] = None
+
+@api_router.post("/cart/track")
+async def track_cart(cart: AbandonedCartCreate, request: Request, current_user: dict = Depends(get_current_user_optional)):
+    """Tracker un panier pour relance"""
+    if not cart.items:
+        return {"message": "Panier vide"}
+    
+    user_id = current_user["id"] if current_user else None
+    email = current_user.get("email") if current_user else cart.email
+    
+    if not email:
+        return {"message": "Email requis pour la relance"}
+    
+    cart_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "email": email,
+        "items": [item.model_dump() for item in cart.items],
+        "total": sum(item.price for item in cart.items),
+        "status": "active",  # active, converted, reminded, expired
+        "reminder_sent": False,
+        "reminder_count": 0,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    # Upsert basé sur l'email
+    await db.abandoned_carts.update_one(
+        {"email": email, "status": "active"},
+        {"$set": cart_doc},
+        upsert=True
+    )
+    
+    return {"message": "Panier enregistré"}
+
+@api_router.post("/cart/convert")
+async def mark_cart_converted(current_user: dict = Depends(get_current_user)):
+    """Marquer un panier comme converti (achat effectué)"""
+    await db.abandoned_carts.update_many(
+        {"email": current_user["email"], "status": "active"},
+        {"$set": {"status": "converted", "converted_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    return {"message": "Panier marqué comme converti"}
+
+@api_router.post("/admin/send-cart-reminders")
+async def send_cart_reminders(background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
+    """Envoyer des relances pour paniers abandonnés (admin)"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès admin requis")
+    
+    # Trouver les paniers abandonnés depuis plus de 2h mais moins de 7 jours
+    cutoff_min = (datetime.now(timezone.utc) - timedelta(hours=2)).isoformat()
+    cutoff_max = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    
+    carts = await db.abandoned_carts.find({
+        "status": "active",
+        "reminder_count": {"$lt": 2},  # Max 2 relances
+        "created_at": {"$lt": cutoff_min, "$gt": cutoff_max}
+    }).to_list(100)
+    
+    sent_count = 0
+    for cart in carts:
+        items_html = "".join([
+            f"""<div style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
+                <img src="{item.get('image', '')}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; margin-right: 15px;">
+                <div>
+                    <p style="margin: 0; font-weight: bold;">{item['title']}</p>
+                    <p style="margin: 5px 0; color: #f97316; font-weight: bold;">{item['price']:.2f} €</p>
+                </div>
+            </div>"""
+            for item in cart["items"]
+        ])
+        
+        background_tasks.add_task(
+            send_email,
+            cart["email"],
+            "🛒 Vous avez oublié quelque chose...",
+            f"""
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: #f97316; padding: 20px; text-align: center;">
+                    <h1 style="color: white; margin: 0;">World Auto</h1>
+                </div>
+                <div style="padding: 30px; background: #fff;">
+                    <h2>Votre panier vous attend !</h2>
+                    <p>Vous avez laissé des articles dans votre panier :</p>
+                    <div style="margin: 20px 0; border: 1px solid #eee; border-radius: 8px;">
+                        {items_html}
+                    </div>
+                    <p style="font-size: 18px; font-weight: bold;">Total : {cart['total']:.2f} €</p>
+                    <a href="{SITE_URL}/panier" style="display: inline-block; background: #f97316; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; margin-top: 20px; font-size: 16px;">Finaliser ma commande</a>
+                </div>
+                <div style="padding: 20px; background: #f3f4f6; text-align: center; font-size: 12px; color: #666;">
+                    <p>Les pièces sont disponibles en quantité limitée, ne tardez pas !</p>
+                </div>
+            </div>
+            """
+        )
+        
+        await db.abandoned_carts.update_one(
+            {"id": cart["id"]},
+            {"$set": {"reminder_sent": True, "last_reminder_at": datetime.now(timezone.utc).isoformat()}, "$inc": {"reminder_count": 1}}
+        )
+        sent_count += 1
+    
+    return {"message": f"{sent_count} relances envoyées"}
+
+# ================== WIDGET EMBARQUABLE ==================
+
+@api_router.get("/widget/listings")
+async def get_widget_listings(seller_id: Optional[str] = None, category: Optional[str] = None, limit: int = 6):
+    """Récupérer les annonces pour le widget embarquable"""
+    query = {"status": "active"}
+    if seller_id:
+        query["seller_id"] = seller_id
+    if category:
+        query["category"] = category
+    
+    listings = await db.listings.find(
+        query,
+        {"_id": 0, "id": 1, "title": 1, "price": 1, "images": 1, "condition": 1, "location": 1}
+    ).sort("created_at", -1).limit(limit).to_list(limit)
+    
+    return {
+        "listings": listings,
+        "base_url": SITE_URL
+    }
+
+@api_router.get("/widget/code")
+async def get_widget_code(seller_id: Optional[str] = None, category: Optional[str] = None, theme: str = "light"):
+    """Générer le code du widget embarquable"""
+    params = []
+    if seller_id:
+        params.append(f"seller_id={seller_id}")
+    if category:
+        params.append(f"category={category}")
+    params.append(f"theme={theme}")
+    
+    api_url = SITE_URL.replace("https://", "").replace("http://", "")
+    params_str = "&".join(params)
+    
+    widget_code = f"""<!-- World Auto Widget -->
+<div id="worldauto-widget" data-params="{params_str}"></div>
+<script>
+(function() {{
+  var container = document.getElementById('worldauto-widget');
+  var params = container.dataset.params;
+  var iframe = document.createElement('iframe');
+  iframe.src = '{SITE_URL}/widget?' + params;
+  iframe.style.width = '100%';
+  iframe.style.minHeight = '400px';
+  iframe.style.border = 'none';
+  iframe.style.borderRadius = '8px';
+  container.appendChild(iframe);
+}})();
+</script>
+<!-- Fin World Auto Widget -->"""
+    
+    return {
+        "code": widget_code,
+        "preview_url": f"{SITE_URL}/widget?{params_str}"
+    }
+
 # ================== ROOT ==================
 
 @api_router.get("/")
