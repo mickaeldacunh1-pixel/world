@@ -699,7 +699,7 @@ export default function Home() {
               to="/marques" 
               className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
             >
-              Voir toutes les marques
+              {t('common.see_all')} {t('nav.brands')}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
