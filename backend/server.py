@@ -5652,6 +5652,9 @@ REFERRAL_REWARDS = {
     "referrer_bonus_per_purchase": 10,  # Points bonus quand le filleul fait un achat
 }
 
+# Bonus inscription pour tous les nouveaux utilisateurs
+SIGNUP_BONUS_POINTS = 50
+
 async def add_loyalty_points(user_id: str, points: int, description: str, order_id: str = None):
     """Add loyalty points to a user"""
     # Get user
