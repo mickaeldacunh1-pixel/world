@@ -425,14 +425,14 @@ export default function Home() {
                 </div>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger className="w-full sm:w-52 h-14 bg-transparent border-0 text-base rounded-xl focus-ring" data-testid="category-select">
-                    <SelectValue placeholder="Catégorie" />
+                    <SelectValue placeholder={t('nav.categories')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pieces">Pièces Détachées</SelectItem>
-                    <SelectItem value="voitures">Voitures</SelectItem>
-                    <SelectItem value="motos">Motos</SelectItem>
-                    <SelectItem value="utilitaires">Utilitaires</SelectItem>
-                    <SelectItem value="accessoires">Accessoires</SelectItem>
+                    <SelectItem value="pieces">{t('categories.pieces')}</SelectItem>
+                    <SelectItem value="voitures">{t('categories.voitures')}</SelectItem>
+                    <SelectItem value="motos">{t('categories.motos')}</SelectItem>
+                    <SelectItem value="utilitaires">{t('categories.utilitaires')}</SelectItem>
+                    <SelectItem value="accessoires">{t('categories.accessoires')}</SelectItem>
                   </SelectContent>
                 </Select>
                 {heroSettings.hero_show_voice_search !== false && (
