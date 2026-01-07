@@ -1764,6 +1764,63 @@ async def get_featured_listings(limit: int = 6):
     
     return listings
 
+@api_router.get("/seller-of-the-week")
+async def get_seller_of_the_week():
+    """Récupère le vendeur de la semaine (calculé automatiquement)"""
+    # Calculer le vendeur avec le plus de ventes/avis positifs cette semaine
+    one_week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    
+    # Agrégation pour trouver le meilleur vendeur
+    pipeline = [
+        {"$match": {"status": "delivered", "created_at": {"$gte": one_week_ago}}},
+        {"$group": {"_id": "$seller_id", "sales_count": {"$sum": 1}}},
+        {"$sort": {"sales_count": -1}},
+        {"$limit": 1}
+    ]
+    
+    result = await db.orders.aggregate(pipeline).to_list(1)
+    
+    if not result:
+        # Fallback: vendeur avec le plus de ventes totales
+        pipeline_fallback = [
+            {"$match": {"status": "delivered"}},
+            {"$group": {"_id": "$seller_id", "sales_count": {"$sum": 1}}},
+            {"$sort": {"sales_count": -1}},
+            {"$limit": 1}
+        ]
+        result = await db.orders.aggregate(pipeline_fallback).to_list(1)
+    
+    if not result:
+        return None
+    
+    seller_id = result[0]["_id"]
+    sales_count = result[0]["sales_count"]
+    
+    # Récupérer les infos du vendeur
+    seller = await db.users.find_one({"id": seller_id}, {"_id": 0, "password": 0})
+    if not seller:
+        return None
+    
+    # Récupérer les avis
+    reviews = await db.reviews.find({"seller_id": seller_id}).to_list(100)
+    avg_rating = sum(r.get("rating", 0) for r in reviews) / len(reviews) if reviews else 0
+    
+    # Compter les annonces actives
+    active_listings = await db.listings.count_documents({"seller_id": seller_id, "status": "active"})
+    
+    return {
+        "id": seller["id"],
+        "name": seller.get("name"),
+        "company_name": seller.get("company_name"),
+        "is_professional": seller.get("is_professional", False),
+        "sales_count": sales_count,
+        "avg_rating": round(avg_rating, 1),
+        "reviews_count": len(reviews),
+        "active_listings": active_listings,
+        "member_since": seller.get("created_at"),
+        "badge": "🏆 Vendeur de la semaine"
+    }
+
 @api_router.get("/listings")
 async def get_listings(
     category: Optional[str] = None,
