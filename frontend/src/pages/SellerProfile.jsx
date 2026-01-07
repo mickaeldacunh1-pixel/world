@@ -134,6 +134,17 @@ export default function SellerProfile() {
                     <Calendar className="w-4 h-4" />
                     Membre depuis {new Date(seller.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
                   </span>
+                  {seller.website && (
+                    <a 
+                      href={seller.website.startsWith('http') ? seller.website : `https://${seller.website}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-accent hover:underline"
+                    >
+                      <span className="w-4 h-4">🌐</span>
+                      Site web
+                    </a>
+                  )}
                 </div>
 
                 {/* Badges Section */}
