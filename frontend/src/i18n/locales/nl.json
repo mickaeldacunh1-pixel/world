@@ -1,0 +1,81 @@
+{
+  "common": {
+    "search": "Zoeken",
+    "login": "Inloggen",
+    "register": "Registreren",
+    "logout": "Uitloggen",
+    "profile": "Mijn profiel",
+    "dashboard": "Dashboard",
+    "messages": "Berichten",
+    "favorites": "Favorieten",
+    "cart": "Winkelwagen",
+    "sell": "Verkopen",
+    "buy": "Kopen",
+    "contact": "Contact",
+    "about": "Over ons",
+    "help": "Help",
+    "settings": "Instellingen"
+  },
+  "nav": {
+    "home": "Home",
+    "listings": "Advertenties",
+    "categories": "Categorieën",
+    "parts": "Onderdelen",
+    "cars": "Auto's",
+    "motorcycles": "Motoren",
+    "utilities": "Bedrijfsvoertuigen",
+    "accessories": "Accessoires",
+    "brands": "Merken",
+    "newListing": "Advertentie plaatsen",
+    "myListings": "Mijn advertenties",
+    "myOrders": "Mijn bestellingen",
+    "myOffers": "Mijn biedingen",
+    "bundles": "Onderdelenpakketten",
+    "loyalty": "Loyaliteit",
+    "diagnostic": "AI Diagnose"
+  },
+  "hero": {
+    "title": "Gebruikte Auto-onderdelen",
+    "subtitle": "Vind het onderdeel dat je nodig hebt tussen duizenden geverifieerde advertenties",
+    "searchPlaceholder": "Zoek een onderdeel...",
+    "activeListings": "actieve advertenties",
+    "categories": "categorieën",
+    "members": "leden",
+    "sales": "voltooide verkopen"
+  },
+  "listing": {
+    "price": "Prijs",
+    "condition": "Staat",
+    "new": "Nieuw",
+    "used": "Gebruikt",
+    "location": "Locatie",
+    "seller": "Verkoper",
+    "description": "Beschrijving",
+    "buyNow": "Nu kopen",
+    "addToCart": "Toevoegen aan winkelwagen",
+    "makeOffer": "Bod uitbrengen",
+    "contactSeller": "Contact verkoper",
+    "share": "Delen",
+    "report": "Rapporteren"
+  },
+  "auth": {
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "confirmPassword": "Bevestig wachtwoord",
+    "name": "Naam",
+    "phone": "Telefoon",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "noAccount": "Nog geen account?",
+    "hasAccount": "Al een account?"
+  },
+  "footer": {
+    "about": "Over ons",
+    "contact": "Contact",
+    "terms": "Voorwaarden",
+    "privacy": "Privacy",
+    "legal": "Juridisch",
+    "faq": "FAQ",
+    "newsletter": "Nieuwsbrief",
+    "allRights": "Alle rechten voorbehouden"
+  }
+}

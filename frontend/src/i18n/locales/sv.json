@@ -1,0 +1,81 @@
+{
+  "common": {
+    "search": "Sök",
+    "login": "Logga in",
+    "register": "Registrera",
+    "logout": "Logga ut",
+    "profile": "Min profil",
+    "dashboard": "Dashboard",
+    "messages": "Meddelanden",
+    "favorites": "Favoriter",
+    "cart": "Varukorg",
+    "sell": "Sälj",
+    "buy": "Köp",
+    "contact": "Kontakt",
+    "about": "Om oss",
+    "help": "Hjälp",
+    "settings": "Inställningar"
+  },
+  "nav": {
+    "home": "Hem",
+    "listings": "Annonser",
+    "categories": "Kategorier",
+    "parts": "Reservdelar",
+    "cars": "Bilar",
+    "motorcycles": "Motorcyklar",
+    "utilities": "Transportfordon",
+    "accessories": "Tillbehör",
+    "brands": "Märken",
+    "newListing": "Skapa annons",
+    "myListings": "Mina annonser",
+    "myOrders": "Mina beställningar",
+    "myOffers": "Mina bud",
+    "bundles": "Reservdelspaket",
+    "loyalty": "Lojalitet",
+    "diagnostic": "AI-diagnos"
+  },
+  "hero": {
+    "title": "Begagnade Bildelar",
+    "subtitle": "Hitta den del du behöver bland tusentals verifierade annonser",
+    "searchPlaceholder": "Sök en del...",
+    "activeListings": "aktiva annonser",
+    "categories": "kategorier",
+    "members": "medlemmar",
+    "sales": "genomförda försäljningar"
+  },
+  "listing": {
+    "price": "Pris",
+    "condition": "Skick",
+    "new": "Ny",
+    "used": "Begagnad",
+    "location": "Plats",
+    "seller": "Säljare",
+    "description": "Beskrivning",
+    "buyNow": "Köp nu",
+    "addToCart": "Lägg i varukorg",
+    "makeOffer": "Lägg ett bud",
+    "contactSeller": "Kontakta säljare",
+    "share": "Dela",
+    "report": "Rapportera"
+  },
+  "auth": {
+    "email": "E-post",
+    "password": "Lösenord",
+    "confirmPassword": "Bekräfta lösenord",
+    "name": "Namn",
+    "phone": "Telefon",
+    "forgotPassword": "Glömt lösenord?",
+    "noAccount": "Inget konto än?",
+    "hasAccount": "Har du redan ett konto?"
+  },
+  "footer": {
+    "about": "Om oss",
+    "contact": "Kontakt",
+    "terms": "Villkor",
+    "privacy": "Integritet",
+    "legal": "Juridiskt",
+    "faq": "FAQ",
+    "newsletter": "Nyhetsbrev",
+    "allRights": "Alla rättigheter förbehållna"
+  }
+}

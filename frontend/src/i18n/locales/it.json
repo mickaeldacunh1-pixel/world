@@ -1,0 +1,81 @@
+{
+  "common": {
+    "search": "Cerca",
+    "login": "Accedi",
+    "register": "Registrati",
+    "logout": "Esci",
+    "profile": "Il mio profilo",
+    "dashboard": "Dashboard",
+    "messages": "Messaggi",
+    "favorites": "Preferiti",
+    "cart": "Carrello",
+    "sell": "Vendi",
+    "buy": "Compra",
+    "contact": "Contatto",
+    "about": "Chi siamo",
+    "help": "Aiuto",
+    "settings": "Impostazioni"
+  },
+  "nav": {
+    "home": "Home",
+    "listings": "Annunci",
+    "categories": "Categorie",
+    "parts": "Ricambi",
+    "cars": "Auto",
+    "motorcycles": "Moto",
+    "utilities": "Veicoli commerciali",
+    "accessories": "Accessori",
+    "brands": "Marche",
+    "newListing": "Pubblica annuncio",
+    "myListings": "I miei annunci",
+    "myOrders": "I miei ordini",
+    "myOffers": "Le mie offerte",
+    "bundles": "Pacchetti ricambi",
+    "loyalty": "Fedeltà",
+    "diagnostic": "Diagnosi IA"
+  },
+  "hero": {
+    "title": "Ricambi Auto Usati",
+    "subtitle": "Trova il pezzo che ti serve tra migliaia di annunci verificati",
+    "searchPlaceholder": "Cerca un ricambio...",
+    "activeListings": "annunci attivi",
+    "categories": "categorie",
+    "members": "membri",
+    "sales": "vendite completate"
+  },
+  "listing": {
+    "price": "Prezzo",
+    "condition": "Condizione",
+    "new": "Nuovo",
+    "used": "Usato",
+    "location": "Posizione",
+    "seller": "Venditore",
+    "description": "Descrizione",
+    "buyNow": "Compra ora",
+    "addToCart": "Aggiungi al carrello",
+    "makeOffer": "Fai un'offerta",
+    "contactSeller": "Contatta venditore",
+    "share": "Condividi",
+    "report": "Segnala"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Conferma password",
+    "name": "Nome",
+    "phone": "Telefono",
+    "forgotPassword": "Password dimenticata?",
+    "noAccount": "Non hai un account?",
+    "hasAccount": "Hai già un account?"
+  },
+  "footer": {
+    "about": "Chi siamo",
+    "contact": "Contatto",
+    "terms": "Termini",
+    "privacy": "Privacy",
+    "legal": "Note legali",
+    "faq": "FAQ",
+    "newsletter": "Newsletter",
+    "allRights": "Tutti i diritti riservati"
+  }
+}

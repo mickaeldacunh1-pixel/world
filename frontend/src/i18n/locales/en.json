@@ -1,0 +1,81 @@
+{
+  "common": {
+    "search": "Search",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "profile": "My Profile",
+    "dashboard": "Dashboard",
+    "messages": "Messages",
+    "favorites": "Favorites",
+    "cart": "Cart",
+    "sell": "Sell",
+    "buy": "Buy",
+    "contact": "Contact",
+    "about": "About",
+    "help": "Help",
+    "settings": "Settings"
+  },
+  "nav": {
+    "home": "Home",
+    "listings": "Listings",
+    "categories": "Categories",
+    "parts": "Spare Parts",
+    "cars": "Cars",
+    "motorcycles": "Motorcycles",
+    "utilities": "Commercial Vehicles",
+    "accessories": "Accessories",
+    "brands": "Brands",
+    "newListing": "Post a Listing",
+    "myListings": "My Listings",
+    "myOrders": "My Orders",
+    "myOffers": "My Offers",
+    "bundles": "Part Bundles",
+    "loyalty": "Loyalty",
+    "diagnostic": "AI Diagnostic"
+  },
+  "hero": {
+    "title": "Used Auto Parts",
+    "subtitle": "Find the part you need among thousands of verified listings",
+    "searchPlaceholder": "Search for a part...",
+    "activeListings": "active listings",
+    "categories": "categories",
+    "members": "members",
+    "sales": "completed sales"
+  },
+  "listing": {
+    "price": "Price",
+    "condition": "Condition",
+    "new": "New",
+    "used": "Used",
+    "location": "Location",
+    "seller": "Seller",
+    "description": "Description",
+    "buyNow": "Buy Now",
+    "addToCart": "Add to Cart",
+    "makeOffer": "Make an Offer",
+    "contactSeller": "Contact Seller",
+    "share": "Share",
+    "report": "Report"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Name",
+    "phone": "Phone",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  },
+  "footer": {
+    "about": "About",
+    "contact": "Contact",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "legal": "Legal Notice",
+    "faq": "FAQ",
+    "newsletter": "Newsletter",
+    "allRights": "All rights reserved"
+  }
+}

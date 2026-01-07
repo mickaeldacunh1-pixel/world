@@ -1,0 +1,81 @@
+{
+  "common": {
+    "search": "Buscar",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión",
+    "profile": "Mi perfil",
+    "dashboard": "Panel",
+    "messages": "Mensajes",
+    "favorites": "Favoritos",
+    "cart": "Carrito",
+    "sell": "Vender",
+    "buy": "Comprar",
+    "contact": "Contacto",
+    "about": "Acerca de",
+    "help": "Ayuda",
+    "settings": "Ajustes"
+  },
+  "nav": {
+    "home": "Inicio",
+    "listings": "Anuncios",
+    "categories": "Categorías",
+    "parts": "Repuestos",
+    "cars": "Coches",
+    "motorcycles": "Motos",
+    "utilities": "Vehículos comerciales",
+    "accessories": "Accesorios",
+    "brands": "Marcas",
+    "newListing": "Publicar anuncio",
+    "myListings": "Mis anuncios",
+    "myOrders": "Mis pedidos",
+    "myOffers": "Mis ofertas",
+    "bundles": "Lotes de piezas",
+    "loyalty": "Fidelidad",
+    "diagnostic": "Diagnóstico IA"
+  },
+  "hero": {
+    "title": "Piezas de Auto Usadas",
+    "subtitle": "Encuentra la pieza que necesitas entre miles de anuncios verificados",
+    "searchPlaceholder": "Buscar una pieza...",
+    "activeListings": "anuncios activos",
+    "categories": "categorías",
+    "members": "miembros",
+    "sales": "ventas realizadas"
+  },
+  "listing": {
+    "price": "Precio",
+    "condition": "Estado",
+    "new": "Nuevo",
+    "used": "Usado",
+    "location": "Ubicación",
+    "seller": "Vendedor",
+    "description": "Descripción",
+    "buyNow": "Comprar ahora",
+    "addToCart": "Añadir al carrito",
+    "makeOffer": "Hacer una oferta",
+    "contactSeller": "Contactar vendedor",
+    "share": "Compartir",
+    "report": "Reportar"
+  },
+  "auth": {
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "name": "Nombre",
+    "phone": "Teléfono",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?"
+  },
+  "footer": {
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "terms": "Términos",
+    "privacy": "Privacidad",
+    "legal": "Aviso legal",
+    "faq": "FAQ",
+    "newsletter": "Boletín",
+    "allRights": "Todos los derechos reservados"
+  }
+}

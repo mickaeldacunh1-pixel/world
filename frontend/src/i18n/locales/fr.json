@@ -1,0 +1,81 @@
+{
+  "common": {
+    "search": "Rechercher",
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "profile": "Mon profil",
+    "dashboard": "Tableau de bord",
+    "messages": "Messages",
+    "favorites": "Favoris",
+    "cart": "Panier",
+    "sell": "Vendre",
+    "buy": "Acheter",
+    "contact": "Contact",
+    "about": "À propos",
+    "help": "Aide",
+    "settings": "Paramètres"
+  },
+  "nav": {
+    "home": "Accueil",
+    "listings": "Annonces",
+    "categories": "Catégories",
+    "parts": "Pièces Détachées",
+    "cars": "Voitures",
+    "motorcycles": "Motos",
+    "utilities": "Utilitaires",
+    "accessories": "Accessoires",
+    "brands": "Marques",
+    "newListing": "Déposer une annonce",
+    "myListings": "Mes annonces",
+    "myOrders": "Mes commandes",
+    "myOffers": "Mes offres",
+    "bundles": "Lots de pièces",
+    "loyalty": "Fidélité",
+    "diagnostic": "Diagnostic IA"
+  },
+  "hero": {
+    "title": "Pièces Auto d'Occasion",
+    "subtitle": "Trouvez la pièce qu'il vous faut parmi des milliers d'annonces vérifiées",
+    "searchPlaceholder": "Rechercher une pièce...",
+    "activeListings": "annonces actives",
+    "categories": "catégories",
+    "members": "membres",
+    "sales": "ventes réalisées"
+  },
+  "listing": {
+    "price": "Prix",
+    "condition": "État",
+    "new": "Neuf",
+    "used": "Occasion",
+    "location": "Localisation",
+    "seller": "Vendeur",
+    "description": "Description",
+    "buyNow": "Acheter maintenant",
+    "addToCart": "Ajouter au panier",
+    "makeOffer": "Faire une offre",
+    "contactSeller": "Contacter le vendeur",
+    "share": "Partager",
+    "report": "Signaler"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "name": "Nom",
+    "phone": "Téléphone",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Pas encore de compte ?",
+    "hasAccount": "Déjà un compte ?"
+  },
+  "footer": {
+    "about": "À propos",
+    "contact": "Contact",
+    "terms": "CGV",
+    "privacy": "Confidentialité",
+    "legal": "Mentions légales",
+    "faq": "FAQ",
+    "newsletter": "Newsletter",
+    "allRights": "Tous droits réservés"
+  }
+}

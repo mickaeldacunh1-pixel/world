@@ -1,0 +1,81 @@
+{
+  "common": {
+    "search": "Suchen",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "profile": "Mein Profil",
+    "dashboard": "Dashboard",
+    "messages": "Nachrichten",
+    "favorites": "Favoriten",
+    "cart": "Warenkorb",
+    "sell": "Verkaufen",
+    "buy": "Kaufen",
+    "contact": "Kontakt",
+    "about": "Über uns",
+    "help": "Hilfe",
+    "settings": "Einstellungen"
+  },
+  "nav": {
+    "home": "Startseite",
+    "listings": "Anzeigen",
+    "categories": "Kategorien",
+    "parts": "Ersatzteile",
+    "cars": "Autos",
+    "motorcycles": "Motorräder",
+    "utilities": "Nutzfahrzeuge",
+    "accessories": "Zubehör",
+    "brands": "Marken",
+    "newListing": "Anzeige aufgeben",
+    "myListings": "Meine Anzeigen",
+    "myOrders": "Meine Bestellungen",
+    "myOffers": "Meine Angebote",
+    "bundles": "Teilepakete",
+    "loyalty": "Treueprogramm",
+    "diagnostic": "KI-Diagnose"
+  },
+  "hero": {
+    "title": "Gebrauchte Autoteile",
+    "subtitle": "Finden Sie das Teil, das Sie brauchen, unter Tausenden von geprüften Anzeigen",
+    "searchPlaceholder": "Teil suchen...",
+    "activeListings": "aktive Anzeigen",
+    "categories": "Kategorien",
+    "members": "Mitglieder",
+    "sales": "abgeschlossene Verkäufe"
+  },
+  "listing": {
+    "price": "Preis",
+    "condition": "Zustand",
+    "new": "Neu",
+    "used": "Gebraucht",
+    "location": "Standort",
+    "seller": "Verkäufer",
+    "description": "Beschreibung",
+    "buyNow": "Jetzt kaufen",
+    "addToCart": "In den Warenkorb",
+    "makeOffer": "Angebot machen",
+    "contactSeller": "Verkäufer kontaktieren",
+    "share": "Teilen",
+    "report": "Melden"
+  },
+  "auth": {
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "name": "Name",
+    "phone": "Telefon",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Bereits ein Konto?"
+  },
+  "footer": {
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "terms": "AGB",
+    "privacy": "Datenschutz",
+    "legal": "Impressum",
+    "faq": "FAQ",
+    "newsletter": "Newsletter",
+    "allRights": "Alle Rechte vorbehalten"
+  }
+}
