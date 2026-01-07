@@ -14,7 +14,21 @@
     "contact": "Contacto",
     "about": "Sobre",
     "help": "Ajuda",
-    "settings": "Definições"
+    "settings": "Definições",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Fechar",
+    "loading": "A carregar...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "confirm": "Confirmar",
+    "back": "Voltar",
+    "see_all": "Ver tudo",
+    "filters": "Filtros",
+    "results": "resultados",
+    "no_results": "Sem resultados"
   },
   "nav": {
     "home": "Início",
@@ -37,7 +51,7 @@
   "hero": {
     "title": "Peças Auto Usadas",
     "subtitle": "Encontre a peça que precisa entre milhares de anúncios verificados",
-    "searchPlaceholder": "Pesquisar uma peça...",
+    "searchPlaceholder": "Pesquisar peça, marca, modelo...",
     "activeListings": "anúncios ativos",
     "categories": "categorias",
     "members": "membros",
@@ -50,32 +64,31 @@
     "used": "Usado",
     "location": "Localização",
     "seller": "Vendedor",
-    "description": "Descrição",
     "buyNow": "Comprar agora",
     "addToCart": "Adicionar ao carrinho",
     "makeOffer": "Fazer uma oferta",
-    "contactSeller": "Contactar vendedor",
-    "share": "Partilhar",
-    "report": "Denunciar"
+    "contactSeller": "Contactar vendedor"
   },
   "auth": {
     "email": "Email",
     "password": "Palavra-passe",
-    "confirmPassword": "Confirmar palavra-passe",
-    "name": "Nome",
-    "phone": "Telefone",
-    "forgotPassword": "Esqueceu a palavra-passe?",
-    "noAccount": "Ainda não tem conta?",
-    "hasAccount": "Já tem conta?"
+    "login_title": "Entrar",
+    "register_title": "Criar conta",
+    "login_btn": "Entrar",
+    "register_btn": "Registar"
+  },
+  "cart": {
+    "title": "Meu Carrinho",
+    "empty": "O seu carrinho está vazio",
+    "total": "Total",
+    "checkout": "Finalizar compra"
   },
   "footer": {
     "about": "Sobre",
     "contact": "Contacto",
     "terms": "Termos",
-    "privacy": "Privacidade",
     "legal": "Aviso legal",
     "faq": "FAQ",
-    "newsletter": "Newsletter",
     "allRights": "Todos os direitos reservados"
   }
 }

@@ -14,7 +14,21 @@
     "contact": "Contact",
     "about": "Over ons",
     "help": "Help",
-    "settings": "Instellingen"
+    "settings": "Instellingen",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "close": "Sluiten",
+    "loading": "Laden...",
+    "error": "Fout",
+    "success": "Succes",
+    "confirm": "Bevestigen",
+    "back": "Terug",
+    "see_all": "Alles bekijken",
+    "filters": "Filters",
+    "results": "resultaten",
+    "no_results": "Geen resultaten"
   },
   "nav": {
     "home": "Home",
@@ -37,7 +51,7 @@
   "hero": {
     "title": "Gebruikte Auto-onderdelen",
     "subtitle": "Vind het onderdeel dat je nodig hebt tussen duizenden geverifieerde advertenties",
-    "searchPlaceholder": "Zoek een onderdeel...",
+    "searchPlaceholder": "Zoek onderdeel, merk, model...",
     "activeListings": "actieve advertenties",
     "categories": "categorieën",
     "members": "leden",
@@ -50,32 +64,31 @@
     "used": "Gebruikt",
     "location": "Locatie",
     "seller": "Verkoper",
-    "description": "Beschrijving",
     "buyNow": "Nu kopen",
     "addToCart": "Toevoegen aan winkelwagen",
     "makeOffer": "Bod uitbrengen",
-    "contactSeller": "Contact verkoper",
-    "share": "Delen",
-    "report": "Rapporteren"
+    "contactSeller": "Contact verkoper"
   },
   "auth": {
     "email": "E-mail",
     "password": "Wachtwoord",
-    "confirmPassword": "Bevestig wachtwoord",
-    "name": "Naam",
-    "phone": "Telefoon",
-    "forgotPassword": "Wachtwoord vergeten?",
-    "noAccount": "Nog geen account?",
-    "hasAccount": "Al een account?"
+    "login_title": "Inloggen",
+    "register_title": "Account maken",
+    "login_btn": "Inloggen",
+    "register_btn": "Registreren"
+  },
+  "cart": {
+    "title": "Mijn Winkelwagen",
+    "empty": "Je winkelwagen is leeg",
+    "total": "Totaal",
+    "checkout": "Afrekenen"
   },
   "footer": {
     "about": "Over ons",
     "contact": "Contact",
     "terms": "Voorwaarden",
-    "privacy": "Privacy",
     "legal": "Juridisch",
     "faq": "FAQ",
-    "newsletter": "Nieuwsbrief",
     "allRights": "Alle rechten voorbehouden"
   }
 }

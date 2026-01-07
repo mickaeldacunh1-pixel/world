@@ -14,7 +14,21 @@
     "contact": "Kontakt",
     "about": "Om oss",
     "help": "Hjälp",
-    "settings": "Inställningar"
+    "settings": "Inställningar",
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "delete": "Ta bort",
+    "edit": "Redigera",
+    "close": "Stäng",
+    "loading": "Laddar...",
+    "error": "Fel",
+    "success": "Lyckades",
+    "confirm": "Bekräfta",
+    "back": "Tillbaka",
+    "see_all": "Visa alla",
+    "filters": "Filter",
+    "results": "resultat",
+    "no_results": "Inga resultat"
   },
   "nav": {
     "home": "Hem",
@@ -37,7 +51,7 @@
   "hero": {
     "title": "Begagnade Bildelar",
     "subtitle": "Hitta den del du behöver bland tusentals verifierade annonser",
-    "searchPlaceholder": "Sök en del...",
+    "searchPlaceholder": "Sök del, märke, modell...",
     "activeListings": "aktiva annonser",
     "categories": "kategorier",
     "members": "medlemmar",
@@ -50,32 +64,31 @@
     "used": "Begagnad",
     "location": "Plats",
     "seller": "Säljare",
-    "description": "Beskrivning",
     "buyNow": "Köp nu",
     "addToCart": "Lägg i varukorg",
     "makeOffer": "Lägg ett bud",
-    "contactSeller": "Kontakta säljare",
-    "share": "Dela",
-    "report": "Rapportera"
+    "contactSeller": "Kontakta säljare"
   },
   "auth": {
     "email": "E-post",
     "password": "Lösenord",
-    "confirmPassword": "Bekräfta lösenord",
-    "name": "Namn",
-    "phone": "Telefon",
-    "forgotPassword": "Glömt lösenord?",
-    "noAccount": "Inget konto än?",
-    "hasAccount": "Har du redan ett konto?"
+    "login_title": "Logga in",
+    "register_title": "Skapa konto",
+    "login_btn": "Logga in",
+    "register_btn": "Registrera"
+  },
+  "cart": {
+    "title": "Min Varukorg",
+    "empty": "Din varukorg är tom",
+    "total": "Totalt",
+    "checkout": "Till kassan"
   },
   "footer": {
     "about": "Om oss",
     "contact": "Kontakt",
     "terms": "Villkor",
-    "privacy": "Integritet",
     "legal": "Juridiskt",
     "faq": "FAQ",
-    "newsletter": "Nyhetsbrev",
     "allRights": "Alla rättigheter förbehållna"
   }
 }
