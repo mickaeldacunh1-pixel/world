@@ -280,6 +280,18 @@ export default function Listings() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
           <aside className={`lg:w-64 flex-shrink-0 ${showFilters ? 'block' : 'hidden lg:block'}`}>
+            {/* Search History */}
+            <div className="mb-4">
+              <SearchHistory onSelect={(search) => {
+                if (search.query) setSearch(search.query);
+                if (search.brand) setCompatibleBrand(search.brand);
+                if (search.model) setCompatibleModel(search.model);
+                if (search.region) setRegion(search.region);
+                if (search.min_price) setMinPrice(String(search.min_price));
+                if (search.max_price) setMaxPrice(String(search.max_price));
+              }} />
+            </div>
+            
             <Card className="p-6 sticky top-24">
               <h2 className="font-heading font-bold text-lg mb-6">Filtres</h2>
               
