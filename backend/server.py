@@ -1284,6 +1284,7 @@ class ProfileUpdate(BaseModel):
     postal_code: Optional[str] = None
     company_name: Optional[str] = None
     siret: Optional[str] = None
+    website: Optional[str] = None  # Lien site web pour PRO
     vacation_mode: Optional[bool] = None
     vacation_message: Optional[str] = None
     vacation_return_date: Optional[str] = None
