@@ -84,7 +84,7 @@ export default function Cart() {
   return (
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
-        title="Mon Panier"
+        title={t('cart.title')}
         description="Votre panier d'achats sur World Auto France"
         url="/panier"
         noindex={true}
@@ -94,12 +94,12 @@ export default function Cart() {
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-heading text-3xl font-bold flex items-center gap-3">
             <ShoppingCart className="w-8 h-8" />
-            Mon Panier
+            {t('cart.title')}
           </h1>
           {cartItems.length > 0 && (
             <Button variant="outline" onClick={clearCart} className="text-destructive">
               <Trash2 className="w-4 h-4 mr-2" />
-              Vider le panier
+              {t('cart.clear')}
             </Button>
           )}
         </div>
@@ -107,13 +107,13 @@ export default function Cart() {
         {cartItems.length === 0 ? (
           <Card className="p-12 text-center">
             <ShoppingCart className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-            <h2 className="font-heading text-xl font-semibold mb-2">Votre panier est vide</h2>
+            <h2 className="font-heading text-xl font-semibold mb-2">{t('cart.empty')}</h2>
             <p className="text-muted-foreground mb-6">
-              Parcourez nos annonces et ajoutez des articles à votre panier
+              {t('cart.empty_desc')}
             </p>
             <Link to="/annonces">
               <Button className="bg-accent hover:bg-accent/90">
-                Voir les annonces
+                {t('cart.browse')}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
