@@ -270,7 +270,7 @@ export default function MyOffers() {
   return (
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
-        title="Mes Offres"
+        title={t('offers.title')}
         description="Gérez vos offres sur World Auto France"
         url="/mes-offres"
         noindex={true}
@@ -280,20 +280,19 @@ export default function MyOffers() {
         <div className="mb-8">
           <h1 className="font-heading text-3xl font-bold flex items-center gap-3">
             <Tag className="w-8 h-8" />
-            Mes Offres
+            {t('offers.title')}
           </h1>
-          <p className="text-muted-foreground">Gérez vos négociations</p>
         </div>
 
         <Tabs defaultValue="received" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="received" className="flex items-center gap-2">
               <Inbox className="w-4 h-4" />
-              Reçues ({receivedOffers.length})
+              {t('offers.received')} ({receivedOffers.length})
             </TabsTrigger>
             <TabsTrigger value="sent" className="flex items-center gap-2">
               <Send className="w-4 h-4" />
-              Envoyées ({sentOffers.length})
+              {t('offers.sent')} ({sentOffers.length})
             </TabsTrigger>
           </TabsList>
 
