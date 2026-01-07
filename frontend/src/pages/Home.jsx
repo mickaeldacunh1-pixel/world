@@ -401,7 +401,7 @@ export default function Home() {
               >
                 <span>{heroSettings.hero_badge_icon || '✨'}</span>
                 <span className="text-sm font-medium" style={{ color: heroSettings.hero_badge_text_color || '#F97316' }}>
-                  {heroSettings.hero_badge_text || 'La référence automobile en France'}
+                  {autoTranslate(heroSettings.hero_badge_text) || t('hero.badge')}
                 </span>
               </div>
             )}
