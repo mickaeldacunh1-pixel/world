@@ -2001,6 +2001,78 @@ async def check_favorite(listing_id: str, current_user: dict = Depends(get_curre
     favorite = await db.favorites.find_one({"user_id": current_user["id"], "listing_id": listing_id})
     return {"is_favorite": favorite is not None}
 
+# ================== SEARCH HISTORY ROUTES ==================
+
+@api_router.post("/search-history")
+async def save_search(
+    query: str = Body(None),
+    category: str = Body(None),
+    brand: str = Body(None),
+    model: str = Body(None),
+    region: str = Body(None),
+    min_price: float = Body(None),
+    max_price: float = Body(None),
+    current_user: dict = Depends(get_current_user)
+):
+    """Sauvegarder une recherche dans l'historique"""
+    search_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "query": query,
+        "category": category,
+        "brand": brand,
+        "model": model,
+        "region": region,
+        "min_price": min_price,
+        "max_price": max_price,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    # Supprimer les champs None
+    search_doc = {k: v for k, v in search_doc.items() if v is not None}
+    
+    await db.search_history.insert_one(search_doc)
+    
+    # Garder seulement les 20 dernières recherches
+    user_searches = await db.search_history.find(
+        {"user_id": current_user["id"]}
+    ).sort("created_at", -1).to_list(100)
+    
+    if len(user_searches) > 20:
+        old_ids = [s["id"] for s in user_searches[20:]]
+        await db.search_history.delete_many({"id": {"$in": old_ids}})
+    
+    return {"id": search_doc["id"]}
+
+@api_router.get("/search-history")
+async def get_search_history(limit: int = 10, current_user: dict = Depends(get_current_user)):
+    """Récupérer l'historique des recherches"""
+    searches = await db.search_history.find(
+        {"user_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    return searches
+
+@api_router.delete("/search-history/{search_id}")
+async def delete_search(search_id: str, current_user: dict = Depends(get_current_user)):
+    """Supprimer une recherche de l'historique"""
+    result = await db.search_history.delete_one({
+        "id": search_id,
+        "user_id": current_user["id"]
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Recherche non trouvée")
+    
+    return {"message": "Recherche supprimée"}
+
+@api_router.delete("/search-history")
+async def clear_search_history(current_user: dict = Depends(get_current_user)):
+    """Effacer tout l'historique de recherche"""
+    await db.search_history.delete_many({"user_id": current_user["id"]})
+    return {"message": "Historique effacé"}
+
 # ================== SEARCH ALERTS ROUTES ==================
 
 class SearchAlertCreate(BaseModel):
