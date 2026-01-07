@@ -833,7 +833,7 @@ export default function Home() {
               <div className="relative flex-1">
                 <input
                   type="text"
-                  placeholder="Entrez la référence OEM (ex: 7701474426, 1K0615301M...)"
+                  placeholder={t('home.oem_placeholder')}
                   value={oemSearch}
                   onChange={(e) => setOemSearch(e.target.value)}
                   className="w-full h-14 px-5 bg-white rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent font-mono text-lg"
@@ -850,7 +850,7 @@ export default function Home() {
             </div>
             
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <span className="text-white/60 text-sm">Exemples :</span>
+              <span className="text-white/60 text-sm">{t('home.oem_examples')} :</span>
               {['7701474426', '1K0615301M', '30735878', '04E115561H'].map((ref) => (
                 <button
                   key={ref}
