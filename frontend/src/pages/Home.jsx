@@ -25,8 +25,6 @@ import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
 const categories = [
   { slug: 'pieces', icon: Wrench, image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=400&fit=crop', count: 0, color: 'from-orange-500 to-red-500' },
   { slug: 'voitures', icon: Car, image: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop', count: 0, color: 'from-blue-500 to-indigo-500' },
