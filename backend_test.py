@@ -3858,6 +3858,11 @@ class AutoPiecesAPITester:
         self.test_listings_with_compatibility_filters()
         self.test_create_listing_without_credits()
         
+        # Price history tests (NEW FEATURE)
+        print("\n💰 Testing Price History Feature...")
+        self.test_price_history_endpoint()
+        self.test_price_history_invalid_listing()
+        
         # Dashboard and messages
         self.test_dashboard_stats()
         self.test_messages_conversations()
