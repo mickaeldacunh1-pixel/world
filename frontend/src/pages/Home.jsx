@@ -761,26 +761,26 @@ export default function Home() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
             {[
-              { name: 'Phares', subcategory: 'phares', image: 'https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=200&h=150&fit=crop' },
-              { name: 'Pare-chocs', subcategory: 'pare-chocs', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=150&fit=crop' },
-              { name: 'Moteurs', subcategory: 'moteurs', image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=200&h=150&fit=crop' },
-              { name: 'Freinage', subcategory: 'freinage', image: 'https://images.unsplash.com/photo-1558618047-f4e68a95a13b?w=200&h=150&fit=crop' },
-              { name: 'Transmission', subcategory: 'transmission', image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=200&h=150&fit=crop' },
-              { name: 'Électronique', subcategory: 'electronique', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=150&fit=crop' },
-              { name: 'Carrosserie', subcategory: 'carrosserie', image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&h=150&fit=crop' },
-              { name: 'Suspension', subcategory: 'suspension', image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=200&h=150&fit=crop' },
-              { name: 'Échappement', subcategory: 'echappement', image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=200&h=150&fit=crop' },
-              { name: 'Intérieur', subcategory: 'interieur', image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.headlights', subcategory: 'phares', image: 'https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.bumpers', subcategory: 'pare-chocs', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.engines', subcategory: 'moteurs', image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.braking', subcategory: 'freinage', image: 'https://images.unsplash.com/photo-1558618047-f4e68a95a13b?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.transmission', subcategory: 'transmission', image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.electronics', subcategory: 'electronique', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.bodywork', subcategory: 'carrosserie', image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.suspension', subcategory: 'suspension', image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.exhaust', subcategory: 'echappement', image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.interior', subcategory: 'interieur', image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&h=150&fit=crop' },
             ].map((part) => (
               <Link
-                key={part.name}
+                key={part.nameKey}
                 to={`/annonces/pieces?subcategory=${part.subcategory}`}
                 className="group relative overflow-hidden rounded-xl bg-white border border-border hover:border-accent hover:shadow-xl transition-all duration-300"
               >
                 <div className="aspect-[4/3] overflow-hidden">
                   <img
                     src={part.image}
-                    alt={part.name}
+                    alt={t(part.nameKey)}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     onError={(e) => {
                       e.target.src = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=200&h=150&fit=crop';
@@ -790,7 +790,7 @@ export default function Home() {
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-4">
                   <h3 className="font-heading font-bold text-white text-lg group-hover:text-accent transition-colors">
-                    {part.name}
+                    {t(part.nameKey)}
                   </h3>
                 </div>
               </Link>
