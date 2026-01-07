@@ -52,6 +52,7 @@ const CAR_DATA = {
 const YEARS = Array.from({ length: 37 }, (_, i) => (2026 - i).toString());
 
 export default function PlateScanner({ onVehicleSelect }) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1); // 1: scan, 2: confirm, 3: select
   const [plateImage, setPlateImage] = useState(null);
