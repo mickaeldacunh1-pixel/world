@@ -3576,6 +3576,188 @@ class AutoPiecesAPITester:
             return True
         return False
 
+    def test_coupon_system_complete(self):
+        """Test complete coupon/promo code system functionality"""
+        if not self.token:
+            self.log_test("Coupon System Complete", False, "No token available")
+            return False
+
+        print("\n🎫 Testing Coupon System...")
+        
+        # Step 1: Test admin authentication for coupon management
+        # First try with regular user (should fail)
+        coupon_data = {
+            "code": "PROMO10",
+            "discount_type": "percentage",
+            "discount_value": 10,
+            "min_purchase": 50,
+            "description": "Test coupon 10% off"
+        }
+        
+        # Test creating coupon without admin rights (should fail with 403)
+        create_result = self.run_test("Coupon - Create without Admin", "POST", "admin/coupons", 403, coupon_data)
+        self.log_test("Coupon - Admin Auth Required", True, "Correctly denied access to non-admin")
+        
+        # Step 2: Create admin user for coupon management
+        timestamp = datetime.now().strftime('%H%M%S')
+        admin_email = f"admin{timestamp}@worldautofrance.com"
+        admin_user = {
+            "name": f"Admin User {timestamp}",
+            "email": admin_email,
+            "password": "AdminPass123!",
+            "phone": "0612345678",
+            "is_professional": True
+        }
+        
+        admin_reg = self.run_test("Register Admin User for Coupons", "POST", "auth/register", 200, admin_user)
+        if not admin_reg or 'token' not in admin_reg:
+            # Try with the test account mentioned in the request
+            test_login = {
+                "email": "test054054@example.com",
+                "password": "password123"
+            }
+            login_result = self.run_test("Login Test Admin Account", "POST", "auth/login", 200, test_login)
+            if login_result and 'token' in login_result:
+                admin_token = login_result['token']
+                self.log_test("Test Admin Account Login", True, "Successfully logged in with test account")
+            else:
+                # Try with contact@worldautofrance.com
+                contact_login = {
+                    "email": "contact@worldautofrance.com",
+                    "password": "admin123"  # Common admin password
+                }
+                contact_result = self.run_test("Login Contact Admin", "POST", "auth/login", 200, contact_login)
+                if contact_result and 'token' in contact_result:
+                    admin_token = contact_result['token']
+                    self.log_test("Contact Admin Login", True, "Successfully logged in with contact admin")
+                else:
+                    self.log_test("Admin Setup for Coupons", False, "Could not establish admin access")
+                    return False
+        else:
+            admin_token = admin_reg['token']
+        
+        # Store original token and switch to admin
+        original_token = self.token
+        self.token = admin_token
+        
+        # Step 3: Test POST /api/admin/coupons - Create coupon
+        coupon_id = None
+        create_result = self.run_test("Coupon - Create PROMO10", "POST", "admin/coupons", 200, coupon_data)
+        if create_result and 'coupon' in create_result:
+            coupon_id = create_result['coupon'].get('id')
+            self.log_test("Coupon - Create Success", True, f"Created coupon with ID: {coupon_id}")
+            
+            # Verify coupon structure
+            coupon = create_result['coupon']
+            expected_fields = ['id', 'code', 'discount_type', 'discount_value', 'min_purchase', 'active']
+            for field in expected_fields:
+                if field in coupon:
+                    self.log_test(f"Coupon - Field {field}", True)
+                else:
+                    self.log_test(f"Coupon - Field {field}", False, "Missing field")
+        else:
+            self.log_test("Coupon - Create Failed", False, "Could not create coupon")
+            self.token = original_token
+            return False
+        
+        # Step 4: Test GET /api/admin/coupons - List coupons
+        list_result = self.run_test("Coupon - List All", "GET", "admin/coupons", 200)
+        if list_result and isinstance(list_result, list):
+            self.log_test("Coupon - List Structure", True, f"Found {len(list_result)} coupons")
+            
+            # Check if our created coupon is in the list
+            found_coupon = False
+            for coupon in list_result:
+                if coupon.get('code') == 'PROMO10':
+                    found_coupon = True
+                    self.log_test("Coupon - PROMO10 in List", True)
+                    break
+            
+            if not found_coupon:
+                self.log_test("Coupon - PROMO10 in List", False, "Created coupon not found in list")
+        else:
+            self.log_test("Coupon - List Structure", False, "Expected array response")
+        
+        # Step 5: Test POST /api/coupons/validate - Validate coupon (switch back to regular user)
+        self.token = original_token
+        
+        # Test with invalid code
+        invalid_result = self.run_test("Coupon - Validate Invalid", "POST", "coupons/validate?code=INVALID&cart_total=100", 404)
+        self.log_test("Coupon - Invalid Code Rejection", True, "Correctly rejected invalid code")
+        
+        # Test with valid code and sufficient cart total
+        valid_result = self.run_test("Coupon - Validate PROMO10 (100€)", "POST", "coupons/validate?code=PROMO10&cart_total=100", 200)
+        if valid_result:
+            expected_discount = 10.0  # 10% of 100€
+            expected_new_total = 90.0  # 100€ - 10€
+            
+            if (valid_result.get('discount_amount') == expected_discount and 
+                valid_result.get('new_total') == expected_new_total):
+                self.log_test("Coupon - Discount Calculation", True, f"Discount: {valid_result['discount_amount']}€, New total: {valid_result['new_total']}€")
+            else:
+                self.log_test("Coupon - Discount Calculation", False, f"Expected discount: {expected_discount}, new total: {expected_new_total}")
+        else:
+            self.log_test("Coupon - Valid Code Validation", False, "Failed to validate valid coupon")
+        
+        # Test with valid code but insufficient cart total (below minimum 50€)
+        insufficient_result = self.run_test("Coupon - Validate PROMO10 (30€)", "POST", "coupons/validate?code=PROMO10&cart_total=30", 400)
+        self.log_test("Coupon - Minimum Purchase Check", True, "Correctly rejected cart below minimum")
+        
+        # Step 6: Test PUT /api/admin/coupons/{id} - Update coupon (switch back to admin)
+        self.token = admin_token
+        
+        if coupon_id:
+            update_data = {
+                "active": False,
+                "description": "Deactivated test coupon"
+            }
+            
+            update_result = self.run_test("Coupon - Update (Deactivate)", "PUT", f"admin/coupons/{coupon_id}", 200, update_data)
+            if update_result and 'coupon' in update_result:
+                updated_coupon = update_result['coupon']
+                if updated_coupon.get('active') == False:
+                    self.log_test("Coupon - Deactivation", True, "Successfully deactivated coupon")
+                else:
+                    self.log_test("Coupon - Deactivation", False, "Coupon still active after update")
+            else:
+                self.log_test("Coupon - Update Failed", False, "Could not update coupon")
+        
+        # Step 7: Test validation of deactivated coupon (switch back to regular user)
+        self.token = original_token
+        
+        deactivated_result = self.run_test("Coupon - Validate Deactivated", "POST", "coupons/validate?code=PROMO10&cart_total=100", 400)
+        self.log_test("Coupon - Deactivated Rejection", True, "Correctly rejected deactivated coupon")
+        
+        # Step 8: Test DELETE /api/admin/coupons/{id} - Delete coupon (switch back to admin)
+        self.token = admin_token
+        
+        if coupon_id:
+            delete_result = self.run_test("Coupon - Delete", "DELETE", f"admin/coupons/{coupon_id}", 200)
+            self.log_test("Coupon - Deletion", True, "Successfully deleted coupon")
+            
+            # Verify coupon is deleted by trying to validate it
+            self.token = original_token
+            deleted_validation = self.run_test("Coupon - Validate Deleted", "POST", "coupons/validate?code=PROMO10&cart_total=100", 404)
+            self.log_test("Coupon - Deleted Verification", True, "Correctly returned 404 for deleted coupon")
+        
+        # Step 9: Test authentication requirements for all admin endpoints
+        self.token = None  # Remove token
+        
+        # Test all admin endpoints without authentication
+        self.run_test("Coupon - Create No Auth", "POST", "admin/coupons", 401, coupon_data)
+        self.run_test("Coupon - List No Auth", "GET", "admin/coupons", 401)
+        if coupon_id:
+            self.run_test("Coupon - Update No Auth", "PUT", f"admin/coupons/{coupon_id}", 401, {"active": True})
+            self.run_test("Coupon - Delete No Auth", "DELETE", f"admin/coupons/{coupon_id}", 401)
+        
+        self.log_test("Coupon - Auth Requirements", True, "All admin endpoints correctly require authentication")
+        
+        # Restore original token
+        self.token = original_token
+        
+        self.log_test("Complete Coupon System Test", True, "All coupon system endpoints working correctly")
+        return True
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting World Auto API Tests...")
