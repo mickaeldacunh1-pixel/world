@@ -14,6 +14,7 @@ import {
 import { Car, Wrench, Bike, Truck, Settings, User, LogOut, MessageSquare, LayoutDashboard, Menu, X, Plus, Package, Heart, Bell, TrendingUp, Palette, ShoppingCart, Moon, Sun, Gift, Stethoscope } from 'lucide-react';
 import WorldAutoLogo from './WorldAutoLogo';
 import FranceText from './FranceText';
+import LanguageSelector from './LanguageSelector';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
