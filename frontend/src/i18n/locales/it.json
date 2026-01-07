@@ -14,7 +14,29 @@
     "contact": "Contatto",
     "about": "Chi siamo",
     "help": "Aiuto",
-    "settings": "Impostazioni"
+    "settings": "Impostazioni",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "close": "Chiudi",
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo",
+    "confirm": "Conferma",
+    "back": "Indietro",
+    "next": "Avanti",
+    "previous": "Precedente",
+    "see_all": "Vedi tutto",
+    "see_more": "Vedi di più",
+    "filters": "Filtri",
+    "sort": "Ordina",
+    "results": "risultati",
+    "no_results": "Nessun risultato",
+    "alerts": "Avvisi",
+    "statistics": "Statistiche",
+    "credits": "Crediti",
+    "buy_credits": "Acquista crediti"
   },
   "nav": {
     "home": "Home",
@@ -32,16 +54,21 @@
     "myOffers": "Le mie offerte",
     "bundles": "Pacchetti ricambi",
     "loyalty": "Fedeltà",
-    "diagnostic": "Diagnosi IA"
+    "diagnostic": "Diagnosi IA",
+    "pricing": "Prezzi",
+    "updates": "Novità",
+    "customization": "Personalizzazione sito"
   },
   "hero": {
     "title": "Ricambi Auto Usati",
     "subtitle": "Trova il pezzo che ti serve tra migliaia di annunci verificati",
-    "searchPlaceholder": "Cerca un ricambio...",
+    "searchPlaceholder": "Cerca ricambio, marca, modello...",
     "activeListings": "annunci attivi",
     "categories": "categorie",
     "members": "membri",
-    "sales": "vendite completate"
+    "sales": "vendite completate",
+    "cta_sell": "Vendi i miei ricambi",
+    "cta_buy": "Acquista ricambi"
   },
   "listing": {
     "price": "Prezzo",
@@ -66,7 +93,20 @@
     "phone": "Telefono",
     "forgotPassword": "Password dimenticata?",
     "noAccount": "Non hai un account?",
-    "hasAccount": "Hai già un account?"
+    "hasAccount": "Hai già un account?",
+    "login_title": "Accedi",
+    "register_title": "Crea un account",
+    "login_btn": "Accedi",
+    "register_btn": "Registrati"
+  },
+  "cart": {
+    "title": "Il mio Carrello",
+    "empty": "Il tuo carrello è vuoto",
+    "empty_desc": "Sfoglia i nostri annunci per trovare i tuoi ricambi",
+    "browse": "Sfoglia annunci",
+    "subtotal": "Subtotale",
+    "total": "Totale",
+    "checkout": "Procedi all'acquisto"
   },
   "footer": {
     "about": "Chi siamo",
