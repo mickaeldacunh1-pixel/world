@@ -1214,8 +1214,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* CTA Section - Improved */}
+      {heroSettings.show_cta_section !== false && (
       <section className="py-20 md:py-28 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary to-slate-800" />
         <div className="absolute inset-0 opacity-10">
@@ -1246,6 +1248,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
     </div>
   );
 }
