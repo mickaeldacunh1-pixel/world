@@ -416,38 +416,50 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
             />
             {settings.hero_show_stats !== false && (
               <div className="space-y-4">
-                <div className="p-3 border rounded-lg">
-                  <Label className="font-bold mb-2 block">Stat 1</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    <Input
-                      value={settings.hero_stat1_icon || '📦'}
-                      onChange={(e) => updateSetting('hero_stat1_icon', e.target.value)}
-                      placeholder="📦"
-                    />
-                    <Input
-                      value={settings.hero_stat1_number || '100+'}
-                      onChange={(e) => updateSetting('hero_stat1_number', e.target.value)}
-                      placeholder="100+"
-                    />
-                    <Input
-                      value={settings.hero_stat1_label || ''}
-                      onChange={(e) => updateSetting('hero_stat1_label', e.target.value)}
-                      placeholder="annonces"
-                    />
-                  </div>
+                {/* Option Compteur Live */}
+                <div className="p-4 border-2 border-green-200 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                  <ToggleField 
+                    label="🔴 Compteur Live" 
+                    description="Affiche les vraies statistiques en temps réel (annonces, membres, ventes)"
+                    checked={settings.hero_use_live_counter === true}
+                    onChange={(v) => updateSetting('hero_use_live_counter', v)}
+                  />
                 </div>
-                <div className="p-3 border rounded-lg">
-                  <Label className="font-bold mb-2 block">Stat 2</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    <Input
-                      value={settings.hero_stat2_icon || '📂'}
-                      onChange={(e) => updateSetting('hero_stat2_icon', e.target.value)}
-                      placeholder="📂"
-                    />
-                    <Input
-                      value={settings.hero_stat2_number || '5'}
-                      onChange={(e) => updateSetting('hero_stat2_number', e.target.value)}
-                      placeholder="5"
+                
+                {!settings.hero_use_live_counter && (
+                  <>
+                    <div className="p-3 border rounded-lg">
+                      <Label className="font-bold mb-2 block">Stat 1</Label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <Input
+                          value={settings.hero_stat1_icon || '📦'}
+                          onChange={(e) => updateSetting('hero_stat1_icon', e.target.value)}
+                          placeholder="📦"
+                        />
+                        <Input
+                          value={settings.hero_stat1_number || '100+'}
+                          onChange={(e) => updateSetting('hero_stat1_number', e.target.value)}
+                          placeholder="100+"
+                        />
+                        <Input
+                          value={settings.hero_stat1_label || ''}
+                          onChange={(e) => updateSetting('hero_stat1_label', e.target.value)}
+                          placeholder="annonces"
+                        />
+                      </div>
+                    </div>
+                    <div className="p-3 border rounded-lg">
+                      <Label className="font-bold mb-2 block">Stat 2</Label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <Input
+                          value={settings.hero_stat2_icon || '📂'}
+                          onChange={(e) => updateSetting('hero_stat2_icon', e.target.value)}
+                          placeholder="📂"
+                        />
+                        <Input
+                          value={settings.hero_stat2_number || '5'}
+                          onChange={(e) => updateSetting('hero_stat2_number', e.target.value)}
+                          placeholder="5"
                     />
                     <Input
                       value={settings.hero_stat2_label || ''}
