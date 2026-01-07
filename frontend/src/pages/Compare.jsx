@@ -229,11 +229,11 @@ export default function Compare() {
 
         {/* Tips */}
         <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-          <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">💡 Conseils</h3>
+          <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">💡 {t('compare.tips_title')}</h3>
           <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-            <li>• Les cellules en vert indiquent la meilleure valeur pour cette caractéristique</li>
-            <li>• Vous pouvez comparer jusqu'à 4 annonces simultanément</li>
-            <li>• Cliquez sur une image pour voir les détails complets de l'annonce</li>
+            <li>• {t('compare.tip_1')}</li>
+            <li>• {t('compare.tip_2')}</li>
+            <li>• {t('compare.tip_3')}</li>
           </ul>
         </div>
       </div>
