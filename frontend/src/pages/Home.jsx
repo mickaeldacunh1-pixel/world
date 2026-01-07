@@ -578,7 +578,7 @@ export default function Home() {
               {t('categories.title')}
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Trouvez exactement ce que vous cherchez parmi des milliers d&apos;annonces vérifiées
+              {t('categories.subtitle')}
             </p>
           </div>
 
