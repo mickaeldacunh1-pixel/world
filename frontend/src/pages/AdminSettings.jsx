@@ -1386,10 +1386,76 @@ export default function AdminSettings() {
 
                 {/* Couleurs Promo & Panier */}
                 <div className="space-y-4">
-                  <h4 className="font-medium text-sm">🛒 Bouton Promo & Panier (style AUTODOC)</h4>
+                  <h4 className="font-medium text-sm">👑 Bouton Compte Premium</h4>
+                  
+                  {/* Toggle activation */}
+                  <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-sm">Afficher le bouton Premium</p>
+                      <p className="text-xs text-muted-foreground">Bouton "Compte Premium" dans la navbar</p>
+                    </div>
+                    <Switch
+                      checked={settings.promo_banner_enabled !== false}
+                      onCheckedChange={(checked) => setSettings({...settings, promo_banner_enabled: checked})}
+                    />
+                  </div>
+
+                  {/* Textes du bouton Premium */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Fond bouton Promo</Label>
+                      <Label>Titre du bouton</Label>
+                      <Input
+                        value={settings.promo_banner_title || 'Compte Premium'}
+                        onChange={(e) => setSettings({...settings, promo_banner_title: e.target.value})}
+                        placeholder="Compte Premium"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Badge (ex: NOUVEAU)</Label>
+                      <Input
+                        value={settings.promo_banner_badge || 'NOUVEAU'}
+                        onChange={(e) => setSettings({...settings, promo_banner_badge: e.target.value})}
+                        placeholder="NOUVEAU"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Sous-titre</Label>
+                      <Input
+                        value={settings.promo_banner_subtitle || 'Économisez encore plus'}
+                        onChange={(e) => setSettings({...settings, promo_banner_subtitle: e.target.value})}
+                        placeholder="Économisez encore plus"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Texte principal</Label>
+                      <Input
+                        value={settings.promo_banner_highlight || "dès aujourd'hui avec WORLD AUTO PLUS"}
+                        onChange={(e) => setSettings({...settings, promo_banner_highlight: e.target.value})}
+                        placeholder="dès aujourd'hui avec WORLD AUTO PLUS"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Texte du bouton CTA</Label>
+                      <Input
+                        value={settings.promo_banner_cta || 'Essai gratuit 14 jours'}
+                        onChange={(e) => setSettings({...settings, promo_banner_cta: e.target.value})}
+                        placeholder="Essai gratuit 14 jours"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Lien du bouton CTA</Label>
+                      <Input
+                        value={settings.promo_banner_link || '/tarifs'}
+                        onChange={(e) => setSettings({...settings, promo_banner_link: e.target.value})}
+                        placeholder="/tarifs"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Couleurs */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Fond bouton Premium</Label>
                       <div className="flex gap-2">
                         <Input
                           type="color"
@@ -1405,7 +1471,7 @@ export default function AdminSettings() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label>Texte bouton Promo</Label>
+                      <Label>Texte bouton Premium</Label>
                       <div className="flex gap-2">
                         <Input
                           type="color"
@@ -1420,6 +1486,29 @@ export default function AdminSettings() {
                         />
                       </div>
                     </div>
+                    <div className="space-y-2">
+                      <Label>Couleur accent (badge, icônes)</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="color"
+                          value={settings.promo_accent_color || '#F97316'}
+                          onChange={(e) => setSettings({...settings, promo_accent_color: e.target.value})}
+                          className="w-12 h-10 p-1 cursor-pointer"
+                        />
+                        <Input
+                          value={settings.promo_accent_color || '#F97316'}
+                          onChange={(e) => setSettings({...settings, promo_accent_color: e.target.value})}
+                          placeholder="#F97316"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bouton Panier */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">🛒 Bouton Panier</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Fond bouton Panier</Label>
                       <div className="flex gap-2">
@@ -1453,9 +1542,6 @@ export default function AdminSettings() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Ces couleurs s&apos;appliquent aux boutons &quot;Compte Premium&quot; et &quot;Panier&quot; dans la barre de navigation (style AUTODOC).
-                  </p>
                 </div>
 
                 {/* Éléments à afficher */}
