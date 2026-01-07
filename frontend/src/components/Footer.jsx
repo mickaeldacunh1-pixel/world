@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Mail, Car, Wrench, Bike, Truck, Send, Loader2, Sparkles, CheckCircle } from 'lucide-react';
@@ -11,6 +12,7 @@ import FranceText from './FranceText';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Footer() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
