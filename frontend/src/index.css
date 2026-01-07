@@ -69,9 +69,9 @@
     }
 }
 
-/* ===== MOBILE ZOOM FIX ===== */
-/* Prevent iOS zoom on input focus */
-@media screen and (max-width: 768px) {
+/* ===== MOBILE & TABLET ZOOM FIX ===== */
+/* Prevent iOS/iPadOS zoom on input focus */
+@media screen and (max-width: 1024px) {
     input[type="text"],
     input[type="email"],
     input[type="password"],
@@ -81,19 +81,47 @@
     input[type="search"],
     input[type="date"],
     textarea,
-    select {
+    select,
+    [role="combobox"],
+    [data-radix-collection-item] {
         font-size: 16px !important;
+        -webkit-text-size-adjust: 100%;
     }
     
     /* Fix for Radix Select */
     [data-radix-popper-content-wrapper] {
         touch-action: none;
     }
+    
+    /* Ensure inputs have visible background */
+    input, textarea, select {
+        background-color: white !important;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    
+    .dark input, .dark textarea, .dark select {
+        background-color: hsl(var(--background)) !important;
+    }
 }
 
-/* Prevent double-tap zoom */
+/* Prevent double-tap zoom on all devices */
 * {
     touch-action: manipulation;
+}
+
+/* Fix select trigger on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    [data-radix-select-trigger] {
+        font-size: 16px !important;
+        min-height: 44px;
+    }
+    
+    [data-radix-select-item] {
+        font-size: 16px !important;
+        min-height: 44px;
+        padding: 12px 8px;
+    }
 }
 
 @layer utilities {
