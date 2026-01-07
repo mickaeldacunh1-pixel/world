@@ -38,6 +38,8 @@ export default function Messages() {
   const wsRef = useRef(null);
   const typingTimeoutRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
+  
+  const { showNotification, requestPermission } = useNotifications();
 
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -47,6 +49,11 @@ export default function Messages() {
   const [sending, setSending] = useState(false);
   const [wsConnected, setWsConnected] = useState(false);
   const [otherUserTyping, setOtherUserTyping] = useState(false);
+
+  // Request notification permission on mount
+  useEffect(() => {
+    requestPermission();
+  }, [requestPermission]);
 
   // WebSocket connection
   const connectWebSocket = useCallback(() => {
