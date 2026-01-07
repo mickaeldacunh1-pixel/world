@@ -9,8 +9,9 @@ import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
 import { Skeleton } from '../components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2, Heart, ShoppingCart, CreditCard, Shield, Loader2, Flag, AlertTriangle, Video } from 'lucide-react';
+import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2, Heart, ShoppingCart, CreditCard, Shield, ShieldCheck, Loader2, Flag, AlertTriangle, Video, Award } from 'lucide-react';
 import SEO, { createProductSchema, createBreadcrumbSchema } from '../components/SEO';
+import { VerificationBadge, WarrantyBadge, PartOriginBadge } from '../components/TrustBadge';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
