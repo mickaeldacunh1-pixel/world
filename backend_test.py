@@ -3599,42 +3599,12 @@ class AutoPiecesAPITester:
         self.log_test("Coupon - Admin Auth Required", True, "Correctly denied access to non-admin")
         
         # Step 2: Create admin user for coupon management
-        timestamp = datetime.now().strftime('%H%M%S')
-        admin_email = f"admin{timestamp}@worldautofrance.com"
-        admin_user = {
-            "name": f"Admin User {timestamp}",
-            "email": admin_email,
-            "password": "AdminPass123!",
-            "phone": "0612345678",
-            "is_professional": True
-        }
+        # Note: Coupon endpoints check for is_admin field, not email like other admin endpoints
+        # This is a backend inconsistency that needs to be addressed
+        self.log_test("Coupon Admin Access Issue", False, "Backend inconsistency: Coupon endpoints check 'is_admin' field while other admin endpoints check specific emails (contact@worldautofrance.com, admin@worldautofrance.com). This prevents proper testing without direct database access.")
         
-        admin_reg = self.run_test("Register Admin User for Coupons", "POST", "auth/register", 200, admin_user)
-        if not admin_reg or 'token' not in admin_reg:
-            # Try with the test account mentioned in the request
-            test_login = {
-                "email": "test054054@example.com",
-                "password": "password123"
-            }
-            login_result = self.run_test("Login Test Admin Account", "POST", "auth/login", 200, test_login)
-            if login_result and 'token' in login_result:
-                admin_token = login_result['token']
-                self.log_test("Test Admin Account Login", True, "Successfully logged in with test account")
-            else:
-                # Try with contact@worldautofrance.com
-                contact_login = {
-                    "email": "contact@worldautofrance.com",
-                    "password": "admin123"  # Common admin password
-                }
-                contact_result = self.run_test("Login Contact Admin", "POST", "auth/login", 200, contact_login)
-                if contact_result and 'token' in contact_result:
-                    admin_token = contact_result['token']
-                    self.log_test("Contact Admin Login", True, "Successfully logged in with contact admin")
-                else:
-                    self.log_test("Admin Setup for Coupons", False, "Could not establish admin access")
-                    return False
-        else:
-            admin_token = admin_reg['token']
+        # For now, we'll test the non-admin functionality and document the admin issue
+        admin_token = self.token  # Use regular user token to demonstrate the 403 errors
         
         # Store original token and switch to admin
         original_token = self.token
