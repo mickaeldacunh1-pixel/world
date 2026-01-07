@@ -25,6 +25,22 @@ const CATEGORY_LABELS = {
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-4',
+    date: '2026-01-07',
+    version: '3.2.0',
+    title: 'Coupons, Traductions & Animations',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🎟️ Système de coupons : créez des codes promo avec réduction en % ou € fixe' },
+      { type: 'new', text: '🛒 Codes promo dans le panier : les clients peuvent appliquer leurs codes avant commande' },
+      { type: 'new', text: '⚙️ Gestion admin des coupons : créer, modifier, limiter, activer/désactiver' },
+      { type: 'new', text: '🌍 Traduction i18n complète : site traduit en 8 langues (FR, EN, ES, DE, IT, PT, NL, AR)' },
+      { type: 'new', text: '🎨 11 nouvelles animations saisonnières : Printemps, Nouvel An, Racing, Sports, Pluie, Étoiles, Promo, Fête, Pâques, St-Patrick' },
+      { type: 'improvement', text: '📧 Relance panier abandonné : emails automatiques toutes les 2h pour récupérer les ventes' },
+      { type: 'improvement', text: '🔄 Traduction automatique des textes dynamiques du Hero' },
+    ]
+  },
+  {
     id: 'static-new-3',
     date: '2026-01-07',
     version: '3.1.0',
