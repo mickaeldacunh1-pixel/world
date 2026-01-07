@@ -1967,11 +1967,66 @@ async def update_listing(listing_id: str, listing: ListingCreate, current_user: 
     if not existing:
         raise HTTPException(status_code=404, detail="Annonce non trouvée")
     
+    # Track price history if price changed
+    old_price = existing.get("price")
+    new_price = listing.price
+    if old_price and new_price and old_price != new_price:
+        price_history_entry = {
+            "id": str(uuid.uuid4()),
+            "listing_id": listing_id,
+            "old_price": old_price,
+            "new_price": new_price,
+            "changed_at": datetime.now(timezone.utc).isoformat(),
+            "changed_by": current_user["id"]
+        }
+        await db.price_history.insert_one(price_history_entry)
+    
     update_data = listing.model_dump(exclude_unset=True)
     await db.listings.update_one({"id": listing_id}, {"$set": update_data})
     
     updated = await db.listings.find_one({"id": listing_id}, {"_id": 0})
     return updated
+
+@api_router.get("/listings/{listing_id}/price-history")
+async def get_price_history(listing_id: str):
+    """Récupérer l'historique des prix d'une annonce"""
+    # Get listing to include initial price
+    listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    # Get price history
+    history = await db.price_history.find(
+        {"listing_id": listing_id}, 
+        {"_id": 0}
+    ).sort("changed_at", 1).to_list(100)
+    
+    # Build timeline including initial price
+    timeline = []
+    
+    # Add initial price (from listing creation)
+    timeline.append({
+        "price": listing.get("price"),
+        "date": listing.get("created_at"),
+        "type": "initial"
+    })
+    
+    # Add all price changes
+    for entry in history:
+        timeline.append({
+            "price": entry["new_price"],
+            "date": entry["changed_at"],
+            "type": "change",
+            "old_price": entry["old_price"]
+        })
+    
+    return {
+        "listing_id": listing_id,
+        "current_price": listing.get("price"),
+        "initial_price": listing.get("price") if not history else history[0]["old_price"],
+        "history": timeline,
+        "total_changes": len(history)
+    }
 
 @api_router.delete("/listings/{listing_id}")
 async def delete_listing(listing_id: str, current_user: dict = Depends(get_current_user)):
