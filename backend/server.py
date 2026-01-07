@@ -1328,6 +1328,43 @@ async def change_password(passwords: PasswordChange, current_user: dict = Depend
         {"$set": {"password": hashed_password}}
     )
     
+    return {"message": "Mot de passe mis à jour"}
+
+@api_router.post("/auth/vacation")
+async def toggle_vacation_mode(
+    enabled: bool = Body(...),
+    message: str = Body(None),
+    return_date: str = Body(None),
+    current_user: dict = Depends(get_current_user)
+):
+    """Activer/désactiver le mode vacances"""
+    update_data = {
+        "vacation_mode": enabled,
+        "vacation_message": message if enabled else None,
+        "vacation_return_date": return_date if enabled else None,
+        "vacation_started_at": datetime.now(timezone.utc).isoformat() if enabled else None
+    }
+    
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": update_data}
+    )
+    
+    return {
+        "vacation_mode": enabled,
+        "message": "Mode vacances activé" if enabled else "Mode vacances désactivé"
+    }
+
+@api_router.get("/auth/vacation")
+async def get_vacation_status(current_user: dict = Depends(get_current_user)):
+    """Récupérer le statut du mode vacances"""
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    return {
+        "vacation_mode": user.get("vacation_mode", False),
+        "vacation_message": user.get("vacation_message"),
+        "vacation_return_date": user.get("vacation_return_date")
+    }
+    
     return {"message": "Mot de passe modifié avec succès"}
 
 @api_router.delete("/auth/account")
