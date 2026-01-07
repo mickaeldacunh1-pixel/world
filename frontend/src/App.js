@@ -69,6 +69,20 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function AppContent() {
+  const location = useLocation();
+  const isWidget = location.pathname === '/widget';
+  
+  // Le widget est rendu sans navbar/footer
+  if (isWidget) {
+    return (
+      <div className="bg-background">
+        <Routes>
+          <Route path="/widget" element={<Widget />} />
+        </Routes>
+      </div>
+    );
+  }
+  
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <ScrollToTop />
