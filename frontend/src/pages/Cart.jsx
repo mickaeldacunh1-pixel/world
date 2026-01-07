@@ -255,12 +255,81 @@ export default function Cart() {
 
             {/* Summary */}
             <Card className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-lg">Total ({cartItems.length} article{cartItems.length > 1 ? 's' : ''})</span>
-                <span className="font-heading text-2xl font-bold text-accent">
-                  {totalPrice.toLocaleString('fr-FR')} €
-                </span>
+              {/* Coupon Input */}
+              <div className="mb-6 pb-6 border-b">
+                <label className="text-sm font-medium mb-2 flex items-center gap-2">
+                  <Ticket className="w-4 h-4" />
+                  Code promo
+                </label>
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg p-3">
+                    <div className="flex items-center gap-2">
+                      <Check className="w-5 h-5 text-green-600" />
+                      <div>
+                        <span className="font-mono font-bold text-green-700">{appliedCoupon.code}</span>
+                        <span className="text-sm text-green-600 ml-2">
+                          (-{appliedCoupon.discount_amount.toLocaleString('fr-FR')} €)
+                        </span>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={removeCoupon}
+                      className="text-green-600 hover:text-red-500"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <Input
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      placeholder="Entrez votre code"
+                      className="font-mono uppercase"
+                      onKeyPress={(e) => e.key === 'Enter' && applyCoupon()}
+                    />
+                    <Button 
+                      onClick={applyCoupon}
+                      disabled={couponLoading || !couponCode.trim()}
+                      variant="outline"
+                    >
+                      {couponLoading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        'Appliquer'
+                      )}
+                    </Button>
+                  </div>
+                )}
               </div>
+
+              {/* Totals */}
+              <div className="space-y-3 mb-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Sous-total ({cartItems.length} article{cartItems.length > 1 ? 's' : ''})</span>
+                  <span className="font-medium">{totalPrice.toLocaleString('fr-FR')} €</span>
+                </div>
+                
+                {appliedCoupon && (
+                  <div className="flex items-center justify-between text-green-600">
+                    <span className="flex items-center gap-1">
+                      <Ticket className="w-4 h-4" />
+                      Réduction ({appliedCoupon.code})
+                    </span>
+                    <span className="font-medium">-{appliedCoupon.discount_amount.toLocaleString('fr-FR')} €</span>
+                  </div>
+                )}
+                
+                <div className="flex items-center justify-between pt-3 border-t">
+                  <span className="text-lg font-semibold">Total</span>
+                  <span className="font-heading text-2xl font-bold text-accent">
+                    {finalPrice.toLocaleString('fr-FR')} €
+                  </span>
+                </div>
+              </div>
+
               <p className="text-sm text-muted-foreground mb-6">
                 <Package className="w-4 h-4 inline mr-1" />
                 Frais de livraison à convenir avec les vendeurs
