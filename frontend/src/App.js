@@ -184,7 +184,9 @@ function App() {
       <ThemeProvider>
         <BrowserRouter>
           <AuthProvider>
-            <AppContent />
+            <CompareProvider>
+              <AppContent />
+            </CompareProvider>
           </AuthProvider>
         </BrowserRouter>
       </ThemeProvider>
