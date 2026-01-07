@@ -142,7 +142,7 @@ export default function Listings() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [category, page, sort, subcategory, compatibleBrand, region, oemReference]);
 
-  const fetchSubcategories = async () => {
+  const fetchSubcategories = useCallback(async () => {
     try {
       const endpoint = category === 'accessoires' ? 'accessoires' : 'pieces';
       const response = await axios.get(`${API}/subcategories/${endpoint}`);
@@ -150,18 +150,18 @@ export default function Listings() {
     } catch (error) {
       console.error('Error fetching subcategories:', error);
     }
-  };
+  }, [category]);
 
-  const fetchCarBrands = async () => {
+  const fetchCarBrands = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/brands`);
       setCarBrands(response.data);
     } catch (error) {
       console.error('Error fetching car brands:', error);
     }
-  };
+  }, []);
 
-  const fetchListings = async (resetPage = false) => {
+  const fetchListings = useCallback(async (resetPage = false) => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
