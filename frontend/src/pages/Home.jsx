@@ -867,19 +867,19 @@ export default function Home() {
           <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div className="bg-white/5 rounded-xl p-4">
               <div className="text-2xl mb-2">🏭</div>
-              <p className="text-white/80 text-sm">Références constructeur</p>
+              <p className="text-white/80 text-sm">{t('home.oem_manufacturer')}</p>
             </div>
             <div className="bg-white/5 rounded-xl p-4">
               <div className="text-2xl mb-2">🔧</div>
-              <p className="text-white/80 text-sm">Références équipementier</p>
+              <p className="text-white/80 text-sm">{t('home.oem_supplier')}</p>
             </div>
             <div className="bg-white/5 rounded-xl p-4">
               <div className="text-2xl mb-2">✅</div>
-              <p className="text-white/80 text-sm">Compatibilité garantie</p>
+              <p className="text-white/80 text-sm">{t('home.oem_compatibility')}</p>
             </div>
             <div className="bg-white/5 rounded-xl p-4">
               <div className="text-2xl mb-2">⚡</div>
-              <p className="text-white/80 text-sm">Recherche instantanée</p>
+              <p className="text-white/80 text-sm">{t('home.oem_instant')}</p>
             </div>
           </div>
         </div>
@@ -890,10 +890,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 animate-fade-in-up">
             <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4">
-              Recherche par région
+              {t('home.search_by_region')}
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Trouvez des annonces près de chez vous
+              {t('home.search_by_region_desc')}
             </p>
           </div>
 
