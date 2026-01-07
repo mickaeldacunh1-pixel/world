@@ -44,8 +44,8 @@ export default function Bundles() {
   return (
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
-        title="Lots de Pièces"
-        description="Économisez en achetant des lots de pièces détachées sur World Auto France"
+        title={t('bundles.title')}
+        description={t('bundles.subtitle')}
         url="/lots"
       />
 
@@ -53,15 +53,15 @@ export default function Bundles() {
         <div className="mb-8">
           <h1 className="font-heading text-3xl font-bold flex items-center gap-3">
             <Package className="w-8 h-8" />
-            Lots de Pièces
+            {t('bundles.title')}
           </h1>
-          <p className="text-muted-foreground">Économisez en achetant plusieurs pièces ensemble</p>
+          <p className="text-muted-foreground">{t('bundles.subtitle')}</p>
         </div>
 
         {bundles.length === 0 ? (
           <Card className="p-12 text-center">
             <Package className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Aucun lot disponible</h2>
+            <h2 className="text-xl font-semibold mb-2">{t('bundles.no_bundles')}</h2>
             <p className="text-muted-foreground mb-4">
               Les vendeurs n'ont pas encore créé de lots
             </p>
