@@ -195,6 +195,101 @@ export default function SeasonalAnimation({ type, enabled = true }) {
           }
         }
         
+        @keyframes firework {
+          0% {
+            transform: translateY(110vh) scale(0.5);
+            opacity: 0;
+          }
+          50% {
+            transform: translateY(30vh) scale(1.2);
+            opacity: 1;
+          }
+          70% {
+            transform: translateY(20vh) scale(1.5);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(10vh) scale(0.3);
+            opacity: 0;
+          }
+        }
+        
+        @keyframes zoom-across {
+          0% {
+            transform: translateX(-100vw) translateY(0) rotate(-5deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 1;
+          }
+          90% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateX(100vw) translateY(0) rotate(5deg);
+            opacity: 0;
+          }
+        }
+        
+        @keyframes bounce-fall {
+          0% {
+            transform: translateY(-10vh) rotate(0deg);
+            opacity: 1;
+          }
+          25% {
+            transform: translateY(30vh) rotate(90deg);
+          }
+          35% {
+            transform: translateY(25vh) rotate(120deg);
+          }
+          50% {
+            transform: translateY(55vh) rotate(180deg);
+          }
+          60% {
+            transform: translateY(50vh) rotate(210deg);
+          }
+          75% {
+            transform: translateY(80vh) rotate(270deg);
+          }
+          85% {
+            transform: translateY(77vh) rotate(300deg);
+          }
+          100% {
+            transform: translateY(110vh) rotate(360deg);
+            opacity: 0.3;
+          }
+        }
+        
+        @keyframes rain {
+          0% {
+            transform: translateY(-10vh) translateX(0);
+            opacity: 0.8;
+          }
+          100% {
+            transform: translateY(110vh) translateX(-20px);
+            opacity: 0.3;
+          }
+        }
+        
+        @keyframes twinkle {
+          0%, 100% {
+            transform: scale(1) rotate(0deg);
+            opacity: 0.3;
+          }
+          25% {
+            transform: scale(1.5) rotate(15deg);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1) rotate(0deg);
+            opacity: 0.5;
+          }
+          75% {
+            transform: scale(1.3) rotate(-15deg);
+            opacity: 1;
+          }
+        }
+        
         .seasonal-particle {
           position: fixed;
           pointer-events: none;
@@ -216,6 +311,26 @@ export default function SeasonalAnimation({ type, enabled = true }) {
         
         .animate-float {
           animation: float ease-in-out infinite;
+        }
+        
+        .animate-firework {
+          animation: firework ease-out infinite;
+        }
+        
+        .animate-zoom-across {
+          animation: zoom-across linear infinite;
+        }
+        
+        .animate-bounce-fall {
+          animation: bounce-fall ease-in-out infinite;
+        }
+        
+        .animate-rain {
+          animation: rain linear infinite;
+        }
+        
+        .animate-twinkle {
+          animation: twinkle ease-in-out infinite;
         }
       `}</style>
       
