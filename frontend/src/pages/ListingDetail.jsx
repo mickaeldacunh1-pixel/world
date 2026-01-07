@@ -136,7 +136,8 @@ export default function ListingDetail() {
 
   useEffect(() => {
     fetchListing();
-  }, [fetchListing]);
+    fetchPriceHistory();
+  }, [fetchListing, fetchPriceHistory]);
 
   useEffect(() => {
     if (user && listing) {
