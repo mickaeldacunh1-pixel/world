@@ -4302,6 +4302,11 @@ async def get_utilitaires_subcategories():
     """Retourne toutes les sous-catégories d'utilitaires"""
     return UTILITAIRES_SUBCATEGORIES
 
+@api_router.get("/subcategories/engins")
+async def get_engins_subcategories():
+    """Retourne toutes les sous-catégories d'engins"""
+    return ENGINS_SUBCATEGORIES
+
 @api_router.get("/brands")
 async def get_car_brands():
     """Retourne la liste des marques automobiles"""
