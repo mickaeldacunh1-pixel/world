@@ -2600,6 +2600,12 @@ async def checkout_cart(checkout: CartCheckout, background_tasks: BackgroundTask
     if not created_orders and errors:
         raise HTTPException(status_code=400, detail={"message": "Aucune commande n'a pu être créée", "errors": errors})
     
+    # Marquer le panier abandonné comme converti
+    await db.abandoned_carts.update_many(
+        {"email": current_user["email"], "status": "active"},
+        {"$set": {"status": "converted", "converted_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
     return {
         "success": True,
         "orders_created": len(created_orders),
