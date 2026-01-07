@@ -1719,6 +1719,11 @@ export default function AdminSettings() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Coupons Tab */}
+          <TabsContent value="coupons" className="space-y-6">
+            <CouponsManager token={token} />
+          </TabsContent>
         </Tabs>
 
         {/* Bottom Actions */}
