@@ -83,8 +83,9 @@ SelectLabel.displayName = SelectPrimitive.Label.displayName
 const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Item
     ref={ref}
+    data-radix-select-item=""
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-2 pr-8 text-base outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:py-1.5 md:text-sm",
+      "relative flex w-full cursor-default select-none items-center rounded-sm py-3 pl-2 pr-8 text-base outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:py-1.5 md:text-sm",
       className
     )}
     {...props}>
