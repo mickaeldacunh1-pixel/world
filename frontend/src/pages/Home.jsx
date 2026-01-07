@@ -575,7 +575,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 animate-fade-in-up">
             <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4">
-              Explorez nos catégories
+              {t('categories.title')}
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Trouvez exactement ce que vous cherchez parmi des milliers d&apos;annonces vérifiées
