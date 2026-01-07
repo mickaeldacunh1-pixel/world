@@ -302,7 +302,7 @@ function CouponsManager({ token }) {
 
                 {/* Minimum d'achat */}
                 <div className="space-y-2">
-                  <Label>Minimum d'achat</Label>
+                  <Label>Minimum d&apos;achat</Label>
                   <div className="relative">
                     <Input
                       type="number"
@@ -337,7 +337,7 @@ function CouponsManager({ token }) {
 
                 {/* Usage limit */}
                 <div className="space-y-2">
-                  <Label>Limite d'utilisation totale</Label>
+                  <Label>Limite d&apos;utilisation totale</Label>
                   <Input
                     type="number"
                     min="0"
@@ -372,7 +372,7 @@ function CouponsManager({ token }) {
 
                 {/* Valid until */}
                 <div className="space-y-2">
-                  <Label>Valide jusqu'au (optionnel)</Label>
+                  <Label>Valide jusqu&apos;au (optionnel)</Label>
                   <Input
                     type="date"
                     value={formData.valid_until}
