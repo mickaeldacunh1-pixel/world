@@ -677,7 +677,7 @@ export default function AdminSettings() {
                 {settings.seasonal_animation && (
                   <p className="text-sm text-accent flex items-center gap-2">
                     <CheckCircle className="w-4 h-4" />
-                    Animation "{ANIMATION_OPTIONS.find(o => o.value === settings.seasonal_animation)?.label}" activée
+                    Animation &quot;{ANIMATION_OPTIONS.find(o => o.value === settings.seasonal_animation)?.label}&quot; activée
                   </p>
                 )}
               </CardContent>
@@ -1168,7 +1168,7 @@ export default function AdminSettings() {
                     <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
                       <div>
                         <p className="font-medium text-sm">Newsletter</p>
-                        <p className="text-xs text-muted-foreground">Formulaire d'inscription</p>
+                        <p className="text-xs text-muted-foreground">Formulaire d&apos;inscription</p>
                       </div>
                       <Switch
                         checked={settings.footer_show_newsletter}
@@ -1284,7 +1284,7 @@ export default function AdminSettings() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Cliquez sur une palette pour l'appliquer instantanément
+                  Cliquez sur une palette pour l&apos;appliquer instantanément
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {COLOR_PRESETS.map((preset, index) => (
