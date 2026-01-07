@@ -1107,10 +1107,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 animate-fade-in-up">
             <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4">
-              Pourquoi choisir World Auto France ?
+              {t('home.why_choose_us')}
             </h2>
             <p className="text-muted-foreground text-lg">
-              La plateforme de confiance pour vos transactions automobiles
+              {t('footer.description')}
             </p>
           </div>
           
