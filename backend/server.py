@@ -7213,7 +7213,8 @@ async def create_coupon(coupon: CouponCreate, current_user: dict = Depends(get_c
 @api_router.put("/admin/coupons/{coupon_id}")
 async def update_coupon(coupon_id: str, coupon: CouponUpdate, current_user: dict = Depends(get_current_user)):
     """Update a coupon (admin only)"""
-    if not current_user.get("is_admin"):
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
         raise HTTPException(status_code=403, detail="Accès non autorisé")
     
     existing = await db.coupons.find_one({"id": coupon_id})
