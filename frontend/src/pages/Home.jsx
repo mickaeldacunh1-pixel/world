@@ -158,6 +158,7 @@ export default function Home() {
   const [heroSettings, setHeroSettings] = useState(DEFAULT_HERO);
   const [referralData, setReferralData] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [liveStats, setLiveStats] = useState(null);
 
   const fetchAllData = async () => {
     const cacheBuster = `?_t=${Date.now()}`;
@@ -170,6 +171,14 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error fetching hero settings:', error);
+    }
+
+    // Fetch live stats for counter
+    try {
+      const response = await axios.get(`${API}/stats/live${cacheBuster}`);
+      setLiveStats(response.data);
+    } catch (error) {
+      console.error('Error fetching live stats:', error);
     }
 
     // Fetch category stats
