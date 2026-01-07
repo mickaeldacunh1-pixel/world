@@ -361,7 +361,7 @@ export default function Profile() {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-2">
-                            <Label htmlFor="company_name">Nom de l'entreprise</Label>
+                            <Label htmlFor="company_name">Nom de l&apos;entreprise</Label>
                             <Input
                               id="company_name"
                               name="company_name"
