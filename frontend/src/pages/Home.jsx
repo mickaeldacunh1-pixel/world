@@ -410,7 +410,7 @@ export default function Home() {
             <h1 className={`font-heading ${TITLE_SIZE_CLASSES[heroSettings.hero_title_line1_size || heroSettings.hero_title_size] || 'text-4xl md:text-5xl lg:text-7xl'} font-black tracking-tight leading-none mb-6 animate-fade-in-up stagger-2`}>
               <span style={{ color: heroSettings.hero_title_line1_color || '#FFFFFF' }}>
                 <AnimatedText 
-                  text={heroSettings.hero_title_line1} 
+                  text={autoTranslate(heroSettings.hero_title_line1) || t('hero.titleLine1')} 
                   animation={heroSettings.hero_text_animation}
                   className="block"
                 />
@@ -428,9 +428,9 @@ export default function Home() {
                 className={heroSettings.hero_text_animation === 'glow' ? 'animate-text-glow' : ''}
               >
                 <AnimatedText 
-                  text={heroSettings.hero_title_line2} 
+                  text={autoTranslate(heroSettings.hero_title_line2) || t('hero.titleLine2')} 
                   animation={heroSettings.hero_text_animation}
-                  delay={heroSettings.hero_text_animation === 'typewriter' ? heroSettings.hero_title_line1.length * 50 + 200 : 200}
+                  delay={heroSettings.hero_text_animation === 'typewriter' ? (autoTranslate(heroSettings.hero_title_line1) || t('hero.titleLine1')).length * 50 + 200 : 200}
                 />
               </span>
             </h1>
