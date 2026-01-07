@@ -667,6 +667,9 @@ export default function ListingDetail() {
               </Link>
             </Card>
 
+            {/* Questions & Answers */}
+            <QuestionsAnswers listingId={listing.id} sellerId={listing.seller_id} />
+
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               {user?.id !== listing.seller_id ? (

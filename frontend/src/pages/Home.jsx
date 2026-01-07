@@ -857,6 +857,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Seller of the Week */}
+      <section className="py-8 md:py-12 bg-secondary/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SellerOfTheWeek />
+        </div>
+      </section>
+
       {/* Recent Listings - Improved cards */}
       {recentListings.length > 0 && (
         <section className="py-16 md:py-24">

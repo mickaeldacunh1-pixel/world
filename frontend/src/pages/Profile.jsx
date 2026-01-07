@@ -245,6 +245,11 @@ export default function Profile() {
           </CardContent>
         </Card>
 
+        {/* Vacation Mode Card */}
+        <div className="mb-8">
+          <VacationMode />
+        </div>
+
         {/* Tabs */}
         <Tabs defaultValue="profile" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
