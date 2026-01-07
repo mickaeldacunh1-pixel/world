@@ -976,6 +976,20 @@ async def get_current_user(request: Request) -> dict:
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token invalide")
 
+async def get_current_user_optional(request: Request) -> Optional[dict]:
+    """Récupérer l'utilisateur actuel si connecté, sinon None"""
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return None
+    
+    token = auth_header.split(" ")[1]
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        user = await db.users.find_one({"id": payload["user_id"]}, {"_id": 0, "password": 0})
+        return user
+    except:
+        return None
+
 # ================== AUTH ROUTES ==================
 
 @api_router.post("/auth/register")
