@@ -222,7 +222,13 @@ export default function Navbar() {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Favoris, Messages, Panier - à droite du profil */}
+                {/* Récompenses, Favoris, Messages, Panier - à droite du profil */}
+                <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Gift className="w-5 h-5" />
+                  </Button>
+                </Link>
+
                 <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
                   <Button variant="ghost" size="icon" className="relative">
                     <Heart className="w-5 h-5" />
