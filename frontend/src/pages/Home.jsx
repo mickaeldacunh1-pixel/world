@@ -278,16 +278,25 @@ export default function Home() {
 
   // Auto-translation system for Hero dynamic texts
   const heroTranslations = {
+    // Badge
+    'La référence automobile en France': t('hero.badge'),
+    // Title lines
+    'La marketplace auto': t('hero.titleLine1'),
+    'pour tous': t('hero.titleLine2'),
+    // Description
+    'Achetez et vendez des pièces détachées, voitures, motos et utilitaires. Pour particuliers et professionnels.': t('hero.description'),
     // Button texts
     'Scanner ma plaque': t('search.scan_plate'),
-    'Déposer une annonce': t('nav.newListing'),
-    'Enchères en direct': t('nav.listings'),
+    'Déposer une annonce': t('hero.postAd'),
+    'Enchères en direct': t('hero.liveAuctions'),
     'Voir les annonces': t('common.see_all') + ' ' + t('nav.listings'),
     'Commencer': t('common.search'),
-    'Rechercher': t('common.search'),
+    'Rechercher': t('hero.searchButton'),
+    // Search placeholder
+    'Rechercher une pièce, un véhicule...': t('hero.searchPlaceholder'),
     // Stats labels
     'annonces actives': t('hero.activeListings'),
-    'annonces': t('hero.activeListings'),
+    'annonces': t('hero.listings'),
     'catégories': t('hero.categories'),
     'catégorie': t('hero.categories'),
     'membres': t('hero.members'),
@@ -295,7 +304,6 @@ export default function Home() {
     'ventes réalisées': t('hero.sales'),
     'ventes': t('hero.sales'),
     // Other common texts
-    'La référence automobile en France': t('footer.description'),
     'Outils IA': t('home.ai_diagnostic'),
     'Voir tout': t('common.see_all'),
     'Voir plus': t('common.see_more'),
