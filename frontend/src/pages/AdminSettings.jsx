@@ -58,6 +58,438 @@ const HERO_TEXT_ANIMATIONS = [
   { value: "typewriter", label: "Machine à écrire" },
 ];
 
+// ============== COUPONS MANAGER COMPONENT ==============
+function CouponsManager({ token }) {
+  const [coupons, setCoupons] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editingCoupon, setEditingCoupon] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    code: '',
+    discount_type: 'percentage',
+    discount_value: 10,
+    min_purchase: 0,
+    max_discount: null,
+    usage_limit: null,
+    per_user_limit: 1,
+    valid_from: '',
+    valid_until: '',
+    active: true,
+    description: '',
+  });
+
+  useEffect(() => {
+    fetchCoupons();
+  }, []);
+
+  const fetchCoupons = async () => {
+    try {
+      const response = await axios.get(`${API}/admin/coupons`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCoupons(response.data);
+    } catch (error) {
+      console.error('Error fetching coupons:', error);
+      toast.error('Erreur lors du chargement des coupons');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      code: '',
+      discount_type: 'percentage',
+      discount_value: 10,
+      min_purchase: 0,
+      max_discount: null,
+      usage_limit: null,
+      per_user_limit: 1,
+      valid_from: '',
+      valid_until: '',
+      active: true,
+      description: '',
+    });
+    setEditingCoupon(null);
+  };
+
+  const handleEdit = (coupon) => {
+    setFormData({
+      code: coupon.code,
+      discount_type: coupon.discount_type,
+      discount_value: coupon.discount_value,
+      min_purchase: coupon.min_purchase || 0,
+      max_discount: coupon.max_discount || null,
+      usage_limit: coupon.usage_limit || null,
+      per_user_limit: coupon.per_user_limit || 1,
+      valid_from: coupon.valid_from ? coupon.valid_from.split('T')[0] : '',
+      valid_until: coupon.valid_until ? coupon.valid_until.split('T')[0] : '',
+      active: coupon.active,
+      description: coupon.description || '',
+    });
+    setEditingCoupon(coupon);
+    setShowForm(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.code.trim()) {
+      toast.error('Le code est obligatoire');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const payload = {
+        ...formData,
+        valid_from: formData.valid_from ? new Date(formData.valid_from).toISOString() : null,
+        valid_until: formData.valid_until ? new Date(formData.valid_until).toISOString() : null,
+      };
+
+      if (editingCoupon) {
+        await axios.put(`${API}/admin/coupons/${editingCoupon.id}`, payload, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        toast.success('Coupon mis à jour');
+      } else {
+        await axios.post(`${API}/admin/coupons`, payload, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        toast.success('Coupon créé');
+      }
+
+      fetchCoupons();
+      setShowForm(false);
+      resetForm();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la sauvegarde');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (couponId) => {
+    if (!window.confirm('Supprimer ce coupon ?')) return;
+
+    try {
+      await axios.delete(`${API}/admin/coupons/${couponId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Coupon supprimé');
+      fetchCoupons();
+    } catch (error) {
+      toast.error('Erreur lors de la suppression');
+    }
+  };
+
+  const toggleActive = async (coupon) => {
+    try {
+      await axios.put(`${API}/admin/coupons/${coupon.id}`, 
+        { active: !coupon.active },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchCoupons();
+      toast.success(coupon.active ? 'Coupon désactivé' : 'Coupon activé');
+    } catch (error) {
+      toast.error('Erreur');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span className="flex items-center gap-2">
+              <Ticket className="w-5 h-5" />
+              Codes Promo / Coupons
+            </span>
+            <Button 
+              onClick={() => { resetForm(); setShowForm(true); }}
+              className="bg-accent hover:bg-accent/90"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Créer un coupon
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground text-sm">
+            Créez des codes promo pour offrir des réductions à vos clients. 
+            Les clients peuvent entrer le code dans leur panier.
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Form */}
+      {showForm && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">
+              {editingCoupon ? 'Modifier le coupon' : 'Nouveau coupon'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Code */}
+                <div className="space-y-2">
+                  <Label>Code *</Label>
+                  <Input
+                    value={formData.code}
+                    onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+                    placeholder="PROMO20"
+                    className="font-mono uppercase"
+                  />
+                  <p className="text-xs text-muted-foreground">Le code sera automatiquement en majuscules</p>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-2">
+                  <Label>Description (optionnel)</Label>
+                  <Input
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Offre de bienvenue..."
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                {/* Type de réduction */}
+                <div className="space-y-2">
+                  <Label>Type de réduction</Label>
+                  <Select 
+                    value={formData.discount_type} 
+                    onValueChange={(v) => setFormData({ ...formData, discount_type: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="percentage">Pourcentage (%)</SelectItem>
+                      <SelectItem value="fixed">Montant fixe (€)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Valeur */}
+                <div className="space-y-2">
+                  <Label>Valeur de la réduction</Label>
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={formData.discount_value}
+                      onChange={(e) => setFormData({ ...formData, discount_value: parseFloat(e.target.value) || 0 })}
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                      {formData.discount_type === 'percentage' ? '%' : '€'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Minimum d'achat */}
+                <div className="space-y-2">
+                  <Label>Minimum d'achat</Label>
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={formData.min_purchase}
+                      onChange={(e) => setFormData({ ...formData, min_purchase: parseFloat(e.target.value) || 0 })}
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                {/* Max discount (for percentage) */}
+                {formData.discount_type === 'percentage' && (
+                  <div className="space-y-2">
+                    <Label>Réduction max (optionnel)</Label>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={formData.max_discount || ''}
+                        onChange={(e) => setFormData({ ...formData, max_discount: e.target.value ? parseFloat(e.target.value) : null })}
+                        placeholder="Illimité"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Usage limit */}
+                <div className="space-y-2">
+                  <Label>Limite d'utilisation totale</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={formData.usage_limit || ''}
+                    onChange={(e) => setFormData({ ...formData, usage_limit: e.target.value ? parseInt(e.target.value) : null })}
+                    placeholder="Illimité"
+                  />
+                </div>
+
+                {/* Per user limit */}
+                <div className="space-y-2">
+                  <Label>Limite par utilisateur</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    value={formData.per_user_limit}
+                    onChange={(e) => setFormData({ ...formData, per_user_limit: parseInt(e.target.value) || 1 })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Valid from */}
+                <div className="space-y-2">
+                  <Label>Valide à partir du (optionnel)</Label>
+                  <Input
+                    type="date"
+                    value={formData.valid_from}
+                    onChange={(e) => setFormData({ ...formData, valid_from: e.target.value })}
+                  />
+                </div>
+
+                {/* Valid until */}
+                <div className="space-y-2">
+                  <Label>Valide jusqu'au (optionnel)</Label>
+                  <Input
+                    type="date"
+                    value={formData.valid_until}
+                    onChange={(e) => setFormData({ ...formData, valid_until: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              {/* Active switch */}
+              <div className="flex items-center gap-3">
+                <Switch
+                  checked={formData.active}
+                  onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
+                />
+                <Label>Coupon actif</Label>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-4">
+                <Button type="submit" disabled={saving} className="bg-accent hover:bg-accent/90">
+                  {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                  {editingCoupon ? 'Mettre à jour' : 'Créer le coupon'}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => { setShowForm(false); resetForm(); }}>
+                  Annuler
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Coupons List */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Liste des coupons ({coupons.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {coupons.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <Ticket className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p>Aucun coupon créé</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {coupons.map((coupon) => (
+                <div 
+                  key={coupon.id} 
+                  className={`border rounded-lg p-4 ${!coupon.active ? 'opacity-60 bg-muted/30' : ''}`}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-mono text-lg font-bold bg-accent/10 text-accent px-3 py-1 rounded">
+                          {coupon.code}
+                        </span>
+                        {!coupon.active && (
+                          <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
+                            Désactivé
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Percent className="w-4 h-4" />
+                          {coupon.discount_type === 'percentage' 
+                            ? `-${coupon.discount_value}%` 
+                            : `-${coupon.discount_value} €`}
+                        </span>
+                        {coupon.min_purchase > 0 && (
+                          <span>Min: {coupon.min_purchase} €</span>
+                        )}
+                        {coupon.usage_limit && (
+                          <span className="flex items-center gap-1">
+                            <Hash className="w-4 h-4" />
+                            {coupon.usage_count || 0}/{coupon.usage_limit} utilisations
+                          </span>
+                        )}
+                        {coupon.valid_until && (
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            Expire: {new Date(coupon.valid_until).toLocaleDateString('fr-FR')}
+                          </span>
+                        )}
+                      </div>
+                      {coupon.description && (
+                        <p className="text-sm text-muted-foreground mt-2">{coupon.description}</p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Switch
+                        checked={coupon.active}
+                        onCheckedChange={() => toggleActive(coupon)}
+                      />
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(coupon)}>
+                        <Settings className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => handleDelete(coupon.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 const DEFAULT_SETTINGS = {
   // ============== HERO SECTION COMPLET ==============
   
