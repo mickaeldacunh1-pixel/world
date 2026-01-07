@@ -226,13 +226,13 @@ export default function Navbar() {
                     <DropdownMenuItem asChild>
                       <Link to="/tarifs" className="flex items-center gap-2 cursor-pointer">
                         <Settings className="w-4 h-4" />
-                        Acheter des crédits ({user.credits})
+                        {t('common.buy_credits')} ({user.credits})
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-destructive cursor-pointer">
                       <LogOut className="w-4 h-4 mr-2" />
-                      Déconnexion
+                      {t('common.logout')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
