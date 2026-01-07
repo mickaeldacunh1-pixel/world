@@ -181,9 +181,10 @@ export default function Home() {
       console.error('Error fetching category stats:', error);
     }
 
-    // Fetch recent listings
+    // Fetch recent listings (use configured count)
     try {
-      const response = await axios.get(`${API}/listings?limit=6&_t=${Date.now()}`);
+      const listingsCount = heroSettings.recent_listings_count || 6;
+      const response = await axios.get(`${API}/listings?limit=${listingsCount}&_t=${Date.now()}`);
       setRecentListings(response.data.listings || []);
     } catch (error) {
       console.error('Error fetching recent listings:', error);
