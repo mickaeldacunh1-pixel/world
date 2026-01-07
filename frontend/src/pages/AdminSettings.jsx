@@ -1681,7 +1681,7 @@ export default function AdminSettings() {
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <h4 className="font-medium flex items-center gap-2">
-                          📋 Section "Annonces récentes"
+                          📋 Section &quot;Annonces récentes&quot;
                         </h4>
                         <p className="text-sm text-muted-foreground">Affiche les dernières annonces publiées</p>
                       </div>
@@ -1701,7 +1701,7 @@ export default function AdminSettings() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label className="text-sm">Nombre d'annonces</Label>
+                          <Label className="text-sm">Nombre d&apos;annonces</Label>
                           <Select
                             value={String(settings.recent_listings_count)}
                             onValueChange={(v) => setSettings({...settings, recent_listings_count: parseInt(v)})}
