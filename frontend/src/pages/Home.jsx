@@ -554,6 +554,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Seller of the Week */}
+      <section className="py-8 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SellerOfTheWeek />
+        </div>
+      </section>
+
       {/* Categories Bento Grid - Improved */}
       {heroSettings.hero_show_categories !== false && (
       <section className="py-16 md:py-24 bg-gradient-to-b from-secondary/50 to-background">
