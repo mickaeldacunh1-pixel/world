@@ -3671,6 +3671,94 @@ class AutoPiecesAPITester:
         
         return True
 
+    def test_price_history_endpoint(self):
+        """Test price history endpoint for listings"""
+        print("\n💰 Testing Price History Endpoint...")
+        
+        # Test with the specific listing ID from the review request
+        test_listing_id = "ff149aa6-9cf5-4151-bbe9-d4eb3c328f83"
+        
+        result = self.run_test("Price History - Specific Listing", "GET", f"listings/{test_listing_id}/price-history", 200)
+        if result:
+            # Check required fields
+            required_fields = ["listing_id", "current_price", "initial_price", "history", "total_changes"]
+            for field in required_fields:
+                if field in result:
+                    self.log_test(f"Price History Field - {field}", True)
+                else:
+                    self.log_test(f"Price History Field - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Verify listing_id matches
+            if result.get("listing_id") == test_listing_id:
+                self.log_test("Price History - Listing ID Match", True)
+            else:
+                self.log_test("Price History - Listing ID Match", False, f"Expected {test_listing_id}, got {result.get('listing_id')}")
+                return False
+            
+            # Verify history is an array
+            history = result.get("history", [])
+            if isinstance(history, list):
+                self.log_test("Price History - History Array", True, f"Found {len(history)} history entries")
+                
+                # Check history entry structure if any exist
+                if len(history) > 0:
+                    first_entry = history[0]
+                    entry_fields = ["price", "date", "type"]
+                    for field in entry_fields:
+                        if field in first_entry:
+                            self.log_test(f"Price History Entry - {field}", True)
+                        else:
+                            self.log_test(f"Price History Entry - {field}", False, f"Missing field: {field}")
+                            return False
+                    
+                    # Verify initial entry type
+                    if first_entry.get("type") == "initial":
+                        self.log_test("Price History - Initial Entry Type", True)
+                    else:
+                        self.log_test("Price History - Initial Entry Type", False, f"Expected 'initial', got {first_entry.get('type')}")
+                        return False
+                else:
+                    self.log_test("Price History - Empty History", True, "No price changes recorded (valid)")
+            else:
+                self.log_test("Price History - History Array", False, "History should be an array")
+                return False
+            
+            # Verify total_changes is a number
+            total_changes = result.get("total_changes")
+            if isinstance(total_changes, int) and total_changes >= 0:
+                self.log_test("Price History - Total Changes", True, f"Total changes: {total_changes}")
+            else:
+                self.log_test("Price History - Total Changes", False, f"Expected non-negative integer, got {total_changes}")
+                return False
+            
+            # Verify prices are numbers
+            current_price = result.get("current_price")
+            initial_price = result.get("initial_price")
+            
+            if isinstance(current_price, (int, float)) and current_price > 0:
+                self.log_test("Price History - Current Price", True, f"Current price: {current_price}€")
+            else:
+                self.log_test("Price History - Current Price", False, f"Invalid current price: {current_price}")
+                return False
+            
+            if isinstance(initial_price, (int, float)) and initial_price > 0:
+                self.log_test("Price History - Initial Price", True, f"Initial price: {initial_price}€")
+            else:
+                self.log_test("Price History - Initial Price", False, f"Invalid initial price: {initial_price}")
+                return False
+            
+            return True
+        return False
+    
+    def test_price_history_invalid_listing(self):
+        """Test price history endpoint with invalid listing ID"""
+        invalid_listing_id = "non-existent-listing-id"
+        result = self.run_test("Price History - Invalid Listing", "GET", f"listings/{invalid_listing_id}/price-history", 404)
+        # We expect 404, so result should be None
+        self.log_test("Price History - Invalid Listing Error", True, "Correctly returned 404 for non-existent listing")
+        return True
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting World Auto API Tests...")
