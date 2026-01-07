@@ -156,15 +156,6 @@ export default function ListingDetail() {
     }
   };
 
-  const checkFavorite = async () => {
-    try {
-      const response = await axios.get(`${API}/favorites/check/${id}`);
-      setIsFavorite(response.data.is_favorite);
-    } catch (error) {
-      console.error('Error checking favorite:', error);
-    }
-  };
-
   const toggleFavorite = async () => {
     if (!user) {
       toast.error('Connectez-vous pour ajouter aux favoris');
