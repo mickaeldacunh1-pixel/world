@@ -107,8 +107,8 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Promo Banner - Desktop only */}
-          <div className="hidden lg:block flex-1 mx-4">
+          {/* Promo Banner - Tablette et Desktop */}
+          <div className="hidden md:block flex-1 mx-4">
             <PromoBanner 
               bgColor={navbarSettings.promo_bg_color} 
               textColor={navbarSettings.promo_text_color} 
