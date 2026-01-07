@@ -18,6 +18,7 @@ const categories = [
   { value: 'voitures', label: 'Voitures d\'Occasion' },
   { value: 'motos', label: 'Motos' },
   { value: 'utilitaires', label: 'Utilitaires' },
+  { value: 'engins', label: 'Engins' },
   { value: 'accessoires', label: 'Accessoires' },
 ];
 
