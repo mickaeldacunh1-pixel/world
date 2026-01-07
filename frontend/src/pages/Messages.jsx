@@ -9,6 +9,7 @@ import { Input } from '../components/ui/input';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { MessageSquare, Send, ArrowLeft, User, Smile, Wifi, WifiOff } from 'lucide-react';
+import useNotifications, { showAppNotification, NotificationTypes } from '../hooks/useNotifications';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const WS_URL = process.env.REACT_APP_BACKEND_URL?.replace('https://', 'wss://').replace('http://', 'ws://');
