@@ -859,14 +859,16 @@ export default function Home() {
       </section>
 
       {/* Seller of the Week */}
-      <section className="py-8 md:py-12 bg-secondary/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SellerOfTheWeek />
-        </div>
-      </section>
+      {heroSettings.show_seller_of_week !== false && (
+        <section className="py-8 md:py-12 bg-secondary/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <SellerOfTheWeek />
+          </div>
+        </section>
+      )}
 
       {/* Recent Listings - Improved cards */}
-      {recentListings.length > 0 && (
+      {heroSettings.show_recent_listings !== false && recentListings.length > 0 && (
         <section className="py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-12">
