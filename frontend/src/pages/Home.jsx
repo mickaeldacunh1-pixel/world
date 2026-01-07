@@ -874,10 +874,10 @@ export default function Home() {
             <div className="flex items-center justify-between mb-12">
               <div className="animate-slide-in-left">
                 <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-2">
-                  Annonces récentes
+                  {heroSettings.recent_listings_title || 'Annonces récentes'}
                 </h2>
                 <p className="text-muted-foreground">
-                  Découvrez les dernières annonces publiées
+                  {heroSettings.recent_listings_subtitle || 'Découvrez les dernières annonces publiées'}
                 </p>
               </div>
               <Link to="/annonces" className="animate-slide-in-right">
