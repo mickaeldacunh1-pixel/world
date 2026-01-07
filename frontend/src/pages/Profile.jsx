@@ -416,6 +416,16 @@ export default function Profile() {
             </Card>
           </TabsContent>
 
+          {/* Notifications Tab */}
+          <TabsContent value="notifications">
+            <NotificationSettings />
+          </TabsContent>
+
+          {/* Vacation Mode Tab */}
+          <TabsContent value="vacation">
+            <VacationMode />
+          </TabsContent>
+
           {/* Stripe Connect Tab */}
           <TabsContent value="stripe">
             <Card>
