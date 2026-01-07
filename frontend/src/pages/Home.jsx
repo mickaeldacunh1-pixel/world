@@ -475,7 +475,7 @@ export default function Home() {
                   style={{ backgroundColor: heroSettings.hero_search_button_bg }}
                 >
                   <Search className="w-5 h-5 mr-2" />
-                  {heroSettings.hero_search_button_text || 'Rechercher'}
+                  {autoTranslate(heroSettings.hero_search_button_text) || t('common.search')}
                 </Button>
               </form>
             )}
@@ -504,7 +504,7 @@ export default function Home() {
                     }}
                   >
                     {heroSettings.hero_cta1_icon && <span>{heroSettings.hero_cta1_icon}</span>}
-                    {heroSettings.hero_cta1_text}
+                    {autoTranslate(heroSettings.hero_cta1_text)}
                   </Button>
                 </Link>
               )}
@@ -522,7 +522,7 @@ export default function Home() {
                     }}
                   >
                     {heroSettings.hero_cta2_icon && <span>{heroSettings.hero_cta2_icon}</span>}
-                    {heroSettings.hero_cta2_text}
+                    {autoTranslate(heroSettings.hero_cta2_text)}
                   </Button>
                 </Link>
               )}
