@@ -987,7 +987,7 @@ export default function Home() {
             <div className="mt-8 text-center sm:hidden">
               <Link to="/annonces">
                 <Button variant="outline" className="w-full">
-                  Voir toutes les annonces
+                  {t('common.see_all')} {t('nav.listings')}
                 </Button>
               </Link>
             </div>
