@@ -9,8 +9,10 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '../components/ui/dialog';
-import { User, Lock, Trash2, Save, Building, MapPin, Phone, Mail, Calendar, Shield, CreditCard, CheckCircle, AlertCircle, ExternalLink, Loader2 } from 'lucide-react';
+import { User, Lock, Trash2, Save, Building, MapPin, Phone, Mail, Calendar, Shield, CreditCard, CheckCircle, AlertCircle, ExternalLink, Loader2, Palmtree, Bell } from 'lucide-react';
 import SEO from '../components/SEO';
+import VacationMode from '../components/VacationMode';
+import NotificationSettings from '../components/NotificationSettings';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
