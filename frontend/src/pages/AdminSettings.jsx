@@ -228,6 +228,34 @@ const DEFAULT_SETTINGS = {
   show_brands_section: true,
   show_categories_section: true,
   show_regions_section: true,
+  
+  // Homepage Sections Control (NEW)
+  show_seller_of_week: true,
+  show_recent_listings: true,
+  recent_listings_count: 6,
+  show_diagnostic_section: true,
+  show_referral_section: true,
+  show_features_section: true,
+  show_cta_section: true,
+  
+  // Seller of the Week (NEW)
+  seller_of_week_title: "🏆 Vendeur de la semaine",
+  seller_of_week_manual_id: "",
+  
+  // Recent Listings Section (NEW)
+  recent_listings_title: "Annonces récentes",
+  recent_listings_subtitle: "Découvrez les dernières annonces publiées",
+  
+  // Diagnostic Section (NEW)
+  diagnostic_title: "Diagnostic Auto",
+  diagnostic_subtitle: "par Tobi IA",
+  diagnostic_price: "0.99",
+  
+  // Referral Section (NEW)
+  referral_title: "Parrainez vos amis,",
+  referral_subtitle: "Gagnez des récompenses !",
+  referral_points_per_referral: 100,
+  referral_points_for_referred: 50,
 };
 
 // Options de taille de titre
