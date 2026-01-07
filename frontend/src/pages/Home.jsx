@@ -1063,7 +1063,7 @@ export default function Home() {
 
                 <div className="mt-4 pt-4 border-t border-white/10 text-center">
                   <p className="text-xs text-slate-400">
-                    💡 <strong className="text-white">0.99€</strong> / diagnostic ou <strong className="text-green-400">GRATUIT</strong> avec une annonce
+                    💡 <strong className="text-white">{heroSettings.diagnostic_price || '0.99'}€</strong> / diagnostic ou <strong className="text-green-400">GRATUIT</strong> avec une annonce
                   </p>
                 </div>
               </div>
@@ -1071,8 +1071,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Features - Improved */}
+      {heroSettings.show_features_section !== false && (
       <section className="py-16 md:py-24 bg-gradient-to-b from-background to-secondary/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 animate-fade-in-up">
@@ -1097,8 +1099,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* REFERRAL BANNER - Grande bannière de parrainage */}
+      {heroSettings.show_referral_section !== false && (
       <section className="py-16 md:py-20 bg-gradient-to-r from-accent via-orange-500 to-amber-500 relative overflow-hidden">
         {/* Background decorations */}
         <div className="absolute inset-0 overflow-hidden">
