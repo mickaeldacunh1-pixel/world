@@ -7170,7 +7170,8 @@ class CouponUpdate(BaseModel):
 @api_router.get("/admin/coupons")
 async def get_all_coupons(current_user: dict = Depends(get_current_user)):
     """Get all coupons (admin only)"""
-    if not current_user.get("is_admin"):
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
         raise HTTPException(status_code=403, detail="Accès non autorisé")
     
     coupons = await db.coupons.find({}, {"_id": 0}).to_list(1000)
@@ -7179,7 +7180,8 @@ async def get_all_coupons(current_user: dict = Depends(get_current_user)):
 @api_router.post("/admin/coupons")
 async def create_coupon(coupon: CouponCreate, current_user: dict = Depends(get_current_user)):
     """Create a new coupon (admin only)"""
-    if not current_user.get("is_admin"):
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
         raise HTTPException(status_code=403, detail="Accès non autorisé")
     
     # Check if code already exists
