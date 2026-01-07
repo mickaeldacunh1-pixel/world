@@ -7139,6 +7139,189 @@ async def get_widget_code(seller_id: Optional[str] = None, category: Optional[st
         "preview_url": f"{SITE_URL}/widget?{params_str}"
     }
 
+# ================== COUPONS / CODES PROMO ==================
+
+class CouponCreate(BaseModel):
+    code: str
+    discount_type: str  # "percentage" or "fixed"
+    discount_value: float
+    min_purchase: float = 0
+    max_discount: Optional[float] = None  # For percentage coupons
+    usage_limit: Optional[int] = None
+    per_user_limit: int = 1
+    valid_from: Optional[str] = None
+    valid_until: Optional[str] = None
+    active: bool = True
+    description: Optional[str] = None
+
+class CouponUpdate(BaseModel):
+    code: Optional[str] = None
+    discount_type: Optional[str] = None
+    discount_value: Optional[float] = None
+    min_purchase: Optional[float] = None
+    max_discount: Optional[float] = None
+    usage_limit: Optional[int] = None
+    per_user_limit: Optional[int] = None
+    valid_from: Optional[str] = None
+    valid_until: Optional[str] = None
+    active: Optional[bool] = None
+    description: Optional[str] = None
+
+@api_router.get("/admin/coupons")
+async def get_all_coupons(current_user: dict = Depends(get_current_user)):
+    """Get all coupons (admin only)"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès non autorisé")
+    
+    coupons = await db.coupons.find({}, {"_id": 0}).to_list(1000)
+    return coupons
+
+@api_router.post("/admin/coupons")
+async def create_coupon(coupon: CouponCreate, current_user: dict = Depends(get_current_user)):
+    """Create a new coupon (admin only)"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès non autorisé")
+    
+    # Check if code already exists
+    existing = await db.coupons.find_one({"code": coupon.code.upper()})
+    if existing:
+        raise HTTPException(status_code=400, detail="Ce code promo existe déjà")
+    
+    coupon_doc = {
+        "id": str(uuid4()),
+        "code": coupon.code.upper(),
+        "discount_type": coupon.discount_type,
+        "discount_value": coupon.discount_value,
+        "min_purchase": coupon.min_purchase,
+        "max_discount": coupon.max_discount,
+        "usage_limit": coupon.usage_limit,
+        "usage_count": 0,
+        "per_user_limit": coupon.per_user_limit,
+        "valid_from": coupon.valid_from,
+        "valid_until": coupon.valid_until,
+        "active": coupon.active,
+        "description": coupon.description,
+        "used_by": [],  # List of user IDs who used this coupon
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    
+    await db.coupons.insert_one(coupon_doc)
+    return {"message": "Coupon créé avec succès", "coupon": {k: v for k, v in coupon_doc.items() if k != "_id"}}
+
+@api_router.put("/admin/coupons/{coupon_id}")
+async def update_coupon(coupon_id: str, coupon: CouponUpdate, current_user: dict = Depends(get_current_user)):
+    """Update a coupon (admin only)"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès non autorisé")
+    
+    existing = await db.coupons.find_one({"id": coupon_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Coupon non trouvé")
+    
+    update_data = {k: v for k, v in coupon.dict().items() if v is not None}
+    if "code" in update_data:
+        update_data["code"] = update_data["code"].upper()
+        # Check if new code already exists
+        code_exists = await db.coupons.find_one({"code": update_data["code"], "id": {"$ne": coupon_id}})
+        if code_exists:
+            raise HTTPException(status_code=400, detail="Ce code promo existe déjà")
+    
+    if update_data:
+        await db.coupons.update_one({"id": coupon_id}, {"$set": update_data})
+    
+    updated = await db.coupons.find_one({"id": coupon_id}, {"_id": 0})
+    return {"message": "Coupon mis à jour", "coupon": updated}
+
+@api_router.delete("/admin/coupons/{coupon_id}")
+async def delete_coupon(coupon_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a coupon (admin only)"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès non autorisé")
+    
+    result = await db.coupons.delete_one({"id": coupon_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Coupon non trouvé")
+    
+    return {"message": "Coupon supprimé"}
+
+@api_router.post("/coupons/validate")
+async def validate_coupon(code: str, cart_total: float, current_user: dict = Depends(get_optional_user)):
+    """Validate a coupon code and calculate discount"""
+    coupon = await db.coupons.find_one({"code": code.upper()}, {"_id": 0})
+    
+    if not coupon:
+        raise HTTPException(status_code=404, detail="Code promo invalide")
+    
+    # Check if active
+    if not coupon.get("active", True):
+        raise HTTPException(status_code=400, detail="Ce code promo n'est plus actif")
+    
+    # Check dates
+    now = datetime.now(timezone.utc)
+    if coupon.get("valid_from"):
+        valid_from = datetime.fromisoformat(coupon["valid_from"].replace("Z", "+00:00"))
+        if now < valid_from:
+            raise HTTPException(status_code=400, detail="Ce code promo n'est pas encore valide")
+    
+    if coupon.get("valid_until"):
+        valid_until = datetime.fromisoformat(coupon["valid_until"].replace("Z", "+00:00"))
+        if now > valid_until:
+            raise HTTPException(status_code=400, detail="Ce code promo a expiré")
+    
+    # Check usage limit
+    if coupon.get("usage_limit") and coupon.get("usage_count", 0) >= coupon["usage_limit"]:
+        raise HTTPException(status_code=400, detail="Ce code promo a atteint sa limite d'utilisation")
+    
+    # Check per-user limit
+    if current_user and coupon.get("per_user_limit"):
+        user_uses = coupon.get("used_by", []).count(current_user["id"])
+        if user_uses >= coupon["per_user_limit"]:
+            raise HTTPException(status_code=400, detail="Vous avez déjà utilisé ce code promo")
+    
+    # Check minimum purchase
+    if cart_total < coupon.get("min_purchase", 0):
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Minimum d'achat requis: {coupon['min_purchase']} €"
+        )
+    
+    # Calculate discount
+    if coupon["discount_type"] == "percentage":
+        discount = cart_total * (coupon["discount_value"] / 100)
+        if coupon.get("max_discount"):
+            discount = min(discount, coupon["max_discount"])
+    else:  # fixed
+        discount = min(coupon["discount_value"], cart_total)
+    
+    return {
+        "valid": True,
+        "code": coupon["code"],
+        "discount_type": coupon["discount_type"],
+        "discount_value": coupon["discount_value"],
+        "discount_amount": round(discount, 2),
+        "new_total": round(cart_total - discount, 2),
+        "description": coupon.get("description"),
+    }
+
+@api_router.post("/coupons/apply")
+async def apply_coupon(code: str, current_user: dict = Depends(get_current_user)):
+    """Mark a coupon as used (call after successful checkout)"""
+    coupon = await db.coupons.find_one({"code": code.upper()})
+    
+    if not coupon:
+        raise HTTPException(status_code=404, detail="Code promo invalide")
+    
+    # Update usage
+    await db.coupons.update_one(
+        {"code": code.upper()},
+        {
+            "$inc": {"usage_count": 1},
+            "$push": {"used_by": current_user["id"]}
+        }
+    )
+    
+    return {"message": "Coupon appliqué"}
+
 # ================== ROOT ==================
 
 @api_router.get("/")
