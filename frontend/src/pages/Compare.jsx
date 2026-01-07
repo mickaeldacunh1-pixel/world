@@ -65,17 +65,17 @@ export default function Compare() {
   if (compareItems.length === 0) {
     return (
       <div className="min-h-screen bg-background">
-        <SEO title="Comparateur" description="Comparez vos annonces favorites" />
+        <SEO title={t('compare.title')} description={t('compare.empty_description')} />
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="text-center">
             <Scale className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h1 className="text-2xl font-bold mb-2">Comparateur vide</h1>
+            <h1 className="text-2xl font-bold mb-2">{t('compare.empty')}</h1>
             <p className="text-muted-foreground mb-6">
-              Ajoutez des annonces au comparateur pour les comparer côte à côte
+              {t('compare.empty_description')}
             </p>
             <Button onClick={() => navigate('/annonces')}>
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Parcourir les annonces
+              {t('compare.browse')}
             </Button>
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function Compare() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO title="Comparateur" description="Comparez vos annonces favorites" />
+      <SEO title={t('compare.title')} description={t('compare.empty_description')} />
       
       {/* Header */}
       <div className="bg-primary text-white py-8">
@@ -94,10 +94,10 @@ export default function Compare() {
             <div>
               <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
                 <Scale className="w-8 h-8" />
-                Comparateur
+                {t('compare.title')}
               </h1>
               <p className="text-white/80 mt-1">
-                {compareItems.length} annonce{compareItems.length > 1 ? 's' : ''} à comparer
+                {compareItems.length} {t('compare.items')}
               </p>
             </div>
             <div className="flex gap-2">
