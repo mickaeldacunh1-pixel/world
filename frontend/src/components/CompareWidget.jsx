@@ -69,7 +69,7 @@ export function CompareWidget() {
           <div className="p-3 bg-primary text-white flex items-center justify-between">
             <span className="font-semibold flex items-center gap-2">
               <Scale className="w-4 h-4" />
-              Comparateur ({compareItems.length}/{MAX_ITEMS})
+              {t('compare.title')} ({compareItems.length}/{MAX_ITEMS})
             </span>
             <button onClick={() => setIsExpanded(false)} className="hover:bg-white/20 rounded p-1">
               <ChevronDown className="w-4 h-4" />
@@ -100,11 +100,11 @@ export function CompareWidget() {
 
           <div className="p-3 border-t flex gap-2">
             <Button variant="outline" size="sm" className="flex-1" onClick={clearCompare}>
-              Vider
+              {t('compare.clear')}
             </Button>
             <Link to="/comparer" className="flex-1">
               <Button size="sm" className="w-full">
-                Comparer
+                {t('compare.compare_btn')}
               </Button>
             </Link>
           </div>
