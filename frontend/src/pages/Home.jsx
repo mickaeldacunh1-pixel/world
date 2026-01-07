@@ -161,7 +161,7 @@ export default function Home() {
   const [copiedCode, setCopiedCode] = useState(false);
   const [liveStats, setLiveStats] = useState(null);
 
-  const fetchAllData = async () => {
+  const fetchAllData = useCallback(async () => {
     const cacheBuster = `?_t=${Date.now()}`;
     
     // Fetch hero settings
@@ -197,7 +197,7 @@ export default function Home() {
     } catch (error) {
       console.error('Error fetching recent listings:', error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchAllData();
@@ -211,7 +211,7 @@ export default function Home() {
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, []);
+  }, [fetchAllData]);
 
   // Fetch referral data if user is logged in
   useEffect(() => {
