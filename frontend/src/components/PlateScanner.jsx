@@ -213,12 +213,12 @@ export default function PlateScanner({ onVehicleSelect }) {
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">ou</span>
+                <span className="bg-background px-2 text-muted-foreground">{t('auth.or')}</span>
               </div>
             </div>
 
             <Button variant="ghost" onClick={() => setStep(2)} className="w-full">
-              Saisir manuellement
+              {t('search.manual_entry')}
             </Button>
           </div>
         )}
@@ -232,14 +232,14 @@ export default function PlateScanner({ onVehicleSelect }) {
                 {scanning && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                     <Loader2 className="w-8 h-8 text-white animate-spin" />
-                    <span className="ml-2 text-white">Analyse en cours...</span>
+                    <span className="ml-2 text-white">{t('common.loading')}</span>
                   </div>
                 )}
               </div>
             )}
 
             <div className="space-y-2">
-              <Label>Plaque d'immatriculation</Label>
+              <Label>{t('search.plate_number')}</Label>
               <Input
                 placeholder="AA-123-BB"
                 value={manualPlate}
