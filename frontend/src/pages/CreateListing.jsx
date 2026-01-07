@@ -423,6 +423,38 @@ export default function CreateListing() {
                 </div>
               )}
 
+              {formData.category === 'motos' && Object.keys(motosSubcategories).length > 0 && (
+                <div className="space-y-2">
+                  <Label>Type de deux-roues *</Label>
+                  <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
+                    <SelectTrigger data-testid="subcategory-select">
+                      <SelectValue placeholder="Choisir un type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(motosSubcategories).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {formData.category === 'utilitaires' && Object.keys(utilitairesSubcategories).length > 0 && (
+                <div className="space-y-2">
+                  <Label>Type d'utilitaire *</Label>
+                  <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
+                    <SelectTrigger data-testid="subcategory-select">
+                      <SelectValue placeholder="Choisir un type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(utilitairesSubcategories).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
               {/* Title */}
               <div className="space-y-2">
                 <Label htmlFor="title">Titre de l'annonce *</Label>
