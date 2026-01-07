@@ -119,7 +119,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             {user ? (
               <>
-                {/* 1. Mode sombre */}
+                {/* Mode sombre */}
                 <Button 
                   variant="ghost" 
                   size="icon" 
@@ -134,36 +134,40 @@ export default function Navbar() {
                   )}
                 </Button>
 
-                {/* 2. Diagnostic IA */}
+                {/* Diagnostic IA */}
                 <Link to="/diagnostic" className="hidden sm:flex" title="Diagnostic IA">
                   <Button variant="ghost" size="icon" className="relative">
                     <Stethoscope className="w-5 h-5 text-accent" />
                   </Button>
                 </Link>
 
-                {/* 3. Fidélité */}
+                {/* Fidélité */}
                 <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
                   <Button variant="ghost" size="icon" className="relative">
                     <Gift className="w-5 h-5" />
                   </Button>
                 </Link>
 
-                {/* 4. Favoris */}
-                <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Heart className="w-5 h-5" />
-                  </Button>
-                </Link>
+                {/* Messages + Favoris empilés verticalement */}
+                <div className="hidden sm:flex flex-col gap-0.5">
+                  <Link to="/messages" title="Messages">
+                    <Button variant="ghost" size="sm" className="relative h-7 w-7 p-0">
+                      <MessageSquare className="w-4 h-4" />
+                      {unreadMessages > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                          {unreadMessages}
+                        </span>
+                      )}
+                    </Button>
+                  </Link>
+                  <Link to="/favoris" title="Mes favoris">
+                    <Button variant="ghost" size="sm" className="relative h-7 w-7 p-0">
+                      <Heart className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                </div>
 
-                {/* 5. Déposer une annonce */}
-                <Link to="/deposer">
-                  <Button className="hidden sm:flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground btn-primary" data-testid="create-listing-btn">
-                    <Plus className="w-4 h-4" />
-                    {t('nav.newListing')}
-                  </Button>
-                </Link>
-
-                {/* 6. Profil (Menu utilisateur) */}
+                {/* Profil (Menu utilisateur) */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="flex items-center gap-1.5 px-2 sm:px-3" data-testid="user-menu">
