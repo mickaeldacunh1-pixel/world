@@ -622,8 +622,9 @@ export default function Listings() {
                           {conditionLabels[listing.condition] || listing.condition}
                         </span>
                         
-                        {/* Quick view */}
-                        <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                        {/* Quick view + Compare */}
+                        <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                          <CompareButton listing={listing} />
                           <span className="bg-white/95 backdrop-blur-sm text-primary px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
                             Voir →
                           </span>
