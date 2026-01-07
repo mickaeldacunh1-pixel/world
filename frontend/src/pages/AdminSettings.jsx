@@ -1872,8 +1872,8 @@ export default function AdminSettings() {
 
                   <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
                     <div>
-                      <h4 className="font-medium">Section "Appel à l'action" (CTA final)</h4>
-                      <p className="text-sm text-muted-foreground">Bannière "Prêt à vendre votre véhicule ?"</p>
+                      <h4 className="font-medium">Section &quot;Appel à l&apos;action&quot; (CTA final)</h4>
+                      <p className="text-sm text-muted-foreground">Bannière &quot;Prêt à vendre votre véhicule ?&quot;</p>
                     </div>
                     <Switch
                       checked={settings.show_cta_section}
