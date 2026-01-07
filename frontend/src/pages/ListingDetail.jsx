@@ -13,6 +13,7 @@ import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, Chevron
 import SEO, { createProductSchema, createBreadcrumbSchema } from '../components/SEO';
 import ShareButtons from '../components/ShareButtons';
 import { VerificationBadge, WarrantyBadge, PartOriginBadge } from '../components/TrustBadge';
+import QuestionsAnswers from '../components/QuestionsAnswers';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
