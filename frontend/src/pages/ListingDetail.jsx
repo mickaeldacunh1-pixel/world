@@ -672,6 +672,14 @@ export default function ListingDetail() {
             {/* Questions & Réponses */}
             <QuestionsAnswers listingId={listing.id} sellerId={listing.seller_id} />
 
+            {/* Warranty Selector - for sellers without warranty */}
+            {user?.id === listing.seller_id && !listing.has_warranty && (
+              <WarrantySelector 
+                listingId={listing.id} 
+                currentWarranty={listing.has_warranty ? { duration: listing.warranty_duration, expires: listing.warranty_expires } : null}
+              />
+            )}
+
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               {user?.id !== listing.seller_id ? (
