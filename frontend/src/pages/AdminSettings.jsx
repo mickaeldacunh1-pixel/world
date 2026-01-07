@@ -1511,7 +1511,7 @@ export default function AdminSettings() {
                 {(!settings.banners || settings.banners.length === 0) ? (
                   <div className="text-center py-8 text-muted-foreground">
                     <Layout className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>Aucune bannière. Cliquez sur "Ajouter une bannière" pour commencer.</p>
+                    <p>Aucune bannière. Cliquez sur &quot;Ajouter une bannière&quot; pour commencer.</p>
                   </div>
                 ) : (
                   settings.banners.map((banner, index) => (
