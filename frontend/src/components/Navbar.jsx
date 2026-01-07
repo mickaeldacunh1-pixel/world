@@ -12,10 +12,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { Car, Wrench, Bike, Truck, Settings, User, LogOut, MessageSquare, LayoutDashboard, Menu, X, Plus, Package, Heart, Bell, TrendingUp, Palette, ShoppingCart, Moon, Sun, Gift, Stethoscope } from 'lucide-react';
+import { Car, Wrench, Bike, Truck, Settings, User, LogOut, MessageSquare, LayoutDashboard, Menu, X, Plus, Package, Heart, Bell, TrendingUp, Palette, Moon, Sun, Gift, Stethoscope, Tractor } from 'lucide-react';
 import WorldAutoLogo from './WorldAutoLogo';
 import FranceText from './FranceText';
 import LanguageSelector from './LanguageSelector';
+import PromoBanner from './PromoBanner';
+import CartPreview from './CartPreview';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
