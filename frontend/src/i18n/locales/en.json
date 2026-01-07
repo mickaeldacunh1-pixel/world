@@ -416,5 +416,39 @@
     "no_questions": "No questions yet",
     "answer": "Answer",
     "your_answer": "Your answer"
+  },
+  "compare": {
+    "title": "Comparator",
+    "empty": "Comparator empty",
+    "empty_description": "Add listings to the comparator to compare them side by side",
+    "browse": "Browse listings",
+    "items": "listing(s) to compare",
+    "add": "Add to comparator",
+    "remove": "Remove from comparator",
+    "in_compare": "In comparator",
+    "compare_btn": "Compare",
+    "clear": "Clear",
+    "max_items": "Maximum {max} listings in the comparator",
+    "already_added": "This listing is already in the comparator",
+    "added": "Added to comparator",
+    "removed": "Removed from comparator",
+    "cleared": "Comparator cleared",
+    "characteristics": "Characteristics",
+    "best_price": "Best price",
+    "view_listing": "View listing",
+    "add_to_cart": "Add to cart",
+    "tips_title": "Tips",
+    "tip_1": "Green cells indicate the best value for that characteristic",
+    "tip_2": "You can compare up to 4 listings at once",
+    "tip_3": "Click on an image to see full listing details"
+  },
+  "price_history": {
+    "title": "Price history",
+    "price_drop": "Price drop",
+    "price_increase": "Price increase",
+    "total_savings": "Total savings",
+    "initial": "Initial price",
+    "current": "Current price",
+    "change": "Change"
   }
 }

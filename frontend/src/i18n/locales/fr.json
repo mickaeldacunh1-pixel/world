@@ -416,5 +416,39 @@
     "no_questions": "Aucune question pour le moment",
     "answer": "Répondre",
     "your_answer": "Votre réponse"
+  },
+  "compare": {
+    "title": "Comparateur",
+    "empty": "Comparateur vide",
+    "empty_description": "Ajoutez des annonces au comparateur pour les comparer côte à côte",
+    "browse": "Parcourir les annonces",
+    "items": "annonce(s) à comparer",
+    "add": "Ajouter au comparateur",
+    "remove": "Retirer du comparateur",
+    "in_compare": "Dans le comparateur",
+    "compare_btn": "Comparer",
+    "clear": "Vider",
+    "max_items": "Maximum {max} annonces dans le comparateur",
+    "already_added": "Cette annonce est déjà dans le comparateur",
+    "added": "Ajouté au comparateur",
+    "removed": "Retiré du comparateur",
+    "cleared": "Comparateur vidé",
+    "characteristics": "Caractéristiques",
+    "best_price": "Meilleur prix",
+    "view_listing": "Voir l'annonce",
+    "add_to_cart": "Ajouter au panier",
+    "tips_title": "Conseils",
+    "tip_1": "Les cellules en vert indiquent la meilleure valeur pour cette caractéristique",
+    "tip_2": "Vous pouvez comparer jusqu'à 4 annonces simultanément",
+    "tip_3": "Cliquez sur une image pour voir les détails complets de l'annonce"
+  },
+  "price_history": {
+    "title": "Historique des prix",
+    "price_drop": "Prix en baisse",
+    "price_increase": "Prix en hausse",
+    "total_savings": "Économie totale",
+    "initial": "Prix initial",
+    "current": "Prix actuel",
+    "change": "Modification"
   }
 }
