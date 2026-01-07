@@ -83,6 +83,12 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
 
   const handleDismiss = (e) => {
     e.stopPropagation();
+    // Juste fermer le dropdown, ne pas masquer le bouton
+    setIsOpen(false);
+  };
+
+  const handlePermanentDismiss = (e) => {
+    e.stopPropagation();
     setDismissed(true);
     setIsOpen(false);
     sessionStorage.setItem('promo_banner_dismissed', 'true');
