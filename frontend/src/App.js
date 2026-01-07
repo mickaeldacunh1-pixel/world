@@ -144,6 +144,12 @@ function AppContent() {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/nouveautes" element={<Updates />} />
           <Route path="/newsletter" element={<Newsletter />} />
+          <Route path="/mes-offres" element={
+            <ProtectedRoute><MyOffers /></ProtectedRoute>
+          } />
+          <Route path="/lots" element={<Bundles />} />
+          <Route path="/lot/:id" element={<BundleDetail />} />
+          <Route path="/widget" element={<Widget />} />
         </Routes>
       </main>
       <Footer />
