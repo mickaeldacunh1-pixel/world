@@ -18,6 +18,11 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const trackingTimeoutRef = useRef(null);
+  
+  // Coupon state
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponLoading, setCouponLoading] = useState(false);
 
   // Fonction pour tracker le panier (relance abandonnée)
   const trackCart = useCallback(async (items) => {
