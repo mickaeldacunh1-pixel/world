@@ -103,11 +103,11 @@ export default function Compare() {
             <div className="flex gap-2">
               <Button variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20" onClick={() => navigate(-1)}>
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour
+                {t('common.back')}
               </Button>
               <Button variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20" onClick={clearCompare}>
                 <Trash2 className="w-4 h-4 mr-2" />
-                Vider
+                {t('compare.clear')}
               </Button>
             </div>
           </div>
@@ -122,7 +122,7 @@ export default function Compare() {
             <thead>
               <tr>
                 <th className="w-48 p-4 text-left bg-secondary/50 rounded-tl-lg">
-                  <span className="font-semibold text-sm text-muted-foreground">Caractéristiques</span>
+                  <span className="font-semibold text-sm text-muted-foreground">{t('compare.characteristics')}</span>
                 </th>
                 {compareItems.map((item, index) => (
                   <th key={item.id} className={`p-4 bg-secondary/50 ${index === compareItems.length - 1 ? 'rounded-tr-lg' : ''}`}>
