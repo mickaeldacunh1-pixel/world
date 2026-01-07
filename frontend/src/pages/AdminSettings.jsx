@@ -1379,6 +1379,80 @@ export default function AdminSettings() {
                   </div>
                 </div>
 
+                {/* Couleurs Promo & Panier */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">🛒 Bouton Promo & Panier (style AUTODOC)</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Fond bouton Promo</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="color"
+                          value={settings.promo_bg_color}
+                          onChange={(e) => setSettings({...settings, promo_bg_color: e.target.value})}
+                          className="w-12 h-10 p-1 cursor-pointer"
+                        />
+                        <Input
+                          value={settings.promo_bg_color}
+                          onChange={(e) => setSettings({...settings, promo_bg_color: e.target.value})}
+                          placeholder="#1E3A5F"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Texte bouton Promo</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="color"
+                          value={settings.promo_text_color}
+                          onChange={(e) => setSettings({...settings, promo_text_color: e.target.value})}
+                          className="w-12 h-10 p-1 cursor-pointer"
+                        />
+                        <Input
+                          value={settings.promo_text_color}
+                          onChange={(e) => setSettings({...settings, promo_text_color: e.target.value})}
+                          placeholder="#FFFFFF"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Fond bouton Panier</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="color"
+                          value={settings.cart_bg_color}
+                          onChange={(e) => setSettings({...settings, cart_bg_color: e.target.value})}
+                          className="w-12 h-10 p-1 cursor-pointer"
+                        />
+                        <Input
+                          value={settings.cart_bg_color}
+                          onChange={(e) => setSettings({...settings, cart_bg_color: e.target.value})}
+                          placeholder="#1E3A5F"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Texte bouton Panier</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="color"
+                          value={settings.cart_text_color}
+                          onChange={(e) => setSettings({...settings, cart_text_color: e.target.value})}
+                          className="w-12 h-10 p-1 cursor-pointer"
+                        />
+                        <Input
+                          value={settings.cart_text_color}
+                          onChange={(e) => setSettings({...settings, cart_text_color: e.target.value})}
+                          placeholder="#FFFFFF"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Ces couleurs s&apos;appliquent aux boutons &quot;Compte Premium&quot; et &quot;Panier&quot; dans la barre de navigation (style AUTODOC).
+                  </p>
+                </div>
+
                 {/* Éléments à afficher */}
                 <div className="space-y-4">
                   <h4 className="font-medium text-sm">Éléments à afficher</h4>
