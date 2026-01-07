@@ -81,7 +81,7 @@ export default function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="font-medium" data-testid="categories-dropdown">
-                  Catégories
+                  {t('nav.categories')}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="center" className="w-56">
@@ -97,7 +97,7 @@ export default function Navbar() {
             </DropdownMenu>
 
             <Link to="/annonces" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="all-listings-link">
-              Toutes les annonces
+              {t('nav.listings')}
             </Link>
 
             <Link to="/tarifs" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="pricing-link">
