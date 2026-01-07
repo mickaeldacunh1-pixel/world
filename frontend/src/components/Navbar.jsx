@@ -101,7 +101,7 @@ export default function Navbar() {
             </Link>
 
             <Link to="/tarifs" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="pricing-link">
-              Tarifs
+              {t('nav.pricing')}
             </Link>
           </div>
 
