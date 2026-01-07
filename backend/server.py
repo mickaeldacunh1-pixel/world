@@ -7044,7 +7044,8 @@ async def send_cart_reminders(background_tasks: BackgroundTasks, current_user: d
 @api_router.get("/admin/abandoned-carts/stats")
 async def get_abandoned_cart_stats(current_user: dict = Depends(get_current_user)):
     """Obtenir les statistiques des paniers abandonnés (admin)"""
-    if not current_user.get("is_admin"):
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails:
         raise HTTPException(status_code=403, detail="Accès admin requis")
     
     # Stats globales
