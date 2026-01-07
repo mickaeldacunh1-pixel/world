@@ -157,26 +157,26 @@ export default function Navbar() {
                     <DropdownMenuItem asChild>
                       <Link to="/profil" className="flex items-center gap-2 cursor-pointer">
                         <User className="w-4 h-4" />
-                        Mon Profil
+                        {t('common.profile')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link to="/tableau-de-bord" className="flex items-center gap-2 cursor-pointer">
                         <LayoutDashboard className="w-4 h-4" />
-                        Tableau de bord
+                        {t('common.dashboard')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/commandes" className="flex items-center gap-2 cursor-pointer">
                         <Package className="w-4 h-4" />
-                        Mes Commandes
+                        {t('nav.myOrders')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/messages" className="flex items-center gap-2 cursor-pointer">
                         <MessageSquare className="w-4 h-4" />
-                        Messages
+                        {t('common.messages')}
                         {unreadMessages > 0 && (
                           <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
                             {unreadMessages}
@@ -187,7 +187,7 @@ export default function Navbar() {
                     <DropdownMenuItem asChild>
                       <Link to="/favoris" className="flex items-center gap-2 cursor-pointer">
                         <Heart className="w-4 h-4" />
-                        Mes Favoris
+                        {t('common.favorites')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
