@@ -3557,6 +3557,15 @@ class AutoPiecesAPITester:
         print("\n🧠 Testing Paid Diagnostic IA System...")
         self.test_paid_diagnostic_ia_system()
         
+        # NEW FEATURES FROM REVIEW REQUEST
+        print("\n🆕 Testing New Features from Review Request...")
+        self.test_offers_system()
+        self.test_bundles_system()
+        self.test_live_stats_counter()
+        self.test_widget_system()
+        self.test_abandoned_cart_tracking()
+        self.test_profile_website_field()
+        
         # Error handling
         self.test_invalid_endpoints()
         
