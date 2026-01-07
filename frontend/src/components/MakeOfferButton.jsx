@@ -59,7 +59,7 @@ export default function MakeOfferButton({ listing, onSuccess }) {
     return (
       <Button variant="outline" className="w-full" onClick={() => window.location.href = '/auth'}>
         <Tag className="w-4 h-4 mr-2" />
-        Faire une offre
+        {t('listing.makeOffer')}
       </Button>
     );
   }
@@ -73,21 +73,21 @@ export default function MakeOfferButton({ listing, onSuccess }) {
       <DialogTrigger asChild>
         <Button variant="outline" className="w-full">
           <Tag className="w-4 h-4 mr-2" />
-          Faire une offre
+          {t('listing.makeOffer')}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Tag className="w-5 h-5 text-accent" />
-            Faire une offre
+            {t('offers.make_offer_title')}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           {/* Prix original */}
           <div className="bg-secondary/50 p-4 rounded-lg">
-            <p className="text-sm text-muted-foreground mb-1">Prix demandé</p>
+            <p className="text-sm text-muted-foreground mb-1">{t('offers.original_price')}</p>
             <p className="text-2xl font-bold">{listing.price?.toFixed(2)} €</p>
           </div>
 
