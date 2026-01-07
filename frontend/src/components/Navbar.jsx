@@ -96,10 +96,6 @@ export default function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Link to="/annonces" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="all-listings-link">
-              {t('nav.listings')}
-            </Link>
-
             <Link to="/tarifs" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="pricing-link">
               {t('nav.pricing')}
             </Link>
