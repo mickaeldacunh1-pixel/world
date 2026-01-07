@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
@@ -11,6 +12,7 @@ import SEO from '../components/SEO';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Cart() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
