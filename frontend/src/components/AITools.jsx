@@ -112,14 +112,14 @@ export default function AITools() {
           className="gap-2 border-accent/50 hover:border-accent hover:bg-accent/10"
         >
           <Sparkles className="w-4 h-4 text-accent" />
-          Outils IA
+          {t('home.ai_diagnostic')}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-accent" />
-            Outils IA - World Auto France
+            {t('home.ai_diagnostic')} - World Auto France
           </DialogTitle>
         </DialogHeader>
 
