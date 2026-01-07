@@ -710,10 +710,12 @@ export default function ListingDetail() {
                 </Link>
               )}
               
-              <Button variant="outline" className="h-12" onClick={handleShare} data-testid="share-btn">
-                <Share2 className="w-5 h-5 mr-2" />
-                Partager
-              </Button>
+              <ShareButtons 
+                url={window.location.href}
+                title={listing.title}
+                description={listing.description}
+                price={listing.price}
+              />
 
               {user?.id !== listing.seller_id && (
                 <Button variant="outline" className="h-12" onClick={handleAddToCart} data-testid="add-to-cart-btn">
