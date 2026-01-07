@@ -1092,6 +1092,67 @@ export default function AdminSettings() {
               </CardContent>
             </Card>
 
+            {/* Category Images */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Image className="w-5 h-5" />
+                  Images des catégories
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Personnalisez les vignettes des 5 catégories principales affichées sur la page d&apos;accueil.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  {[
+                    { key: 'category_pieces_image', label: 'Pièces', emoji: '🔧' },
+                    { key: 'category_voitures_image', label: 'Voitures', emoji: '🚗' },
+                    { key: 'category_motos_image', label: 'Motos', emoji: '🏍️' },
+                    { key: 'category_utilitaires_image', label: 'Utilitaires', emoji: '🚚' },
+                    { key: 'category_accessoires_image', label: 'Accessoires', emoji: '⚙️' },
+                  ].map((cat) => (
+                    <div key={cat.key} className="space-y-2">
+                      <Label className="text-sm">{cat.emoji} {cat.label}</Label>
+                      <div 
+                        className="relative aspect-video rounded-lg overflow-hidden border-2 border-dashed border-gray-300 hover:border-accent cursor-pointer group transition-colors"
+                        onClick={() => triggerImageUpload(cat.key)}
+                      >
+                        {settings[cat.key] ? (
+                          <>
+                            <img 
+                              src={settings[cat.key]} 
+                              alt={cat.label}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <Upload className="w-6 h-6 text-white" />
+                            </div>
+                          </>
+                        ) : (
+                          <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground">
+                            <Upload className="w-6 h-6 mb-1" />
+                            <span className="text-xs">Cliquer</span>
+                          </div>
+                        )}
+                        {uploadingImage && uploadTarget === cat.key && (
+                          <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                            <Loader2 className="w-6 h-6 text-white animate-spin" />
+                          </div>
+                        )}
+                      </div>
+                      <Input
+                        value={settings[cat.key] || ''}
+                        onChange={(e) => setSettings({...settings, [cat.key]: e.target.value})}
+                        placeholder="URL de l'image..."
+                        className="text-xs h-8"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Preview with Mobile/Desktop toggle */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
