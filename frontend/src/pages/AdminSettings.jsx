@@ -603,8 +603,18 @@ const DEFAULT_SETTINGS = {
   // Navbar Menu Colors
   promo_bg_color: "#1E3A5F",
   promo_text_color: "#FFFFFF",
+  promo_accent_color: "#F97316",
   cart_bg_color: "#1E3A5F",
   cart_text_color: "#FFFFFF",
+  
+  // Promo Banner (Compte Premium)
+  promo_banner_enabled: true,
+  promo_banner_title: "Compte Premium",
+  promo_banner_badge: "NOUVEAU",
+  promo_banner_subtitle: "Économisez encore plus",
+  promo_banner_highlight: "dès aujourd'hui avec WORLD AUTO PLUS",
+  promo_banner_cta: "Essai gratuit 14 jours",
+  promo_banner_link: "/tarifs",
   
   // ============== AUTRES SECTIONS ==============
   
