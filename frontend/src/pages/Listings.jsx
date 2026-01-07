@@ -143,29 +143,6 @@ export default function Listings() {
     }
   }, []);
 
-  useEffect(() => {
-    if (category === 'pieces' || category === 'accessoires') {
-      fetchSubcategories();
-    }
-    fetchCarBrands();
-  }, [category, fetchSubcategories, fetchCarBrands]);
-
-  useEffect(() => {
-    fetchListings();
-  }, [fetchListings]);
-
-  // Auto-refresh listings when component mounts or tab becomes visible
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetchListings();
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [fetchListings]);
-
   const fetchListings = useCallback(async (resetPage = false) => {
     setLoading(true);
     try {
@@ -196,6 +173,29 @@ export default function Listings() {
       setLoading(false);
     }
   }, [category, subcategory, compatibleBrand, region, oemReference, search, minPrice, maxPrice, condition, sort, page]);
+
+  useEffect(() => {
+    if (category === 'pieces' || category === 'accessoires') {
+      fetchSubcategories();
+    }
+    fetchCarBrands();
+  }, [category, fetchSubcategories, fetchCarBrands]);
+
+  useEffect(() => {
+    fetchListings();
+  }, [fetchListings]);
+
+  // Auto-refresh listings when component mounts or tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchListings();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [fetchListings]);
 
   const handleSearch = (e) => {
     e.preventDefault();
