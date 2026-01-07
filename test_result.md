@@ -1109,6 +1109,21 @@ backend:
         - agent: "testing"
         - comment: "Hero Advanced Settings API testing completed successfully. All 12 advanced customization fields present in GET /api/settings/hero response: hero_title_size, hero_description_size, hero_text_align, hero_height, hero_show_search, hero_show_categories, hero_overlay_opacity, and 5 category images (pieces, voitures, motos, utilitaires, accessoires). Default values correctly set (title_size: large, description_size: medium, text_align: left, height: large, show_search: true, show_categories: true, overlay_opacity: 50). POST /api/settings/hero successfully saves all advanced settings with authentication required. Settings persistence verified - all custom values correctly stored and retrieved. Authentication properly enforced (401 without token). Complete advanced hero customization API ready for production use."
 
+  - task: "Coupon/Promo Code System"
+    implemented: true
+    working: false
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented complete coupon/promo code system with 5 endpoints: POST /api/admin/coupons (create), GET /api/admin/coupons (list), PUT /api/admin/coupons/{id} (update), DELETE /api/admin/coupons/{id} (delete), POST /api/coupons/validate (validate). Supports percentage and fixed discounts, minimum purchase requirements, usage limits, date validity, per-user limits."
+        - working: false
+        - agent: "testing"
+        - comment: "Coupon system testing completed with CRITICAL BACKEND ISSUE identified. ❌ ADMIN ACCESS PROBLEM: All coupon admin endpoints (create, list, update, delete) check for 'is_admin' field in user object, but this field is never set during user registration. Other admin endpoints in the system check for specific admin emails (contact@worldautofrance.com, admin@worldautofrance.com). This inconsistency prevents any admin access to coupon management. ✅ ENDPOINT STRUCTURE: All 5 coupon endpoints exist and have correct authentication requirements. ✅ VALIDATION ENDPOINT: POST /api/coupons/validate works correctly - properly rejects invalid codes with 404, handles cart_total parameter correctly, accessible without authentication. ✅ AUTHENTICATION: All admin endpoints correctly require authentication (401 without token), then properly deny access with 403 due to missing is_admin field. REQUIRES FIX: Backend needs to either 1) Set is_admin=true for admin emails during registration/login, or 2) Change coupon endpoints to check admin emails like other admin endpoints."
+
 frontend:
   - task: "Hero Advanced Customization UI"
     implemented: true
