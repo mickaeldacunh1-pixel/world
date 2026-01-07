@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
@@ -25,6 +25,150 @@ const STATUS_CONFIG = {
   expired: { label: 'Expirée', color: 'bg-gray-100 text-gray-700', icon: Clock },
 };
 
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function OfferCard({ offer, type, onRespond, onAcceptCounter, processing }) {
+  const status = STATUS_CONFIG[offer.status] || STATUS_CONFIG.pending;
+  const StatusIcon = status.icon;
+  const listing = offer.listing || {};
+  
+  return (
+    <Card className="overflow-hidden">
+      <CardContent className="p-0">
+        <div className="flex flex-col sm:flex-row">
+          {/* Image */}
+          <div className="sm:w-32 h-24 sm:h-auto flex-shrink-0">
+            <img
+              src={listing.images?.[0] || '/placeholder.jpg'}
+              alt={listing.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          {/* Content */}
+          <div className="flex-1 p-4">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <Link 
+                to={`/annonce/${offer.listing_id}`}
+                className="font-semibold hover:text-accent line-clamp-1"
+              >
+                {listing.title || 'Annonce'}
+              </Link>
+              <Badge className={`${status.color} flex items-center gap-1 flex-shrink-0`}>
+                <StatusIcon className="w-3 h-3" />
+                {status.label}
+              </Badge>
+            </div>
+            
+            {/* Prix */}
+            <div className="flex items-center gap-4 text-sm mb-2">
+              <span className="text-muted-foreground">
+                Prix : <span className="line-through">{offer.original_price?.toFixed(2)} €</span>
+              </span>
+              <span className="font-bold text-accent">
+                Offre : {offer.offered_amount?.toFixed(2)} €
+              </span>
+              {offer.counter_amount && (
+                <span className="font-bold text-blue-600">
+                  Contre : {offer.counter_amount?.toFixed(2)} €
+                </span>
+              )}
+            </div>
+            
+            {/* Message */}
+            {offer.message && (
+              <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
+                <MessageSquare className="w-3 h-3" />
+                {offer.message}
+              </p>
+            )}
+            
+            {/* Date et acheteur/vendeur */}
+            <div className="text-xs text-muted-foreground">
+              {type === 'received' ? `De ${offer.buyer_name}` : `À ${offer.seller_name || 'Vendeur'}`}
+              {' • '}
+              {formatDate(offer.created_at)}
+            </div>
+            
+            {/* Actions pour les offres reçues */}
+            {type === 'received' && offer.status === 'pending' && (
+              <div className="flex gap-2 mt-3">
+                <Button
+                  size="sm"
+                  className="bg-green-600 hover:bg-green-700"
+                  onClick={() => onRespond(offer.id, true)}
+                  disabled={processing}
+                >
+                  <CheckCircle className="w-4 h-4 mr-1" />
+                  Accepter
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onRespond(offer.id, 'counter')}
+                  disabled={processing}
+                >
+                  <ArrowLeftRight className="w-4 h-4 mr-1" />
+                  Contre-offre
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-destructive"
+                  onClick={() => onRespond(offer.id, false)}
+                  disabled={processing}
+                >
+                  <XCircle className="w-4 h-4 mr-1" />
+                  Refuser
+                </Button>
+              </div>
+            )}
+            
+            {/* Actions pour les contre-offres reçues */}
+            {type === 'sent' && offer.status === 'countered' && (
+              <div className="flex gap-2 mt-3">
+                <Button
+                  size="sm"
+                  className="bg-green-600 hover:bg-green-700"
+                  onClick={() => onAcceptCounter(offer.id)}
+                  disabled={processing}
+                >
+                  <CheckCircle className="w-4 h-4 mr-1" />
+                  Accepter {offer.counter_amount?.toFixed(2)} €
+                </Button>
+                <Link to={`/annonce/${offer.listing_id}`}>
+                  <Button size="sm" variant="outline">
+                    <Eye className="w-4 h-4 mr-1" />
+                    Voir
+                  </Button>
+                </Link>
+              </div>
+            )}
+            
+            {/* Lien pour finaliser si acceptée */}
+            {offer.status === 'accepted' && (
+              <div className="mt-3">
+                <Link to={`/annonce/${offer.listing_id}`}>
+                  <Button size="sm" className="bg-accent hover:bg-accent/90">
+                    Finaliser
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function MyOffers() {
   const { token } = useAuth();
   const [receivedOffers, setReceivedOffers] = useState([]);
@@ -34,11 +178,7 @@ export default function MyOffers() {
   const [counterAmount, setCounterAmount] = useState('');
   const [processing, setProcessing] = useState(false);
 
-  useEffect(() => {
-    fetchOffers();
-  }, []);
-
-  const fetchOffers = async () => {
+  const fetchOffers = useCallback(async () => {
     try {
       const [received, sent] = await Promise.all([
         axios.get(`${API}/offers/received`, { headers: { Authorization: `Bearer ${token}` } }),
@@ -51,17 +191,46 @@ export default function MyOffers() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
-  const handleRespond = async (offerId, accept, counter = null) => {
+  useEffect(() => {
+    fetchOffers();
+  }, [fetchOffers]);
+
+  const handleRespond = async (offerId, action) => {
+    if (action === 'counter') {
+      const offer = receivedOffers.find(o => o.id === offerId);
+      setRespondingTo(offer);
+      return;
+    }
+    
     setProcessing(true);
     try {
       await axios.post(
         `${API}/offers/${offerId}/respond`,
-        { accept, counter_amount: counter ? parseFloat(counter) : null },
+        { accept: action === true, counter_amount: null },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success(accept ? 'Offre acceptée !' : counter ? 'Contre-offre envoyée !' : 'Offre refusée');
+      toast.success(action === true ? 'Offre acceptée !' : 'Offre refusée');
+      fetchOffers();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleSendCounter = async () => {
+    if (!respondingTo || !counterAmount) return;
+    
+    setProcessing(true);
+    try {
+      await axios.post(
+        `${API}/offers/${respondingTo.id}/respond`,
+        { accept: false, counter_amount: parseFloat(counterAmount) },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success('Contre-offre envoyée !');
       setRespondingTo(null);
       setCounterAmount('');
       fetchOffers();
@@ -89,148 +258,6 @@ export default function MyOffers() {
     }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'short',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const OfferCard = ({ offer, type }) => {
-    const status = STATUS_CONFIG[offer.status] || STATUS_CONFIG.pending;
-    const StatusIcon = status.icon;
-    const listing = offer.listing || {};
-    
-    return (
-      <Card className="overflow-hidden">
-        <CardContent className="p-0">
-          <div className="flex flex-col sm:flex-row">
-            {/* Image */}
-            <div className="sm:w-32 h-24 sm:h-auto flex-shrink-0">
-              <img
-                src={listing.images?.[0] || '/placeholder.jpg'}
-                alt={listing.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            
-            {/* Content */}
-            <div className="flex-1 p-4">
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <Link 
-                  to={`/annonce/${offer.listing_id}`}
-                  className="font-semibold hover:text-accent line-clamp-1"
-                >
-                  {listing.title || 'Annonce'}
-                </Link>
-                <Badge className={`${status.color} flex items-center gap-1 flex-shrink-0`}>
-                  <StatusIcon className="w-3 h-3" />
-                  {status.label}
-                </Badge>
-              </div>
-              
-              {/* Prix */}
-              <div className="flex items-center gap-4 text-sm mb-2">
-                <span className="text-muted-foreground">
-                  Prix : <span className="line-through">{offer.original_price?.toFixed(2)} €</span>
-                </span>
-                <span className="font-bold text-accent">
-                  Offre : {offer.offered_amount?.toFixed(2)} €
-                </span>
-                {offer.counter_amount && (
-                  <span className="font-bold text-blue-600">
-                    Contre : {offer.counter_amount?.toFixed(2)} €
-                  </span>
-                )}
-              </div>
-              
-              {/* Message */}
-              {offer.message && (
-                <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
-                  <MessageSquare className="w-3 h-3" />
-                  {offer.message}
-                </p>
-              )}
-              
-              {/* Date et acheteur/vendeur */}
-              <div className="text-xs text-muted-foreground">
-                {type === 'received' ? `De ${offer.buyer_name}` : `À ${offer.seller_name || 'Vendeur'}`}
-                {' • '}
-                {formatDate(offer.created_at)}
-              </div>
-              
-              {/* Actions */}
-              {type === 'received' && offer.status === 'pending' && (
-                <div className="flex gap-2 mt-3">
-                  <Button
-                    size="sm"
-                    className="bg-green-600 hover:bg-green-700"
-                    onClick={() => handleRespond(offer.id, true)}
-                    disabled={processing}
-                  >
-                    <CheckCircle className="w-4 h-4 mr-1" />
-                    Accepter
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setRespondingTo(offer)}
-                    disabled={processing}
-                  >
-                    <ArrowLeftRight className="w-4 h-4 mr-1" />
-                    Contre-offre
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="text-destructive"
-                    onClick={() => handleRespond(offer.id, false)}
-                    disabled={processing}
-                  >
-                    <XCircle className="w-4 h-4 mr-1" />
-                    Refuser
-                  </Button>
-                </div>
-              )}
-              
-              {type === 'sent' && offer.status === 'countered' && (
-                <div className="flex gap-2 mt-3">
-                  <Button
-                    size="sm"
-                    className="bg-green-600 hover:bg-green-700"
-                    onClick={() => handleAcceptCounter(offer.id)}
-                    disabled={processing}
-                  >
-                    <CheckCircle className="w-4 h-4 mr-1" />
-                    Accepter {offer.counter_amount?.toFixed(2)} €
-                  </Button>
-                  <Link to={`/annonce/${offer.listing_id}`}>
-                    <Button size="sm" variant="outline">
-                      <Eye className="w-4 h-4 mr-1" />
-                      Voir l'annonce
-                    </Button>
-                  </Link>
-                </div>
-              )}
-              
-              {offer.status === 'accepted' && (
-                <div className="mt-3">
-                  <Link to={`/annonce/${offer.listing_id}`}>
-                    <Button size="sm" className="bg-accent hover:bg-accent/90">
-                      Finaliser l'achat
-                    </Button>
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-secondary/30 flex items-center justify-center">
@@ -243,7 +270,7 @@ export default function MyOffers() {
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
         title="Mes Offres"
-        description="Gérez vos offres d'achat et de vente sur World Auto France"
+        description="Gérez vos offres sur World Auto France"
         url="/mes-offres"
         noindex={true}
       />
@@ -277,7 +304,14 @@ export default function MyOffers() {
               </Card>
             ) : (
               receivedOffers.map(offer => (
-                <OfferCard key={offer.id} offer={offer} type="received" />
+                <OfferCard 
+                  key={offer.id} 
+                  offer={offer} 
+                  type="received" 
+                  onRespond={handleRespond}
+                  onAcceptCounter={handleAcceptCounter}
+                  processing={processing}
+                />
               ))
             )}
           </TabsContent>
@@ -295,7 +329,14 @@ export default function MyOffers() {
               </Card>
             ) : (
               sentOffers.map(offer => (
-                <OfferCard key={offer.id} offer={offer} type="sent" />
+                <OfferCard 
+                  key={offer.id} 
+                  offer={offer} 
+                  type="sent"
+                  onRespond={handleRespond}
+                  onAcceptCounter={handleAcceptCounter}
+                  processing={processing}
+                />
               ))
             )}
           </TabsContent>
@@ -310,7 +351,7 @@ export default function MyOffers() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <p className="text-sm text-muted-foreground">
-              L'acheteur propose {respondingTo?.offered_amount?.toFixed(2)} € pour cette annonce.
+              Offre reçue : {respondingTo?.offered_amount?.toFixed(2)} €
             </p>
             <div className="space-y-2">
               <label className="text-sm font-medium">Votre contre-offre (€)</label>
@@ -329,12 +370,12 @@ export default function MyOffers() {
               Annuler
             </Button>
             <Button
-              onClick={() => handleRespond(respondingTo?.id, false, counterAmount)}
+              onClick={handleSendCounter}
               disabled={!counterAmount || parseFloat(counterAmount) <= (respondingTo?.offered_amount || 0) || processing}
               className="bg-accent hover:bg-accent/90"
             >
               {processing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-              Envoyer la contre-offre
+              Envoyer
             </Button>
           </DialogFooter>
         </DialogContent>
