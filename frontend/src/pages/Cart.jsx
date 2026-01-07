@@ -105,6 +105,10 @@ export default function Cart() {
     const updatedCart = cartItems.filter(item => item.id !== listingId);
     setCartItems(updatedCart);
     localStorage.setItem('worldauto_cart', JSON.stringify(updatedCart));
+    // Re-track with updated cart
+    if (updatedCart.length > 0) {
+      scheduleTracking(updatedCart);
+    }
     toast.success('Article retiré du panier');
   };
 
