@@ -478,7 +478,7 @@ export default function Profile() {
                         <Shield className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-medium text-sm">Paiements sécurisés</p>
-                          <p className="text-xs text-muted-foreground">L'argent est protégé jusqu'à la livraison</p>
+                          <p className="text-xs text-muted-foreground">L&apos;argent est protégé jusqu&apos;à la livraison</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
