@@ -332,7 +332,24 @@
       "suspension": "Suspension",
       "exhaust": "Échappement",
       "interior": "Intérieur"
-    }
+    },
+    "referral_invite_desc": "Invitez vos proches sur World Auto France et recevez 100 points par filleul. Eux aussi reçoivent 50 points de bienvenue !",
+    "pts_per_referral": "+100 pts / filleul",
+    "pts_for_them": "+50 pts pour eux",
+    "unlimited": "Illimité",
+    "your_referral_code": "Votre code de parrainage",
+    "referrals": "Filleuls",
+    "points_earned": "Points gagnés",
+    "invite_friends": "Inviter mes amis",
+    "see_all_referrals": "Voir tous mes filleuls",
+    "join_program": "Rejoignez le programme !",
+    "create_account_referral": "Créez votre compte pour obtenir votre code de parrainage personnel.",
+    "create_account": "Créer mon compte",
+    "have_code": "Vous avez un code ?",
+    "register_here": "Inscrivez-vous ici",
+    "ready_to_sell": "Prêt à vendre votre véhicule ?",
+    "cta_desc": "Déposez votre annonce en quelques minutes et touchez des milliers d'acheteurs potentiels dans toute la France.",
+    "see_pricing": "Voir les tarifs"
   },
   "seller": {
     "title": "Vendeur",
