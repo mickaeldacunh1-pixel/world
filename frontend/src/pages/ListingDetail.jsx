@@ -605,7 +605,7 @@ export default function ListingDetail() {
                     )}
                     {listing.vehicle_mileage && (
                       <div>
-                        <span className="text-muted-foreground text-sm">Kilométrage véhicule d'origine</span>
+                        <span className="text-muted-foreground text-sm">Kilométrage véhicule d&apos;origine</span>
                         <p className="font-medium">{listing.vehicle_mileage.toLocaleString('fr-FR')} km</p>
                       </div>
                     )}
@@ -765,7 +765,7 @@ export default function ListingDetail() {
                 </Button>
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                   <Shield className="w-4 h-4 text-green-600" />
-                  Paiement sécurisé - Argent protégé jusqu'à réception
+                  Paiement sécurisé - Argent protégé jusqu&apos;à réception
                 </div>
               </div>
             )}
@@ -783,7 +783,7 @@ export default function ListingDetail() {
                   <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                       <AlertTriangle className="w-5 h-5 text-orange-500" />
-                      Signaler l'annonce
+                      Signaler l&apos;annonce
                     </DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4 mt-4">
