@@ -84,6 +84,9 @@ export default function Listings() {
   const [subcategories, setSubcategories] = useState({});
   const [carBrands, setCarBrands] = useState([]);
   
+  // Search history hook
+  const saveSearch = useSaveSearch();
+  
   // Filters
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [subcategory, setSubcategory] = useState(searchParams.get('subcategory') || '');
@@ -211,6 +214,17 @@ export default function Listings() {
     
     // Update search params
     setSearchParams(params);
+    
+    // Save search to history
+    saveSearch({
+      query: search,
+      category: category || null,
+      brand: compatibleBrand || null,
+      model: compatibleModel || null,
+      region: region || null,
+      min_price: minPrice ? parseFloat(minPrice) : null,
+      max_price: maxPrice ? parseFloat(maxPrice) : null
+    });
     
     fetchListings(true);
     setShowFilters(false);
