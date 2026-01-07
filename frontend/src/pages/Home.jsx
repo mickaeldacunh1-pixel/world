@@ -660,11 +660,11 @@ export default function Home() {
                           <cat.icon className="w-5 h-5 text-white" />
                         </div>
                         <span className="text-white font-heading font-bold text-lg md:text-xl drop-shadow-lg">
-                          {cat.name}
+                          {t(`categories.${cat.slug}`)}
                         </span>
                       </div>
                       <p className="text-white/80 text-sm font-medium">
-                        {categoryStats[cat.slug] || 0} annonces
+                        {categoryStats[cat.slug] || 0} {t('hero.listings')}
                       </p>
                     </div>
                   </div>
