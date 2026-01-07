@@ -775,6 +775,37 @@ ACCESSOIRES_SUBCATEGORIES = {
     "autre_accessoire": "Autres accessoires"
 }
 
+# Sous-catégories Motos
+MOTOS_SUBCATEGORIES = {
+    "moto_routiere": "Motos routières",
+    "moto_sportive": "Motos sportives",
+    "moto_cross": "Motos cross / Enduro",
+    "moto_custom": "Motos custom / Chopper",
+    "scooter": "Scooters",
+    "trottinette": "Trottinettes électriques",
+    "velo_electrique": "Vélos électriques",
+    "quad": "Quads",
+    "pieces_moto": "Pièces détachées moto",
+    "equipement_moto": "Équipement motard",
+    "autre_moto": "Autres deux-roues"
+}
+
+# Sous-catégories Utilitaires
+UTILITAIRES_SUBCATEGORIES = {
+    "fourgon": "Fourgons / Fourgonnettes",
+    "camionnette": "Camionnettes",
+    "pickup": "Pick-up",
+    "poids_lourd": "Poids lourds",
+    "camion": "Camions",
+    "tracteur": "Tracteurs routiers",
+    "remorque": "Remorques",
+    "bus": "Bus / Minibus",
+    "engin_chantier": "Engins de chantier",
+    "agricole": "Véhicules agricoles",
+    "pieces_utilitaire": "Pièces détachées utilitaire",
+    "autre_utilitaire": "Autres utilitaires"
+}
+
 # Marques automobiles principales
 CAR_BRANDS = [
     "Abarth", "Alfa Romeo", "Alpine", "Aston Martin", "Audi",
