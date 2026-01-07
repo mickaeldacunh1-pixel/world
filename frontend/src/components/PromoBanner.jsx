@@ -48,9 +48,24 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
   useEffect(() => {
     const fetchPromoConfig = async () => {
       try {
-        const response = await axios.get(`${API}/settings/promo-banner`);
+        // Fetch from hero settings which includes promo banner settings
+        const response = await axios.get(`${API}/settings/hero`);
         if (response.data) {
-          setPromoConfig({ ...DEFAULT_PROMO, ...response.data, bg_color: response.data.bg_color || bgColor });
+          const data = response.data;
+          setPromoConfig({
+            enabled: data.promo_banner_enabled !== false,
+            title: data.promo_banner_title || DEFAULT_PROMO.title,
+            subtitle: data.promo_banner_subtitle || DEFAULT_PROMO.subtitle,
+            highlight: data.promo_banner_highlight || DEFAULT_PROMO.highlight,
+            benefits: DEFAULT_PROMO.benefits,
+            cta_text: data.promo_banner_cta || DEFAULT_PROMO.cta_text,
+            cta_link: data.promo_banner_link || DEFAULT_PROMO.cta_link,
+            badge_text: data.promo_banner_badge || DEFAULT_PROMO.badge_text,
+            bg_color: data.promo_bg_color || bgColor,
+            accent_color: data.promo_accent_color || DEFAULT_PROMO.accent_color,
+            coupon_code: data.coupon_code || "",
+            coupon_discount: data.coupon_discount || "",
+          });
         }
       } catch (error) {
         // Use defaults if no config exists
