@@ -34,6 +34,7 @@ export default function Profile() {
     postal_code: user?.postal_code || '',
     company_name: user?.company_name || '',
     siret: user?.siret || '',
+    website: user?.website || '',
   });
   
   // Password form
