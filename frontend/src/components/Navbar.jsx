@@ -28,14 +28,42 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const [navbarSettings, setNavbarSettings] = useState({
+    promo_bg_color: '#1E3A5F',
+    promo_text_color: '#FFFFFF',
+    cart_bg_color: '#1E3A5F',
+    cart_text_color: '#FFFFFF',
+  });
 
   const categories = [
     { name: t('nav.parts'), slug: 'pieces', icon: Wrench },
     { name: t('nav.cars'), slug: 'voitures', icon: Car },
     { name: t('nav.motorcycles'), slug: 'motos', icon: Bike },
     { name: t('nav.utilities'), slug: 'utilitaires', icon: Truck },
+    { name: 'Engins', slug: 'engins', icon: Tractor },
     { name: t('nav.accessories'), slug: 'accessoires', icon: Settings },
   ];
+
+  // Fetch navbar settings
+  useEffect(() => {
+    const fetchNavbarSettings = async () => {
+      try {
+        const response = await axios.get(`${API}/settings/hero`);
+        if (response.data) {
+          setNavbarSettings(prev => ({
+            ...prev,
+            promo_bg_color: response.data.promo_bg_color || '#1E3A5F',
+            promo_text_color: response.data.promo_text_color || '#FFFFFF',
+            cart_bg_color: response.data.cart_bg_color || '#1E3A5F',
+            cart_text_color: response.data.cart_text_color || '#FFFFFF',
+          }));
+        }
+      } catch (error) {
+        console.log('Using default navbar settings');
+      }
+    };
+    fetchNavbarSettings();
+  }, []);
 
   // Fetch unread messages count
   useEffect(() => {
