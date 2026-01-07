@@ -280,7 +280,7 @@ export default function Navbar() {
                   <Button variant="ghost" data-testid="login-btn">{t('common.login')}</Button>
                 </Link>
                 <Link to="/auth?mode=register">
-                  <Button className="bg-primary hover:bg-primary/90" data-testid="register-btn">S'inscrire</Button>
+                  <Button className="bg-primary hover:bg-primary/90" data-testid="register-btn">{t('common.register')}</Button>
                 </Link>
               </>
             )}
