@@ -124,7 +124,7 @@ export default function Listings() {
       fetchSubcategories();
     }
     fetchCarBrands();
-  }, [category]);
+  }, [category, fetchSubcategories, fetchCarBrands]);
 
   useEffect(() => {
     fetchListings();
