@@ -36,10 +36,13 @@ const ICON_MAP = {
   sparkles: Sparkles,
 };
 
-export default function PromoBanner() {
+export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF' }) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [promoConfig, setPromoConfig] = useState(DEFAULT_PROMO);
+  const [promoConfig, setPromoConfig] = useState({
+    ...DEFAULT_PROMO,
+    bg_color: bgColor,
+  });
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
@@ -47,7 +50,7 @@ export default function PromoBanner() {
       try {
         const response = await axios.get(`${API}/settings/promo-banner`);
         if (response.data) {
-          setPromoConfig({ ...DEFAULT_PROMO, ...response.data });
+          setPromoConfig({ ...DEFAULT_PROMO, ...response.data, bg_color: response.data.bg_color || bgColor });
         }
       } catch (error) {
         // Use defaults if no config exists
@@ -61,7 +64,7 @@ export default function PromoBanner() {
     if (wasDismissed) {
       setDismissed(true);
     }
-  }, []);
+  }, [bgColor]);
 
   const handleDismiss = (e) => {
     e.stopPropagation();
