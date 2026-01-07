@@ -7190,7 +7190,7 @@ async def create_coupon(coupon: CouponCreate, current_user: dict = Depends(get_c
         raise HTTPException(status_code=400, detail="Ce code promo existe déjà")
     
     coupon_doc = {
-        "id": str(uuid4()),
+        "id": str(uuid.uuid4()),
         "code": coupon.code.upper(),
         "discount_type": coupon.discount_type,
         "discount_value": coupon.discount_value,
