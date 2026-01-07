@@ -77,6 +77,7 @@ export default function Listings() {
   const { category } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const saveSearch = useSaveSearch();
+  const { t } = useTranslation();
   
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
