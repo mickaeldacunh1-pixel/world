@@ -442,7 +442,7 @@ export default function Home() {
               }`}
               style={{ color: heroSettings.hero_description_color || 'rgba(255, 255, 255, 0.8)' }}
             >
-              {heroSettings.hero_description}
+              {autoTranslate(heroSettings.hero_description) || t('hero.description')}
             </p>
 
             {/* Search Form - Glass effect */}
