@@ -460,42 +460,44 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
                           value={settings.hero_stat2_number || '5'}
                           onChange={(e) => updateSetting('hero_stat2_number', e.target.value)}
                           placeholder="5"
-                    />
-                    <Input
-                      value={settings.hero_stat2_label || ''}
-                      onChange={(e) => updateSetting('hero_stat2_label', e.target.value)}
-                      placeholder="catégories"
-                    />
-                  </div>
-                </div>
-                <div className="p-3 border rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label className="font-bold">Stat 3 (optionnel)</Label>
-                    <Switch 
-                      checked={settings.hero_stat3_enabled === true}
-                      onCheckedChange={(v) => updateSetting('hero_stat3_enabled', v)}
-                    />
-                  </div>
-                  {settings.hero_stat3_enabled && (
-                    <div className="grid grid-cols-3 gap-2">
-                      <Input
-                        value={settings.hero_stat3_icon || ''}
-                        onChange={(e) => updateSetting('hero_stat3_icon', e.target.value)}
-                        placeholder="🏆"
-                      />
-                      <Input
-                        value={settings.hero_stat3_number || ''}
-                        onChange={(e) => updateSetting('hero_stat3_number', e.target.value)}
-                        placeholder="1000+"
-                      />
-                      <Input
-                        value={settings.hero_stat3_label || ''}
-                        onChange={(e) => updateSetting('hero_stat3_label', e.target.value)}
-                        placeholder="utilisateurs"
-                      />
+                        />
+                        <Input
+                          value={settings.hero_stat2_label || ''}
+                          onChange={(e) => updateSetting('hero_stat2_label', e.target.value)}
+                          placeholder="catégories"
+                        />
+                      </div>
                     </div>
-                  )}
-                </div>
+                    <div className="p-3 border rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label className="font-bold">Stat 3 (optionnel)</Label>
+                        <Switch 
+                          checked={settings.hero_stat3_enabled === true}
+                          onCheckedChange={(v) => updateSetting('hero_stat3_enabled', v)}
+                        />
+                      </div>
+                      {settings.hero_stat3_enabled && (
+                        <div className="grid grid-cols-3 gap-2">
+                          <Input
+                            value={settings.hero_stat3_icon || ''}
+                            onChange={(e) => updateSetting('hero_stat3_icon', e.target.value)}
+                            placeholder="🏆"
+                          />
+                          <Input
+                            value={settings.hero_stat3_number || ''}
+                            onChange={(e) => updateSetting('hero_stat3_number', e.target.value)}
+                            placeholder="1000+"
+                          />
+                          <Input
+                            value={settings.hero_stat3_label || ''}
+                            onChange={(e) => updateSetting('hero_stat3_label', e.target.value)}
+                            placeholder="utilisateurs"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </CollapsibleSection>
