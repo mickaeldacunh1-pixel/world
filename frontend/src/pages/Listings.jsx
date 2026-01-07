@@ -140,7 +140,7 @@ export default function Listings() {
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [category, page, sort, subcategory, compatibleBrand, region, oemReference]);
+  }, [fetchListings]);
 
   const fetchSubcategories = useCallback(async () => {
     try {
