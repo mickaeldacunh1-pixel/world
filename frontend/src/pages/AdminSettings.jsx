@@ -1273,12 +1273,13 @@ export default function AdminSettings() {
                 
                 {/* Categories Preview */}
                 {settings.hero_show_categories !== false && (
-                  <div className="mt-4 grid grid-cols-5 gap-2">
+                  <div className="mt-4 grid grid-cols-6 gap-2">
                     {[
                       { label: 'Pièces', img: settings.category_pieces_image },
                       { label: 'Voitures', img: settings.category_voitures_image },
                       { label: 'Motos', img: settings.category_motos_image },
                       { label: 'Utilitaires', img: settings.category_utilitaires_image },
+                      { label: 'Engins', img: settings.category_engins_image },
                       { label: 'Accessoires', img: settings.category_accessoires_image },
                     ].map((cat, idx) => (
                       <div key={`${idx}-${cat.img}`} className="relative rounded-lg overflow-hidden aspect-video group">
