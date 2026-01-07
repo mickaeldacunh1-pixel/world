@@ -279,30 +279,33 @@ export default function Home() {
   // Auto-translation system for Hero dynamic texts
   const heroTranslations = {
     // Button texts
-    'Scanner ma plaque': t('search.voice_search'),
+    'Scanner ma plaque': t('search.scan_plate'),
     'Déposer une annonce': t('nav.newListing'),
     'Enchères en direct': t('nav.listings'),
     'Voir les annonces': t('common.see_all') + ' ' + t('nav.listings'),
     'Commencer': t('common.search'),
+    'Rechercher': t('common.search'),
     // Stats labels
     'annonces actives': t('hero.activeListings'),
     'annonces': t('hero.activeListings'),
     'catégories': t('hero.categories'),
+    'catégorie': t('hero.categories'),
     'membres': t('hero.members'),
+    'membre': t('hero.members'),
     'ventes réalisées': t('hero.sales'),
     'ventes': t('hero.sales'),
     // Other common texts
     'La référence automobile en France': t('footer.description'),
-    'Rechercher': t('common.search'),
-    'Voir tout': t('common.see_all'),
     'Outils IA': t('home.ai_diagnostic'),
+    'Voir tout': t('common.see_all'),
+    'Voir plus': t('common.see_more'),
   };
 
   // Function to auto-translate French texts if not in French
   const autoTranslate = (text) => {
     if (!text) return text;
     const currentLang = localStorage.getItem('i18nextLng') || 'fr';
-    if (currentLang === 'fr') return text;
+    if (currentLang === 'fr' || currentLang.startsWith('fr')) return text;
     return heroTranslations[text] || text;
   };
 
