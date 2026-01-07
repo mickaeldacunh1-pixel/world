@@ -1734,7 +1734,7 @@ export default function AdminSettings() {
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <h4 className="font-medium flex items-center gap-2">
-                          🩺 Section "Diagnostic IA"
+                          🩺 Section &quot;Diagnostic IA&quot;
                         </h4>
                         <p className="text-sm text-muted-foreground">Bannière pour le diagnostic automobile par Tobi</p>
                       </div>
@@ -1778,7 +1778,7 @@ export default function AdminSettings() {
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <h4 className="font-medium flex items-center gap-2">
-                          🎁 Section "Parrainage"
+                          🎁 Section &quot;Parrainage&quot;
                         </h4>
                         <p className="text-sm text-muted-foreground">Bannière pour le programme de parrainage</p>
                       </div>
