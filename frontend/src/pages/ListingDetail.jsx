@@ -581,6 +581,65 @@ export default function ListingDetail() {
               </Card>
             )}
 
+            {/* Traçabilité & Confiance */}
+            {(listing.part_origin || listing.vehicle_mileage || listing.is_verified || listing.has_warranty) && (
+              <Card className="p-6 border-green-100 bg-green-50/50 dark:bg-green-950/20">
+                <h2 className="font-heading font-bold text-lg mb-4 flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-green-600" />
+                  Traçabilité & Confiance
+                </h2>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    {listing.part_origin && (
+                      <div>
+                        <span className="text-muted-foreground text-sm">Origine de la pièce</span>
+                        <p className="font-medium capitalize">
+                          {listing.part_origin === 'casse' ? '🏭 Casse automobile' :
+                           listing.part_origin === 'particulier' ? '👤 Particulier' :
+                           listing.part_origin === 'professionnel' ? '🏢 Professionnel' :
+                           listing.part_origin === 'neuf' ? '✨ Pièce neuve' : listing.part_origin}
+                        </p>
+                      </div>
+                    )}
+                    {listing.vehicle_mileage && (
+                      <div>
+                        <span className="text-muted-foreground text-sm">Kilométrage véhicule d'origine</span>
+                        <p className="font-medium">{listing.vehicle_mileage.toLocaleString('fr-FR')} km</p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {listing.is_verified && (
+                    <div className="flex items-center gap-3 p-3 bg-white dark:bg-card rounded-lg">
+                      <Award className={`w-8 h-8 ${listing.verification_level === 'gold' ? 'text-amber-500' : 'text-slate-400'}`} />
+                      <div>
+                        <p className="font-medium">
+                          {listing.verification_level === 'gold' ? 'Certification Or' : 'Certification Argent'}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Score de confiance: {listing.verification_score}/100
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {listing.has_warranty && (
+                    <div className="flex items-center gap-3 p-3 bg-white dark:bg-card rounded-lg">
+                      <Shield className="w-8 h-8 text-green-500" />
+                      <div>
+                        <p className="font-medium text-green-700 dark:text-green-400">
+                          Garantie World Auto - {listing.warranty_duration} mois
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Expire le {new Date(listing.warranty_expires).toLocaleDateString('fr-FR')}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            )}
+
             {/* Seller Info */}
             <Card className="p-6">
               <h2 className="font-heading font-bold text-lg mb-4">Vendeur</h2>
