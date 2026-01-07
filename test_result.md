@@ -1146,3 +1146,189 @@ test_plan:
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+# ================== NEW FEATURES IMPLEMENTED ==================
+
+backend:
+  - task: "Faire une offre API"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented POST /api/offers, GET /api/offers/received, GET /api/offers/sent, POST /api/offers/{id}/respond, POST /api/offers/{id}/accept-counter. Includes email notifications."
+
+  - task: "Lots de pièces API"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented POST /api/bundles, GET /api/bundles, GET /api/bundles/{id}, DELETE /api/bundles/{id}. Allows sellers to create bundles with discounts."
+
+  - task: "Compteur Live API"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Implemented GET /api/stats/live returning listings_count, users_count, sales_count, sellers_count. Tested via curl - returns correct data."
+
+  - task: "Relance panier abandonné API"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Implemented POST /api/cart/track, POST /api/cart/convert, POST /api/admin/send-cart-reminders. Tracks carts and sends reminder emails."
+
+  - task: "Widget embarquable API"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Implemented GET /api/widget/listings, GET /api/widget/code. Returns embed code for external sites."
+
+  - task: "Site web pour PRO"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Added 'website' field to ProfileUpdate model. Field is saved in user profile."
+
+frontend:
+  - task: "Page Mes Offres"
+    implemented: true
+    working: true
+    file: "pages/MyOffers.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Created MyOffers page with tabs for received/sent offers. Includes respond, counter-offer, accept functionality."
+
+  - task: "Bouton Faire une offre"
+    implemented: true
+    working: true
+    file: "components/MakeOfferButton.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Created MakeOfferButton component with suggested discounts (10%, 15%, 20%) and message option. Integrated in ListingDetail."
+
+  - task: "Page Lots de Pièces"
+    implemented: true
+    working: true
+    file: "pages/Bundles.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Created Bundles page at /lots. Displays available bundles with images grid and discount badge."
+
+  - task: "Page Détail Lot"
+    implemented: true
+    working: true
+    file: "pages/BundleDetail.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Created BundleDetail page at /lot/:id. Shows all pieces in bundle, original vs bundle price, seller info."
+
+  - task: "Widget Page"
+    implemented: true
+    working: true
+    file: "pages/Widget.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Created Widget page at /widget. Renders without navbar/footer for iframe embedding. Supports light/dark theme."
+
+  - task: "Compteur Live Hero"
+    implemented: true
+    working: true
+    file: "pages/Home.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Added live stats fetching and display in Hero section. Shows real counts when hero_use_live_counter is enabled."
+
+  - task: "Compteur Live Toggle in HeroEditor"
+    implemented: true
+    working: true
+    file: "components/HeroEditor.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Added 'Compteur Live' toggle in Stats section of HeroEditor. When enabled, displays real-time stats instead of custom values."
+
+  - task: "Champ Site Web PRO"
+    implemented: true
+    working: true
+    file: "pages/Profile.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "main"
+        - comment: "Added website field in professional section of Profile page. Displayed on SellerProfile.jsx"
+
+agent_communication:
+    - agent: "main"
+    - message: "Implemented 6 new features: 1) Faire une offre (API + UI), 2) Lots de pièces (API + UI), 3) Compteur Live (API + HeroEditor toggle), 4) Relance panier abandonné (API), 5) Widget embarquable (API + page), 6) Site web pour PRO (backend + frontend). All endpoints tested via curl. Frontend pages screenshot tested. Ready for comprehensive testing."
+
+test_plan:
+  current_focus:
+    - "Test Faire une offre flow end-to-end"
+    - "Test Lots de pièces creation and display"
+    - "Verify Live Counter in Hero when toggle is enabled"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
