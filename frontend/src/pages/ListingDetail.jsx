@@ -422,9 +422,18 @@ export default function ListingDetail() {
           <div className="space-y-6">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <Badge variant="secondary">{categoryLabels[listing.category]}</Badge>
                   <Badge variant="outline">{conditionLabels[listing.condition]}</Badge>
+                  {listing.is_verified && (
+                    <VerificationBadge level={listing.verification_level} score={listing.verification_score} />
+                  )}
+                  {listing.has_warranty && (
+                    <WarrantyBadge duration={listing.warranty_duration} expiresAt={listing.warranty_expires} />
+                  )}
+                  {listing.part_origin && (
+                    <PartOriginBadge origin={listing.part_origin} />
+                  )}
                 </div>
                 <Button
                   variant="outline"
