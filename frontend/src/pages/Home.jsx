@@ -802,7 +802,7 @@ export default function Home() {
               to="/annonces/pieces" 
               className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
             >
-              Voir toutes les catégories
+              {t('home.see_all_categories')}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -815,13 +815,13 @@ export default function Home() {
           <div className="text-center mb-8 animate-fade-in-up">
             <div className="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-4">
               <span className="text-lg">🔍</span>
-              <span className="text-sm font-medium">Recherche professionnelle</span>
+              <span className="text-sm font-medium">{t('home.pro_search')}</span>
             </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white">
-              Recherche par référence OEM
+              {t('home.oem_search')}
             </h2>
             <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Trouvez la pièce exacte avec sa référence constructeur ou équipementier
+              {t('home.oem_search_desc')}
             </p>
           </div>
 
