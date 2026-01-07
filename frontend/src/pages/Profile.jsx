@@ -249,22 +249,30 @@ export default function Profile() {
 
         {/* Tabs */}
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="w-4 h-4" />
-              Informations
+              <span className="hidden sm:inline">Informations</span>
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="flex items-center gap-2">
+              <Bell className="w-4 h-4" />
+              <span className="hidden sm:inline">Notifications</span>
+            </TabsTrigger>
+            <TabsTrigger value="vacation" className="flex items-center gap-2">
+              <Palmtree className="w-4 h-4" />
+              <span className="hidden sm:inline">Vacances</span>
             </TabsTrigger>
             <TabsTrigger value="stripe" className="flex items-center gap-2">
               <CreditCard className="w-4 h-4" />
-              Paiements
+              <span className="hidden sm:inline">Paiements</span>
             </TabsTrigger>
             <TabsTrigger value="password" className="flex items-center gap-2">
               <Lock className="w-4 h-4" />
-              Mot de passe
+              <span className="hidden sm:inline">Mot de passe</span>
             </TabsTrigger>
             <TabsTrigger value="danger" className="flex items-center gap-2 text-destructive">
               <Trash2 className="w-4 h-4" />
-              Supprimer
+              <span className="hidden sm:inline">Supprimer</span>
             </TabsTrigger>
           </TabsList>
 
