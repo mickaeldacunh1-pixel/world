@@ -485,7 +485,7 @@ export default function Profile() {
                         <CreditCard className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-medium text-sm">Virements automatiques</p>
-                          <p className="text-xs text-muted-foreground">Recevez l'argent directement sur votre compte</p>
+                          <p className="text-xs text-muted-foreground">Recevez l&apos;argent directement sur votre compte</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
