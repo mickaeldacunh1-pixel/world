@@ -45,26 +45,28 @@ export default function CartPreview({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
   return (
     <Link 
       to="/panier"
-      className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all hover:opacity-90"
+      className="flex items-center gap-2 px-4 py-2 rounded-xl transition-all hover:opacity-90 font-semibold"
       style={{ backgroundColor: bgColor }}
     >
       {/* Cart Icon */}
-      <div className="relative">
-        <ShoppingCart className="w-6 h-6" style={{ color: textColor }} />
-      </div>
+      <ShoppingCart className="w-5 h-5" style={{ color: textColor }} />
 
-      {/* Info */}
-      <div className="text-right leading-tight">
-        <div className="text-lg font-bold" style={{ color: textColor }}>
-          {itemCount}
-        </div>
-        <div className="text-xs opacity-80" style={{ color: textColor }}>
-          article{itemCount > 1 ? 's' : ''}
-        </div>
-        <div className="text-sm font-semibold" style={{ color: textColor }}>
-          {totalPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
-        </div>
-      </div>
+      {/* Info inline */}
+      <span style={{ color: textColor }}>
+        Panier
+      </span>
+      <span 
+        className="px-2 py-0.5 rounded-full text-xs font-bold"
+        style={{ 
+          backgroundColor: 'rgba(255,255,255,0.2)', 
+          color: textColor 
+        }}
+      >
+        {itemCount}
+      </span>
+      <span className="font-bold" style={{ color: textColor }}>
+        {totalPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
+      </span>
     </Link>
   );
 }
