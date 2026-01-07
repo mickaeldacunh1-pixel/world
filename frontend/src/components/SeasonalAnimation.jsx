@@ -41,6 +41,67 @@ const ANIMATIONS = {
     count: 15,
     className: 'animate-float',
     extras: ['🌴', '🏖️', '🌊', '🍉']
+  },
+  // NEW ANIMATIONS
+  spring: {
+    emoji: '🌸',
+    count: 35,
+    className: 'animate-fall-sway',
+    extras: ['🦋', '🌷', '🌼', '🐝', '🌺']
+  },
+  newyear: {
+    emoji: '🎆',
+    count: 30,
+    className: 'animate-firework',
+    extras: ['🎇', '✨', '🥂', '🍾', '⭐']
+  },
+  racing: {
+    emoji: '🏎️',
+    count: 15,
+    className: 'animate-zoom-across',
+    extras: ['🏁', '🔧', '⚙️', '💨', '🛞']
+  },
+  sports: {
+    emoji: '⚽',
+    count: 20,
+    className: 'animate-bounce-fall',
+    extras: ['🏀', '🎾', '🏈', '🏆', '🥇']
+  },
+  rain: {
+    emoji: '💧',
+    count: 60,
+    className: 'animate-rain',
+    extras: ['🌧️', '💦']
+  },
+  stars: {
+    emoji: '⭐',
+    count: 40,
+    className: 'animate-twinkle',
+    extras: ['✨', '🌟', '💫']
+  },
+  money: {
+    emoji: '💰',
+    count: 25,
+    className: 'animate-fall-slow',
+    extras: ['💵', '💶', '💷', '🤑', '💸']
+  },
+  party: {
+    emoji: '🥳',
+    count: 30,
+    className: 'animate-fall-fast',
+    extras: ['🎂', '🎈', '🎁', '🍰', '🪅']
+  },
+  easter: {
+    emoji: '🐰',
+    count: 20,
+    className: 'animate-bounce-fall',
+    extras: ['🥚', '🐣', '🌷', '🐤', '🪺']
+  },
+  stpatrick: {
+    emoji: '🍀',
+    count: 35,
+    className: 'animate-fall-sway',
+    extras: ['☘️', '🌈', '💚', '🎩']
   }
 };
 
