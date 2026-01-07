@@ -137,7 +137,7 @@ export default function Navbar() {
                 <Link to="/deposer">
                   <Button className="hidden sm:flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground btn-primary" data-testid="create-listing-btn">
                     <Plus className="w-4 h-4" />
-                    Déposer une annonce
+                    {t('nav.newListing')}
                   </Button>
                 </Link>
 
