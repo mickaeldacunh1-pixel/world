@@ -1628,12 +1628,12 @@ export default function AdminSettings() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="w-5 h-5" />
-                  Sections de la page d'accueil
+                  Sections de la page d&apos;accueil
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <p className="text-sm text-muted-foreground mb-4">
-                  Activez ou désactivez les différentes sections de votre page d'accueil
+                  Activez ou désactivez les différentes sections de votre page d&apos;accueil
                 </p>
                 
                 <div className="space-y-4">
@@ -1642,7 +1642,7 @@ export default function AdminSettings() {
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <h4 className="font-medium flex items-center gap-2">
-                          🏆 Section "Vendeur de la semaine"
+                          🏆 Section &quot;Vendeur de la semaine&quot;
                         </h4>
                         <p className="text-sm text-muted-foreground">Met en avant un vendeur performant</p>
                       </div>
