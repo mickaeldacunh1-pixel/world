@@ -672,6 +672,41 @@ export default function CreateListing() {
                       />
                     </div>
                   </div>
+
+                  {/* Confiance & Traçabilité */}
+                  <div className="mt-6 p-4 border rounded-lg bg-secondary/30">
+                    <h4 className="font-medium mb-4 flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-accent" />
+                      Traçabilité (améliore votre score de confiance)
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="part_origin">Origine de la pièce</Label>
+                        <Select value={formData.part_origin} onValueChange={(v) => handleChange('part_origin', v)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner l'origine" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="casse">Casse automobile</SelectItem>
+                            <SelectItem value="particulier">Particulier</SelectItem>
+                            <SelectItem value="professionnel">Professionnel</SelectItem>
+                            <SelectItem value="neuf">Pièce neuve</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="vehicle_mileage">Kilométrage du véhicule d'origine</Label>
+                        <Input
+                          id="vehicle_mileage"
+                          type="number"
+                          placeholder="Ex: 125000"
+                          value={formData.vehicle_mileage}
+                          onChange={(e) => handleChange('vehicle_mileage', e.target.value)}
+                        />
+                        <p className="text-xs text-muted-foreground">km au compteur lors du démontage</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
