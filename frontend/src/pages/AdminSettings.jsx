@@ -15,7 +15,8 @@ import {
   Save, Eye, Image, Type, RefreshCw, Palette, Layout, 
   Plus, Trash2, MoveUp, MoveDown, Upload, Settings, 
   AlertCircle, CheckCircle, Loader2, Sparkles,
-  Menu, Globe, Facebook, Instagram, Twitter, Youtube, Link2, Mail, Phone
+  Menu, Globe, Facebook, Instagram, Twitter, Youtube, Link2, Mail, Phone,
+  Ticket, Percent, Calendar, Hash
 } from 'lucide-react';
 import EmojiPicker from '../components/EmojiPicker';
 import { ANIMATION_OPTIONS } from '../components/SeasonalAnimation';
