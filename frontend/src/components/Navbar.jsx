@@ -97,6 +97,7 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-border" data-testid="navbar">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Ligne 1: Logo, Promo Banner, Icônes utilisateur */}
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Logo - Plus compact sur mobile */}
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2 shrink-0" data-testid="logo-link">
@@ -107,18 +108,11 @@ export default function Navbar() {
           </Link>
 
           {/* Promo Banner - Desktop only */}
-          <div className="hidden lg:block ml-4">
+          <div className="hidden lg:block flex-1 mx-4">
             <PromoBanner 
               bgColor={navbarSettings.promo_bg_color} 
               textColor={navbarSettings.promo_text_color} 
             />
-          </div>
-
-          {/* Desktop Navigation - Only Pricing now, Categories moved below */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link to="/tarifs" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="pricing-link">
-              {t('nav.pricing')}
-            </Link>
           </div>
 
           {/* Right section */}
