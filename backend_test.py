@@ -3391,10 +3391,13 @@ class AutoPiecesAPITester:
         
         print("\n🛒 Testing Abandoned Cart Tracking...")
         
-        # Step 1: Test tracking cart
+        # Step 1: Test tracking cart with correct format
         cart_data = {
-            "listing_ids": ["test-listing-1", "test-listing-2"],
-            "user_email": "test@example.com"
+            "items": [
+                {"listing_id": "test-listing-1", "price": 50.0, "title": "Test Item 1"},
+                {"listing_id": "test-listing-2", "price": 75.0, "title": "Test Item 2"}
+            ],
+            "email": "test@example.com"
         }
         
         track_result = self.run_test("Cart - Track Cart", "POST", "cart/track", 200, cart_data)
