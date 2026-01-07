@@ -47,21 +47,7 @@ export default function Profile() {
   });
 
   // Check Stripe status on mount and after redirect
-  useEffect(() => {
-    checkStripeStatus();
-    // Refresh user data on mount to ensure fresh data
-    refreshUser();
-    
-    // Handle Stripe redirect
-    if (searchParams.get('stripe_success') === 'true') {
-      toast.success('Compte Stripe configuré avec succès !');
-      checkStripeStatus();
-    } else if (searchParams.get('stripe_refresh') === 'true') {
-      toast.info('Veuillez finaliser la configuration de votre compte Stripe');
-    }
-  }, [searchParams, lastRefresh]);
-
-  const checkStripeStatus = async () => {
+  const checkStripeStatus = useCallback(async () => {
     if (!token) return;
     
     try {
@@ -72,7 +58,20 @@ export default function Profile() {
     } catch (error) {
       console.error('Error checking Stripe status:', error);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    checkStripeStatus();
+    refreshUser();
+    
+    // Handle Stripe redirect
+    if (searchParams.get('stripe_success') === 'true') {
+      toast.success('Compte Stripe configuré avec succès !');
+      checkStripeStatus();
+    } else if (searchParams.get('stripe_refresh') === 'true') {
+      toast.info('Veuillez finaliser la configuration de votre compte Stripe');
+    }
+  }, [searchParams, lastRefresh, checkStripeStatus, refreshUser]);
 
   const handleStripeConnect = async () => {
     setStripeLoading(true);
