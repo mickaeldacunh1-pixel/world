@@ -1279,9 +1279,9 @@ export default function AdminSettings() {
                       { label: 'Utilitaires', img: settings.category_utilitaires_image },
                       { label: 'Accessoires', img: settings.category_accessoires_image },
                     ].map((cat, idx) => (
-                      <div key={idx} className="relative rounded-lg overflow-hidden aspect-video group">
+                      <div key={`${idx}-${cat.img}`} className="relative rounded-lg overflow-hidden aspect-video group">
                         <img 
-                          src={cat.img ? `${cat.img}${cat.img.includes('?') ? '&' : '?'}t=${Date.now()}` : 'https://via.placeholder.com/150'} 
+                          src={cat.img || 'https://via.placeholder.com/150'} 
                           alt={cat.label} 
                           className="w-full h-full object-cover"
                           onError={(e) => {
