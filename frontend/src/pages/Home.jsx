@@ -1145,8 +1145,8 @@ export default function Home() {
                 <Gift className="w-10 h-10 text-white" />
               </div>
               <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
-                Parrainez vos amis,<br />
-                <span className="text-yellow-200">Gagnez des récompenses !</span>
+                {t('home.referral_title')}<br />
+                <span className="text-yellow-200">{t('home.referral_desc')}</span>
               </h2>
               <p className="text-white/90 text-lg md:text-xl max-w-xl mb-6">
                 Invitez vos proches sur World Auto France et recevez <strong>100 points</strong> par filleul. 
