@@ -298,7 +298,16 @@
     "voice_search": "Voice search",
     "recent_searches": "Recent searches",
     "clear_history": "Clear history",
-    "no_history": "No recent searches"
+    "no_history": "No recent searches",
+    "scan_plate": "Scan my plate",
+    "scan_title": "Scan your plate",
+    "confirm_plate": "Confirm plate",
+    "select_vehicle": "Select your vehicle",
+    "scan_desc": "Take a photo of your license plate or import an image to quickly find compatible parts.",
+    "take_photo": "Take photo",
+    "import_image": "Import image",
+    "manual_entry": "Manual entry",
+    "plate_number": "Plate number"
   },
   "errors": {
     "generic": "An error occurred",
