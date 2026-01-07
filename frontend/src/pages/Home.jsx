@@ -965,6 +965,7 @@ export default function Home() {
       )}
 
       {/* DIAGNOSTIC IA BANNER - Section mise en avant */}
+      {heroSettings.show_diagnostic_section !== false && (
       <section className="py-12 md:py-16 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
         {/* Background effects */}
         <div className="absolute inset-0">
@@ -982,8 +983,8 @@ export default function Home() {
               </div>
               
               <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-                Diagnostic Auto<br />
-                <span className="text-accent">par Tobi IA</span>
+                {heroSettings.diagnostic_title || 'Diagnostic Auto'}<br />
+                <span className="text-accent">{heroSettings.diagnostic_subtitle || 'par Tobi IA'}</span>
               </h2>
               
               <p className="text-slate-300 text-lg md:text-xl mb-6 max-w-xl">
