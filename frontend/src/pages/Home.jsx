@@ -942,7 +942,7 @@ export default function Home() {
                       {/* Quick view button */}
                       <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                         <span className="bg-white/95 backdrop-blur-sm text-primary px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
-                          Voir l'annonce →
+                          Voir l&apos;annonce →
                         </span>
                       </div>
                     </div>
@@ -1072,7 +1072,7 @@ export default function Home() {
                 
                 <div className="space-y-3">
                   <div className="bg-white/5 rounded-lg p-3">
-                    <p className="text-sm text-slate-300">🚗 "Ma voiture fait un bruit au freinage..."</p>
+                    <p className="text-sm text-slate-300">🚗 &quot;Ma voiture fait un bruit au freinage...&quot;</p>
                   </div>
                   <div className="bg-accent/20 rounded-lg p-3 border-l-2 border-accent">
                     <p className="text-sm text-white font-medium mb-1">⚠️ Analyse Tobi :</p>
