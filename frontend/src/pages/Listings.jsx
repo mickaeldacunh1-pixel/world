@@ -124,6 +124,25 @@ export default function Listings() {
     { value: 'corse', label: 'Corse' },
   ];
 
+  const fetchSubcategories = useCallback(async () => {
+    try {
+      const endpoint = category === 'accessoires' ? 'accessoires' : 'pieces';
+      const response = await axios.get(`${API}/subcategories/${endpoint}`);
+      setSubcategories(response.data);
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+    }
+  }, [category]);
+
+  const fetchCarBrands = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API}/brands`);
+      setCarBrands(response.data);
+    } catch (error) {
+      console.error('Error fetching car brands:', error);
+    }
+  }, []);
+
   useEffect(() => {
     if (category === 'pieces' || category === 'accessoires') {
       fetchSubcategories();
@@ -146,25 +165,6 @@ export default function Listings() {
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [fetchListings]);
-
-  const fetchSubcategories = useCallback(async () => {
-    try {
-      const endpoint = category === 'accessoires' ? 'accessoires' : 'pieces';
-      const response = await axios.get(`${API}/subcategories/${endpoint}`);
-      setSubcategories(response.data);
-    } catch (error) {
-      console.error('Error fetching subcategories:', error);
-    }
-  }, [category]);
-
-  const fetchCarBrands = useCallback(async () => {
-    try {
-      const response = await axios.get(`${API}/brands`);
-      setCarBrands(response.data);
-    } catch (error) {
-      console.error('Error fetching car brands:', error);
-    }
-  }, []);
 
   const fetchListings = useCallback(async (resetPage = false) => {
     setLoading(true);
