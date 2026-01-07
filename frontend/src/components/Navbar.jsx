@@ -167,14 +167,6 @@ export default function Navbar() {
                   </Button>
                 </Link>
 
-                {/* Panier rectangle */}
-                <div className="hidden sm:block">
-                  <CartPreview 
-                    bgColor={navbarSettings.cart_bg_color}
-                    textColor={navbarSettings.cart_text_color}
-                  />
-                </div>
-
                 {/* Profil (Menu utilisateur) */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
