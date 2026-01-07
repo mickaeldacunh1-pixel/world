@@ -36,7 +36,12 @@
     "alerts": "Alertes",
     "statistics": "Statistiques",
     "credits": "Crédits",
-    "buy_credits": "Acheter des crédits"
+    "buy_credits": "Acheter des crédits",
+    "apply": "Appliquer",
+    "reset": "Réinitialiser",
+    "all": "Tous",
+    "view": "Voir",
+    "details": "Détails"
   },
   "nav": {
     "home": "Accueil",
@@ -70,11 +75,22 @@
     "cta_sell": "Vendre mes pièces",
     "cta_buy": "Acheter des pièces"
   },
+  "categories": {
+    "title": "Explorez nos catégories",
+    "subtitle": "Trouvez exactement ce que vous cherchez parmi des milliers d'annonces vérifiées",
+    "pieces": "Pièces Détachées",
+    "voitures": "Voitures",
+    "motos": "Motos",
+    "utilitaires": "Utilitaires",
+    "accessoires": "Accessoires",
+    "view_category": "Voir la catégorie"
+  },
   "listing": {
     "price": "Prix",
     "condition": "État",
     "new": "Neuf",
     "used": "Occasion",
+    "reconditioned": "Reconditionné",
     "location": "Localisation",
     "seller": "Vendeur",
     "description": "Description",
@@ -99,7 +115,40 @@
     "in_stock": "En stock",
     "out_of_stock": "Rupture de stock",
     "similar": "Annonces similaires",
-    "from_seller": "Du même vendeur"
+    "from_seller": "Du même vendeur",
+    "view_listing": "Voir l'annonce",
+    "characteristics": "Caractéristiques",
+    "oem_reference": "Référence OEM",
+    "vehicle_mileage": "Kilométrage véhicule d'origine",
+    "traceability": "Traçabilité & Confiance",
+    "verification_level": "Niveau de vérification",
+    "warranty": "Garantie",
+    "part_origin": "Origine de la pièce",
+    "secure_payment": "Paiement sécurisé",
+    "money_protected": "Argent protégé jusqu'à réception"
+  },
+  "listings": {
+    "title": "Annonces",
+    "all_listings": "Toutes les annonces",
+    "no_listings": "Aucune annonce trouvée",
+    "no_listings_desc": "Essayez de modifier vos filtres ou d'élargir votre recherche",
+    "sort_recent": "Plus récentes",
+    "sort_price_asc": "Prix croissant",
+    "sort_price_desc": "Prix décroissant",
+    "sort_views": "Plus vues",
+    "filter_condition": "État",
+    "filter_price": "Prix",
+    "filter_min_price": "Prix min",
+    "filter_max_price": "Prix max",
+    "filter_brand": "Marque",
+    "filter_model": "Modèle",
+    "filter_region": "Région",
+    "filter_subcategory": "Sous-catégorie",
+    "apply_filters": "Appliquer les filtres",
+    "clear_filters": "Effacer les filtres",
+    "results_count": "{{count}} annonces trouvées",
+    "page": "Page",
+    "of": "sur"
   },
   "auth": {
     "email": "Email",
@@ -179,7 +228,16 @@
     "website": "Site web",
     "member_since": "Membre depuis",
     "verified": "Vérifié",
-    "pro": "Professionnel"
+    "pro": "Professionnel",
+    "notifications": "Notifications",
+    "vacation_mode": "Mode vacances",
+    "payments": "Paiements",
+    "password": "Mot de passe",
+    "delete_account": "Supprimer le compte",
+    "change_password": "Changer le mot de passe",
+    "current_password": "Mot de passe actuel",
+    "new_password": "Nouveau mot de passe",
+    "confirm_new_password": "Confirmer le nouveau mot de passe"
   },
   "footer": {
     "about": "À propos",
@@ -192,18 +250,89 @@
     "allRights": "Tous droits réservés",
     "description": "La marketplace automobile de référence pour les pièces détachées, véhicules d'occasion et accessoires.",
     "useful_links": "Liens utiles",
-    "returns": "Politique de retours"
+    "returns": "Politique de retours",
+    "subscribe": "S'abonner",
+    "subscribe_placeholder": "Votre email",
+    "subscribe_desc": "Recevez nos meilleures offres"
   },
   "home": {
     "recent_listings": "Annonces récentes",
     "popular_categories": "Catégories populaires",
     "why_choose_us": "Pourquoi nous choisir ?",
     "trusted_sellers": "Vendeurs vérifiés",
-    "secure_payment": "Paiement sécurisé",
-    "fast_shipping": "Livraison rapide",
+    "trusted_sellers_desc": "Une communauté de vendeurs vérifiés, particuliers comme professionnels du secteur.",
+    "secure_payment": "Transactions Sécurisées",
+    "secure_payment_desc": "Paiements sécurisés via Stripe et messagerie intégrée pour des échanges en toute confiance.",
+    "fast_shipping": "Annonces 30 jours",
+    "fast_shipping_desc": "Vos annonces restent visibles pendant 30 jours avec possibilité de renouvellement.",
     "customer_support": "Support client",
     "join_community": "Rejoignez notre communauté",
     "start_selling": "Commencer à vendre",
-    "start_buying": "Commencer à acheter"
+    "start_selling_desc": "Déposez votre annonce en quelques minutes et touchez des milliers d'acheteurs potentiels dans toute la France.",
+    "start_buying": "Commencer à acheter",
+    "ai_diagnostic": "Diagnostic IA",
+    "ai_diagnostic_desc": "Décrivez votre problème et notre IA vous aide à identifier la pièce à remplacer.",
+    "referral_title": "Parrainez vos amis",
+    "referral_desc": "Gagnez 50 points pour chaque ami parrainé !",
+    "referral_code": "Votre code parrain",
+    "copy_code": "Copier",
+    "code_copied": "Code copié !",
+    "share_referral": "Partager"
+  },
+  "seller": {
+    "title": "Vendeur",
+    "pro_badge": "PRO",
+    "verified": "Vérifié",
+    "member_since": "Membre depuis",
+    "listings_count": "annonces",
+    "response_time": "Temps de réponse",
+    "response_fast": "Répond rapidement",
+    "view_profile": "Voir le profil",
+    "contact": "Contacter",
+    "other_listings": "Autres annonces de ce vendeur",
+    "seller_of_week": "Vendeur de la semaine"
+  },
+  "search": {
+    "placeholder": "Rechercher une pièce, marque, modèle...",
+    "oem_placeholder": "Référence OEM (ex: 1234567890)",
+    "voice_search": "Recherche vocale",
+    "recent_searches": "Recherches récentes",
+    "clear_history": "Effacer l'historique",
+    "no_history": "Aucune recherche récente"
+  },
+  "errors": {
+    "generic": "Une erreur est survenue",
+    "not_found": "Page non trouvée",
+    "unauthorized": "Non autorisé",
+    "network": "Erreur de connexion",
+    "try_again": "Réessayer"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "enable": "Activer les notifications",
+    "disable": "Désactiver les notifications",
+    "new_message": "Nouveau message",
+    "new_offer": "Nouvelle offre",
+    "offer_accepted": "Offre acceptée",
+    "offer_rejected": "Offre refusée",
+    "listing_sold": "Annonce vendue"
+  },
+  "vacation": {
+    "title": "Mode Vacances",
+    "description": "Activez le mode vacances pour masquer temporairement vos annonces.",
+    "enable": "Activer le mode vacances",
+    "disable": "Désactiver le mode vacances",
+    "start_date": "Date de début",
+    "end_date": "Date de fin",
+    "message": "Message d'absence"
+  },
+  "questions": {
+    "title": "Questions & Réponses",
+    "ask": "Poser une question",
+    "your_question": "Votre question",
+    "submit": "Envoyer",
+    "no_questions": "Aucune question pour le moment",
+    "answer": "Répondre",
+    "your_answer": "Votre réponse"
   }
 }
