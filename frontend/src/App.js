@@ -44,6 +44,10 @@ import Auctions from "./pages/Auctions";
 import Loyalty from "./pages/Loyalty";
 import Promote from "./pages/Promote";
 import Diagnostic from "./pages/Diagnostic";
+import MyOffers from "./pages/MyOffers";
+import Bundles from "./pages/Bundles";
+import BundleDetail from "./pages/BundleDetail";
+import Widget from "./pages/Widget";
 import "./App.css";
 
 // Composant pour scroller en haut à chaque changement de page
