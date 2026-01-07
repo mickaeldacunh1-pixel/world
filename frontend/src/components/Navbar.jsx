@@ -103,8 +103,22 @@ export default function Navbar() {
 
           {/* Right section */}
           <div className="flex items-center gap-2">
-            {/* Language Selector */}
-            <LanguageSelector />
+            {/* Favoris & Fidélité - visibles pour tous, à gauche */}
+            {user && (
+              <>
+                <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Gift className="w-5 h-5" />
+                  </Button>
+                </Link>
+
+                <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Heart className="w-5 h-5" />
+                  </Button>
+                </Link>
+              </>
+            )}
 
             {/* Theme Toggle */}
             <Button 
@@ -120,6 +134,9 @@ export default function Navbar() {
                 <Moon className="w-5 h-5" />
               )}
             </Button>
+
+            {/* Language Selector - avant Messages */}
+            <LanguageSelector />
 
             {user ? (
               <>
@@ -224,19 +241,7 @@ export default function Navbar() {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Récompenses, Favoris, Messages, Panier - à droite du profil */}
-                <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Gift className="w-5 h-5" />
-                  </Button>
-                </Link>
-
-                <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Heart className="w-5 h-5" />
-                  </Button>
-                </Link>
-
+                {/* Messages & Panier - à droite */}
                 <Link to="/messages" className="hidden sm:flex" title="Messages">
                   <Button variant="ghost" size="icon" className="relative">
                     <MessageSquare className="w-5 h-5" />
