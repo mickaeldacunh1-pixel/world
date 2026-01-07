@@ -9,7 +9,7 @@ import json
 from datetime import datetime
 
 class CartCheckoutTester:
-    def __init__(self, base_url="https://partsauto-store.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://vehicleparts-shop-2.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.user_id = None
