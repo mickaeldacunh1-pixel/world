@@ -7238,7 +7238,8 @@ async def update_coupon(coupon_id: str, coupon: CouponUpdate, current_user: dict
 @api_router.delete("/admin/coupons/{coupon_id}")
 async def delete_coupon(coupon_id: str, current_user: dict = Depends(get_current_user)):
     """Delete a coupon (admin only)"""
-    if not current_user.get("is_admin"):
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
         raise HTTPException(status_code=403, detail="Accès non autorisé")
     
     result = await db.coupons.delete_one({"id": coupon_id})
