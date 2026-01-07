@@ -53,18 +53,18 @@ export default function Footer() {
             <div className="bg-primary-foreground/10 rounded-lg p-4">
               <h4 className="font-heading font-bold text-sm mb-2 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-accent" />
-                Newsletter
+                {t('footer.newsletter')}
               </h4>
               {subscribed ? (
                 <div className="flex items-center gap-2 text-sm text-green-400">
                   <CheckCircle className="w-4 h-4" />
-                  Merci pour votre inscription !
+                  {t('common.success')}!
                 </div>
               ) : (
                 <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
                   <Input
                     type="email"
-                    placeholder="Votre email"
+                    placeholder={t('footer.subscribe_placeholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm h-9"
