@@ -279,6 +279,18 @@ export default function Listings() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Search History */}
+        <div className="mb-6">
+          <SearchHistory onSelect={(searchItem) => {
+            if (searchItem.query) setSearch(searchItem.query);
+            if (searchItem.brand) setCompatibleBrand(searchItem.brand);
+            if (searchItem.model) setCompatibleModel(searchItem.model);
+            if (searchItem.region) setRegion(searchItem.region);
+            if (searchItem.min_price) setMinPrice(String(searchItem.min_price));
+            if (searchItem.max_price) setMaxPrice(String(searchItem.max_price));
+          }} />
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
           <aside className={`lg:w-64 flex-shrink-0 ${showFilters ? 'block' : 'hidden lg:block'}`}>
