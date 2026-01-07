@@ -56,6 +56,7 @@ const categoryNames = {
   voitures: 'Voitures d\'Occasion',
   motos: 'Motos',
   utilitaires: 'Utilitaires',
+  engins: 'Engins',
   accessoires: 'Accessoires',
 };
 
@@ -64,6 +65,7 @@ const categoryDescriptions = {
   voitures: 'Découvrez notre sélection de voitures d\'occasion vérifiées par des particuliers et professionnels.',
   motos: 'Achetez ou vendez des motos d\'occasion. Large choix de marques et modèles.',
   utilitaires: 'Utilitaires, camionnettes et véhicules commerciaux d\'occasion à vendre.',
+  engins: 'Engins agricoles et de chantier. Tracteurs, pelleteuses, chargeuses et plus.',
   accessoires: 'Accessoires automobiles, équipements et tuning pour personnaliser votre véhicule.',
 };
 
