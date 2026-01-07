@@ -7122,6 +7122,91 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# ================== ABANDONED CART SCHEDULER ==================
+import asyncio
+
+async def process_abandoned_cart_reminders():
+    """Tâche planifiée pour envoyer les relances de panier abandonné"""
+    while True:
+        try:
+            # Attendre 1 heure entre chaque vérification
+            await asyncio.sleep(3600)
+            
+            # Trouver les paniers abandonnés depuis plus de 2h mais moins de 7 jours
+            cutoff_min = (datetime.now(timezone.utc) - timedelta(hours=2)).isoformat()
+            cutoff_max = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+            
+            carts = await db.abandoned_carts.find({
+                "status": "active",
+                "reminder_count": {"$lt": 2},
+                "created_at": {"$lt": cutoff_min, "$gt": cutoff_max}
+            }, {"_id": 0}).to_list(50)
+            
+            sent_count = 0
+            for cart in carts:
+                # Espacer les relances d'au moins 24h
+                last_reminder = cart.get("last_reminder_at")
+                if last_reminder:
+                    last_time = datetime.fromisoformat(last_reminder.replace('Z', '+00:00'))
+                    if datetime.now(timezone.utc) - last_time < timedelta(hours=24):
+                        continue
+                
+                items_html = "".join([
+                    f"""<div style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
+                        <img src="{item.get('image', '')}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; margin-right: 15px;">
+                        <div>
+                            <p style="margin: 0; font-weight: bold;">{item['title']}</p>
+                            <p style="margin: 5px 0; color: #f97316; font-weight: bold;">{item['price']:.2f} €</p>
+                        </div>
+                    </div>"""
+                    for item in cart.get("items", [])
+                ])
+                
+                email_sent = send_email(
+                    cart["email"],
+                    "🛒 Vous avez oublié quelque chose...",
+                    f"""
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                        <div style="background: #f97316; padding: 20px; text-align: center;">
+                            <h1 style="color: white; margin: 0;">World Auto</h1>
+                        </div>
+                        <div style="padding: 30px; background: #fff;">
+                            <h2>Votre panier vous attend !</h2>
+                            <p>Vous avez laissé des articles dans votre panier :</p>
+                            <div style="margin: 20px 0; border: 1px solid #eee; border-radius: 8px;">
+                                {items_html}
+                            </div>
+                            <p style="font-size: 18px; font-weight: bold;">Total : {cart.get('total', 0):.2f} €</p>
+                            <a href="{SITE_URL}/panier" style="display: inline-block; background: #f97316; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; margin-top: 20px; font-size: 16px;">Finaliser ma commande</a>
+                        </div>
+                        <div style="padding: 20px; background: #f3f4f6; text-align: center; font-size: 12px; color: #666;">
+                            <p>Les pièces sont disponibles en quantité limitée, ne tardez pas !</p>
+                        </div>
+                    </div>
+                    """
+                )
+                
+                if email_sent:
+                    await db.abandoned_carts.update_one(
+                        {"id": cart["id"]},
+                        {"$set": {"last_reminder_at": datetime.now(timezone.utc).isoformat()}, "$inc": {"reminder_count": 1}}
+                    )
+                    sent_count += 1
+            
+            if sent_count > 0:
+                logger.info(f"✅ {sent_count} relances de panier abandonnées envoyées")
+                
+        except Exception as e:
+            logger.error(f"Erreur dans le scheduler de relance panier: {e}")
+
+@app.on_event("startup")
+async def startup_event():
+    """Démarrer les tâches planifiées au lancement de l'application"""
+    logger.info("🚀 Démarrage des tâches planifiées...")
+    # Lancer le scheduler de relance panier en arrière-plan
+    asyncio.create_task(process_abandoned_cart_reminders())
+    logger.info("✅ Scheduler de relance panier abandonné activé")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
