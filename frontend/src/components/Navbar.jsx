@@ -148,26 +148,26 @@ export default function Navbar() {
                   </Button>
                 </Link>
 
-                {/* Messages + Panier empilés verticalement */}
-                <div className="hidden sm:flex flex-col gap-0.5">
-                  <Link to="/messages" title="Messages">
-                    <Button variant="ghost" size="sm" className="relative h-7 w-7 p-0">
-                      <MessageSquare className="w-4 h-4" />
-                      {unreadMessages > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-                          {unreadMessages}
-                        </span>
-                      )}
-                    </Button>
-                  </Link>
-                  <Link to="/favoris" title="Mes favoris">
-                    <Button variant="ghost" size="sm" className="relative h-7 w-7 p-0">
-                      <Heart className="w-4 h-4" />
-                    </Button>
-                  </Link>
-                </div>
+                {/* Favoris */}
+                <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Heart className="w-5 h-5" />
+                  </Button>
+                </Link>
 
-                {/* Panier rectangle - Style AUTODOC */}
+                {/* Messages */}
+                <Link to="/messages" className="hidden sm:flex" title="Messages">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <MessageSquare className="w-5 h-5" />
+                    {unreadMessages > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                        {unreadMessages}
+                      </span>
+                    )}
+                  </Button>
+                </Link>
+
+                {/* Panier rectangle */}
                 <div className="hidden sm:block">
                   <CartPreview 
                     bgColor={navbarSettings.cart_bg_color}
