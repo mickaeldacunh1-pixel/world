@@ -144,7 +144,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link to="/cgv" className="text-primary-foreground/70 hover:text-accent transition-colors">
-                  CGV
+                  {t('footer.terms')}
                 </Link>
               </li>
               <li>
@@ -154,12 +154,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link to="/mentions-legales" className="text-primary-foreground/70 hover:text-accent transition-colors">
-                  Mentions légales
+                  {t('footer.legal')}
                 </Link>
               </li>
               <li>
                 <Link to="/contact" className="text-primary-foreground/70 hover:text-accent transition-colors">
-                  Contact
+                  {t('footer.contact')}
                 </Link>
               </li>
             </ul>
@@ -167,7 +167,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="font-heading font-bold text-lg mb-4">Contact</h3>
+            <h3 className="font-heading font-bold text-lg mb-4">{t('footer.contact')}</h3>
             <a 
               href="mailto:contact@worldautofrance.com" 
               className="flex items-center gap-3 text-primary-foreground/70 hover:text-accent transition-colors group"
@@ -183,7 +183,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-primary-foreground/20 mt-10 pt-8">
           <p className="text-primary-foreground/50 text-sm text-center">
-            © {new Date().getFullYear()} World Auto <FranceText />. Tous droits réservés.
+            © {new Date().getFullYear()} World Auto <FranceText />. {t('footer.allRights')}.
           </p>
         </div>
       </div>
