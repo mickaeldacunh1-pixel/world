@@ -1050,17 +1050,16 @@ export default function Home() {
             <div className="flex-1 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 bg-accent/20 text-accent px-4 py-2 rounded-full text-sm font-medium mb-6">
                 <Sparkles className="w-4 h-4" />
-                Nouveau : Intelligence Artificielle
+                {t('home.new_ai')}
               </div>
               
               <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-                Diagnostic Auto<br />
-                <span className="text-accent">par Tobi IA</span>
+                {t('home.diagnostic_title')}<br />
+                <span className="text-accent">{t('home.diagnostic_by_tobi')}</span>
               </h2>
               
               <p className="text-slate-300 text-lg md:text-xl mb-6 max-w-xl">
-                Décrivez votre problème automobile et notre IA analyse les symptômes, 
-                identifie les causes probables et vous conseille sur les réparations.
+                {t('home.diagnostic_desc')}
               </p>
 
               {/* Features list */}
@@ -1069,25 +1068,25 @@ export default function Home() {
                   <div className="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center">
                     <Stethoscope className="w-4 h-4 text-accent" />
                   </div>
-                  <span className="text-sm">Analyse des symptômes</span>
+                  <span className="text-sm">{t('home.symptom_analysis')}</span>
                 </div>
                 <div className="flex items-center gap-3 text-slate-300">
                   <div className="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center">
                     <Car className="w-4 h-4 text-accent" />
                   </div>
-                  <span className="text-sm">Toutes marques</span>
+                  <span className="text-sm">{t('home.all_brands')}</span>
                 </div>
                 <div className="flex items-center gap-3 text-slate-300">
                   <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
                     <Gift className="w-4 h-4 text-green-400" />
                   </div>
-                  <span className="text-sm">Gratuit avec annonce</span>
+                  <span className="text-sm">{t('home.free_with_ad')}</span>
                 </div>
                 <div className="flex items-center gap-3 text-slate-300">
                   <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
                     <Sparkles className="w-4 h-4 text-blue-400" />
                   </div>
-                  <span className="text-sm">Réponse instantanée</span>
+                  <span className="text-sm">{t('home.instant_response')}</span>
                 </div>
               </div>
 
@@ -1095,12 +1094,12 @@ export default function Home() {
                 <Link to="/diagnostic">
                   <Button size="lg" className="bg-accent hover:bg-accent/90 text-white h-12 px-8 text-lg gap-2">
                     <Stethoscope className="w-5 h-5" />
-                    Lancer un diagnostic
+                    {t('home.start_diagnostic')}
                   </Button>
                 </Link>
                 <Link to="/deposer">
                   <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 h-12 px-8">
-                    Déposer une annonce = Gratuit illimité
+                    {t('home.post_ad_free')}
                   </Button>
                 </Link>
               </div>
@@ -1114,8 +1113,8 @@ export default function Home() {
                     <Stethoscope className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-white">Tobi Diagnostic</h4>
-                    <p className="text-sm text-slate-400">Assistant IA</p>
+                    <h4 className="font-bold text-white">{t('home.tobi_diagnostic')}</h4>
+                    <p className="text-sm text-slate-400">{t('home.ai_assistant')}</p>
                   </div>
                 </div>
                 
@@ -1124,17 +1123,17 @@ export default function Home() {
                     <p className="text-sm text-slate-300">🚗 &quot;Ma voiture fait un bruit au freinage...&quot;</p>
                   </div>
                   <div className="bg-accent/20 rounded-lg p-3 border-l-2 border-accent">
-                    <p className="text-sm text-white font-medium mb-1">⚠️ Analyse Tobi :</p>
+                    <p className="text-sm text-white font-medium mb-1">⚠️ {t('home.tobi_analysis')} :</p>
                     <p className="text-xs text-slate-300">
                       Causes probables : Plaquettes usées, disques voilés. 
-                      <strong className="text-accent"> Urgence : Moyenne</strong>
+                      <strong className="text-accent"> {t('home.urgency')} : {t('home.medium')}</strong>
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-white/10 text-center">
                   <p className="text-xs text-slate-400">
-                    💡 <strong className="text-white">0.99€</strong> / diagnostic ou <strong className="text-green-400">GRATUIT</strong> avec une annonce
+                    💡 <strong className="text-white">0.99€</strong> {t('home.per_diagnostic')} <strong className="text-green-400">{t('home.free')}</strong> {t('home.with_ad')}
                   </p>
                 </div>
               </div>
