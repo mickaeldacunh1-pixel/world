@@ -92,31 +92,31 @@ export default function Footer() {
           <div>
             <h3 className="font-heading font-bold text-lg mb-4 flex items-center gap-2">
               <Car className="w-5 h-5 text-accent" />
-              Catégories
+              {t('nav.categories')}
             </h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/annonces/pieces" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group">
                   <Wrench className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                  Pièces Détachées
+                  {t('nav.parts')}
                 </Link>
               </li>
               <li>
                 <Link to="/annonces/voitures" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group">
                   <Car className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  Voitures
+                  {t('nav.cars')}
                 </Link>
               </li>
               <li>
                 <Link to="/annonces/motos" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group">
                   <Bike className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  Motos
+                  {t('nav.motorcycles')}
                 </Link>
               </li>
               <li>
                 <Link to="/annonces/utilitaires" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group">
                   <Truck className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  Utilitaires
+                  {t('nav.utilities')}
                 </Link>
               </li>
             </ul>
