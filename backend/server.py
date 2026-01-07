@@ -3968,6 +3968,16 @@ async def get_accessoires_subcategories():
     """Retourne toutes les sous-catégories d'accessoires"""
     return ACCESSOIRES_SUBCATEGORIES
 
+@api_router.get("/subcategories/motos")
+async def get_motos_subcategories():
+    """Retourne toutes les sous-catégories de motos/deux-roues"""
+    return MOTOS_SUBCATEGORIES
+
+@api_router.get("/subcategories/utilitaires")
+async def get_utilitaires_subcategories():
+    """Retourne toutes les sous-catégories d'utilitaires"""
+    return UTILITAIRES_SUBCATEGORIES
+
 @api_router.get("/brands")
 async def get_car_brands():
     """Retourne la liste des marques automobiles"""
