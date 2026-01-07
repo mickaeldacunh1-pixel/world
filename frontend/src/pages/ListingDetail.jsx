@@ -38,6 +38,7 @@ export default function ListingDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, token } = useAuth();
+  const { t } = useTranslation();
   
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
