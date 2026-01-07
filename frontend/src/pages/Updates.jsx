@@ -25,6 +25,24 @@ const CATEGORY_LABELS = {
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-3',
+    date: '2026-01-07',
+    version: '3.1.0',
+    title: 'Confiance, Garantie & Quick Wins',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🛡️ Certification "Pièce Vérifiée" : badges Or et Argent selon le score de confiance' },
+      { type: 'new', text: '📋 Traçabilité des pièces : origine (casse, particulier, pro, neuf) et kilométrage véhicule' },
+      { type: 'new', text: '✅ Garantie World Auto : 3 mois (4.99€), 6 mois (7.99€) ou 12 mois (12.99€)' },
+      { type: 'new', text: '🎬 Limitation vidéo : 30s/30Mo gratuit, 2min/100Mo pour 1€' },
+      { type: 'new', text: '📱 Partage réseaux sociaux : Facebook, WhatsApp, Twitter, Email, Copier le lien' },
+      { type: 'new', text: '🔔 Notifications push : alertes en temps réel pour messages, commandes, avis' },
+      { type: 'new', text: '📊 Tableau de bord PRO : taux de conversion, top annonces, alertes performance' },
+      { type: 'improvement', text: '⚙️ Admin étendu (7 onglets) : Hero, Navbar, Footer, Couleurs, Polices, Bannières, Sections' },
+      { type: 'improvement', text: '🎁 Icône récompenses déplacée à gauche des favoris dans la barre de navigation' },
+    ]
+  },
+  {
     id: 'static-new-2',
     date: '2026-01-06',
     version: '3.0.0',
