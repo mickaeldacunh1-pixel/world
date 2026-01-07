@@ -103,70 +103,45 @@ export default function Navbar() {
 
           {/* Right section */}
           <div className="flex items-center gap-2">
-            {/* Fidélité & Favoris - à gauche pour connectés */}
-            {user && (
-              <>
-                <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Gift className="w-5 h-5" />
-                  </Button>
-                </Link>
-
-                <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Heart className="w-5 h-5" />
-                  </Button>
-                </Link>
-              </>
-            )}
-
-            {/* Theme Toggle */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={toggleTheme}
-              title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
-              className="hidden sm:flex"
-            >
-              {theme === 'dark' ? (
-                <Sun className="w-5 h-5 text-yellow-500" />
-              ) : (
-                <Moon className="w-5 h-5" />
-              )}
-            </Button>
-
-            {/* Language Selector */}
-            <LanguageSelector />
-
             {user ? (
               <>
-                {/* Messages - juste après la langue */}
-                <Link to="/messages" className="hidden sm:flex" title="Messages">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <MessageSquare className="w-5 h-5" />
-                    {unreadMessages > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
-                        {unreadMessages}
-                      </span>
-                    )}
-                  </Button>
-                </Link>
+                {/* 1. Mode sombre */}
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={toggleTheme}
+                  title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+                  className="hidden sm:flex"
+                >
+                  {theme === 'dark' ? (
+                    <Sun className="w-5 h-5 text-yellow-500" />
+                  ) : (
+                    <Moon className="w-5 h-5" />
+                  )}
+                </Button>
 
-                {/* Panier */}
-                <Link to="/panier" className="hidden sm:flex" title="Panier">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <ShoppingCart className="w-5 h-5" />
-                  </Button>
-                </Link>
-
-                {/* Diagnostic IA */}
+                {/* 2. Diagnostic IA */}
                 <Link to="/diagnostic" className="hidden sm:flex" title="Diagnostic IA">
                   <Button variant="ghost" size="icon" className="relative">
                     <Stethoscope className="w-5 h-5 text-accent" />
                   </Button>
                 </Link>
 
-                {/* Bouton Déposer */}
+                {/* 3. Fidélité */}
+                <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Gift className="w-5 h-5" />
+                  </Button>
+                </Link>
+
+                {/* 4. Favoris */}
+                <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Heart className="w-5 h-5" />
+                  </Button>
+                </Link>
+
+                {/* 5. Déposer une annonce */}
                 <Link to="/deposer">
                   <Button className="hidden sm:flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground btn-primary" data-testid="create-listing-btn">
                     <Plus className="w-4 h-4" />
@@ -174,7 +149,7 @@ export default function Navbar() {
                   </Button>
                 </Link>
 
-                {/* Menu utilisateur */}
+                {/* 6. Profil (Menu utilisateur) */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="flex items-center gap-1.5 px-2 sm:px-3" data-testid="user-menu">
@@ -261,18 +236,23 @@ export default function Navbar() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </>
-            ) : (
+
+                {/* 7. Sélecteur de langue */}
+                <LanguageSelector />
+
+                {/* 8. Messages */}
+                <Link to="/messages" className="hidden sm:flex" title="Messages">
                   <Button variant="ghost" size="icon" className="relative">
                     <MessageSquare className="w-5 h-5" />
                     {unreadMessages > 0 && (
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold animate-pulse">
-                        {unreadMessages > 9 ? '9+' : unreadMessages}
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                        {unreadMessages}
                       </span>
                     )}
                   </Button>
                 </Link>
 
+                {/* 9. Panier */}
                 <Link to="/panier" className="hidden sm:flex" title="Panier">
                   <Button variant="ghost" size="icon" className="relative">
                     <ShoppingCart className="w-5 h-5" />
@@ -281,6 +261,21 @@ export default function Navbar() {
               </>
             ) : (
               <>
+                {/* Utilisateur non connecté : Mode sombre + Langue + Connexion/Inscription */}
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={toggleTheme}
+                  title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+                  className="hidden sm:flex"
+                >
+                  {theme === 'dark' ? (
+                    <Sun className="w-5 h-5 text-yellow-500" />
+                  ) : (
+                    <Moon className="w-5 h-5" />
+                  )}
+                </Button>
+                <LanguageSelector />
                 <Link to="/auth">
                   <Button variant="ghost" data-testid="login-btn">Connexion</Button>
                 </Link>
