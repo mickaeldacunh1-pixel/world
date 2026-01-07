@@ -357,7 +357,7 @@ export default function Profile() {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-2">
-                            <Label htmlFor="company_name">Nom de l'entreprise</Label>
+                            <Label htmlFor="company_name">Nom de l&apos;entreprise</Label>
                             <Input
                               id="company_name"
                               name="company_name"
@@ -446,14 +446,14 @@ export default function Profile() {
                         <Shield className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-medium text-sm">Paiements sécurisés</p>
-                          <p className="text-xs text-muted-foreground">L'argent est protégé jusqu'à la livraison</p>
+                          <p className="text-xs text-muted-foreground">L&apos;argent est protégé jusqu&apos;à la livraison</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
                         <CreditCard className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-medium text-sm">Virements automatiques</p>
-                          <p className="text-xs text-muted-foreground">Recevez l'argent directement sur votre compte</p>
+                          <p className="text-xs text-muted-foreground">Recevez l&apos;argent directement sur votre compte</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
@@ -519,7 +519,7 @@ export default function Profile() {
 
                 {/* Info */}
                 <p className="text-xs text-muted-foreground">
-                  En connectant Stripe, vous acceptez les <a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">conditions d'utilisation de Stripe</a>. 
+                  En connectant Stripe, vous acceptez les <a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">conditions d&apos;utilisation de Stripe</a>. 
                   Une commission de 5% est prélevée sur chaque vente.
                 </p>
               </CardContent>
@@ -531,7 +531,7 @@ export default function Profile() {
             <Card>
               <CardHeader>
                 <CardTitle className="font-heading">Changer le mot de passe</CardTitle>
-                <CardDescription>Assurez-vous d'utiliser un mot de passe fort et unique</CardDescription>
+                <CardDescription>Assurez-vous d&apos;utiliser un mot de passe fort et unique</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-md">
