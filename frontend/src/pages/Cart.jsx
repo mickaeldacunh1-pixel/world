@@ -121,10 +121,44 @@ export default function Cart() {
   const clearCart = () => {
     setCartItems([]);
     localStorage.removeItem('worldauto_cart');
+    setAppliedCoupon(null);
+    setCouponCode('');
     toast.success('Panier vidé');
   };
 
+  // Apply coupon
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    
+    setCouponLoading(true);
+    try {
+      const response = await axios.post(
+        `${API}/coupons/validate`,
+        null,
+        { 
+          params: { code: couponCode, cart_total: totalPrice },
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        }
+      );
+      setAppliedCoupon(response.data);
+      toast.success(`Code promo "${response.data.code}" appliqué !`);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Code promo invalide');
+      setAppliedCoupon(null);
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  // Remove coupon
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode('');
+    toast.success('Code promo retiré');
+  };
+
   const totalPrice = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
+  const finalPrice = appliedCoupon ? appliedCoupon.new_total : totalPrice;
 
   if (loading) {
     return (
