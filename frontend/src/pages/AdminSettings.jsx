@@ -1828,7 +1828,7 @@ export default function AdminSettings() {
                   {/* Autres sections existantes */}
                   <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
                     <div>
-                      <h4 className="font-medium">Section "Rechercher par marque"</h4>
+                      <h4 className="font-medium">Section &quot;Rechercher par marque&quot;</h4>
                       <p className="text-sm text-muted-foreground">Affiche les logos des marques automobiles</p>
                     </div>
                     <Switch
@@ -1839,7 +1839,7 @@ export default function AdminSettings() {
                   
                   <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
                     <div>
-                      <h4 className="font-medium">Section "Rechercher par catégorie"</h4>
+                      <h4 className="font-medium">Section &quot;Rechercher par catégorie&quot;</h4>
                       <p className="text-sm text-muted-foreground">Affiche les catégories de pièces</p>
                     </div>
                     <Switch
@@ -1850,7 +1850,7 @@ export default function AdminSettings() {
                   
                   <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
                     <div>
-                      <h4 className="font-medium">Section "Rechercher par région"</h4>
+                      <h4 className="font-medium">Section &quot;Rechercher par région&quot;</h4>
                       <p className="text-sm text-muted-foreground">Affiche la carte des régions</p>
                     </div>
                     <Switch
@@ -1861,7 +1861,7 @@ export default function AdminSettings() {
 
                   <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
                     <div>
-                      <h4 className="font-medium">Section "Pourquoi nous choisir"</h4>
+                      <h4 className="font-medium">Section &quot;Pourquoi nous choisir&quot;</h4>
                       <p className="text-sm text-muted-foreground">Affiche les avantages de la plateforme</p>
                     </div>
                     <Switch
