@@ -1155,13 +1155,17 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <Card key={feature.title} className={`p-8 text-center card-hover border-0 shadow-md animate-fade-in-up stagger-${index + 1}`}>
+            {[
+              { icon: Shield, titleKey: 'home.secure_payment', descKey: 'home.secure_payment_desc' },
+              { icon: Users, titleKey: 'home.trusted_sellers', descKey: 'home.trusted_sellers_desc' },
+              { icon: Clock, titleKey: 'home.fast_shipping', descKey: 'home.fast_shipping_desc' },
+            ].map((feature, index) => (
+              <Card key={feature.titleKey} className={`p-8 text-center card-hover border-0 shadow-md animate-fade-in-up stagger-${index + 1}`}>
                 <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-orange-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                   <feature.icon className="w-8 h-8 text-accent" />
                 </div>
-                <h3 className="font-heading font-bold text-xl mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                <h3 className="font-heading font-bold text-xl mb-3">{t(feature.titleKey)}</h3>
+                <p className="text-muted-foreground leading-relaxed">{t(feature.descKey)}</p>
               </Card>
             ))}
           </div>
