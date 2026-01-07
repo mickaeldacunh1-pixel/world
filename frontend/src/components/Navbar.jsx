@@ -148,7 +148,7 @@ export default function Navbar() {
                   </Button>
                 </Link>
 
-                {/* Messages + Favoris empilés verticalement */}
+                {/* Messages + Panier empilés verticalement */}
                 <div className="hidden sm:flex flex-col gap-0.5">
                   <Link to="/messages" title="Messages">
                     <Button variant="ghost" size="sm" className="relative h-7 w-7 p-0">
@@ -165,6 +165,14 @@ export default function Navbar() {
                       <Heart className="w-4 h-4" />
                     </Button>
                   </Link>
+                </div>
+
+                {/* Panier rectangle - Style AUTODOC */}
+                <div className="hidden sm:block">
+                  <CartPreview 
+                    bgColor={navbarSettings.cart_bg_color}
+                    textColor={navbarSettings.cart_text_color}
+                  />
                 </div>
 
                 {/* Profil (Menu utilisateur) */}
