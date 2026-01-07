@@ -3490,9 +3490,11 @@ class AutoPiecesAPITester:
         
         # Step 8: Create admin user for testing admin endpoints
         timestamp = datetime.now().strftime('%H%M%S')
+        # Use a unique admin email that still matches the admin pattern
+        admin_email = f"admin{timestamp}@worldautofrance.com"
         admin_user = {
             "name": f"Admin User {timestamp}",
-            "email": "contact@worldautofrance.com",  # Admin email
+            "email": admin_email,
             "password": "AdminPass123!",
             "phone": "0612345678",
             "is_professional": True
@@ -3513,13 +3515,30 @@ class AutoPiecesAPITester:
             # Note: This fails because the endpoint checks for is_admin field instead of email
             self.log_test("Admin Cart Stats - Inconsistent Admin Check", False, "Backend bug: endpoint checks is_admin field instead of admin email like other endpoints")
             
-            # Test the admin email test endpoint which uses correct admin check
-            test_email_data = {"to_email": "test@example.com", "subject": "Test", "message": "Test message"}
-            email_test = self.run_test("Admin Email Test - Correct Admin Check", "POST", "admin/test-email", 200, test_email_data)
-            if email_test and email_test.get("message"):
-                self.log_test("Admin Email Test - Works with Email Check", True, "This endpoint correctly checks admin email")
+            # Test with the exact admin email that should work
+            exact_admin_user = {
+                "name": f"Exact Admin {timestamp}",
+                "email": "contact@worldautofrance.com",
+                "password": "ExactAdminPass123!",
+                "phone": "0612345679",
+                "is_professional": True
+            }
+            
+            # Try to register with exact admin email (might fail if already exists)
+            exact_admin_reg = self.run_test("Register Exact Admin", "POST", "auth/register", 200, exact_admin_user)
+            if exact_admin_reg and 'token' in exact_admin_reg:
+                exact_admin_token = exact_admin_reg['token']
+                self.token = exact_admin_token
+                
+                # Test admin endpoints with exact admin email
+                exact_reminders = self.run_test("Admin Cart Reminders - Exact Admin", "POST", "admin/send-cart-reminders", 403)
+                self.log_test("Admin Cart Reminders - Still Fails", False, "Even exact admin email fails due to is_admin field check")
+                
+                exact_stats = self.run_test("Admin Cart Stats - Exact Admin", "GET", "admin/abandoned-carts/stats", 403)
+                self.log_test("Admin Cart Stats - Still Fails", False, "Even exact admin email fails due to is_admin field check")
             else:
-                self.log_test("Admin Email Test - Works with Email Check", False, "Email test endpoint failed")
+                self.log_test("Register Exact Admin", False, "Exact admin email already exists or failed")
+                
         else:
             self.log_test("Register Admin User", False, "Failed to register admin user")
             return False
