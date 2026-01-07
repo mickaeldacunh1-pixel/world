@@ -25,6 +25,25 @@ const CATEGORY_LABELS = {
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-5',
+    date: '2026-01-08',
+    version: '3.3.0',
+    title: 'Comparateur de pièces & Historique de prix',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '⚖️ Comparateur de pièces : comparez jusqu\'à 4 annonces côte à côte' },
+      { type: 'new', text: '📊 Tableau comparatif : prix, état, marque, modèle, année, garantie, livraison' },
+      { type: 'new', text: '🏆 Mise en évidence automatique des meilleures valeurs (prix, kilométrage, année)' },
+      { type: 'new', text: '📉 Historique des prix : suivez l\'évolution du prix de chaque annonce' },
+      { type: 'new', text: '🏷️ Badge "Prix en baisse" : notification visuelle quand le prix diminue' },
+      { type: 'new', text: '💰 Calcul d\'économies : visualisez le montant économisé depuis le prix initial' },
+      { type: 'improvement', text: '🔄 Widget comparateur flottant : accès rapide aux annonces sélectionnées' },
+      { type: 'improvement', text: '🎯 Bouton comparaison sur les cards : ajout simplifié au survol' },
+      { type: 'improvement', text: '📱 Navbar optimisée : menu Catégories déplacé dans le Hero, panier repositionné' },
+      { type: 'fix', text: '🐛 Correction de l\'ordre des hooks React dans la page des annonces' },
+    ]
+  },
+  {
     id: 'static-new-4',
     date: '2026-01-07',
     version: '3.2.0',
