@@ -2081,6 +2081,181 @@ async def get_messages(listing_id: str, other_user_id: str, current_user: dict =
     
     return messages
 
+# ================== CONFIANCE & GARANTIE ROUTES ==================
+
+@api_router.get("/warranty/options")
+async def get_warranty_options():
+    """Récupère les options de garantie World Auto disponibles"""
+    return {
+        "options": [
+            {"duration": 3, "price": 4.99, "label": "3 mois", "description": "Protection basique"},
+            {"duration": 6, "price": 7.99, "label": "6 mois", "description": "Protection standard"},
+            {"duration": 12, "price": 12.99, "label": "12 mois", "description": "Protection complète"}
+        ],
+        "benefits": [
+            "Remboursement si pièce défectueuse",
+            "Assistance téléphonique",
+            "Médiation en cas de litige",
+            "Certificat de garantie officiel"
+        ]
+    }
+
+@api_router.post("/warranty/create-checkout")
+async def create_warranty_checkout(
+    request: Request,
+    listing_id: str = Body(...),
+    duration: int = Body(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """Créer une session Stripe pour l'achat d'une garantie"""
+    stripe.api_key = STRIPE_API_KEY
+    
+    # Vérifier que l'annonce appartient à l'utilisateur
+    listing = await db.listings.find_one({"id": listing_id, "seller_id": current_user["id"]})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    # Vérifier la durée
+    if duration not in WARRANTY_OPTIONS:
+        raise HTTPException(status_code=400, detail="Durée de garantie invalide")
+    
+    warranty_option = WARRANTY_OPTIONS[duration]
+    
+    try:
+        origin = request.headers.get("origin", SITE_URL)
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{
+                "price_data": {
+                    "currency": "eur",
+                    "product_data": {
+                        "name": f"Garantie World Auto - {warranty_option['label']}",
+                        "description": f"Garantie pour: {listing['title'][:50]}",
+                    },
+                    "unit_amount": int(warranty_option["price"] * 100),
+                },
+                "quantity": 1,
+            }],
+            mode="payment",
+            success_url=f"{origin}/annonce/{listing_id}?warranty_success=true",
+            cancel_url=f"{origin}/annonce/{listing_id}?warranty_cancelled=true",
+            metadata={
+                "type": "warranty",
+                "listing_id": listing_id,
+                "user_id": current_user["id"],
+                "warranty_duration": duration
+            }
+        )
+        return {"url": checkout_session.url, "session_id": checkout_session.id}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@api_router.post("/listings/{listing_id}/verify")
+async def request_verification(listing_id: str, current_user: dict = Depends(get_current_user)):
+    """Demander la vérification d'une pièce (Admin only ou automatique basé sur critères)"""
+    listing = await db.listings.find_one({"id": listing_id})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    # Vérifier si le vendeur est propriétaire ou admin
+    is_owner = listing["seller_id"] == current_user["id"]
+    is_admin = current_user.get("email") == "contact@worldautofrance.com"
+    
+    if not is_owner and not is_admin:
+        raise HTTPException(status_code=403, detail="Non autorisé")
+    
+    # Critères de vérification automatique
+    verification_score = 0
+    verification_details = []
+    
+    # Photos multiples (+20)
+    if len(listing.get("images", [])) >= 3:
+        verification_score += 20
+        verification_details.append("photos_multiples")
+    
+    # Référence OEM (+25)
+    if listing.get("oem_reference"):
+        verification_score += 25
+        verification_details.append("reference_oem")
+    
+    # Origine renseignée (+15)
+    if listing.get("part_origin"):
+        verification_score += 15
+        verification_details.append("origine_renseignee")
+    
+    # Kilométrage véhicule (+15)
+    if listing.get("vehicle_mileage"):
+        verification_score += 15
+        verification_details.append("kilometrage_vehicule")
+    
+    # Vendeur vérifié (+25)
+    seller = await db.users.find_one({"id": listing["seller_id"]})
+    sold_count = await db.orders.count_documents({"seller_id": listing["seller_id"], "status": "delivered"})
+    if sold_count >= 5:
+        verification_score += 25
+        verification_details.append("vendeur_experimente")
+    
+    # Déterminer le niveau de vérification
+    is_verified = verification_score >= 60
+    verification_level = "gold" if verification_score >= 80 else "silver" if verification_score >= 60 else "none"
+    
+    # Mettre à jour l'annonce
+    await db.listings.update_one(
+        {"id": listing_id},
+        {"$set": {
+            "is_verified": is_verified,
+            "verification_score": verification_score,
+            "verification_level": verification_level,
+            "verification_details": verification_details,
+            "verified_at": datetime.now(timezone.utc).isoformat() if is_verified else None
+        }}
+    )
+    
+    return {
+        "is_verified": is_verified,
+        "verification_score": verification_score,
+        "verification_level": verification_level,
+        "verification_details": verification_details,
+        "message": "Pièce vérifiée !" if is_verified else "Complétez les informations pour obtenir la certification"
+    }
+
+@api_router.get("/listings/{listing_id}/trust-info")
+async def get_trust_info(listing_id: str):
+    """Récupère les informations de confiance d'une annonce"""
+    listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    # Infos vendeur
+    seller = await db.users.find_one({"id": listing["seller_id"]}, {"_id": 0})
+    sold_count = await db.orders.count_documents({"seller_id": listing["seller_id"], "status": "delivered"})
+    
+    # Avis vendeur
+    reviews = await db.reviews.find({"seller_id": listing["seller_id"]}).to_list(100)
+    avg_rating = sum(r.get("rating", 0) for r in reviews) / len(reviews) if reviews else 0
+    
+    return {
+        "listing": {
+            "is_verified": listing.get("is_verified", False),
+            "verification_level": listing.get("verification_level", "none"),
+            "verification_score": listing.get("verification_score", 0),
+            "has_warranty": listing.get("has_warranty", False),
+            "warranty_duration": listing.get("warranty_duration"),
+            "warranty_expires": listing.get("warranty_expires"),
+            "part_origin": listing.get("part_origin"),
+            "vehicle_mileage": listing.get("vehicle_mileage"),
+            "oem_reference": listing.get("oem_reference")
+        },
+        "seller": {
+            "name": seller.get("name") if seller else "Inconnu",
+            "is_professional": seller.get("is_professional", False) if seller else False,
+            "sales_count": sold_count,
+            "avg_rating": round(avg_rating, 1),
+            "reviews_count": len(reviews),
+            "member_since": seller.get("created_at") if seller else None
+        }
+    }
+
 # ================== ORDERS & SHIPPING ROUTES ==================
 
 bordereau_gen = BordereauGenerator()
