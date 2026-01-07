@@ -7245,7 +7245,7 @@ async def delete_coupon(coupon_id: str, current_user: dict = Depends(get_current
     return {"message": "Coupon supprimé"}
 
 @api_router.post("/coupons/validate")
-async def validate_coupon(code: str, cart_total: float, current_user: dict = Depends(get_optional_user)):
+async def validate_coupon(code: str, cart_total: float, current_user: dict = Depends(get_current_user_optional)):
     """Validate a coupon code and calculate discount"""
     coupon = await db.coupons.find_one({"code": code.upper()}, {"_id": 0})
     
