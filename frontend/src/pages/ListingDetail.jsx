@@ -56,6 +56,8 @@ export default function ListingDetail() {
   const [reportDescription, setReportDescription] = useState('');
   const [reportLoading, setReportLoading] = useState(false);
   const [videoCallLoading, setVideoCallLoading] = useState(false);
+  const [priceHistory, setPriceHistory] = useState(null);
+  const [showPriceHistory, setShowPriceHistory] = useState(false);
 
   const REPORT_REASONS = [
     { value: 'spam', label: 'Spam ou publicité' },
@@ -66,6 +68,16 @@ export default function ListingDetail() {
     { value: 'duplicate', label: 'Annonce en double' },
     { value: 'other', label: 'Autre raison' }
   ];
+
+  // Fetch price history
+  const fetchPriceHistory = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API}/listings/${id}/price-history`);
+      setPriceHistory(response.data);
+    } catch (error) {
+      console.error('Error fetching price history:', error);
+    }
+  }, [id]);
 
   const handleVideoCall = async () => {
     if (!user) {
