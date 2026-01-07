@@ -6981,7 +6981,8 @@ async def mark_cart_converted(current_user: dict = Depends(get_current_user)):
 @api_router.post("/admin/send-cart-reminders")
 async def send_cart_reminders(background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
     """Envoyer des relances pour paniers abandonnés (admin)"""
-    if not current_user.get("is_admin"):
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails:
         raise HTTPException(status_code=403, detail="Accès admin requis")
     
     # Trouver les paniers abandonnés depuis plus de 2h mais moins de 7 jours
