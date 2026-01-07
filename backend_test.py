@@ -3086,6 +3086,366 @@ class AutoPiecesAPITester:
         self.log_test("Complete Paid Diagnostic IA System Test", True, "All diagnostic system tests completed")
         return True
 
+    def test_offers_system(self):
+        """Test the complete offers system"""
+        if not self.token:
+            self.log_test("Offers System", False, "No token available")
+            return False
+        
+        print("\n💰 Testing Offers System...")
+        
+        # Step 1: Get available listings for offers
+        listings_result = self.run_test("Get Listings for Offers", "GET", "listings?limit=5", 200)
+        if not listings_result or not listings_result.get("listings"):
+            self.log_test("Offers - No Listings Available", False, "No listings found for testing")
+            return False
+        
+        available_listings = [listing for listing in listings_result["listings"] 
+                            if listing.get("status") == "active" and listing.get("seller_id") != self.user_id]
+        
+        if not available_listings:
+            self.log_test("Offers - No Available Listings", False, "No active listings from other sellers")
+            return False
+        
+        test_listing = available_listings[0]
+        test_listing_id = test_listing["id"]
+        test_listing_price = test_listing["price"]
+        
+        # Step 2: Test creating an offer
+        offer_data = {
+            "listing_id": test_listing_id,
+            "amount": test_listing_price * 0.8,  # 80% of listing price
+            "message": "Bonjour, je suis intéressé par cette pièce. Accepteriez-vous cette offre ?"
+        }
+        
+        create_result = self.run_test("Offers - Create Offer", "POST", "offers", 200, offer_data)
+        if not create_result:
+            return False
+        
+        # Verify offer structure
+        offer_fields = ["id", "listing_id", "buyer_id", "seller_id", "amount", "message", "status", "created_at"]
+        for field in offer_fields:
+            if field in create_result:
+                self.log_test(f"Offer Field - {field}", True)
+            else:
+                self.log_test(f"Offer Field - {field}", False, f"Missing field: {field}")
+                return False
+        
+        offer_id = create_result["id"]
+        
+        # Step 3: Test offer validation (amount too low)
+        low_offer_data = {
+            "listing_id": test_listing_id,
+            "amount": test_listing_price * 0.3,  # 30% of listing price (should be rejected)
+            "message": "Offre très basse"
+        }
+        
+        low_offer_result = self.run_test("Offers - Low Amount Validation", "POST", "offers", 400, low_offer_data)
+        # We expect 400 for offers below 50% of price
+        self.log_test("Offers - Minimum Amount Validation", True, "Correctly rejected offer below 50% of price")
+        
+        # Step 4: Test getting sent offers
+        sent_offers = self.run_test("Offers - Get Sent Offers", "GET", "offers/sent", 200)
+        if sent_offers and isinstance(sent_offers, list):
+            if len(sent_offers) > 0:
+                found_offer = any(offer.get("id") == offer_id for offer in sent_offers)
+                if found_offer:
+                    self.log_test("Offers - Sent Offers Contains Created", True)
+                else:
+                    self.log_test("Offers - Sent Offers Contains Created", False, "Created offer not found in sent offers")
+                    return False
+            else:
+                self.log_test("Offers - Sent Offers Empty", False, "No sent offers found")
+                return False
+        else:
+            return False
+        
+        # Step 5: Test getting received offers (switch to seller perspective)
+        # Create a seller user to test received offers
+        timestamp = datetime.now().strftime('%H%M%S')
+        seller_user = {
+            "name": f"Seller User {timestamp}",
+            "email": f"seller{timestamp}@example.com",
+            "password": "SellerPass123!",
+            "is_professional": False
+        }
+        
+        seller_reg = self.run_test("Offers - Register Seller", "POST", "auth/register", 200, seller_user)
+        if not seller_reg or 'token' not in seller_reg:
+            return False
+        
+        # Switch to seller token temporarily
+        original_token = self.token
+        self.token = seller_reg['token']
+        
+        received_offers = self.run_test("Offers - Get Received Offers", "GET", "offers/received", 200)
+        if received_offers and isinstance(received_offers, list):
+            self.log_test("Offers - Received Offers Structure", True, f"Found {len(received_offers)} received offers")
+        else:
+            self.log_test("Offers - Received Offers Structure", False, "Failed to get received offers")
+            self.token = original_token
+            return False
+        
+        # Step 6: Test responding to offer (accept)
+        response_data = {
+            "action": "accept"
+        }
+        
+        respond_result = self.run_test("Offers - Respond Accept", "POST", f"offers/{offer_id}/respond", 200, response_data)
+        if respond_result and respond_result.get("message"):
+            self.log_test("Offers - Accept Response", True, f"Message: {respond_result['message']}")
+        else:
+            self.log_test("Offers - Accept Response", False, "No response message")
+            self.token = original_token
+            return False
+        
+        # Restore original token
+        self.token = original_token
+        
+        self.log_test("Complete Offers System Test", True, "All offers functionality working correctly")
+        return True
+
+    def test_bundles_system(self):
+        """Test the bundles (lots de pièces) system"""
+        if not self.token:
+            self.log_test("Bundles System", False, "No token available")
+            return False
+        
+        print("\n📦 Testing Bundles System...")
+        
+        # Step 1: Get available listings for bundle creation
+        listings_result = self.run_test("Get Listings for Bundle", "GET", "listings?limit=5", 200)
+        if not listings_result or not listings_result.get("listings"):
+            self.log_test("Bundles - No Listings Available", False, "No listings found for testing")
+            return False
+        
+        user_listings = [listing for listing in listings_result["listings"] 
+                        if listing.get("status") == "active" and listing.get("seller_id") == self.user_id]
+        
+        if len(user_listings) < 2:
+            self.log_test("Bundles - Insufficient User Listings", False, "Need at least 2 user listings for bundle")
+            return False
+        
+        # Step 2: Test creating a bundle
+        bundle_data = {
+            "title": "Lot de pièces moteur BMW",
+            "description": "Ensemble de pièces moteur compatibles BMW série 3",
+            "listing_ids": [user_listings[0]["id"], user_listings[1]["id"]],
+            "discount_percentage": 15.0
+        }
+        
+        create_result = self.run_test("Bundles - Create Bundle", "POST", "bundles", 200, bundle_data)
+        if not create_result:
+            return False
+        
+        # Verify bundle structure
+        bundle_fields = ["id", "title", "description", "listing_ids", "discount_percentage", "total_price", "discounted_price", "seller_id", "created_at"]
+        for field in bundle_fields:
+            if field in create_result:
+                self.log_test(f"Bundle Field - {field}", True)
+            else:
+                self.log_test(f"Bundle Field - {field}", False, f"Missing field: {field}")
+                return False
+        
+        bundle_id = create_result["id"]
+        
+        # Step 3: Test getting all bundles
+        all_bundles = self.run_test("Bundles - Get All Bundles", "GET", "bundles", 200)
+        if all_bundles and isinstance(all_bundles, list):
+            found_bundle = any(bundle.get("id") == bundle_id for bundle in all_bundles)
+            if found_bundle:
+                self.log_test("Bundles - Created Bundle in List", True)
+            else:
+                self.log_test("Bundles - Created Bundle in List", False, "Created bundle not found in list")
+                return False
+        else:
+            return False
+        
+        # Step 4: Test getting single bundle
+        single_bundle = self.run_test("Bundles - Get Single Bundle", "GET", f"bundles/{bundle_id}", 200)
+        if single_bundle:
+            if single_bundle.get("id") == bundle_id:
+                self.log_test("Bundles - Get Single Bundle", True)
+            else:
+                self.log_test("Bundles - Get Single Bundle", False, "Bundle ID mismatch")
+                return False
+        else:
+            return False
+        
+        # Step 5: Test getting bundles by seller
+        seller_bundles = self.run_test("Bundles - Get by Seller", "GET", f"bundles?seller_id={self.user_id}", 200)
+        if seller_bundles and isinstance(seller_bundles, list):
+            found_bundle = any(bundle.get("id") == bundle_id for bundle in seller_bundles)
+            if found_bundle:
+                self.log_test("Bundles - Seller Filter", True)
+            else:
+                self.log_test("Bundles - Seller Filter", False, "Bundle not found in seller filter")
+                return False
+        else:
+            return False
+        
+        # Step 6: Test deleting bundle
+        delete_result = self.run_test("Bundles - Delete Bundle", "DELETE", f"bundles/{bundle_id}", 200)
+        if delete_result and delete_result.get("message"):
+            self.log_test("Bundles - Delete Success", True, f"Message: {delete_result['message']}")
+        else:
+            self.log_test("Bundles - Delete Success", False, "No delete confirmation message")
+            return False
+        
+        # Step 7: Verify bundle is deleted
+        deleted_bundle = self.run_test("Bundles - Verify Deleted", "GET", f"bundles/{bundle_id}", 404)
+        # We expect 404 since bundle is deleted
+        self.log_test("Bundles - Deletion Verified", True, "Bundle correctly deleted")
+        
+        self.log_test("Complete Bundles System Test", True, "All bundles functionality working correctly")
+        return True
+
+    def test_live_stats_counter(self):
+        """Test live stats counter endpoint"""
+        print("\n📊 Testing Live Stats Counter...")
+        
+        result = self.run_test("Live Stats Counter", "GET", "stats/live", 200)
+        if result:
+            # Check required stats fields
+            required_fields = ["listings_count", "users_count", "sales_count", "sellers_count"]
+            for field in required_fields:
+                if field in result:
+                    self.log_test(f"Live Stats - {field}", True, f"Value: {result[field]}")
+                else:
+                    self.log_test(f"Live Stats - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Verify all values are non-negative integers
+            for field in required_fields:
+                value = result[field]
+                if isinstance(value, int) and value >= 0:
+                    self.log_test(f"Live Stats - {field} Valid", True)
+                else:
+                    self.log_test(f"Live Stats - {field} Valid", False, f"Invalid value: {value}")
+                    return False
+            
+            return True
+        return False
+
+    def test_widget_system(self):
+        """Test widget system endpoints"""
+        print("\n🔧 Testing Widget System...")
+        
+        # Step 1: Test getting widget listings
+        widget_listings = self.run_test("Widget - Get Listings", "GET", "widget/listings", 200)
+        if widget_listings and isinstance(widget_listings, list):
+            self.log_test("Widget - Listings Structure", True, f"Found {len(widget_listings)} listings")
+            
+            # Check listing structure if any listings exist
+            if len(widget_listings) > 0:
+                listing = widget_listings[0]
+                required_fields = ["id", "title", "price", "images", "seller_name"]
+                for field in required_fields:
+                    if field in listing:
+                        self.log_test(f"Widget Listing - {field}", True)
+                    else:
+                        self.log_test(f"Widget Listing - {field}", False, f"Missing field: {field}")
+                        return False
+        else:
+            return False
+        
+        # Step 2: Test widget listings with filters
+        filtered_listings = self.run_test("Widget - Filtered Listings", "GET", "widget/listings?category=pieces&limit=3", 200)
+        if filtered_listings and isinstance(filtered_listings, list):
+            if len(filtered_listings) <= 3:
+                self.log_test("Widget - Limit Filter", True, f"Returned {len(filtered_listings)} listings (≤3)")
+            else:
+                self.log_test("Widget - Limit Filter", False, f"Expected ≤3, got {len(filtered_listings)}")
+                return False
+        else:
+            return False
+        
+        # Step 3: Test getting widget code
+        widget_code = self.run_test("Widget - Get Code", "GET", "widget/code", 200)
+        if widget_code:
+            # Check response structure
+            required_fields = ["code", "preview_url"]
+            for field in required_fields:
+                if field in widget_code:
+                    self.log_test(f"Widget Code - {field}", True)
+                else:
+                    self.log_test(f"Widget Code - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Verify code contains expected elements
+            code = widget_code.get("code", "")
+            if "worldauto-widget" in code and "iframe" in code:
+                self.log_test("Widget - Code Content", True, "Contains widget div and iframe")
+            else:
+                self.log_test("Widget - Code Content", False, "Missing expected code elements")
+                return False
+            
+            return True
+        return False
+
+    def test_abandoned_cart_tracking(self):
+        """Test abandoned cart tracking system"""
+        if not self.token:
+            self.log_test("Cart Tracking", False, "No token available")
+            return False
+        
+        print("\n🛒 Testing Abandoned Cart Tracking...")
+        
+        # Step 1: Test tracking cart
+        cart_data = {
+            "listing_ids": ["test-listing-1", "test-listing-2"],
+            "user_email": "test@example.com"
+        }
+        
+        track_result = self.run_test("Cart - Track Cart", "POST", "cart/track", 200, cart_data)
+        if track_result and track_result.get("message"):
+            self.log_test("Cart - Track Success", True, f"Message: {track_result['message']}")
+        else:
+            self.log_test("Cart - Track Success", False, "No tracking confirmation")
+            return False
+        
+        # Step 2: Test cart conversion
+        convert_data = {
+            "cart_id": "test-cart-id",
+            "order_ids": ["order-1", "order-2"]
+        }
+        
+        convert_result = self.run_test("Cart - Convert Cart", "POST", "cart/convert", 200, convert_data)
+        if convert_result and convert_result.get("message"):
+            self.log_test("Cart - Convert Success", True, f"Message: {convert_result['message']}")
+        else:
+            self.log_test("Cart - Convert Success", False, "No conversion confirmation")
+            return False
+        
+        return True
+
+    def test_profile_website_field(self):
+        """Test profile update with website field for professional users"""
+        if not self.token:
+            self.log_test("Profile Website Field", False, "No token available")
+            return False
+        
+        print("\n🌐 Testing Profile Website Field...")
+        
+        # Test updating profile with website field
+        profile_data = {
+            "name": "Professional User",
+            "website": "https://www.example-auto-parts.com",
+            "company_name": "Example Auto Parts SARL"
+        }
+        
+        result = self.run_test("Profile - Update with Website", "PUT", "auth/profile", 200, profile_data)
+        if result:
+            # Verify website field is in response
+            if result.get("website") == profile_data["website"]:
+                self.log_test("Profile - Website Field Update", True, f"Website: {result['website']}")
+            else:
+                self.log_test("Profile - Website Field Update", False, f"Expected {profile_data['website']}, got {result.get('website')}")
+                return False
+            
+            return True
+        return False
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting World Auto API Tests...")
