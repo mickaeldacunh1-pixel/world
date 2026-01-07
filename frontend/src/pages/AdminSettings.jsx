@@ -465,7 +465,7 @@ export default function AdminSettings() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-7 mb-6">
+          <TabsList className="grid w-full grid-cols-8 mb-6">
             <TabsTrigger value="hero" className="flex items-center gap-2">
               <Image className="w-4 h-4" />
               Hero
