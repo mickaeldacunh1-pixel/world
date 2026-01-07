@@ -153,16 +153,16 @@ export default function PlateScanner({ onVehicleSelect }) {
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2 border-accent text-accent hover:bg-accent hover:text-white">
           <ScanLine className="w-5 h-5" />
-          Scanner ma plaque
+          {t('search.scan_plate')}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Car className="w-5 h-5 text-accent" />
-            {step === 1 && 'Scanner votre plaque'}
-            {step === 2 && 'Confirmer la plaque'}
-            {step === 3 && 'Sélectionner votre véhicule'}
+            {step === 1 && t('search.scan_title')}
+            {step === 2 && t('search.confirm_plate')}
+            {step === 3 && t('search.select_vehicle')}
           </DialogTitle>
         </DialogHeader>
 
@@ -170,7 +170,7 @@ export default function PlateScanner({ onVehicleSelect }) {
         {step === 1 && (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Prenez une photo de votre plaque d'immatriculation ou importez une image pour trouver rapidement les pièces compatibles.
+              {t('search.scan_desc')}
             </p>
             
             <div className="grid grid-cols-2 gap-3">
