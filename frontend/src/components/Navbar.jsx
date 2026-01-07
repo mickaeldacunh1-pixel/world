@@ -106,14 +106,6 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Promo Banner - Desktop only */}
-          <div className="hidden lg:block ml-4">
-            <PromoBanner 
-              bgColor={navbarSettings.promo_bg_color} 
-              textColor={navbarSettings.promo_text_color} 
-            />
-          </div>
-
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
             <DropdownMenu>
