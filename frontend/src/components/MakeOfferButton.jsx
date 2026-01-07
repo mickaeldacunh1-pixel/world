@@ -47,7 +47,7 @@ export default function MakeOfferButton({ listing, onSuccess }) {
       setMessage('');
       if (onSuccess) onSuccess();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur lors de l\'envoi de l\'offre');
+      toast.error(error.response?.data?.detail || 'Erreur lors de l&apos;envoi de l&apos;offre');
     } finally {
       setLoading(false);
     }
