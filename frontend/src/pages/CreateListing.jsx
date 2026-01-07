@@ -68,6 +68,9 @@ export default function CreateListing() {
     compatible_years: '',
     oem_reference: '',
     aftermarket_reference: '',
+    // Confiance & Traçabilité
+    part_origin: '',
+    vehicle_mileage: '',
   });
 
   const regions = [
