@@ -1157,8 +1157,9 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Hero Advanced Customization Testing Completed"
-  stuck_tasks: []
+    - "Coupon System Testing Completed"
+  stuck_tasks:
+    - "Coupon/Promo Code System"
   test_all: false
   test_priority: "high_first"
 
