@@ -3699,6 +3699,10 @@ class AutoPiecesAPITester:
         # Error handling
         self.test_invalid_endpoints()
         
+        # COUPON SYSTEM TESTING (NEW FEATURE)
+        print("\n🎫 Testing Coupon System...")
+        self.test_coupon_system_complete()
+        
         # Print summary
         print("=" * 60)
         print(f"📊 Test Results: {self.tests_passed}/{self.tests_run} passed")
