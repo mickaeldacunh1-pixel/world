@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2, Heart, ShoppingCart, CreditCard, Shield, ShieldCheck, Loader2, Flag, AlertTriangle, Video, Award } from 'lucide-react';
 import SEO, { createProductSchema, createBreadcrumbSchema } from '../components/SEO';
 import ShareButtons from '../components/ShareButtons';
+import { VerificationBadge, WarrantyBadge, PartOriginBadge } from '../components/TrustBadge';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
