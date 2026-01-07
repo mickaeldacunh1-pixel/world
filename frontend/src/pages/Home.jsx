@@ -7,7 +7,13 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Card } from '../components/ui/card';
-import { Search, Car, Wrench, Bike, Truck, Settings, ArrowRight, Shield, Users, Clock, MapPin, Eye, Sparkles, Gavel, Gift, UserPlus, Copy, Check, Stethoscope, Tractor } from 'lucide-react';
+import { Search, Car, Wrench, Bike, Truck, Settings, ArrowRight, Shield, Users, Clock, MapPin, Eye, Sparkles, Gavel, Gift, UserPlus, Copy, Check, Stethoscope, Tractor, Menu } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu';
 import SEO, { createOrganizationSchema, createWebsiteSchema } from '../components/SEO';
 import SeasonalAnimation from '../components/SeasonalAnimation';
 import AITools from '../components/AITools';
@@ -16,6 +22,8 @@ import VoiceSearch from '../components/VoiceSearch';
 import AnimatedText from '../components/AnimatedText';
 import SellerOfTheWeek from '../components/SellerOfTheWeek';
 import { toast } from 'sonner';
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
