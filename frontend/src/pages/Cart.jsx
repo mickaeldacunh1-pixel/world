@@ -86,9 +86,14 @@ export default function Cart() {
           }
         })
       );
-      setCartItems(updatedItems.filter(item => item.available));
+      const validItems = updatedItems.filter(item => item.available);
+      setCartItems(validItems);
       // Update localStorage with valid items only
-      localStorage.setItem('worldauto_cart', JSON.stringify(updatedItems.filter(item => item.available)));
+      localStorage.setItem('worldauto_cart', JSON.stringify(validItems));
+      // Track cart for abandoned cart recovery
+      if (validItems.length > 0) {
+        scheduleTracking(validItems);
+      }
     } catch (error) {
       console.error('Error fetching cart items:', error);
     } finally {
