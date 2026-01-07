@@ -89,17 +89,7 @@ export default function ListingDetail() {
     }
   };
 
-  useEffect(() => {
-    fetchListing();
-  }, [id]);
-
-  useEffect(() => {
-    if (user && listing) {
-      checkFavorite();
-    }
-  }, [user, listing]);
-
-  const fetchListing = async () => {
+  const fetchListing = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/listings/${id}`);
       setListing(response.data);
@@ -114,7 +104,30 @@ export default function ListingDetail() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]);
+
+  const checkFavorite = useCallback(async () => {
+    if (!token || !listing) return;
+    try {
+      const response = await axios.get(`${API}/favorites`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const favorites = response.data.favorites || [];
+      setIsFavorite(favorites.some(f => f.id === listing.id));
+    } catch (error) {
+      console.error('Error checking favorite:', error);
+    }
+  }, [token, listing]);
+
+  useEffect(() => {
+    fetchListing();
+  }, [fetchListing]);
+
+  useEffect(() => {
+    if (user && listing) {
+      checkFavorite();
+    }
+  }, [user, listing, checkFavorite]);
 
   const handleBuyNow = async () => {
     if (!user) {
