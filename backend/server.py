@@ -2885,6 +2885,120 @@ async def get_seller_profile(seller_id: str):
         "reviews": reviews[:10]  # 10 derniers avis
     }
 
+# ================== QUESTIONS & ANSWERS ROUTES ==================
+
+class QuestionCreate(BaseModel):
+    listing_id: str
+    question: str
+
+class AnswerCreate(BaseModel):
+    answer: str
+
+@api_router.post("/questions")
+async def create_question(question: QuestionCreate, current_user: dict = Depends(get_current_user)):
+    """Poser une question sur une annonce"""
+    # Vérifier que l'annonce existe
+    listing = await db.listings.find_one({"id": question.listing_id})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    question_doc = {
+        "id": str(uuid.uuid4()),
+        "listing_id": question.listing_id,
+        "seller_id": listing["seller_id"],
+        "asker_id": current_user["id"],
+        "asker_name": current_user.get("name", "Anonyme"),
+        "question": question.question,
+        "answer": None,
+        "answered_at": None,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "is_public": True
+    }
+    
+    await db.questions.insert_one(question_doc)
+    
+    # Notifier le vendeur par email
+    seller = await db.users.find_one({"id": listing["seller_id"]})
+    if seller:
+        try:
+            send_email(
+                to_email=seller["email"],
+                subject=f"Nouvelle question sur votre annonce - {listing['title'][:30]}",
+                html_content=f"""
+                <h2>Nouvelle question</h2>
+                <p><strong>{current_user.get('name', 'Un utilisateur')}</strong> a posé une question sur votre annonce :</p>
+                <p><em>"{question.question}"</em></p>
+                <p>Annonce : <strong>{listing['title']}</strong></p>
+                <p><a href="{SITE_URL}/annonce/{listing['id']}">Répondre à la question</a></p>
+                """
+            )
+        except:
+            pass
+    
+    return {"id": question_doc["id"], "message": "Question envoyée"}
+
+@api_router.get("/questions/listing/{listing_id}")
+async def get_listing_questions(listing_id: str):
+    """Récupérer toutes les questions d'une annonce"""
+    questions = await db.questions.find(
+        {"listing_id": listing_id, "is_public": True},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
+    
+    return questions
+
+@api_router.post("/questions/{question_id}/answer")
+async def answer_question(question_id: str, answer: AnswerCreate, current_user: dict = Depends(get_current_user)):
+    """Répondre à une question (vendeur uniquement)"""
+    question = await db.questions.find_one({"id": question_id})
+    if not question:
+        raise HTTPException(status_code=404, detail="Question non trouvée")
+    
+    # Vérifier que c'est bien le vendeur qui répond
+    if question["seller_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Seul le vendeur peut répondre")
+    
+    await db.questions.update_one(
+        {"id": question_id},
+        {"$set": {
+            "answer": answer.answer,
+            "answered_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    # Notifier l'auteur de la question
+    asker = await db.users.find_one({"id": question["asker_id"]})
+    listing = await db.listings.find_one({"id": question["listing_id"]})
+    if asker and listing:
+        try:
+            send_email(
+                to_email=asker["email"],
+                subject=f"Réponse à votre question - {listing['title'][:30]}",
+                html_content=f"""
+                <h2>Le vendeur a répondu</h2>
+                <p>Votre question : <em>"{question['question']}"</em></p>
+                <p>Réponse : <strong>{answer.answer}</strong></p>
+                <p><a href="{SITE_URL}/annonce/{listing['id']}">Voir l'annonce</a></p>
+                """
+            )
+        except:
+            pass
+    
+    return {"message": "Réponse envoyée"}
+
+@api_router.delete("/questions/{question_id}")
+async def delete_question(question_id: str, current_user: dict = Depends(get_current_user)):
+    """Supprimer une question (auteur ou vendeur)"""
+    question = await db.questions.find_one({"id": question_id})
+    if not question:
+        raise HTTPException(status_code=404, detail="Question non trouvée")
+    
+    if question["asker_id"] != current_user["id"] and question["seller_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Non autorisé")
+    
+    await db.questions.delete_one({"id": question_id})
+    return {"message": "Question supprimée"}
+
 # ================== REVIEWS ROUTES ==================
 
 class ReviewCreate(BaseModel):
