@@ -489,32 +489,49 @@ export default function Home() {
               )}
             </div>
 
-            {/* Quick stats - Customizable */}
+            {/* Quick stats - Customizable with Live Counter */}
             {heroSettings.hero_show_stats !== false && (
               <div className={`flex flex-wrap items-center gap-6 mt-8 animate-fade-in-up stagger-5 ${
                 heroSettings.hero_text_align === 'center' ? 'justify-center' : 
                 heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
               }`}>
-                {/* Stat 1 */}
+                {/* Stat 1 - Annonces (Live si activé) */}
                 <div style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
                   {heroSettings.hero_stat1_icon && <span className="mr-1">{heroSettings.hero_stat1_icon}</span>}
                   <span className="text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
-                    {heroSettings.hero_stat1_number || Object.values(categoryStats).reduce((a, b) => a + b, 0) || '100+'}
+                    {heroSettings.hero_use_live_counter && liveStats 
+                      ? liveStats.listings_count 
+                      : (heroSettings.hero_stat1_number || Object.values(categoryStats).reduce((a, b) => a + b, 0) || '100+')}
                   </span>
                   <span className="ml-2 text-sm">{heroSettings.hero_stat1_label || 'annonces actives'}</span>
+                  {heroSettings.hero_use_live_counter && <span className="ml-1 text-xs">🔴</span>}
                 </div>
                 
-                {/* Stat 2 */}
+                {/* Stat 2 - Utilisateurs (Live si activé) */}
                 <div style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
                   {heroSettings.hero_stat2_icon && <span className="mr-1">{heroSettings.hero_stat2_icon}</span>}
                   <span className="text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
-                    {heroSettings.hero_stat2_number || '5'}
+                    {heroSettings.hero_use_live_counter && liveStats 
+                      ? liveStats.users_count 
+                      : (heroSettings.hero_stat2_number || '5')}
                   </span>
-                  <span className="ml-2 text-sm">{heroSettings.hero_stat2_label || 'catégories'}</span>
+                  <span className="ml-2 text-sm">
+                    {heroSettings.hero_use_live_counter 
+                      ? 'membres' 
+                      : (heroSettings.hero_stat2_label || 'catégories')}
+                  </span>
                 </div>
                 
-                {/* Stat 3 (optional) */}
-                {heroSettings.hero_stat3_enabled && heroSettings.hero_stat3_number && (
+                {/* Stat 3 - Ventes (Live) ou personnalisé */}
+                {(heroSettings.hero_use_live_counter && liveStats) ? (
+                  <div style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
+                    <span className="mr-1">🏆</span>
+                    <span className="text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
+                      {liveStats.sales_count}
+                    </span>
+                    <span className="ml-2 text-sm">ventes réalisées</span>
+                  </div>
+                ) : heroSettings.hero_stat3_enabled && heroSettings.hero_stat3_number && (
                   <div style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
                     {heroSettings.hero_stat3_icon && <span className="mr-1">{heroSettings.hero_stat3_icon}</span>}
                     <span className="text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
