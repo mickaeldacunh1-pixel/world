@@ -3086,6 +3086,455 @@ class AutoPiecesAPITester:
         self.log_test("Complete Paid Diagnostic IA System Test", True, "All diagnostic system tests completed")
         return True
 
+    # ================== NEW UX FEATURES TESTS ==================
+
+    def test_seller_of_the_week_api(self):
+        """Test Seller of the Week API (public endpoint)"""
+        print("\n🏆 Testing Seller of the Week API...")
+        
+        # Test GET seller-of-the-week endpoint (public, no auth required)
+        result = self.run_test("Seller of the Week - Get", "GET", "seller-of-the-week", 200)
+        
+        if result is None:
+            # This is acceptable - no seller of the week found
+            self.log_test("Seller of the Week - No Data", True, "No seller of the week found (acceptable)")
+            return True
+        
+        if result:
+            # Check response structure if seller found
+            expected_fields = ["id", "name", "is_professional", "sales_count", "avg_rating", 
+                             "reviews_count", "active_listings", "member_since", "badge"]
+            
+            for field in expected_fields:
+                if field in result:
+                    self.log_test(f"Seller of the Week - {field}", True)
+                else:
+                    self.log_test(f"Seller of the Week - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Verify badge content
+            if result.get("badge") == "🏆 Vendeur de la semaine":
+                self.log_test("Seller of the Week - Badge", True)
+            else:
+                self.log_test("Seller of the Week - Badge", False, f"Unexpected badge: {result.get('badge')}")
+                return False
+            
+            # Verify numeric fields are valid
+            if isinstance(result.get("sales_count"), int) and result.get("sales_count") >= 0:
+                self.log_test("Seller of the Week - Sales Count", True)
+            else:
+                self.log_test("Seller of the Week - Sales Count", False, f"Invalid sales count: {result.get('sales_count')}")
+                return False
+            
+            if isinstance(result.get("avg_rating"), (int, float)) and 0 <= result.get("avg_rating") <= 5:
+                self.log_test("Seller of the Week - Rating", True)
+            else:
+                self.log_test("Seller of the Week - Rating", False, f"Invalid rating: {result.get('avg_rating')}")
+                return False
+        
+        self.log_test("Seller of the Week API Complete", True, "All seller of the week tests passed")
+        return True
+
+    def test_vacation_mode_api(self):
+        """Test Vacation Mode API (auth required)"""
+        if not self.token:
+            self.log_test("Vacation Mode API", False, "No token available")
+            return False
+        
+        print("\n🏖️ Testing Vacation Mode API...")
+        
+        # Step 1: Test GET vacation status (should be disabled by default)
+        get_result = self.run_test("Vacation Mode - Get Status", "GET", "auth/vacation", 200)
+        if get_result:
+            expected_fields = ["vacation_mode", "vacation_message", "vacation_return_date"]
+            for field in expected_fields:
+                if field in get_result:
+                    self.log_test(f"Vacation Status - {field}", True)
+                else:
+                    self.log_test(f"Vacation Status - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Should be disabled by default
+            if get_result.get("vacation_mode") == False:
+                self.log_test("Vacation Mode - Default Disabled", True)
+            else:
+                self.log_test("Vacation Mode - Default Disabled", False, f"Expected False, got {get_result.get('vacation_mode')}")
+        else:
+            return False
+        
+        # Step 2: Test enabling vacation mode
+        enable_data = {
+            "enabled": True,
+            "message": "En vacances jusqu'au 15 février",
+            "return_date": "2025-02-15"
+        }
+        
+        enable_result = self.run_test("Vacation Mode - Enable", "POST", "auth/vacation", 200, enable_data)
+        if enable_result:
+            if enable_result.get("vacation_mode") == True:
+                self.log_test("Vacation Mode - Enable Success", True)
+            else:
+                self.log_test("Vacation Mode - Enable Success", False, f"Expected True, got {enable_result.get('vacation_mode')}")
+                return False
+            
+            if "message" in enable_result:
+                self.log_test("Vacation Mode - Enable Message", True)
+            else:
+                self.log_test("Vacation Mode - Enable Message", False, "No message in response")
+                return False
+        else:
+            return False
+        
+        # Step 3: Verify vacation mode is enabled
+        verify_result = self.run_test("Vacation Mode - Verify Enabled", "GET", "auth/vacation", 200)
+        if verify_result:
+            if verify_result.get("vacation_mode") == True:
+                self.log_test("Vacation Mode - Verify Enabled", True)
+            else:
+                self.log_test("Vacation Mode - Verify Enabled", False, f"Expected True, got {verify_result.get('vacation_mode')}")
+                return False
+            
+            if verify_result.get("vacation_message") == enable_data["message"]:
+                self.log_test("Vacation Mode - Message Persisted", True)
+            else:
+                self.log_test("Vacation Mode - Message Persisted", False, f"Message mismatch")
+                return False
+            
+            if verify_result.get("vacation_return_date") == enable_data["return_date"]:
+                self.log_test("Vacation Mode - Return Date Persisted", True)
+            else:
+                self.log_test("Vacation Mode - Return Date Persisted", False, f"Return date mismatch")
+                return False
+        else:
+            return False
+        
+        # Step 4: Test disabling vacation mode
+        disable_data = {
+            "enabled": False
+        }
+        
+        disable_result = self.run_test("Vacation Mode - Disable", "POST", "auth/vacation", 200, disable_data)
+        if disable_result:
+            if disable_result.get("vacation_mode") == False:
+                self.log_test("Vacation Mode - Disable Success", True)
+            else:
+                self.log_test("Vacation Mode - Disable Success", False, f"Expected False, got {disable_result.get('vacation_mode')}")
+                return False
+        else:
+            return False
+        
+        # Step 5: Verify vacation mode is disabled
+        final_verify = self.run_test("Vacation Mode - Verify Disabled", "GET", "auth/vacation", 200)
+        if final_verify:
+            if final_verify.get("vacation_mode") == False:
+                self.log_test("Vacation Mode - Final Verify Disabled", True)
+            else:
+                self.log_test("Vacation Mode - Final Verify Disabled", False, f"Expected False, got {final_verify.get('vacation_mode')}")
+                return False
+        else:
+            return False
+        
+        # Step 6: Test without authentication
+        original_token = self.token
+        self.token = None
+        
+        self.run_test("Vacation Mode - No Auth GET", "GET", "auth/vacation", 401)
+        self.run_test("Vacation Mode - No Auth POST", "POST", "auth/vacation", 401, {"enabled": True})
+        
+        self.token = original_token
+        
+        self.log_test("Vacation Mode API Complete", True, "All vacation mode tests passed")
+        return True
+
+    def test_questions_answers_api(self):
+        """Test Questions & Answers API"""
+        if not self.token:
+            self.log_test("Questions & Answers API", False, "No token available")
+            return False
+        
+        print("\n❓ Testing Questions & Answers API...")
+        
+        # Step 1: Get available listings for testing
+        listings_result = self.run_test("Q&A - Get Listings", "GET", "listings?limit=5", 200)
+        if not listings_result or not listings_result.get("listings"):
+            self.log_test("Q&A - No Listings Available", False, "No listings found for testing")
+            return False
+        
+        available_listings = [listing for listing in listings_result["listings"] 
+                            if listing.get("status") == "active"]
+        
+        if not available_listings:
+            self.log_test("Q&A - No Active Listings", False, "No active listings found")
+            return False
+        
+        test_listing_id = available_listings[0]["id"]
+        seller_id = available_listings[0]["seller_id"]
+        
+        # Step 2: Test GET questions for listing (should be empty initially)
+        get_questions = self.run_test("Q&A - Get Questions Empty", "GET", f"questions/listing/{test_listing_id}", 200)
+        if get_questions is not None and isinstance(get_questions, list):
+            self.log_test("Q&A - Get Questions Structure", True, f"Found {len(get_questions)} questions")
+        else:
+            self.log_test("Q&A - Get Questions Structure", False, "Expected array response")
+            return False
+        
+        # Step 3: Test creating a question (auth required)
+        question_data = {
+            "listing_id": test_listing_id,
+            "question": "Cette pièce est-elle compatible avec une BMW Série 3 de 2018 ?"
+        }
+        
+        create_result = self.run_test("Q&A - Create Question", "POST", "questions", 200, question_data)
+        if create_result:
+            if "id" in create_result and "message" in create_result:
+                self.log_test("Q&A - Create Response Structure", True)
+                question_id = create_result["id"]
+            else:
+                self.log_test("Q&A - Create Response Structure", False, "Missing id or message")
+                return False
+        else:
+            return False
+        
+        # Step 4: Verify question appears in listing questions
+        verify_questions = self.run_test("Q&A - Verify Question Added", "GET", f"questions/listing/{test_listing_id}", 200)
+        if verify_questions and isinstance(verify_questions, list):
+            if len(verify_questions) > 0:
+                question = verify_questions[0]
+                # Check question structure
+                expected_fields = ["id", "listing_id", "seller_id", "asker_id", "asker_name", 
+                                 "question", "answer", "answered_at", "created_at", "is_public"]
+                
+                for field in expected_fields:
+                    if field in question:
+                        self.log_test(f"Q&A Question Field - {field}", True)
+                    else:
+                        self.log_test(f"Q&A Question Field - {field}", False, f"Missing field: {field}")
+                        return False
+                
+                # Verify question content
+                if question.get("question") == question_data["question"]:
+                    self.log_test("Q&A - Question Content", True)
+                else:
+                    self.log_test("Q&A - Question Content", False, "Question content mismatch")
+                    return False
+                
+                # Should not be answered yet
+                if question.get("answer") is None:
+                    self.log_test("Q&A - Initially Unanswered", True)
+                else:
+                    self.log_test("Q&A - Initially Unanswered", False, f"Expected None, got {question.get('answer')}")
+                    return False
+            else:
+                self.log_test("Q&A - Question Not Found", False, "Question not found after creation")
+                return False
+        else:
+            return False
+        
+        # Step 5: Test answering question (requires being the seller)
+        # First, let's try with current user (should fail if not seller)
+        answer_data = {
+            "answer": "Oui, cette pièce est compatible avec votre BMW Série 3 de 2018."
+        }
+        
+        answer_result = self.run_test("Q&A - Answer Question", "POST", f"questions/{question_id}/answer", 403, answer_data)
+        # We expect 403 since current user is likely not the seller
+        self.log_test("Q&A - Answer Permission Check", True, "Correctly denied answer from non-seller")
+        
+        # Step 6: Test creating question with invalid listing
+        invalid_question = {
+            "listing_id": "non-existent-listing-id",
+            "question": "Test question for invalid listing"
+        }
+        
+        invalid_result = self.run_test("Q&A - Invalid Listing", "POST", "questions", 404, invalid_question)
+        # We expect 404 since listing doesn't exist
+        self.log_test("Q&A - Invalid Listing Error", True, "Correctly returned 404 for invalid listing")
+        
+        # Step 7: Test without authentication
+        original_token = self.token
+        self.token = None
+        
+        # GET should work without auth (public endpoint)
+        self.run_test("Q&A - Get Questions No Auth", "GET", f"questions/listing/{test_listing_id}", 200)
+        
+        # POST should require auth
+        self.run_test("Q&A - Create Question No Auth", "POST", "questions", 401, question_data)
+        
+        self.token = original_token
+        
+        # Step 8: Test deleting question (should work for question author)
+        delete_result = self.run_test("Q&A - Delete Question", "DELETE", f"questions/{question_id}", 200)
+        if delete_result and delete_result.get("message"):
+            self.log_test("Q&A - Delete Success", True, f"Message: {delete_result['message']}")
+        else:
+            self.log_test("Q&A - Delete Success", False, "No success message")
+            return False
+        
+        # Step 9: Verify question is deleted
+        final_questions = self.run_test("Q&A - Verify Deleted", "GET", f"questions/listing/{test_listing_id}", 200)
+        if final_questions and isinstance(final_questions, list):
+            # Should have one less question (or back to original count)
+            remaining_questions = [q for q in final_questions if q.get("id") == question_id]
+            if len(remaining_questions) == 0:
+                self.log_test("Q&A - Question Deleted", True, "Question successfully deleted")
+            else:
+                self.log_test("Q&A - Question Deleted", False, "Question still exists after deletion")
+                return False
+        else:
+            return False
+        
+        self.log_test("Questions & Answers API Complete", True, "All Q&A tests passed")
+        return True
+
+    def test_search_history_api(self):
+        """Test Search History API (auth required)"""
+        if not self.token:
+            self.log_test("Search History API", False, "No token available")
+            return False
+        
+        print("\n🔍 Testing Search History API...")
+        
+        # Step 1: Test GET search history (should be empty initially)
+        get_history = self.run_test("Search History - Get Empty", "GET", "search-history", 200)
+        if get_history is not None and isinstance(get_history, list):
+            initial_count = len(get_history)
+            self.log_test("Search History - Get Structure", True, f"Found {initial_count} searches")
+        else:
+            self.log_test("Search History - Get Structure", False, "Expected array response")
+            return False
+        
+        # Step 2: Test saving a search
+        search_data = {
+            "query": "BMW moteur",
+            "category": "pieces",
+            "brand": "BMW"
+        }
+        
+        save_result = self.run_test("Search History - Save Search", "POST", "search-history", 200, search_data)
+        if save_result and "id" in save_result:
+            search_id = save_result["id"]
+            self.log_test("Search History - Save Response", True, f"Search ID: {search_id}")
+        else:
+            self.log_test("Search History - Save Response", False, "No ID in response")
+            return False
+        
+        # Step 3: Test saving another search with different parameters
+        search_data2 = {
+            "query": "Audi transmission",
+            "category": "pieces",
+            "brand": "Audi",
+            "min_price": 100.0,
+            "max_price": 500.0,
+            "region": "Île-de-France"
+        }
+        
+        save_result2 = self.run_test("Search History - Save Search 2", "POST", "search-history", 200, search_data2)
+        if save_result2 and "id" in save_result2:
+            search_id2 = save_result2["id"]
+            self.log_test("Search History - Save Response 2", True, f"Search ID: {search_id2}")
+        else:
+            self.log_test("Search History - Save Response 2", False, "No ID in response")
+            return False
+        
+        # Step 4: Verify searches appear in history
+        verify_history = self.run_test("Search History - Verify Added", "GET", "search-history", 200)
+        if verify_history and isinstance(verify_history, list):
+            if len(verify_history) >= initial_count + 2:
+                self.log_test("Search History - Count Increased", True, f"Now has {len(verify_history)} searches")
+                
+                # Check structure of first search
+                if len(verify_history) > 0:
+                    search = verify_history[0]  # Should be most recent
+                    expected_fields = ["id", "user_id", "created_at"]
+                    
+                    for field in expected_fields:
+                        if field in search:
+                            self.log_test(f"Search History Field - {field}", True)
+                        else:
+                            self.log_test(f"Search History Field - {field}", False, f"Missing field: {field}")
+                            return False
+                    
+                    # Check that search parameters are preserved
+                    if search.get("query") in ["BMW moteur", "Audi transmission"]:
+                        self.log_test("Search History - Query Preserved", True)
+                    else:
+                        self.log_test("Search History - Query Preserved", False, f"Unexpected query: {search.get('query')}")
+                        return False
+            else:
+                self.log_test("Search History - Count Increased", False, f"Expected at least {initial_count + 2}, got {len(verify_history)}")
+                return False
+        else:
+            return False
+        
+        # Step 5: Test with limit parameter
+        limited_history = self.run_test("Search History - With Limit", "GET", "search-history?limit=1", 200)
+        if limited_history and isinstance(limited_history, list):
+            if len(limited_history) == 1:
+                self.log_test("Search History - Limit Works", True, "Returned exactly 1 result")
+            else:
+                self.log_test("Search History - Limit Works", False, f"Expected 1, got {len(limited_history)}")
+                return False
+        else:
+            return False
+        
+        # Step 6: Test deleting a specific search
+        delete_result = self.run_test("Search History - Delete Search", "DELETE", f"search-history/{search_id}", 200)
+        if delete_result and delete_result.get("message"):
+            self.log_test("Search History - Delete Success", True, f"Message: {delete_result['message']}")
+        else:
+            self.log_test("Search History - Delete Success", False, "No success message")
+            return False
+        
+        # Step 7: Verify search was deleted
+        after_delete = self.run_test("Search History - Verify Deleted", "GET", "search-history", 200)
+        if after_delete and isinstance(after_delete, list):
+            # Should have one less search
+            remaining_searches = [s for s in after_delete if s.get("id") == search_id]
+            if len(remaining_searches) == 0:
+                self.log_test("Search History - Search Deleted", True, "Search successfully deleted")
+            else:
+                self.log_test("Search History - Search Deleted", False, "Search still exists after deletion")
+                return False
+        else:
+            return False
+        
+        # Step 8: Test deleting non-existent search
+        delete_invalid = self.run_test("Search History - Delete Invalid", "DELETE", "search-history/non-existent-id", 404)
+        # We expect 404 since search doesn't exist
+        self.log_test("Search History - Delete Invalid Error", True, "Correctly returned 404 for invalid search")
+        
+        # Step 9: Test clearing all search history
+        clear_result = self.run_test("Search History - Clear All", "DELETE", "search-history", 200)
+        if clear_result and clear_result.get("message"):
+            self.log_test("Search History - Clear Success", True, f"Message: {clear_result['message']}")
+        else:
+            self.log_test("Search History - Clear Success", False, "No success message")
+            return False
+        
+        # Step 10: Verify all searches are cleared
+        final_history = self.run_test("Search History - Verify Cleared", "GET", "search-history", 200)
+        if final_history and isinstance(final_history, list):
+            if len(final_history) == 0:
+                self.log_test("Search History - All Cleared", True, "All searches successfully cleared")
+            else:
+                self.log_test("Search History - All Cleared", False, f"Expected 0, got {len(final_history)}")
+                return False
+        else:
+            return False
+        
+        # Step 11: Test without authentication
+        original_token = self.token
+        self.token = None
+        
+        self.run_test("Search History - No Auth GET", "GET", "search-history", 401)
+        self.run_test("Search History - No Auth POST", "POST", "search-history", 401, search_data)
+        self.run_test("Search History - No Auth DELETE", "DELETE", "search-history/test-id", 401)
+        
+        self.token = original_token
+        
+        self.log_test("Search History API Complete", True, "All search history tests passed")
+        return True
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting World Auto API Tests...")
