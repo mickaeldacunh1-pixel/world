@@ -3386,42 +3386,172 @@ class AutoPiecesAPITester:
         return False
 
     def test_abandoned_cart_tracking(self):
-        """Test abandoned cart tracking system"""
-        if not self.token:
-            self.log_test("Cart Tracking", False, "No token available")
-            return False
+        """Test the complete abandoned cart recovery system"""
+        print("\n🛒 Testing Abandoned Cart Recovery System...")
         
-        print("\n🛒 Testing Abandoned Cart Tracking...")
+        # Step 1: Test cart tracking without authentication (should work with email)
+        cart_items = [
+            {
+                "listing_id": "test-listing-123",
+                "title": "Alternateur Renault Clio",
+                "price": 85.50,
+                "image": "https://example.com/alternateur.jpg"
+            },
+            {
+                "listing_id": "test-listing-456", 
+                "title": "Phare avant Peugeot 308",
+                "price": 120.00,
+                "image": "https://example.com/phare.jpg"
+            }
+        ]
         
-        # Step 1: Test tracking cart with correct format
-        cart_data = {
-            "items": [
-                {"listing_id": "test-listing-1", "price": 50.0, "title": "Test Item 1"},
-                {"listing_id": "test-listing-2", "price": 75.0, "title": "Test Item 2"}
-            ],
+        cart_data_no_auth = {
+            "items": cart_items,
             "email": "test@example.com"
         }
         
-        track_result = self.run_test("Cart - Track Cart", "POST", "cart/track", 200, cart_data)
-        if track_result and track_result.get("message"):
-            self.log_test("Cart - Track Success", True, f"Message: {track_result['message']}")
+        # Test without auth token
+        original_token = self.token
+        self.token = None
+        
+        track_result_no_auth = self.run_test("Cart Track - Without Auth", "POST", "cart/track", 200, cart_data_no_auth)
+        if track_result_no_auth and track_result_no_auth.get("message"):
+            self.log_test("Cart Track No Auth - Response", True, f"Message: {track_result_no_auth['message']}")
         else:
-            self.log_test("Cart - Track Success", False, "No tracking confirmation")
+            self.log_test("Cart Track No Auth - Response", False, "No success message")
             return False
         
-        # Step 2: Test cart conversion
-        convert_data = {
-            "cart_id": "test-cart-id",
-            "order_ids": ["order-1", "order-2"]
+        # Restore token for authenticated tests
+        self.token = original_token
+        
+        # Step 2: Test cart tracking with authentication (should use user email)
+        if not self.token:
+            self.log_test("Cart Track - With Auth", False, "No token available")
+            return False
+        
+        cart_data_with_auth = {
+            "items": cart_items
+            # No email provided - should use current user's email
         }
         
-        convert_result = self.run_test("Cart - Convert Cart", "POST", "cart/convert", 200, convert_data)
-        if convert_result and convert_result.get("message"):
-            self.log_test("Cart - Convert Success", True, f"Message: {convert_result['message']}")
+        track_result_auth = self.run_test("Cart Track - With Auth", "POST", "cart/track", 200, cart_data_with_auth)
+        if track_result_auth and track_result_auth.get("message"):
+            self.log_test("Cart Track With Auth - Response", True, f"Message: {track_result_auth['message']}")
         else:
-            self.log_test("Cart - Convert Success", False, "No conversion confirmation")
+            self.log_test("Cart Track With Auth - Response", False, "No success message")
             return False
         
+        # Step 3: Test cart tracking with empty items (should return error)
+        empty_cart_data = {
+            "items": [],
+            "email": "test@example.com"
+        }
+        
+        self.token = None  # Test without auth
+        empty_result = self.run_test("Cart Track - Empty Cart", "POST", "cart/track", 200, empty_cart_data)
+        if empty_result and empty_result.get("message") == "Panier vide":
+            self.log_test("Cart Track Empty - Correct Response", True, "Correctly handled empty cart")
+        else:
+            self.log_test("Cart Track Empty - Correct Response", False, f"Unexpected response: {empty_result}")
+            return False
+        
+        self.token = original_token  # Restore token
+        
+        # Step 4: Test cart conversion (requires authentication)
+        if not self.token:
+            self.log_test("Cart Convert", False, "No token available")
+            return False
+        
+        convert_result = self.run_test("Cart Convert", "POST", "cart/convert", 200)
+        if convert_result and convert_result.get("message"):
+            self.log_test("Cart Convert - Response", True, f"Message: {convert_result['message']}")
+        else:
+            self.log_test("Cart Convert - Response", False, "No success message")
+            return False
+        
+        # Step 5: Test cart conversion without authentication (should fail)
+        self.token = None
+        convert_no_auth = self.run_test("Cart Convert - No Auth", "POST", "cart/convert", 401)
+        self.log_test("Cart Convert - Auth Required", True, "Correctly requires authentication")
+        self.token = original_token
+        
+        # Step 6: Test admin cart reminders (requires admin access)
+        if not self.token:
+            self.log_test("Admin Cart Reminders", False, "No token available")
+            return False
+        
+        # Test with regular user (should fail with 403)
+        reminders_result = self.run_test("Admin Cart Reminders - Regular User", "POST", "admin/send-cart-reminders", 403)
+        self.log_test("Admin Cart Reminders - Access Denied", True, "Correctly denied access to non-admin")
+        
+        # Step 7: Test admin cart stats (requires admin access)
+        stats_result = self.run_test("Admin Cart Stats - Regular User", "GET", "admin/abandoned-carts/stats", 403)
+        self.log_test("Admin Cart Stats - Access Denied", True, "Correctly denied access to non-admin")
+        
+        # Step 8: Create admin user for testing admin endpoints
+        timestamp = datetime.now().strftime('%H%M%S')
+        admin_user = {
+            "name": f"Admin User {timestamp}",
+            "email": "contact@worldautofrance.com",  # Admin email
+            "password": "AdminPass123!",
+            "phone": "0612345678",
+            "is_professional": True
+        }
+        
+        admin_reg = self.run_test("Register Admin User", "POST", "auth/register", 200, admin_user)
+        if admin_reg and 'token' in admin_reg:
+            admin_token = admin_reg['token']
+            
+            # Test admin cart reminders with admin token
+            self.token = admin_token
+            admin_reminders = self.run_test("Admin Cart Reminders - Admin User", "POST", "admin/send-cart-reminders", 200)
+            if admin_reminders and admin_reminders.get("message"):
+                self.log_test("Admin Cart Reminders - Success", True, f"Message: {admin_reminders['message']}")
+            else:
+                self.log_test("Admin Cart Reminders - Success", False, "No success message")
+                return False
+            
+            # Test admin cart stats with admin token
+            admin_stats = self.run_test("Admin Cart Stats - Admin User", "GET", "admin/abandoned-carts/stats", 200)
+            if admin_stats:
+                # Check required stats fields
+                required_fields = ["active_carts", "converted_carts", "reminded_carts", "active_value", "conversion_rate", "recent_carts"]
+                for field in required_fields:
+                    if field in admin_stats:
+                        self.log_test(f"Admin Stats Field - {field}", True)
+                    else:
+                        self.log_test(f"Admin Stats Field - {field}", False, f"Missing field: {field}")
+                        return False
+                
+                # Verify data types
+                if isinstance(admin_stats.get("active_carts"), int):
+                    self.log_test("Admin Stats - Active Carts Type", True)
+                else:
+                    self.log_test("Admin Stats - Active Carts Type", False, f"Expected int, got {type(admin_stats.get('active_carts'))}")
+                    return False
+                
+                if isinstance(admin_stats.get("conversion_rate"), (int, float)):
+                    self.log_test("Admin Stats - Conversion Rate Type", True)
+                else:
+                    self.log_test("Admin Stats - Conversion Rate Type", False, f"Expected number, got {type(admin_stats.get('conversion_rate'))}")
+                    return False
+                
+                if isinstance(admin_stats.get("recent_carts"), list):
+                    self.log_test("Admin Stats - Recent Carts Type", True)
+                else:
+                    self.log_test("Admin Stats - Recent Carts Type", False, f"Expected list, got {type(admin_stats.get('recent_carts'))}")
+                    return False
+            else:
+                self.log_test("Admin Cart Stats - Admin User", False, "Failed to get stats")
+                return False
+        else:
+            self.log_test("Register Admin User", False, "Failed to register admin user")
+            return False
+        
+        # Restore original token
+        self.token = original_token
+        
+        self.log_test("Complete Abandoned Cart Recovery System", True, "All abandoned cart tests passed")
         return True
 
     def test_profile_website_field(self):
