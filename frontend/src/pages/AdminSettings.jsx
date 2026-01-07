@@ -1165,10 +1165,15 @@ export default function AdminSettings() {
             {/* Preview with Mobile/Desktop toggle */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Eye className="w-5 h-5" />
-                  Aperçu en direct
-                </CardTitle>
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Eye className="w-5 h-5" />
+                    Aperçu en direct
+                  </CardTitle>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    ⚠️ Cet aperçu reflète vos modifications en temps réel. Cliquez sur "Sauvegarder" pour appliquer les changements sur le site.
+                  </p>
+                </div>
                 <div className="flex items-center gap-2 bg-secondary rounded-lg p-1">
                   <button
                     type="button"
