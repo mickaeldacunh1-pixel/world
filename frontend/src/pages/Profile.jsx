@@ -373,6 +373,24 @@ export default function Profile() {
                             />
                           </div>
                         </div>
+                        
+                        <div className="mt-4 space-y-2">
+                          <Label htmlFor="website">Site web</Label>
+                          <div className="relative">
+                            <ExternalLink className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <Input
+                              id="website"
+                              name="website"
+                              value={profileData.website}
+                              onChange={handleProfileChange}
+                              placeholder="https://monsite.fr"
+                              className="pl-10"
+                            />
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Votre site web sera affiché sur votre profil vendeur
+                          </p>
+                        </div>
                       </div>
                     </>
                   )}
