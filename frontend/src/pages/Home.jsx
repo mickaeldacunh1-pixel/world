@@ -542,7 +542,7 @@ export default function Home() {
                       ? liveStats.listings_count 
                       : (heroSettings.hero_stat1_number || Object.values(categoryStats).reduce((a, b) => a + b, 0) || '100+')}
                   </span>
-                  <span className="ml-2 text-sm">{heroSettings.hero_stat1_label || t('hero.activeListings')}</span>
+                  <span className="ml-2 text-sm">{autoTranslate(heroSettings.hero_stat1_label) || t('hero.activeListings')}</span>
                   {heroSettings.hero_use_live_counter && <span className="ml-1 text-xs">🔴</span>}
                 </div>
                 
@@ -557,7 +557,7 @@ export default function Home() {
                   <span className="ml-2 text-sm">
                     {heroSettings.hero_use_live_counter 
                       ? t('hero.members') 
-                      : (heroSettings.hero_stat2_label || t('hero.categories'))}
+                      : (autoTranslate(heroSettings.hero_stat2_label) || t('hero.categories'))}
                   </span>
                 </div>
                 
@@ -576,7 +576,7 @@ export default function Home() {
                     <span className="text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
                       {heroSettings.hero_stat3_number}
                     </span>
-                    <span className="ml-2 text-sm">{heroSettings.hero_stat3_label}</span>
+                    <span className="ml-2 text-sm">{autoTranslate(heroSettings.hero_stat3_label)}</span>
                   </div>
                 )}
                 
