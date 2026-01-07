@@ -1469,7 +1469,10 @@ backend:
         - comment: "Integrated all P1 components into pages: VacationMode & NotificationSettings in Profile.jsx (new tabs), SellerOfTheWeek in Home.jsx, QuestionsAnswers & WarrantySelector in ListingDetail.jsx, SearchHistory in Listings.jsx. All components were already coded with backend endpoints, just needed integration into pages."
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Price History Frontend Integration"
+    - "Parts Comparator Frontend"
+    - "Navbar Reorganization"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
