@@ -153,6 +153,7 @@ function AppContent() {
           <Route path="/checkout" element={
             <ProtectedRoute><Checkout /></ProtectedRoute>
           } />
+          <Route path="/comparer" element={<Compare />} />
           <Route path="/a-propos" element={<About />} />
           <Route path="/cgv" element={<CGV />} />
           <Route path="/mentions-legales" element={<LegalNotice />} />
@@ -171,6 +172,7 @@ function AppContent() {
       </main>
       <Footer />
       <Tobi />
+      <CompareWidget />
       <Toaster position="top-right" richColors />
     </div>
   );
