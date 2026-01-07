@@ -3606,6 +3606,9 @@ class AutoPiecesAPITester:
         # For now, we'll test the non-admin functionality and document the admin issue
         admin_token = self.token  # Use regular user token to demonstrate the 403 errors
         
+        # Store original token
+        original_token = self.token
+        
         # Step 3: Test POST /api/admin/coupons - Create coupon (will fail due to admin access issue)
         coupon_id = None
         create_result = self.run_test("Coupon - Create PROMO10 (Expected 403)", "POST", "admin/coupons", 403, coupon_data)
