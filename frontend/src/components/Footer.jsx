@@ -123,22 +123,22 @@ export default function Footer() {
 
           {/* Liens utiles */}
           <div>
-            <h3 className="font-heading font-bold text-lg mb-4">Liens utiles</h3>
+            <h3 className="font-heading font-bold text-lg mb-4">{t('footer.useful_links')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/nouveautes" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-1">
                   <Sparkles className="w-3 h-3" />
-                  Nouveautés
+                  {t('nav.updates')}
                 </Link>
               </li>
               <li>
                 <Link to="/a-propos" className="text-primary-foreground/70 hover:text-accent transition-colors">
-                  À propos
+                  {t('footer.about')}
                 </Link>
               </li>
               <li>
                 <Link to="/faq" className="text-primary-foreground/70 hover:text-accent transition-colors">
-                  FAQ
+                  {t('footer.faq')}
                 </Link>
               </li>
               <li>
@@ -148,7 +148,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link to="/politique-retours" className="text-primary-foreground/70 hover:text-accent transition-colors">
-                  Politique de retours
+                  {t('footer.returns')}
                 </Link>
               </li>
               <li>
