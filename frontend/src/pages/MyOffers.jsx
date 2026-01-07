@@ -171,6 +171,7 @@ function OfferCard({ offer, type, onRespond, onAcceptCounter, processing }) {
 }
 
 export default function MyOffers() {
+  const { t } = useTranslation();
   const { token } = useAuth();
   const [receivedOffers, setReceivedOffers] = useState([]);
   const [sentOffers, setSentOffers] = useState([]);
