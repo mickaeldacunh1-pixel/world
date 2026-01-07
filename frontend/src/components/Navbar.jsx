@@ -290,12 +290,13 @@ export default function Navbar() {
                   </Button>
                 </Link>
 
-                {/* 9. Panier */}
-                <Link to="/panier" className="hidden sm:flex" title="Panier">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <ShoppingCart className="w-5 h-5" />
-                  </Button>
-                </Link>
+                {/* 9. Panier - Visible permanent style AUTODOC */}
+                <div className="hidden sm:block">
+                  <CartPreview 
+                    bgColor={navbarSettings.cart_bg_color}
+                    textColor={navbarSettings.cart_text_color}
+                  />
+                </div>
               </>
             ) : (
               <>
