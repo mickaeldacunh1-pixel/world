@@ -10,6 +10,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Search, Filter, Grid3X3, List, MapPin, Eye, ChevronLeft, ChevronRight, Car, Zap, Star, Mic } from 'lucide-react';
 import SEO, { createBreadcrumbSchema } from '../components/SEO';
 import VoiceSearch from '../components/VoiceSearch';
+import SearchHistory, { useSaveSearch } from '../components/SearchHistory';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
