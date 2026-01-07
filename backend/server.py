@@ -2518,6 +2518,12 @@ async def create_order(order: OrderCreate, background_tasks: BackgroundTasks, cu
     # Mark listing as sold
     await db.listings.update_one({"id": order.listing_id}, {"$set": {"status": "sold"}})
     
+    # Marquer le panier abandonné comme converti
+    await db.abandoned_carts.update_many(
+        {"email": current_user["email"], "status": "active"},
+        {"$set": {"status": "converted", "converted_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
     # Send notification emails
     background_tasks.add_task(send_new_order_seller_email, seller.get("email"), seller.get("name"), order_doc)
     background_tasks.add_task(send_new_order_buyer_email, current_user.get("email"), current_user.get("name"), order_doc)
