@@ -457,7 +457,7 @@ export default function AdminSettings() {
               <Settings className="w-8 h-8" />
               Administration
             </h1>
-            <p className="text-muted-foreground">Personnalisez l'apparence et le contenu de votre site</p>
+            <p className="text-muted-foreground">Personnalisez l&apos;apparence et le contenu de votre site</p>
           </div>
           <div className="flex gap-2">
             <Link to="/">
@@ -529,13 +529,13 @@ export default function AdminSettings() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  📢 Barre d'annonce
+                  📢 Barre d&apos;annonce
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label>Activer la barre d'annonce</Label>
+                    <Label>Activer la barre d&apos;annonce</Label>
                     <p className="text-sm text-muted-foreground">Affiche un message en haut du site</p>
                   </div>
                   <Switch
@@ -547,7 +547,7 @@ export default function AdminSettings() {
                 {settings.announcement_enabled && (
                   <div className="space-y-4 pt-4 border-t">
                     <div className="space-y-2">
-                      <Label>Texte de l'annonce</Label>
+                      <Label>Texte de l&apos;annonce</Label>
                       <div className="flex gap-2">
                         <Input
                           value={settings.announcement_text}
