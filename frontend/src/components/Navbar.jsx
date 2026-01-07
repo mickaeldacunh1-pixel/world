@@ -128,12 +128,6 @@ export default function Navbar() {
                   </Button>
                 </Link>
 
-                <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Gift className="w-5 h-5" />
-                  </Button>
-                </Link>
-
                 <Link to="/deposer">
                   <Button className="hidden sm:flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground btn-primary" data-testid="create-listing-btn">
                     <Plus className="w-4 h-4" />
