@@ -457,7 +457,7 @@ export default function Home() {
                 <div className="relative flex-1">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
-                    placeholder={heroSettings.hero_search_placeholder || "Rechercher une pièce, un véhicule..."}
+                    placeholder={autoTranslate(heroSettings.hero_search_placeholder) || t('hero.searchPlaceholder')}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="pl-12 h-14 bg-transparent border-0 text-lg focus-ring rounded-xl"
