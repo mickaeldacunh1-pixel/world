@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
@@ -18,20 +19,21 @@ import LanguageSelector from './LanguageSelector';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const categories = [
-  { name: 'Pièces Détachées', slug: 'pieces', icon: Wrench },
-  { name: 'Voitures', slug: 'voitures', icon: Car },
-  { name: 'Motos', slug: 'motos', icon: Bike },
-  { name: 'Utilitaires', slug: 'utilitaires', icon: Truck },
-  { name: 'Accessoires', slug: 'accessoires', icon: Settings },
-];
-
 export default function Navbar() {
+  const { t } = useTranslation();
   const { user, token, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
+
+  const categories = [
+    { name: t('nav.parts'), slug: 'pieces', icon: Wrench },
+    { name: t('nav.cars'), slug: 'voitures', icon: Car },
+    { name: t('nav.motorcycles'), slug: 'motos', icon: Bike },
+    { name: t('nav.utilities'), slug: 'utilitaires', icon: Truck },
+    { name: t('nav.accessories'), slug: 'accessoires', icon: Settings },
+  ];
 
   // Fetch unread messages count
   useEffect(() => {
