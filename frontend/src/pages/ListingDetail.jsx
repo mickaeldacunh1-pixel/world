@@ -11,7 +11,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2, Heart, ShoppingCart, CreditCard, Shield, ShieldCheck, Loader2, Flag, AlertTriangle, Video, Award } from 'lucide-react';
 import SEO, { createProductSchema, createBreadcrumbSchema } from '../components/SEO';
-import { VerificationBadge, WarrantyBadge, PartOriginBadge } from '../components/TrustBadge';
+import ShareButtons from '../components/ShareButtons';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
