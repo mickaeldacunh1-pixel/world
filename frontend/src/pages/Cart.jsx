@@ -5,7 +5,8 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
-import { ShoppingCart, Trash2, ArrowRight, Package } from 'lucide-react';
+import { Input } from '../components/ui/input';
+import { ShoppingCart, Trash2, ArrowRight, Package, Ticket, X, Check, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import SEO from '../components/SEO';
 
