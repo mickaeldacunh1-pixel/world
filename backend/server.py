@@ -7040,6 +7040,47 @@ async def send_cart_reminders(background_tasks: BackgroundTasks, current_user: d
     
     return {"message": f"{sent_count} relances envoyées"}
 
+@api_router.get("/admin/abandoned-carts/stats")
+async def get_abandoned_cart_stats(current_user: dict = Depends(get_current_user)):
+    """Obtenir les statistiques des paniers abandonnés (admin)"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès admin requis")
+    
+    # Stats globales
+    total_active = await db.abandoned_carts.count_documents({"status": "active"})
+    total_converted = await db.abandoned_carts.count_documents({"status": "converted"})
+    total_reminded = await db.abandoned_carts.count_documents({"reminder_count": {"$gt": 0}})
+    
+    # Valeur des paniers actifs
+    pipeline = [
+        {"$match": {"status": "active"}},
+        {"$group": {"_id": None, "total_value": {"$sum": "$total"}}}
+    ]
+    value_result = await db.abandoned_carts.aggregate(pipeline).to_list(1)
+    active_value = value_result[0]["total_value"] if value_result else 0
+    
+    # Taux de conversion
+    total_carts = total_active + total_converted
+    conversion_rate = (total_converted / total_carts * 100) if total_carts > 0 else 0
+    
+    # Paniers récents actifs (dernières 24h)
+    recent_cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
+    recent_carts = await db.abandoned_carts.find(
+        {"status": "active", "created_at": {"$gt": recent_cutoff}},
+        {"_id": 0}
+    ).sort("created_at", -1).limit(10).to_list(10)
+    
+    return {
+        "stats": {
+            "active_carts": total_active,
+            "converted_carts": total_converted,
+            "reminded_carts": total_reminded,
+            "active_value": round(active_value, 2),
+            "conversion_rate": round(conversion_rate, 1)
+        },
+        "recent_carts": recent_carts
+    }
+
 # ================== WIDGET EMBARQUABLE ==================
 
 @api_router.get("/widget/listings")
