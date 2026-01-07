@@ -697,6 +697,19 @@ class ListingCreate(BaseModel):
     oem_reference: Optional[str] = None  # Référence constructeur OEM
     aftermarket_reference: Optional[str] = None  # Référence équipementier
     video_url: Optional[str] = None  # URL de la vidéo de présentation
+    # Confiance & Garantie
+    part_origin: Optional[str] = None  # casse, particulier, professionnel, neuf
+    vehicle_mileage: Optional[int] = None  # Kilométrage du véhicule d'origine
+    vehicle_vin: Optional[str] = None  # VIN du véhicule d'origine (optionnel)
+    has_warranty: bool = False  # Garantie World Auto activée
+    warranty_duration: Optional[int] = None  # Durée garantie en mois (3, 6, 12)
+
+# Options de garantie World Auto
+WARRANTY_OPTIONS = {
+    3: {"price": 4.99, "label": "3 mois"},
+    6: {"price": 7.99, "label": "6 mois"},
+    12: {"price": 12.99, "label": "12 mois"}
+}
 
 # Sous-catégories de pièces détachées (style Opisto)
 PIECES_SUBCATEGORIES = {
