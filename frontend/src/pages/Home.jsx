@@ -303,7 +303,7 @@ export default function Home() {
       
       <SEO
         title="Accueil"
-        description="World Auto France - La marketplace automobile pour acheter et vendre des pièces détachées, voitures, motos et utilitaires d'occasion. Particuliers et professionnels."
+        description="World Auto France - La marketplace automobile pour acheter et vendre des pièces détachées, voitures, motos et utilitaires d&apos;occasion. Particuliers et professionnels."
         keywords="pièces détachées auto, voiture occasion, moto occasion, utilitaire occasion, marketplace automobile, France"
         url="/"
         structuredData={[createOrganizationSchema(), createWebsiteSchema()]}
