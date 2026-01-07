@@ -46,8 +46,7 @@ export default function Footer() {
               <span className="font-heading font-bold text-xl">World Auto <FranceText /></span>
             </Link>
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-6">
-              La marketplace automobile de référence pour les pièces détachées, 
-              véhicules d'occasion et accessoires. Pour particuliers et professionnels.
+              {t('footer.description')}
             </p>
 
             {/* Newsletter Form */}
