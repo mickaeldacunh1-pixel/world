@@ -180,7 +180,7 @@ export default function PlateScanner({ onVehicleSelect }) {
                 onClick={() => cameraInputRef.current?.click()}
               >
                 <Camera className="w-8 h-8 text-accent" />
-                <span className="text-sm">Prendre photo</span>
+                <span className="text-sm">{t('search.take_photo')}</span>
               </Button>
               <Button
                 variant="outline"
@@ -188,7 +188,7 @@ export default function PlateScanner({ onVehicleSelect }) {
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Upload className="w-8 h-8 text-accent" />
-                <span className="text-sm">Importer image</span>
+                <span className="text-sm">{t('search.import_image')}</span>
               </Button>
             </div>
 
