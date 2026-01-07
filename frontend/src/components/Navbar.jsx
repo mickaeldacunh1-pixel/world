@@ -257,6 +257,14 @@ export default function Navbar() {
 
                 {/* Sélecteur de langue */}
                 <LanguageSelector />
+
+                {/* Panier rectangle - tout à droite */}
+                <div className="hidden sm:block">
+                  <CartPreview 
+                    bgColor={navbarSettings.cart_bg_color}
+                    textColor={navbarSettings.cart_text_color}
+                  />
+                </div>
               </>
             ) : (
               <>
