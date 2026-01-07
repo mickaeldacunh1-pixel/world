@@ -499,6 +499,26 @@ export default function Home() {
               heroSettings.hero_text_align === 'center' ? 'justify-center' : 
               heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
             }`}>
+              {/* Dropdown Catégories */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="gap-2 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20">
+                    <Menu className="w-4 h-4" />
+                    {t('nav.categories')}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  {categories.map((cat) => (
+                    <DropdownMenuItem key={cat.slug} asChild>
+                      <Link to={`/annonces/${cat.slug}`} className="flex items-center gap-2 cursor-pointer">
+                        <cat.icon className="w-4 h-4" />
+                        {t(`categories.${cat.slug}`)}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               {/* Plate Scanner */}
               {heroSettings.hero_show_plate_scanner !== false && (
                 <PlateScanner onVehicleSelect={(v) => {
