@@ -800,10 +800,24 @@ UTILITAIRES_SUBCATEGORIES = {
     "tracteur": "Tracteurs routiers",
     "remorque": "Remorques",
     "bus": "Bus / Minibus",
-    "engin_chantier": "Engins de chantier",
-    "agricole": "Véhicules agricoles",
     "pieces_utilitaire": "Pièces détachées utilitaire",
     "autre_utilitaire": "Autres utilitaires"
+}
+
+ENGINS_SUBCATEGORIES = {
+    "agricole": "Engins agricoles",
+    "chantier": "Engins de chantier",
+    "tracteur_agricole": "Tracteurs agricoles",
+    "moissonneuse": "Moissonneuses-batteuses",
+    "pelleteuse": "Pelleteuses / Excavatrices",
+    "chargeuse": "Chargeuses",
+    "bulldozer": "Bulldozers",
+    "grue": "Grues",
+    "nacelle": "Nacelles élévatrices",
+    "compacteur": "Compacteurs / Rouleaux",
+    "chariot_elevateur": "Chariots élévateurs",
+    "pieces_engin": "Pièces détachées engins",
+    "autre_engin": "Autres engins"
 }
 
 # Marques automobiles principales
