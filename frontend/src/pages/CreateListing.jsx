@@ -38,6 +38,8 @@ export default function CreateListing() {
   const [videoUrl, setVideoUrl] = useState('');
   const [piecesSubcategories, setPiecesSubcategories] = useState({});
   const [accessoiresSubcategories, setAccessoiresSubcategories] = useState({});
+  const [motosSubcategories, setMotosSubcategories] = useState({});
+  const [utilitairesSubcategories, setUtilitairesSubcategories] = useState({});
   const [carBrands, setCarBrands] = useState([]);
   const [photoLimit, setPhotoLimit] = useState({ max_photos: 6, extra_credits: 0, is_pro: false });
   const [videoLimit, setVideoLimit] = useState({ max_duration: 30, max_size_mb: 30, is_extended: false });
