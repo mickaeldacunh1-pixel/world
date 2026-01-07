@@ -599,6 +599,12 @@ const DEFAULT_SETTINGS = {
   category_utilitaires_image: "https://images.unsplash.com/photo-1532581140115-3e355d1ed1de?w=600&h=400&fit=crop",
   category_engins_image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&h=400&fit=crop",
   category_accessoires_image: "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=600&h=400&fit=crop",
+
+  // Navbar Menu Colors
+  promo_bg_color: "#1E3A5F",
+  promo_text_color: "#FFFFFF",
+  cart_bg_color: "#1E3A5F",
+  cart_text_color: "#FFFFFF",
   
   // ============== AUTRES SECTIONS ==============
   
