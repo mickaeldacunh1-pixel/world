@@ -1632,7 +1632,200 @@ export default function AdminSettings() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Activez ou désactivez les différentes sections de votre page d'accueil
+                </p>
+                
                 <div className="space-y-4">
+                  {/* Vendeur de la semaine */}
+                  <div className="p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <h4 className="font-medium flex items-center gap-2">
+                          🏆 Section "Vendeur de la semaine"
+                        </h4>
+                        <p className="text-sm text-muted-foreground">Met en avant un vendeur performant</p>
+                      </div>
+                      <Switch
+                        checked={settings.show_seller_of_week}
+                        onCheckedChange={(checked) => setSettings({...settings, show_seller_of_week: checked})}
+                      />
+                    </div>
+                    {settings.show_seller_of_week && (
+                      <div className="mt-3 pt-3 border-t border-amber-200 dark:border-amber-800 space-y-3">
+                        <div className="space-y-2">
+                          <Label className="text-sm">Titre de la section</Label>
+                          <Input
+                            value={settings.seller_of_week_title}
+                            onChange={(e) => setSettings({...settings, seller_of_week_title: e.target.value})}
+                            placeholder="🏆 Vendeur de la semaine"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-sm">ID vendeur manuel (optionnel)</Label>
+                          <Input
+                            value={settings.seller_of_week_manual_id}
+                            onChange={(e) => setSettings({...settings, seller_of_week_manual_id: e.target.value})}
+                            placeholder="Laisser vide pour sélection automatique"
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Si vide, le vendeur avec le plus de ventes cette semaine sera affiché
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Annonces récentes */}
+                  <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <h4 className="font-medium flex items-center gap-2">
+                          📋 Section "Annonces récentes"
+                        </h4>
+                        <p className="text-sm text-muted-foreground">Affiche les dernières annonces publiées</p>
+                      </div>
+                      <Switch
+                        checked={settings.show_recent_listings}
+                        onCheckedChange={(checked) => setSettings({...settings, show_recent_listings: checked})}
+                      />
+                    </div>
+                    {settings.show_recent_listings && (
+                      <div className="mt-3 pt-3 border-t border-blue-200 dark:border-blue-800 grid md:grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label className="text-sm">Titre</Label>
+                          <Input
+                            value={settings.recent_listings_title}
+                            onChange={(e) => setSettings({...settings, recent_listings_title: e.target.value})}
+                            placeholder="Annonces récentes"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-sm">Nombre d'annonces</Label>
+                          <Select
+                            value={String(settings.recent_listings_count)}
+                            onValueChange={(v) => setSettings({...settings, recent_listings_count: parseInt(v)})}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="3">3 annonces</SelectItem>
+                              <SelectItem value="6">6 annonces</SelectItem>
+                              <SelectItem value="9">9 annonces</SelectItem>
+                              <SelectItem value="12">12 annonces</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                          <Label className="text-sm">Sous-titre</Label>
+                          <Input
+                            value={settings.recent_listings_subtitle}
+                            onChange={(e) => setSettings({...settings, recent_listings_subtitle: e.target.value})}
+                            placeholder="Découvrez les dernières annonces publiées"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Diagnostic IA */}
+                  <div className="p-4 bg-slate-100 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <h4 className="font-medium flex items-center gap-2">
+                          🩺 Section "Diagnostic IA"
+                        </h4>
+                        <p className="text-sm text-muted-foreground">Bannière pour le diagnostic automobile par Tobi</p>
+                      </div>
+                      <Switch
+                        checked={settings.show_diagnostic_section}
+                        onCheckedChange={(checked) => setSettings({...settings, show_diagnostic_section: checked})}
+                      />
+                    </div>
+                    {settings.show_diagnostic_section && (
+                      <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 grid md:grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label className="text-sm">Titre principal</Label>
+                          <Input
+                            value={settings.diagnostic_title}
+                            onChange={(e) => setSettings({...settings, diagnostic_title: e.target.value})}
+                            placeholder="Diagnostic Auto"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-sm">Sous-titre</Label>
+                          <Input
+                            value={settings.diagnostic_subtitle}
+                            onChange={(e) => setSettings({...settings, diagnostic_subtitle: e.target.value})}
+                            placeholder="par Tobi IA"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-sm">Prix du diagnostic (€)</Label>
+                          <Input
+                            value={settings.diagnostic_price}
+                            onChange={(e) => setSettings({...settings, diagnostic_price: e.target.value})}
+                            placeholder="0.99"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Parrainage */}
+                  <div className="p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <h4 className="font-medium flex items-center gap-2">
+                          🎁 Section "Parrainage"
+                        </h4>
+                        <p className="text-sm text-muted-foreground">Bannière pour le programme de parrainage</p>
+                      </div>
+                      <Switch
+                        checked={settings.show_referral_section}
+                        onCheckedChange={(checked) => setSettings({...settings, show_referral_section: checked})}
+                      />
+                    </div>
+                    {settings.show_referral_section && (
+                      <div className="mt-3 pt-3 border-t border-orange-200 dark:border-orange-800 grid md:grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label className="text-sm">Titre ligne 1</Label>
+                          <Input
+                            value={settings.referral_title}
+                            onChange={(e) => setSettings({...settings, referral_title: e.target.value})}
+                            placeholder="Parrainez vos amis,"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-sm">Titre ligne 2</Label>
+                          <Input
+                            value={settings.referral_subtitle}
+                            onChange={(e) => setSettings({...settings, referral_subtitle: e.target.value})}
+                            placeholder="Gagnez des récompenses !"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-sm">Points par parrainage</Label>
+                          <Input
+                            type="number"
+                            value={settings.referral_points_per_referral}
+                            onChange={(e) => setSettings({...settings, referral_points_per_referral: parseInt(e.target.value)})}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-sm">Points pour le filleul</Label>
+                          <Input
+                            type="number"
+                            value={settings.referral_points_for_referred}
+                            onChange={(e) => setSettings({...settings, referral_points_for_referred: parseInt(e.target.value)})}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Autres sections existantes */}
                   <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
                     <div>
                       <h4 className="font-medium">Section "Rechercher par marque"</h4>
@@ -1663,6 +1856,28 @@ export default function AdminSettings() {
                     <Switch
                       checked={settings.show_regions_section}
                       onCheckedChange={(checked) => setSettings({...settings, show_regions_section: checked})}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
+                    <div>
+                      <h4 className="font-medium">Section "Pourquoi nous choisir"</h4>
+                      <p className="text-sm text-muted-foreground">Affiche les avantages de la plateforme</p>
+                    </div>
+                    <Switch
+                      checked={settings.show_features_section}
+                      onCheckedChange={(checked) => setSettings({...settings, show_features_section: checked})}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
+                    <div>
+                      <h4 className="font-medium">Section "Appel à l'action" (CTA final)</h4>
+                      <p className="text-sm text-muted-foreground">Bannière "Prêt à vendre votre véhicule ?"</p>
+                    </div>
+                    <Switch
+                      checked={settings.show_cta_section}
+                      onCheckedChange={(checked) => setSettings({...settings, show_cta_section: checked})}
                     />
                   </div>
                 </div>
