@@ -39,7 +39,7 @@ export function CompareButton({ listing, size = 'icon', showLabel = false }) {
       size="icon"
       onClick={handleClick}
       title={inCompare ? 'Retirer du comparateur' : 'Ajouter au comparateur'}
-      className={`${inCompare ? 'bg-primary text-white' : 'hover:bg-secondary'}`}
+      className={`${inCompare ? 'bg-primary text-white' : 'bg-white/95 backdrop-blur-sm text-primary hover:bg-white shadow-lg'}`}
     >
       <Scale className="w-4 h-4" />
     </Button>
