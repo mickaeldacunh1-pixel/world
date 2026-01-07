@@ -162,12 +162,16 @@ export default function CreateListing() {
 
   const fetchSubcategories = async () => {
     try {
-      const [piecesRes, accessoiresRes] = await Promise.all([
+      const [piecesRes, accessoiresRes, motosRes, utilitairesRes] = await Promise.all([
         axios.get(`${API}/subcategories/pieces`),
-        axios.get(`${API}/subcategories/accessoires`)
+        axios.get(`${API}/subcategories/accessoires`),
+        axios.get(`${API}/subcategories/motos`),
+        axios.get(`${API}/subcategories/utilitaires`)
       ]);
       setPiecesSubcategories(piecesRes.data);
       setAccessoiresSubcategories(accessoiresRes.data);
+      setMotosSubcategories(motosRes.data);
+      setUtilitairesSubcategories(utilitairesRes.data);
     } catch (error) {
       console.error('Error fetching subcategories:', error);
     }
