@@ -161,44 +161,6 @@ export default function Home() {
   const [copiedCode, setCopiedCode] = useState(false);
   const [liveStats, setLiveStats] = useState(null);
 
-  const fetchAllData = useCallback(async () => {
-    const cacheBuster = `?_t=${Date.now()}`;
-    
-    // Fetch hero settings
-    try {
-      const response = await axios.get(`${API}/settings/hero${cacheBuster}`);
-      if (response.data) {
-        setHeroSettings({ ...DEFAULT_HERO, ...response.data });
-      }
-    } catch (error) {
-      console.error('Error fetching hero settings:', error);
-    }
-
-    // Fetch live stats for counter
-    try {
-      const response = await axios.get(`${API}/stats/live${cacheBuster}`);
-      setLiveStats(response.data);
-    } catch (error) {
-      console.error('Error fetching live stats:', error);
-    }
-
-    // Fetch category stats
-    try {
-      const response = await axios.get(`${API}/categories/stats${cacheBuster}`);
-      setCategoryStats(response.data);
-    } catch (error) {
-      console.error('Error fetching category stats:', error);
-    }
-
-    // Fetch recent listings
-    try {
-      const response = await axios.get(`${API}/listings?limit=6&_t=${Date.now()}`);
-      setRecentListings(response.data.listings || []);
-    } catch (error) {
-      console.error('Error fetching recent listings:', error);
-    }
-  }, []);
-
   // Initial data fetch on mount
   useEffect(() => {
     let isMounted = true;
