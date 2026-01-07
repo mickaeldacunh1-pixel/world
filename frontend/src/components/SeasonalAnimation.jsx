@@ -359,11 +359,25 @@ export default function SeasonalAnimation({ type, enabled = true }) {
 // Export animation types for admin panel
 export const ANIMATION_OPTIONS = [
   { value: '', label: 'Aucune animation', emoji: '❌' },
-  { value: 'snow', label: 'Neige', emoji: '❄️' },
-  { value: 'christmas', label: 'Noël', emoji: '🎄' },
-  { value: 'confetti', label: 'Confettis', emoji: '🎉' },
-  { value: 'halloween', label: 'Halloween', emoji: '🎃' },
-  { value: 'autumn', label: 'Automne', emoji: '🍂' },
-  { value: 'hearts', label: 'Cœurs', emoji: '❤️' },
+  // Saisons
+  { value: 'spring', label: 'Printemps', emoji: '🌸' },
   { value: 'summer', label: 'Été', emoji: '☀️' },
+  { value: 'autumn', label: 'Automne', emoji: '🍂' },
+  { value: 'snow', label: 'Hiver / Neige', emoji: '❄️' },
+  { value: 'rain', label: 'Pluie', emoji: '🌧️' },
+  // Fêtes
+  { value: 'newyear', label: 'Nouvel An', emoji: '🎆' },
+  { value: 'stpatrick', label: 'St-Patrick', emoji: '🍀' },
+  { value: 'easter', label: 'Pâques', emoji: '🐰' },
+  { value: 'halloween', label: 'Halloween', emoji: '🎃' },
+  { value: 'christmas', label: 'Noël', emoji: '🎄' },
+  // Événements
+  { value: 'hearts', label: 'St-Valentin / Cœurs', emoji: '❤️' },
+  { value: 'party', label: 'Anniversaire / Fête', emoji: '🥳' },
+  { value: 'confetti', label: 'Confettis', emoji: '🎉' },
+  // Thématiques
+  { value: 'racing', label: 'Auto / Racing', emoji: '🏎️' },
+  { value: 'sports', label: 'Sports', emoji: '⚽' },
+  { value: 'money', label: 'Promo / Soldes', emoji: '💰' },
+  { value: 'stars', label: 'Étoiles', emoji: '⭐' },
 ];
