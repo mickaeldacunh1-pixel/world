@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useCompare } from '../context/CompareContext';
 import { Button } from './ui/button';
 import { Scale, X, ChevronUp, ChevronDown } from 'lucide-react';
 
 // Bouton pour ajouter/retirer du comparateur
 export function CompareButton({ listing, size = 'icon', showLabel = false }) {
+  const { t } = useTranslation();
   const { addToCompare, removeFromCompare, isInCompare } = useCompare();
   const inCompare = isInCompare(listing.id);
 
@@ -28,7 +30,7 @@ export function CompareButton({ listing, size = 'icon', showLabel = false }) {
         className={inCompare ? 'bg-primary' : ''}
       >
         <Scale className="w-4 h-4 mr-2" />
-        {inCompare ? 'Dans le comparateur' : 'Comparer'}
+        {inCompare ? t('compare.in_compare') : t('compare.compare_btn')}
       </Button>
     );
   }
@@ -38,7 +40,7 @@ export function CompareButton({ listing, size = 'icon', showLabel = false }) {
       variant={inCompare ? 'default' : 'ghost'}
       size="icon"
       onClick={handleClick}
-      title={inCompare ? 'Retirer du comparateur' : 'Ajouter au comparateur'}
+      title={inCompare ? t('compare.remove') : t('compare.add')}
       className={`${inCompare ? 'bg-primary text-white' : 'bg-white/95 backdrop-blur-sm text-primary hover:bg-white shadow-lg'}`}
     >
       <Scale className="w-4 h-4" />
@@ -48,6 +50,7 @@ export function CompareButton({ listing, size = 'icon', showLabel = false }) {
 
 // Widget flottant du comparateur
 export function CompareWidget() {
+  const { t } = useTranslation();
   const { compareItems, removeFromCompare, clearCompare, MAX_ITEMS } = useCompare();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
