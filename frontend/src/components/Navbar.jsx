@@ -103,7 +103,7 @@ export default function Navbar() {
 
           {/* Right section */}
           <div className="flex items-center gap-2">
-            {/* Favoris & Fidélité - visibles pour tous, à gauche */}
+            {/* Fidélité & Favoris - à gauche pour connectés */}
             {user && (
               <>
                 <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
@@ -135,18 +135,38 @@ export default function Navbar() {
               )}
             </Button>
 
-            {/* Language Selector - avant Messages */}
+            {/* Language Selector */}
             <LanguageSelector />
 
             {user ? (
               <>
-                {/* Quick action icons */}
+                {/* Messages - juste après la langue */}
+                <Link to="/messages" className="hidden sm:flex" title="Messages">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <MessageSquare className="w-5 h-5" />
+                    {unreadMessages > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                        {unreadMessages}
+                      </span>
+                    )}
+                  </Button>
+                </Link>
+
+                {/* Panier */}
+                <Link to="/panier" className="hidden sm:flex" title="Panier">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <ShoppingCart className="w-5 h-5" />
+                  </Button>
+                </Link>
+
+                {/* Diagnostic IA */}
                 <Link to="/diagnostic" className="hidden sm:flex" title="Diagnostic IA">
                   <Button variant="ghost" size="icon" className="relative">
                     <Stethoscope className="w-5 h-5 text-accent" />
                   </Button>
                 </Link>
 
+                {/* Bouton Déposer */}
                 <Link to="/deposer">
                   <Button className="hidden sm:flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground btn-primary" data-testid="create-listing-btn">
                     <Plus className="w-4 h-4" />
@@ -154,6 +174,7 @@ export default function Navbar() {
                   </Button>
                 </Link>
 
+                {/* Menu utilisateur */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="flex items-center gap-1.5 px-2 sm:px-3" data-testid="user-menu">
@@ -240,9 +261,8 @@ export default function Navbar() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-
-                {/* Messages & Panier - à droite */}
-                <Link to="/messages" className="hidden sm:flex" title="Messages">
+              </>
+            ) : (
                   <Button variant="ghost" size="icon" className="relative">
                     <MessageSquare className="w-5 h-5" />
                     {unreadMessages > 0 && (
