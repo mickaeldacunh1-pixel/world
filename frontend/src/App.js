@@ -3,10 +3,12 @@ import { Toaster } from "sonner";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { CompareProvider } from "./context/CompareContext";
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Tobi from "./components/Tobi";
+import { CompareWidget } from "./components/CompareWidget";
 import Home from "./pages/Home";
 import Listings from "./pages/Listings";
 import ListingDetail from "./pages/ListingDetail";
@@ -48,6 +50,7 @@ import MyOffers from "./pages/MyOffers";
 import Bundles from "./pages/Bundles";
 import BundleDetail from "./pages/BundleDetail";
 import Widget from "./pages/Widget";
+import Compare from "./pages/Compare";
 import "./App.css";
 
 // Composant pour scroller en haut à chaque changement de page
