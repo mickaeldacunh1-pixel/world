@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Auto France - Flyer V2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #111827;
+            min-height: 100vh;
+        }
+        
+        .flyer {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Header - Orange gradient */
+        .header {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%);
+            padding: 30px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 900;
+            color: #f97316;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .logo-text {
+            color: white;
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+        
+        .logo-text span {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        
+        .qr-box {
+            background: white;
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .qr-box img {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .qr-box p {
+            font-size: 9px;
+            color: #666;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(180deg, #1e3a5f 0%, #0f172a 100%);
+            color: white;
+            padding: 35px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            background: rgba(249, 115, 22, 0.2);
+            border: 2px solid #f97316;
+            color: #f97316;
+            padding: 8px 25px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+        
+        .hero h1 span {
+            color: #f97316;
+        }
+        
+        .hero p {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #f97316;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 30px 35px;
+            background: #f8fafc;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 25px;
+        }
+        
+        .section-title span {
+            color: #f97316;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.15);
+            border-color: #f97316;
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 12px;
+        }
+        
+        .feature-icon.orange { background: linear-gradient(135deg, #fff7ed, #ffedd5); }
+        .feature-icon.blue { background: linear-gradient(135deg, #eff6ff, #dbeafe); }
+        .feature-icon.green { background: linear-gradient(135deg, #f0fdf4, #dcfce7); }
+        .feature-icon.purple { background: linear-gradient(135deg, #faf5ff, #f3e8ff); }
+        .feature-icon.pink { background: linear-gradient(135deg, #fdf2f8, #fce7f3); }
+        .feature-icon.cyan { background: linear-gradient(135deg, #ecfeff, #cffafe); }
+        
+        .feature-card h3 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 5px;
+        }
+        
+        .feature-card p {
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+        
+        /* New Features Banner */
+        .new-banner {
+            background: linear-gradient(90deg, #0f172a, #1e3a5f);
+            color: white;
+            padding: 20px 35px;
+        }
+        
+        .new-banner h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #f97316;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .new-features-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 20px;
+        }
+        
+        .new-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+        }
+        
+        .new-feature .check {
+            color: #22c55e;
+            font-weight: bold;
+        }
+        
+        /* Trust Section */
+        .trust {
+            padding: 25px 35px;
+            background: white;
+        }
+        
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .trust-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        
+        .trust-item .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .trust-item h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 3px;
+        }
+        
+        .trust-item p {
+            font-size: 10px;
+            color: #64748b;
+        }
+        
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        .cta p {
+            font-size: 14px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+        
+        .cta-url {
+            display: inline-block;
+            background: white;
+            color: #f97316;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .cta-bonus {
+            margin-top: 15px;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #0f172a;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-left {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .footer-social a {
+            width: 35px;
+            height: 35px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        @media print {
+            body { background: white; }
+            .flyer { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="flyer">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">WA</div>
+                    <div class="logo-text">
+                        World Auto France
+                        <span>La marketplace des pièces auto</span>
+                    </div>
+                </div>
+                <div class="qr-box">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://worldautofrance.com&bgcolor=ffffff&color=0f172a" alt="QR Code">
+                    <p>Scannez-moi !</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">🚀 Plateforme N°1 en France</div>
+            <h1>Achetez & Vendez vos<br><span>Pièces Auto</span> en Toute Confiance</h1>
+            <p>Rejoignez des milliers d'automobilistes et professionnels. Pièces vérifiées, paiement sécurisé, livraison partout en France.</p>
+            
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-value">10K+</div>
+                    <div class="stat-label">Pièces</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">5K+</div>
+                    <div class="stat-label">Membres</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">50+</div>
+                    <div class="stat-label">Marques</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">4.8★</div>
+                    <div class="stat-label">Satisfaction</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features -->
+        <div class="features">
+            <h2 class="section-title">Pourquoi choisir <span>World Auto</span> ?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon orange">🔍</div>
+                    <h3>Recherche Intelligente</h3>
+                    <p>Trouvez par marque, modèle, référence OEM ou plaque</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon green">🛡️</div>
+                    <h3>Pièces Certifiées</h3>
+                    <p>Badge Or/Argent pour les pièces vérifiées</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon blue">✅</div>
+                    <h3>Garantie World Auto</h3>
+                    <p>Jusqu'à 12 mois de garantie sur vos achats</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon purple">🤖</div>
+                    <h3>Assistant IA "Tobi"</h3>
+                    <p>Diagnostic et conseils par intelligence artificielle</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon pink">💳</div>
+                    <h3>Paiement Sécurisé</h3>
+                    <p>Stripe Connect pour transactions protégées</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon cyan">📦</div>
+                    <h3>Livraison Facile</h3>
+                    <p>Mondial Relay, Colissimo ou retrait sur place</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- New Features -->
+        <div class="new-banner">
+            <h3>✨ NOUVEAUTÉS 2026</h3>
+            <div class="new-features-list">
+                <div class="new-feature"><span class="check">✓</span> Notifications push en temps réel</div>
+                <div class="new-feature"><span class="check">✓</span> Partage Facebook, WhatsApp, Twitter</div>
+                <div class="new-feature"><span class="check">✓</span> Tableau de bord PRO vendeurs</div>
+                <div class="new-feature"><span class="check">✓</span> Traçabilité complète des pièces</div>
+                <div class="new-feature"><span class="check">✓</span> Système d'enchères pour pièces rares</div>
+                <div class="new-feature"><span class="check">✓</span> Estimation prix par IA</div>
+                <div class="new-feature"><span class="check">✓</span> Programme fidélité & parrainage</div>
+                <div class="new-feature"><span class="check">✓</span> Export factures PDF automatique</div>
+            </div>
+        </div>
+        
+        <!-- Trust -->
+        <div class="trust">
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <div class="icon">🔒</div>
+                    <h4>100% Sécurisé</h4>
+                    <p>Paiements cryptés</p>
+                </div>
+                <div class="trust-item">
+                    <div class="icon">⚡</div>
+                    <h4>Réponse Rapide</h4>
+                    <p>Chat instantané</p>
+                </div>
+                <div class="trust-item">
+                    <div class="icon">🏆</div>
+                    <h4>Vendeurs Vérifiés</h4>
+                    <p>Avis authentiques</p>
+                </div>
+                <div class="trust-item">
+                    <div class="icon">🔄</div>
+                    <h4>Retours Faciles</h4>
+                    <p>14 jours satisfait</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CTA -->
+        <div class="cta">
+            <h2>Prêt à démarrer ?</h2>
+            <p>Inscription gratuite en 30 secondes. Commencez à vendre ou acheter dès maintenant !</p>
+            <a href="https://worldautofrance.com" class="cta-url">worldautofrance.com</a>
+            <p class="cta-bonus">🎁 <strong>BONUS :</strong> 50 points fidélité offerts à l'inscription !</p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-left">
+                © 2026 World Auto France<br>
+                contact@worldautofrance.com
+            </div>
+            <div class="footer-social">
+                <a href="#" title="Facebook">📘</a>
+                <a href="#" title="Instagram">📸</a>
+                <a href="#" title="Twitter">🐦</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
