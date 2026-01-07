@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
@@ -13,9 +13,53 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Cart() {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const trackingTimeoutRef = useRef(null);
+
+  // Fonction pour tracker le panier (relance abandonnée)
+  const trackCart = useCallback(async (items) => {
+    if (items.length === 0) return;
+    
+    try {
+      const trackingItems = items.map(item => ({
+        listing_id: item.id,
+        title: item.title,
+        price: item.price || 0,
+        image: item.images?.[0] || ''
+      }));
+
+      await axios.post(`${API}/cart/track`, {
+        items: trackingItems,
+        email: user?.email || null
+      }, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+    } catch (error) {
+      // Silently fail - tracking should not impact user experience
+      console.debug('Cart tracking:', error.message);
+    }
+  }, [user, token]);
+
+  // Debounced tracking - track cart 5 seconds after last change
+  const scheduleTracking = useCallback((items) => {
+    if (trackingTimeoutRef.current) {
+      clearTimeout(trackingTimeoutRef.current);
+    }
+    trackingTimeoutRef.current = setTimeout(() => {
+      trackCart(items);
+    }, 5000);
+  }, [trackCart]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (trackingTimeoutRef.current) {
+        clearTimeout(trackingTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     // Load cart from localStorage
