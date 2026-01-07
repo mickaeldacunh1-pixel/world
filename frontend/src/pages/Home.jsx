@@ -804,7 +804,7 @@ export default function Home() {
                 className="h-14 px-8 btn-primary rounded-xl text-base font-semibold whitespace-nowrap"
               >
                 <Search className="w-5 h-5 mr-2" />
-                Rechercher
+                {t('common.search')}
               </Button>
             </div>
             
