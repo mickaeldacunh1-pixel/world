@@ -9,7 +9,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { ArrowLeft, Upload, X, ImagePlus, Loader2, Video, Play, Camera, Plus, Sparkles } from 'lucide-react';
+import { ArrowLeft, Upload, X, ImagePlus, Loader2, Video, Play, Camera, Plus, Sparkles, Shield } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
