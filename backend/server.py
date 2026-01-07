@@ -4124,6 +4124,41 @@ async def stripe_webhook(request: Request):
                         
                         logger.info(f"Added extended video credit to user {user_id}")
                 
+                # Check if this is a warranty purchase
+                elif metadata.get("type") == "warranty":
+                    listing_id = metadata.get("listing_id")
+                    user_id = metadata.get("user_id")
+                    warranty_duration = int(metadata.get("warranty_duration", 3))
+                    
+                    if listing_id and user_id:
+                        # Calculate warranty expiration
+                        warranty_expires = (datetime.now(timezone.utc) + timedelta(days=warranty_duration * 30)).isoformat()
+                        
+                        # Update listing with warranty
+                        await db.listings.update_one(
+                            {"id": listing_id},
+                            {"$set": {
+                                "has_warranty": True,
+                                "warranty_duration": warranty_duration,
+                                "warranty_purchased_at": datetime.now(timezone.utc).isoformat(),
+                                "warranty_expires": warranty_expires
+                            }}
+                        )
+                        
+                        # Log the warranty purchase
+                        await db.warranty_purchases.insert_one({
+                            "id": str(uuid.uuid4()),
+                            "listing_id": listing_id,
+                            "user_id": user_id,
+                            "duration_months": warranty_duration,
+                            "expires_at": warranty_expires,
+                            "session_id": session_id,
+                            "amount": session_data.get("amount_total", 0) / 100,
+                            "created_at": datetime.now(timezone.utc).isoformat()
+                        })
+                        
+                        logger.info(f"Added {warranty_duration} months warranty to listing {listing_id}")
+                
                 else:
                     # Regular transaction (credits for listings)
                     await db.payment_transactions.update_one(
