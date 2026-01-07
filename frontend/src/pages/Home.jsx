@@ -199,19 +199,63 @@ export default function Home() {
     }
   }, []);
 
+  // Initial data fetch on mount
   useEffect(() => {
-    fetchAllData();
+    let isMounted = true;
+    
+    const loadData = async () => {
+      const cacheBuster = `?_t=${Date.now()}`;
+      
+      // Fetch hero settings
+      try {
+        const response = await axios.get(`${API}/settings/hero${cacheBuster}`);
+        if (isMounted && response.data) {
+          setHeroSettings(prev => ({ ...prev, ...response.data }));
+        }
+      } catch (error) {
+        console.error('Error fetching hero settings:', error);
+      }
+
+      // Fetch live stats for counter
+      try {
+        const response = await axios.get(`${API}/stats/live${cacheBuster}`);
+        if (isMounted) setLiveStats(response.data);
+      } catch (error) {
+        console.error('Error fetching live stats:', error);
+      }
+
+      // Fetch category stats
+      try {
+        const response = await axios.get(`${API}/categories/stats${cacheBuster}`);
+        if (isMounted) setCategoryStats(response.data);
+      } catch (error) {
+        console.error('Error fetching category stats:', error);
+      }
+
+      // Fetch recent listings
+      try {
+        const response = await axios.get(`${API}/listings?limit=6&_t=${Date.now()}`);
+        if (isMounted) setRecentListings(response.data.listings || []);
+      } catch (error) {
+        console.error('Error fetching recent listings:', error);
+      }
+    };
+    
+    loadData();
     
     // Auto-refresh when tab becomes visible
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        fetchAllData();
+        loadData();
       }
     };
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [fetchAllData]);
+    return () => {
+      isMounted = false;
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   // Fetch referral data if user is logged in
   useEffect(() => {
