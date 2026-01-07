@@ -445,13 +445,29 @@ export default function CreateListing() {
 
               {formData.category === 'utilitaires' && Object.keys(utilitairesSubcategories).length > 0 && (
                 <div className="space-y-2">
-                  <Label>Type d'utilitaire *</Label>
+                  <Label>Type d&apos;utilitaire *</Label>
                   <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
                     <SelectTrigger data-testid="subcategory-select">
                       <SelectValue placeholder="Choisir un type" />
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(utilitairesSubcategories).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {formData.category === 'engins' && Object.keys(enginsSubcategories).length > 0 && (
+                <div className="space-y-2">
+                  <Label>Type d&apos;engin *</Label>
+                  <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
+                    <SelectTrigger data-testid="subcategory-engins-select">
+                      <SelectValue placeholder="Choisir un type d'engin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(enginsSubcategories).map(([key, label]) => (
                         <SelectItem key={key} value={key}>{label}</SelectItem>
                       ))}
                     </SelectContent>
