@@ -105,6 +105,9 @@ export default function Navbar() {
 
           {/* Right section */}
           <div className="flex items-center gap-2">
+            {/* Language Selector */}
+            <LanguageSelector />
+
             {/* Theme Toggle */}
             <Button 
               variant="ghost" 
