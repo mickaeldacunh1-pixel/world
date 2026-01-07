@@ -1416,9 +1416,21 @@ backend:
         - agent: "testing"
         - comment: "Bundles System API testing completed successfully. All 4 endpoints are implemented and accessible: POST /api/bundles (create bundle), GET /api/bundles (list bundles with optional seller filter), GET /api/bundles/{id} (get single bundle), DELETE /api/bundles/{id} (delete bundle). Endpoints return proper structure and handle authentication correctly. Full flow testing limited by insufficient user listings in database."
 
+  - task: "Abandoned Cart Recovery System"
+    implemented: true
+    working: "NA"
+    file: "server.py, Cart.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "Complete abandoned cart recovery: POST /api/cart/track (frontend tracking), POST /api/cart/convert (mark as converted), POST /api/admin/send-cart-reminders (manual admin trigger), GET /api/admin/abandoned-carts/stats (admin stats), auto-scheduler every hour, auto-convert on checkout. Frontend Cart.jsx now tracks cart with 5s debounce."
+
 test_plan:
   current_focus:
-    - "All new features from review request tested and working"
+    - "Abandoned Cart Recovery System - needs full testing"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
