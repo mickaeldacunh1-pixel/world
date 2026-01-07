@@ -332,7 +332,24 @@
       "suspension": "Suspension",
       "exhaust": "Exhaust",
       "interior": "Interior"
-    }
+    },
+    "referral_invite_desc": "Invite your loved ones to World Auto France and receive 100 points per referral. They also get 50 welcome points!",
+    "pts_per_referral": "+100 pts / referral",
+    "pts_for_them": "+50 pts for them",
+    "unlimited": "Unlimited",
+    "your_referral_code": "Your referral code",
+    "referrals": "Referrals",
+    "points_earned": "Points earned",
+    "invite_friends": "Invite my friends",
+    "see_all_referrals": "See all my referrals",
+    "join_program": "Join the program!",
+    "create_account_referral": "Create your account to get your personal referral code.",
+    "create_account": "Create my account",
+    "have_code": "Have a code?",
+    "register_here": "Register here",
+    "ready_to_sell": "Ready to sell your vehicle?",
+    "cta_desc": "Post your listing in minutes and reach thousands of potential buyers across France.",
+    "see_pricing": "See pricing"
   },
   "seller": {
     "title": "Seller",
