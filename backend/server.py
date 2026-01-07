@@ -3927,6 +3927,50 @@ async def save_hero_settings(settings: dict, current_user: dict = Depends(get_cu
     
     return {"message": "Paramètres sauvegardés"}
 
+@api_router.get("/settings/promo-banner")
+async def get_promo_banner_settings():
+    """Get promo banner settings"""
+    settings = await db.settings.find_one({"type": "promo_banner"}, {"_id": 0})
+    if not settings:
+        return {
+            "enabled": True,
+            "title": "Compte Premium",
+            "subtitle": "Économisez encore plus",
+            "highlight": "dès aujourd'hui avec WORLD AUTO PLUS",
+            "benefits": [
+                {"icon": "percent", "text": "10% de réduction sur les frais de service"},
+                {"icon": "truck", "text": "Livraison prioritaire"},
+                {"icon": "shield", "text": "Garantie étendue offerte"},
+            ],
+            "cta_text": "Essai gratuit 14 jours",
+            "cta_link": "/premium",
+            "badge_text": "NOUVEAU",
+            "bg_color": "#1E3A5F",
+            "accent_color": "#F97316",
+            "coupon_code": "",
+            "coupon_discount": "",
+        }
+    return settings
+
+@api_router.post("/settings/promo-banner")
+async def save_promo_banner_settings(settings: dict, current_user: dict = Depends(get_current_user)):
+    """Save promo banner settings (admin only)"""
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
+        raise HTTPException(status_code=403, detail="Accès non autorisé")
+    
+    settings["type"] = "promo_banner"
+    settings["updated_at"] = datetime.now(timezone.utc).isoformat()
+    settings["updated_by"] = current_user["id"]
+    
+    await db.settings.update_one(
+        {"type": "promo_banner"},
+        {"$set": settings},
+        upsert=True
+    )
+    
+    return {"message": "Configuration promo sauvegardée"}
+
 # ================== EMAIL TEST ROUTE ==================
 
 class EmailTestRequest(BaseModel):
