@@ -202,13 +202,13 @@ export default function Navbar() {
                     <DropdownMenuItem asChild>
                       <Link to="/alertes" className="flex items-center gap-2 cursor-pointer">
                         <Bell className="w-4 h-4" />
-                        Mes Alertes
+                        {t('common.alerts')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/statistiques" className="flex items-center gap-2 cursor-pointer">
                         <TrendingUp className="w-4 h-4" />
-                        Mes Statistiques
+                        {t('common.statistics')}
                       </Link>
                     </DropdownMenuItem>
                     {(user.email === 'admin@worldautofrance.com' || user.is_professional) && (
@@ -217,7 +217,7 @@ export default function Navbar() {
                         <DropdownMenuItem asChild>
                           <Link to="/admin/parametres" className="flex items-center gap-2 cursor-pointer text-accent">
                             <Palette className="w-4 h-4" />
-                            Personnalisation site
+                            {t('nav.customization')}
                           </Link>
                         </DropdownMenuItem>
                       </>
