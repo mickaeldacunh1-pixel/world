@@ -991,8 +991,8 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
         "referral_code": my_referral_code,
         "referred_by": referred_by,
         "referral_count": 0,
-        "loyalty_points": REFERRAL_REWARDS["referee_points"] if referred_by else 0,
-        "loyalty_lifetime_points": REFERRAL_REWARDS["referee_points"] if referred_by else 0,
+        "loyalty_points": SIGNUP_BONUS_POINTS + (REFERRAL_REWARDS["referee_points"] if referred_by else 0),
+        "loyalty_lifetime_points": SIGNUP_BONUS_POINTS + (REFERRAL_REWARDS["referee_points"] if referred_by else 0),
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
