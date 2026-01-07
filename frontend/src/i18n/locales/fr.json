@@ -298,7 +298,16 @@
     "voice_search": "Recherche vocale",
     "recent_searches": "Recherches récentes",
     "clear_history": "Effacer l'historique",
-    "no_history": "Aucune recherche récente"
+    "no_history": "Aucune recherche récente",
+    "scan_plate": "Scanner ma plaque",
+    "scan_title": "Scanner votre plaque",
+    "confirm_plate": "Confirmer la plaque",
+    "select_vehicle": "Sélectionner votre véhicule",
+    "scan_desc": "Prenez une photo de votre plaque d'immatriculation ou importez une image pour trouver rapidement les pièces compatibles.",
+    "take_photo": "Prendre photo",
+    "import_image": "Importer image",
+    "manual_entry": "Saisie manuelle",
+    "plate_number": "Numéro de plaque"
   },
   "errors": {
     "generic": "Une erreur est survenue",
