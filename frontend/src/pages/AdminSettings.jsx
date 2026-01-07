@@ -1104,9 +1104,9 @@ export default function AdminSettings() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Personnalisez les vignettes des 5 catégories principales affichées sur la page d&apos;accueil.
+                  Personnalisez les vignettes des 6 catégories principales affichées sur la page d&apos;accueil.
                 </p>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
                   {[
                     { key: 'category_pieces_image', label: 'Pièces', emoji: '🔧' },
                     { key: 'category_voitures_image', label: 'Voitures', emoji: '🚗' },
