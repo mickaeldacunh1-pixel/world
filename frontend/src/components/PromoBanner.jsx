@@ -225,6 +225,27 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
                 })}
               </ul>
 
+              {/* Trial Status Info */}
+              {trialStatus?.trial_active && (
+                <div 
+                  className="mb-4 p-3 rounded-lg text-center"
+                  style={{ backgroundColor: `${promoConfig.accent_color}20` }}
+                >
+                  <p className="text-white font-semibold">✨ Essai PRO actif</p>
+                  <p className="text-white/80 text-sm">{trialStatus.trial_days_left} jours restants</p>
+                </div>
+              )}
+
+              {trialStatus?.is_pro && !trialStatus?.trial_active && (
+                <div 
+                  className="mb-4 p-3 rounded-lg text-center"
+                  style={{ backgroundColor: `${promoConfig.accent_color}20` }}
+                >
+                  <p className="text-white font-semibold">👑 Vous êtes PRO</p>
+                  <p className="text-white/80 text-sm">Profitez de tous les avantages</p>
+                </div>
+              )}
+
               {/* Coupon Code */}
               {promoConfig.coupon_code && (
                 <div 
@@ -241,16 +262,47 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
                 </div>
               )}
 
-              {/* CTA Button */}
-              <Link to={promoConfig.cta_link} onClick={() => setIsOpen(false)}>
+              {/* CTA Button - Activate Trial or View Plans */}
+              {trialStatus?.trial_available ? (
                 <Button 
                   className="w-full h-11 text-base font-semibold text-white"
                   style={{ backgroundColor: promoConfig.accent_color }}
+                  onClick={handleActivateTrial}
+                  disabled={activating}
                 >
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  {promoConfig.cta_text}
+                  {activating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Activation...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      {promoConfig.cta_text}
+                    </>
+                  )}
                 </Button>
-              </Link>
+              ) : trialStatus?.is_pro ? (
+                <Link to="/tableau-de-bord" onClick={() => setIsOpen(false)}>
+                  <Button 
+                    className="w-full h-11 text-base font-semibold text-white"
+                    style={{ backgroundColor: promoConfig.accent_color }}
+                  >
+                    <Crown className="w-4 h-4 mr-2" />
+                    Mon espace PRO
+                  </Button>
+                </Link>
+              ) : (
+                <Link to={promoConfig.cta_link} onClick={() => setIsOpen(false)}>
+                  <Button 
+                    className="w-full h-11 text-base font-semibold text-white"
+                    style={{ backgroundColor: promoConfig.accent_color }}
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    {trialStatus?.trial_used ? 'Voir les offres PRO' : promoConfig.cta_text}
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </>
