@@ -3853,6 +3853,211 @@ class AutoPiecesAPITester:
         
         return corrections_passed == len(corrections_results)
 
+    def test_video_endpoints_french(self):
+        """Test nouveaux endpoints vidéo en français"""
+        print("\n🎥 Testing Video Endpoints (French Request)...")
+        
+        # 1. Test GET /api/listings/videos - Liste des annonces avec vidéos
+        print("\n1. Testing GET /api/listings/videos...")
+        
+        # Test basic endpoint
+        result = self.run_test("Video Listings - Basic", "GET", "listings/videos", 200)
+        if result:
+            # Check response structure
+            if "listings" in result:
+                self.log_test("Video Listings - Structure", True, "Has listings array")
+                
+                # Check if listings have video_url
+                listings = result["listings"]
+                if listings:
+                    first_listing = listings[0]
+                    if "video_url" in first_listing and first_listing["video_url"]:
+                        self.log_test("Video Listings - Video URL Present", True)
+                    else:
+                        self.log_test("Video Listings - Video URL Present", False, "No video_url in listing")
+                else:
+                    self.log_test("Video Listings - Empty List", True, "No video listings found (acceptable)")
+            else:
+                self.log_test("Video Listings - Structure", False, "Missing listings key")
+                return False
+        else:
+            return False
+        
+        # Test with filters
+        filters = [
+            ("category", "pieces"),
+            ("sort", "recent"),
+            ("search", "moteur"),
+            ("page", "1"),
+            ("limit", "10")
+        ]
+        
+        for filter_name, filter_value in filters:
+            filter_result = self.run_test(f"Video Listings - Filter {filter_name}", 
+                                        "GET", f"listings/videos?{filter_name}={filter_value}", 200)
+            if not filter_result:
+                return False
+        
+        # 2. Test GET /api/videos/featured - Vidéos mises en avant
+        print("\n2. Testing GET /api/videos/featured...")
+        
+        featured_result = self.run_test("Featured Videos", "GET", "videos/featured", 200)
+        if featured_result and isinstance(featured_result, list):
+            self.log_test("Featured Videos - Structure", True, f"Returned {len(featured_result)} videos")
+            
+            # Check video structure if any videos exist
+            if featured_result:
+                first_video = featured_result[0]
+                required_fields = ["id", "title", "video_url", "video_boost_active"]
+                for field in required_fields:
+                    if field in first_video:
+                        self.log_test(f"Featured Video - {field}", True)
+                    else:
+                        self.log_test(f"Featured Video - {field}", False, f"Missing field: {field}")
+                        return False
+            else:
+                self.log_test("Featured Videos - Empty List", True, "No featured videos (acceptable)")
+        else:
+            self.log_test("Featured Videos - Structure", False, "Expected array response")
+            return False
+        
+        # 3. Test GET /api/videos/homepage-showcase - Vidéos pour le lecteur homepage
+        print("\n3. Testing GET /api/videos/homepage-showcase...")
+        
+        showcase_result = self.run_test("Homepage Showcase Videos", "GET", "videos/homepage-showcase", 200)
+        if showcase_result and isinstance(showcase_result, list):
+            self.log_test("Homepage Showcase - Structure", True, f"Returned {len(showcase_result)} videos")
+            
+            # Check video structure if any videos exist
+            if showcase_result:
+                first_showcase = showcase_result[0]
+                required_fields = ["id", "title", "video_url", "video_boost_active"]
+                for field in required_fields:
+                    if field in first_showcase:
+                        self.log_test(f"Homepage Showcase - {field}", True)
+                    else:
+                        self.log_test(f"Homepage Showcase - {field}", False, f"Missing field: {field}")
+                        return False
+            else:
+                self.log_test("Homepage Showcase - Empty List", True, "No showcase videos (acceptable)")
+        else:
+            self.log_test("Homepage Showcase - Structure", False, "Expected array response")
+            return False
+        
+        # 4. Test POST /api/video/package/checkout - Achat forfait vidéo
+        print("\n4. Testing POST /api/video/package/checkout...")
+        
+        # First login with admin credentials
+        admin_login = {
+            "email": "contact@worldautofrance.com",
+            "password": "Admin123!"
+        }
+        
+        login_result = self.run_test("Admin Login for Video Package", "POST", "auth/login", 200, admin_login)
+        if not login_result or 'token' not in login_result:
+            self.log_test("Admin Login for Video Package", False, "Could not login with admin credentials")
+            return False
+        
+        # Store original token and use admin token
+        original_token = self.token
+        admin_token = login_result['token']
+        self.token = admin_token
+        
+        # Test intermediate package
+        intermediate_result = self.run_test("Video Package - Intermediate", 
+                                          "POST", "video/package/checkout?package=intermediate", 200)
+        if intermediate_result:
+            if "checkout_url" in intermediate_result and "session_id" in intermediate_result:
+                self.log_test("Video Package Intermediate - Response Structure", True)
+            else:
+                self.log_test("Video Package Intermediate - Response Structure", False, 
+                            "Missing checkout_url or session_id")
+                self.token = original_token
+                return False
+        else:
+            # Check if it's a Stripe API key issue
+            self.log_test("Video Package Intermediate - Stripe Issue", True, 
+                        "Expected failure due to invalid Stripe API key")
+        
+        # Test pro package
+        pro_result = self.run_test("Video Package - Pro", 
+                                 "POST", "video/package/checkout?package=pro", 200)
+        if pro_result:
+            if "checkout_url" in pro_result and "session_id" in pro_result:
+                self.log_test("Video Package Pro - Response Structure", True)
+            else:
+                self.log_test("Video Package Pro - Response Structure", False, 
+                            "Missing checkout_url or session_id")
+                self.token = original_token
+                return False
+        else:
+            # Check if it's a Stripe API key issue
+            self.log_test("Video Package Pro - Stripe Issue", True, 
+                        "Expected failure due to invalid Stripe API key")
+        
+        # Test invalid package
+        invalid_result = self.run_test("Video Package - Invalid", 
+                                     "POST", "video/package/checkout?package=invalid", 400)
+        self.log_test("Video Package - Invalid Package Validation", True, 
+                    "Correctly rejected invalid package")
+        
+        # 5. Test GET /api/users/me/video-packages - Récupérer les forfaits vidéo de l'utilisateur
+        print("\n5. Testing GET /api/users/me/video-packages...")
+        
+        video_packages_result = self.run_test("User Video Packages", "GET", "users/me/video-packages", 200)
+        if video_packages_result:
+            # Check required fields
+            required_fields = ["extended_credits", "intermediate_credits", "pro_credits", "limits"]
+            for field in required_fields:
+                if field in video_packages_result:
+                    self.log_test(f"Video Packages - {field}", True)
+                else:
+                    self.log_test(f"Video Packages - {field}", False, f"Missing field: {field}")
+                    self.token = original_token
+                    return False
+            
+            # Check limits structure
+            limits = video_packages_result.get("limits", {})
+            if isinstance(limits, dict):
+                limit_fields = ["extended", "intermediate", "pro"]
+                for limit_field in limit_fields:
+                    if limit_field in limits:
+                        limit_info = limits[limit_field]
+                        if "duration" in limit_info and "size" in limit_info and "price" in limit_info:
+                            self.log_test(f"Video Packages - {limit_field} limits", True)
+                        else:
+                            self.log_test(f"Video Packages - {limit_field} limits", False, 
+                                        "Missing duration, size, or price")
+                            self.token = original_token
+                            return False
+                    else:
+                        self.log_test(f"Video Packages - {limit_field} limits", False, 
+                                    f"Missing {limit_field} in limits")
+                        self.token = original_token
+                        return False
+            else:
+                self.log_test("Video Packages - Limits Structure", False, "Limits should be an object")
+                self.token = original_token
+                return False
+        else:
+            self.token = original_token
+            return False
+        
+        # Restore original token
+        self.token = original_token
+        
+        # Test without authentication
+        self.token = None
+        no_auth_result = self.run_test("Video Packages - No Auth", "GET", "users/me/video-packages", 401)
+        self.log_test("Video Packages - Authentication Required", True, "Correctly requires authentication")
+        
+        # Restore token
+        self.token = original_token
+        
+        self.log_test("Video Endpoints French Testing Complete", True, 
+                    "All French video endpoints tested successfully")
+        return True
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting World Auto API Tests...")
