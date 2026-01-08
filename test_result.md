@@ -783,7 +783,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Video Gallery and Showcase Feature"
+    - "French Video Endpoints Testing Completed"
   stuck_tasks:
     - "Admin Updates Management"
   test_all: false
