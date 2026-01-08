@@ -6414,6 +6414,162 @@ async def get_referral_leaderboard(limit: int = 10):
     return {"leaderboard": leaderboard}
 
 
+# ================== PRO TRIAL SYSTEM (ESSAI GRATUIT) ==================
+
+@api_router.get("/pro/trial/status")
+async def get_pro_trial_status(current_user: dict = Depends(get_current_user)):
+    """Vérifie le statut de l'essai PRO de l'utilisateur"""
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    
+    trial_used = user.get("pro_trial_used", False)
+    trial_active = False
+    trial_days_left = 0
+    trial_end_date = None
+    
+    if user.get("pro_trial_end"):
+        trial_end = datetime.fromisoformat(user["pro_trial_end"].replace('Z', '+00:00'))
+        if datetime.now(timezone.utc) < trial_end:
+            trial_active = True
+            trial_days_left = (trial_end - datetime.now(timezone.utc)).days + 1
+            trial_end_date = user["pro_trial_end"]
+    
+    has_pro_subscription = user.get("has_pro_subscription", False)
+    is_professional = user.get("is_professional", False)
+    
+    return {
+        "trial_available": not trial_used and not has_pro_subscription,
+        "trial_used": trial_used,
+        "trial_active": trial_active,
+        "trial_days_left": trial_days_left,
+        "trial_end_date": trial_end_date,
+        "is_pro": has_pro_subscription or is_professional or trial_active,
+        "has_pro_subscription": has_pro_subscription
+    }
+
+@api_router.post("/pro/trial/activate")
+async def activate_pro_trial(current_user: dict = Depends(get_current_user)):
+    """Active l'essai gratuit PRO de 14 jours"""
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    
+    # Vérifier si l'essai a déjà été utilisé
+    if user.get("pro_trial_used"):
+        raise HTTPException(status_code=400, detail="Vous avez déjà utilisé votre essai gratuit PRO")
+    
+    # Vérifier si l'utilisateur a déjà un abonnement PRO
+    if user.get("has_pro_subscription"):
+        raise HTTPException(status_code=400, detail="Vous avez déjà un abonnement PRO actif")
+    
+    # Calculer la date de fin de l'essai (14 jours)
+    trial_end = datetime.now(timezone.utc) + timedelta(days=14)
+    
+    # Activer l'essai
+    trial_pack = CREDIT_PACKS["pro_trial"]
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {
+            "$set": {
+                "pro_trial_used": True,
+                "pro_trial_start": datetime.now(timezone.utc).isoformat(),
+                "pro_trial_end": trial_end.isoformat(),
+                "has_pro_subscription": True,
+                "max_photos_per_listing": trial_pack["max_photos"]
+            },
+            "$inc": {
+                "credits": trial_pack["credits"]
+            }
+        }
+    )
+    
+    # Enregistrer dans l'historique
+    await db.subscriptions.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "type": "pro_trial",
+        "name": trial_pack["name"],
+        "credits": trial_pack["credits"],
+        "start_date": datetime.now(timezone.utc).isoformat(),
+        "end_date": trial_end.isoformat(),
+        "status": "active",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    # Envoyer un email de bienvenue PRO
+    try:
+        send_email(
+            to_email=current_user["email"],
+            subject="🎉 Bienvenue dans World Auto PRO !",
+            html_content=f"""
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #1E3A5F, #F97316); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+                    <h1 style="color: white; margin: 0;">👑 Bienvenue dans World Auto PRO !</h1>
+                </div>
+                <div style="background: #fff; padding: 30px; border: 1px solid #eee;">
+                    <p>Bonjour <strong>{current_user.get('name', 'cher vendeur')}</strong>,</p>
+                    <p>Votre essai gratuit PRO de <strong>14 jours</strong> est maintenant actif !</p>
+                    
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h3 style="margin-top: 0; color: #1E3A5F;">✨ Vos avantages PRO :</h3>
+                        <ul style="color: #666;">
+                            <li>📸 Jusqu'à <strong>50 photos</strong> par annonce</li>
+                            <li>🎁 <strong>50 crédits</strong> offerts</li>
+                            <li>🚀 Visibilité <strong>prioritaire</strong></li>
+                            <li>📊 Tableau de bord <strong>PRO</strong></li>
+                            <li>💰 <strong>-10%</strong> sur tous les frais</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="color: #F97316;"><strong>⏰ Votre essai se termine le {trial_end.strftime('%d/%m/%Y')}</strong></p>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="{SITE_URL}/deposer" style="background: #F97316; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                            Déposer ma première annonce PRO
+                        </a>
+                    </div>
+                    
+                    <p>Des questions ? Notre équipe est là pour vous aider !</p>
+                </div>
+                <div style="background: #1E3A5F; color: white; padding: 20px; text-align: center; border-radius: 0 0 10px 10px;">
+                    <p style="margin: 0;">© World Auto France - L'équipe PRO</p>
+                </div>
+            </div>
+            """
+        )
+    except Exception as e:
+        print(f"Error sending PRO welcome email: {e}")
+    
+    return {
+        "message": "🎉 Essai PRO activé avec succès !",
+        "trial_end_date": trial_end.isoformat(),
+        "credits_added": trial_pack["credits"],
+        "max_photos": trial_pack["max_photos"],
+        "days": 14
+    }
+
+@api_router.get("/pro/benefits")
+async def get_pro_benefits():
+    """Retourne les avantages PRO pour affichage"""
+    return {
+        "benefits": [
+            {"icon": "📸", "title": "50 photos par annonce", "description": "Au lieu de 6 en compte standard"},
+            {"icon": "🚀", "title": "Visibilité prioritaire", "description": "Vos annonces apparaissent en premier"},
+            {"icon": "💰", "title": "-10% sur les frais", "description": "Sur toutes les transactions"},
+            {"icon": "📊", "title": "Statistiques avancées", "description": "Tableau de bord PRO complet"},
+            {"icon": "🏷️", "title": "Badge PRO", "description": "Confiance et crédibilité accrues"},
+            {"icon": "📞", "title": "Support prioritaire", "description": "Réponse sous 24h garantie"}
+        ],
+        "trial": {
+            "duration_days": 14,
+            "credits": 50,
+            "price": 0
+        },
+        "plans": [
+            {"id": "pro_monthly", "name": "Mensuel", "price": 49, "duration": "1 mois", "popular": False},
+            {"id": "pro_3months", "name": "Trimestriel", "price": 99, "duration": "3 mois", "popular": True, "savings": "33%"},
+            {"id": "pro_6months", "name": "Semestriel", "price": 179, "duration": "6 mois", "popular": False, "savings": "40%"}
+        ]
+    }
+
+
 # ================== PROMOTE / BOOST SYSTEM ==================
 
 BOOST_OPTIONS = {
