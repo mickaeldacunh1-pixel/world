@@ -1,26 +1,28 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+import { toast } from 'sonner';
 import { Button } from './ui/button';
-import { Sparkles, Check, ChevronDown, X, Crown, Percent, Truck, Shield } from 'lucide-react';
+import { Sparkles, Check, ChevronDown, X, Crown, Percent, Truck, Shield, Loader2 } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 // Default promo config
 const DEFAULT_PROMO = {
   enabled: true,
-  title: "Compte Premium",
-  subtitle: "Économisez encore plus",
-  highlight: "dès aujourd'hui avec WORLD AUTO PLUS",
+  title: "World Auto PRO",
+  subtitle: "Vendez plus, payez moins",
+  highlight: "Frais réduits de 10%, mise en avant prioritaire",
   benefits: [
-    { icon: "percent", text: "10% de réduction sur les frais de service" },
-    { icon: "truck", text: "Livraison prioritaire" },
-    { icon: "shield", text: "Garantie étendue offerte" },
+    { icon: "percent", text: "10% de réduction sur tous les frais" },
+    { icon: "crown", text: "Visibilité prioritaire" },
+    { icon: "shield", text: "Jusqu'à 50 photos par annonce" },
   ],
   cta_text: "Essai gratuit 14 jours",
-  cta_link: "/premium",
-  badge_text: "NOUVEAU",
+  cta_link: "/tarifs",
+  badge_text: "-10%",
   bg_color: "#1E3A5F",
   accent_color: "#F97316",
   coupon_code: "",
