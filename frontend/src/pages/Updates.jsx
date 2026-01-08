@@ -32,12 +32,12 @@ const STATIC_UPDATES = [
     category: 'feature',
     items: [
       { type: 'new', text: '📻 Lecteur Radio : écoutez vos stations préférées en naviguant sur le site' },
-      { type: 'new', text: '🎵 14 stations disponibles : NRJ, Skyrock, Fun Radio, RTL, RTL2, Nova, Nostalgie, Rire & Chansons, Chérie FM, Beur FM, France Inter, France Info, FIP, Mouv\'' },
+      { type: 'new', text: '🎵 14 stations disponibles : Skyrock, Fun Radio, RTL, RTL2, Nova, Beur FM, France Inter, France Info, FIP, Mouv\', France Musique, France Culture, OÜI FM, TSF Jazz' },
       { type: 'new', text: '▶️ Contrôles complets : Play/Pause, station précédente/suivante' },
       { type: 'new', text: '🔊 Contrôle du volume avec slider et bouton mute' },
       { type: 'new', text: '📋 Liste des stations déroulante avec genres et logos' },
       { type: 'improvement', text: '🎨 Design moderne avec couleur personnalisée par station' },
-      { type: 'improvement', text: '💾 Le lecteur se souvient de votre dernière station' },
+      { type: 'improvement', text: '⚡ Flux audio stables et haute qualité' },
     ]
   },
   {
