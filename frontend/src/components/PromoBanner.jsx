@@ -231,8 +231,8 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
                   className="mb-4 p-3 rounded-lg text-center"
                   style={{ backgroundColor: `${promoConfig.accent_color}20` }}
                 >
-                  <p className="text-white font-semibold">✨ Essai PRO actif</p>
-                  <p className="text-white/80 text-sm">{trialStatus.trial_days_left} jours restants</p>
+                  <p className="text-white font-semibold">✨ {t('pro.trial.active')}</p>
+                  <p className="text-white/80 text-sm">{t('pro.trial.days_left', { days: trialStatus.trial_days_left })}</p>
                 </div>
               )}
 
@@ -241,8 +241,8 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
                   className="mb-4 p-3 rounded-lg text-center"
                   style={{ backgroundColor: `${promoConfig.accent_color}20` }}
                 >
-                  <p className="text-white font-semibold">👑 Vous êtes PRO</p>
-                  <p className="text-white/80 text-sm">Profitez de tous les avantages</p>
+                  <p className="text-white font-semibold">👑 {t('pro.status.is_pro')}</p>
+                  <p className="text-white/80 text-sm">{t('pro.status.enjoy')}</p>
                 </div>
               )}
 
