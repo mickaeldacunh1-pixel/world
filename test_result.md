@@ -317,6 +317,9 @@ backend:
         - working: true
         - agent: "testing"
         - comment: "Hero settings API working correctly. GET endpoint returns default hero settings with all required fields: hero_title_line1, hero_title_line2, hero_description, hero_image, hero_cta_text, hero_cta_link. POST endpoint successfully saves new settings with authentication required."
+        - working: true
+        - agent: "testing"
+        - comment: "CORRECTIONS TESTING COMPLETED: ✅ GET /api/settings/hero correctly returns category_engins_image field with value 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&h=400&fit=crop'. ✅ Admin credentials contact@worldautofrance.com / Admin123! work correctly. ✅ POST /api/settings/hero correctly saves category_engins_image with admin authentication. ✅ Hero settings including category_engins_image are persisted correctly. All 18/18 corrections tests passed."
 
   - task: "Shipping slip PDF generation"
     implemented: true
