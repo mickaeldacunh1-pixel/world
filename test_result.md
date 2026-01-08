@@ -783,7 +783,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Pricing Page Photo Limits Testing"
+    - "Video Gallery and Showcase Feature"
   stuck_tasks:
     - "Admin Updates Management"
   test_all: false
@@ -792,7 +792,7 @@ test_plan:
 # New agent session - Testing corrections
 agent_communication:
     - agent: "main"
-    - message: "Corrections effectuées: 1) Page Tarifs mise à jour avec nouvelles limites photos (6 pour single, 10 pour packs 5/20/50, 50 pour PRO). 2) Bug catégorie Engins corrigé - ajouté mapping dans Home.jsx et backend DEFAULT_HERO_SETTINGS. A tester: page /tarifs et modification image Engins dans admin."
+    - message: "Implémentation complète des fonctionnalités vidéo: 1) Page /videos avec galerie et filtres. 2) Composant VideoShowcase pour homepage (sous Hero). 3) Forfaits vidéo (Intermédiaire 3min 2.99€, PRO 10min 9.99€). 4) Boost vidéo homepage (1h 0.50€, 24h 5€). 5) Endpoints backend pour listings/videos, videos/featured, video/boost/checkout, video/package/checkout."
     - agent: "testing"
     - message: "CORRECTIONS TESTING COMPLETED SUCCESSFULLY: Tested the French corrections as requested. ✅ WORKING: 1) Hero Settings API - GET /api/settings/hero correctly returns category_engins_image field with proper image URL. 2) Admin Authentication - contact@worldautofrance.com / Admin123! credentials work correctly. 3) Hero Settings Save - POST /api/settings/hero correctly saves category_engins_image with admin authentication. 4) Data Persistence - Hero settings including category_engins_image are persisted correctly. All 18/18 corrections tests passed. The category Engins image fix is working properly in the backend API."
     - agent: "testing"
