@@ -273,12 +273,12 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
                   {activating ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Activation...
+                      {t('pro.trial.activating')}
                     </>
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4 mr-2" />
-                      {promoConfig.cta_text}
+                      {promoConfig.cta_text || t('pro.trial.cta')}
                     </>
                   )}
                 </Button>
@@ -289,7 +289,7 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
                     style={{ backgroundColor: promoConfig.accent_color }}
                   >
                     <Crown className="w-4 h-4 mr-2" />
-                    Mon espace PRO
+                    {t('pro.status.my_space')}
                   </Button>
                 </Link>
               ) : (
@@ -299,7 +299,7 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
                     style={{ backgroundColor: promoConfig.accent_color }}
                   >
                     <Sparkles className="w-4 h-4 mr-2" />
-                    {trialStatus?.trial_used ? 'Voir les offres PRO' : promoConfig.cta_text}
+                    {trialStatus?.trial_used ? t('pro.status.view_plans') : (promoConfig.cta_text || t('pro.trial.cta'))}
                   </Button>
                 </Link>
               )}
