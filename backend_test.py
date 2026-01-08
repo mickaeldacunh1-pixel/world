@@ -2678,6 +2678,9 @@ class AutoPiecesAPITester:
         # Feature 5: Appel Vidéo (WhatsApp)
         self.test_video_call_whatsapp()
         
+        # NEW: French Video Endpoints Tests (from review request)
+        self.test_video_endpoints_french()
+        
         return True
     
     def test_scan_plate_ocr(self):
