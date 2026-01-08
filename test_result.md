@@ -777,11 +777,17 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Video Monetization System Testing"
+    - "Pricing page photo limits update"
+    - "Category Engins image fix in Hero section"
   stuck_tasks:
     - "Admin Updates Management"
   test_all: false
   test_priority: "high_first"
+
+# New agent session - Testing corrections
+agent_communication:
+    - agent: "main"
+    - message: "Corrections effectuées: 1) Page Tarifs mise à jour avec nouvelles limites photos (6 pour single, 10 pour packs 5/20/50, 50 pour PRO). 2) Bug catégorie Engins corrigé - ajouté mapping dans Home.jsx et backend DEFAULT_HERO_SETTINGS. A tester: page /tarifs et modification image Engins dans admin."
 
 backend:
   - task: "Video Upload with Size Limits"
