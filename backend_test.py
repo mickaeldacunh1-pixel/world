@@ -3852,6 +3852,8 @@ class AutoPiecesAPITester:
         print(f"\nCorrections Tests: {corrections_passed}/{len(corrections_results)} passed")
         
         return corrections_passed == len(corrections_results)
+
+    def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting World Auto API Tests...")
         print(f"Testing against: {self.base_url}")
