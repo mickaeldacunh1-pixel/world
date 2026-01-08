@@ -450,5 +450,48 @@
     "initial": "Prix initial",
     "current": "Prix actuel",
     "change": "Modification"
+  },
+  "pro": {
+    "title": "World Auto PRO",
+    "badge": "-10%",
+    "subtitle": "Vendez plus, payez moins",
+    "highlight": "Frais réduits de 10%, mise en avant prioritaire",
+    "benefits": {
+      "photos": "50 photos par annonce",
+      "photos_desc": "Au lieu de 6 en compte standard",
+      "visibility": "Visibilité prioritaire",
+      "visibility_desc": "Vos annonces apparaissent en premier",
+      "discount": "-10% sur les frais",
+      "discount_desc": "Sur toutes les transactions",
+      "stats": "Statistiques avancées",
+      "stats_desc": "Tableau de bord PRO complet",
+      "badge": "Badge PRO",
+      "badge_desc": "Confiance et crédibilité accrues",
+      "support": "Support prioritaire",
+      "support_desc": "Réponse sous 24h garantie"
+    },
+    "trial": {
+      "cta": "Essai gratuit 14 jours",
+      "activating": "Activation...",
+      "active": "Essai PRO actif",
+      "days_left": "{days} jours restants",
+      "success": "🎉 Essai PRO activé avec succès !",
+      "already_used": "Vous avez déjà utilisé votre essai gratuit PRO",
+      "already_pro": "Vous avez déjà un abonnement PRO actif"
+    },
+    "status": {
+      "is_pro": "Vous êtes PRO",
+      "enjoy": "Profitez de tous les avantages",
+      "my_space": "Mon espace PRO",
+      "view_plans": "Voir les offres PRO"
+    },
+    "plans": {
+      "monthly": "Mensuel",
+      "quarterly": "Trimestriel",
+      "biannual": "Semestriel",
+      "popular": "Populaire",
+      "savings": "Économie"
+    },
+    "login_required": "Connectez-vous pour activer votre essai gratuit"
   }
 }
