@@ -161,7 +161,7 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
         style={{ backgroundColor: promoConfig.bg_color }}
       >
         <Crown className="w-4 h-4" style={{ color: promoConfig.accent_color }} />
-        <span className="hidden lg:inline">{promoConfig.title}</span>
+        <span className="text-xs sm:text-sm">{promoConfig.title}</span>
         <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         {promoConfig.badge_text && (
           <span 
