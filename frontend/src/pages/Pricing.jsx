@@ -453,6 +453,208 @@ export default function Pricing() {
           </div>
         </div>
 
+        {/* Forfaits Vidéo */}
+        <div className="mb-8">
+          <h2 className="font-heading text-2xl font-bold mb-6 text-center">
+            🎬 Forfaits Vidéo
+            <span className="block text-sm font-normal text-muted-foreground mt-1">Ajoutez une vidéo à votre annonce</span>
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {/* Vidéo Étendue */}
+            <Card className="relative card-hover" data-testid="package-video-extended">
+              <CardHeader>
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
+                  <Video className="w-5 h-5 text-blue-600" />
+                </div>
+                <CardTitle className="font-heading">Vidéo Étendue</CardTitle>
+                <CardDescription>2 minutes max</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">1€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.video_extended.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => handleBuyVideoPackage('extended')}
+                  disabled={loading.extended}
+                >
+                  {loading.extended ? 'Chargement...' : 'Acheter'}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* Vidéo Intermédiaire - Populaire */}
+            <Card className="relative card-hover border-2 border-accent" data-testid="package-video-intermediate">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <Badge className="bg-accent text-accent-foreground">
+                  <Zap className="w-3 h-3 mr-1" />
+                  Populaire
+                </Badge>
+              </div>
+              <CardHeader>
+                <div className="w-10 h-10 bg-accent/20 rounded-full flex items-center justify-center mb-2">
+                  <Video className="w-5 h-5 text-accent" />
+                </div>
+                <CardTitle className="font-heading">Vidéo Intermédiaire</CardTitle>
+                <CardDescription>3 minutes max</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">2,99€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.video_intermediate.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-accent hover:bg-accent/90"
+                  onClick={() => handleBuyVideoPackage('intermediate')}
+                  disabled={loading.intermediate}
+                >
+                  {loading.intermediate ? 'Chargement...' : 'Acheter'}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* Vidéo PRO */}
+            <Card className="relative card-hover bg-gradient-to-br from-purple-600 to-purple-800 text-white" data-testid="package-video-pro">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <Badge className="bg-yellow-500 text-yellow-900">
+                  ⭐ PRO
+                </Badge>
+              </div>
+              <CardHeader>
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mb-2">
+                  <Video className="w-5 h-5 text-white" />
+                </div>
+                <CardTitle className="font-heading text-white">Vidéo PRO</CardTitle>
+                <CardDescription className="text-white/70">10 minutes max</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">9,99€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.video_pro.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-yellow-400 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-white text-purple-700 hover:bg-white/90"
+                  onClick={() => handleBuyVideoPackage('pro')}
+                  disabled={loading.pro}
+                >
+                  {loading.pro ? 'Chargement...' : 'Acheter'}
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
+
+        {/* Boost Vidéo Homepage */}
+        <div className="mb-8">
+          <h2 className="font-heading text-2xl font-bold mb-6 text-center">
+            🔥 Boost Vidéo Homepage
+            <span className="block text-sm font-normal text-muted-foreground mt-1">Diffusez votre vidéo sur la page d'accueil</span>
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            {/* Boost 1h */}
+            <Card className="relative card-hover bg-gradient-to-br from-orange-500 to-red-500 text-white" data-testid="package-boost-1h">
+              <CardHeader>
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mb-2">
+                  <Flame className="w-5 h-5 text-white" />
+                </div>
+                <CardTitle className="font-heading text-white">Boost 1 heure</CardTitle>
+                <CardDescription className="text-white/70">Visibilité express</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">0,50€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.video_boost_1h.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-white flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-white text-orange-600 hover:bg-white/90"
+                  disabled
+                >
+                  Depuis votre annonce
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* Boost 24h */}
+            <Card className="relative card-hover bg-gradient-to-br from-orange-600 to-red-600 text-white border-2 border-yellow-400" data-testid="package-boost-24h">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <Badge className="bg-yellow-400 text-yellow-900">
+                  ⭐ Meilleur choix
+                </Badge>
+              </div>
+              <CardHeader>
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mb-2">
+                  <Flame className="w-5 h-5 text-white" />
+                </div>
+                <CardTitle className="font-heading text-white">Boost 24 heures</CardTitle>
+                <CardDescription className="text-white/70">Visibilité maximale</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">5€</span>
+                  <span className="text-sm text-white/70 ml-2 line-through">12€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.video_boost_24h.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-yellow-400 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-white text-orange-600 hover:bg-white/90"
+                  disabled
+                >
+                  Depuis votre annonce
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+          <p className="text-center text-sm text-muted-foreground mt-4">
+            💡 Le boost vidéo est disponible depuis la page de votre annonce avec vidéo
+          </p>
+        </div>
+
         {/* FAQ */}
         <div className="mt-16 text-center">
           <h2 className="font-heading text-2xl font-bold mb-4">Questions fréquentes</h2>
