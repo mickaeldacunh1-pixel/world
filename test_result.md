@@ -780,8 +780,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Pricing page photo limits update"
-    - "Category Engins image fix in Hero section"
+    - "Corrections testing completed successfully"
   stuck_tasks:
     - "Admin Updates Management"
   test_all: false
