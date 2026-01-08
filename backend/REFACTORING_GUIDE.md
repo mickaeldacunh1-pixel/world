@@ -1,103 +1,133 @@
-# Guide de Refactoring Backend
+# Guide de Refactoring Backend - MISE À JOUR
 
-## État Actuel
-Le fichier `server.py` contient ~7500 lignes de code. Il est fonctionnel mais nécessite une restructuration pour une meilleure maintenabilité.
+## État Actuel (Post-Refactoring Phase 1-3)
 
-## Structure Cible
+Le fichier `server.py` contient ~8070 lignes de code. La structure modulaire a été créée et les premiers modules ont été extraits.
+
+## Structure Actuelle
 
 ```
 /app/backend/
-├── server.py          # Point d'entrée principal (FastAPI app)
-├── config.py          # Configuration centralisée ✅
-├── database.py        # Connexion MongoDB ✅
-├── models/            # Modèles Pydantic
-│   ├── __init__.py    ✅
-│   ├── user.py        # UserCreate, UserUpdate, etc.
-│   ├── listing.py     # ListingCreate, ListingUpdate
-│   ├── order.py       # OrderCreate, etc.
-│   └── ...
-├── routes/            # Endpoints API
-│   ├── __init__.py    ✅
-│   ├── auth.py        # /api/auth/*
-│   ├── listings.py    # /api/listings/*
-│   ├── orders.py      # /api/orders/*
-│   ├── payments.py    # /api/payments/*
-│   ├── admin.py       # /api/admin/*
-│   ├── ai.py          # /api/ai/*
-│   └── ...
-├── services/          # Logique métier
-│   ├── email.py       # Service d'envoi d'emails
-│   ├── stripe.py      # Intégration Stripe
-│   ├── moderation.py  # Modération de contenu
-│   └── ...
-└── utils/             # Utilitaires
-    ├── __init__.py    ✅
-    ├── auth.py        # JWT, hashing
-    └── helpers.py     # Fonctions diverses
+├── server.py              # Point d'entrée principal (à réduire progressivement)
+├── config.py              # ✅ Configuration centralisée
+├── database.py            # ✅ Connexion MongoDB
+├── models/                # ✅ Modèles Pydantic
+│   ├── __init__.py        
+│   └── schemas.py         # UserCreate, ListingCreate, etc.
+├── routes/                # 🔄 Endpoints API (en cours)
+│   ├── __init__.py        
+│   ├── auth.py            # ✅ /api/auth/*
+│   └── videos.py          # ✅ /api/videos/*, /api/listings/videos
+├── services/              # ✅ Logique métier
+│   ├── __init__.py        
+│   ├── email_service.py   # Service d'envoi d'emails
+│   └── moderation_service.py  # Modération de contenu
+└── utils/                 # ✅ Utilitaires
+    ├── __init__.py        
+    └── auth.py            # JWT, hashing, authentication
 ```
 
-## Sections dans server.py (Lignes approximatives)
+## Modules Extraits ✅
 
-| Section | Lignes | Description |
-|---------|--------|-------------|
-| EMAIL SERVICE | 55-500 | Templates et envoi d'emails |
-| MODELS | 504-532 | Modèles Pydantic |
-| CONTENT MODERATION | 533-960 | Filtrage de contenu |
-| AUTH HELPERS | 960-1007 | JWT et helpers d'auth |
-| AUTH ROUTES | 1007-1201 | Login, register, etc. |
-| SIRET VERIFICATION | 1201-1305 | Vérification SIRET |
-| PROFILE MANAGEMENT | 1305-1427 | Gestion profil |
-| PASSWORD RESET | 1427-1490 | Reset mot de passe |
-| LISTINGS ROUTES | 1490-1595 | CRUD annonces |
-| IMAGE UPLOAD | 1595-1983 | Upload Cloudinary |
-| FAVORITES | 1983-2033 | Favoris |
-| SEARCH HISTORY | 2033-2105 | Historique recherche |
-| SEARCH ALERTS | 2105-2222 | Alertes recherche |
-| MESSAGES | 2222-2313 | Messagerie |
-| CONFIANCE & GARANTIE | 2313-2488 | Confiance vendeurs |
-| ORDERS & SHIPPING | 2488-2865 | Commandes et livraison |
-| SELLER STATS | 2865-3001 | Statistiques vendeur |
-| Q&A | 3001-3115 | Questions/Réponses |
-| REVIEWS | 3115-3208 | Avis |
-| WEBSOCKET CHAT | 3208-3392 | Chat temps réel |
-| BUYER REVIEWS | 3392-3577 | Notation acheteurs |
-| UPDATES (CHANGELOG) | 3577-3649 | Notes de version |
-| NEWSLETTER | 3649-3882 | Newsletter |
-| SETTINGS | 3882-3974 | Paramètres site |
-| EMAIL TEST | 3974-4022 | Test email |
-| EXTRA PHOTOS | 4022-4081 | Photos supplémentaires |
-| SHIPPING | 4081-4327 | Expédition |
-| PAYMENT | 4327-4597 | Paiements |
-| STRIPE CONNECT | 4597-5036 | Marketplace Stripe |
-| STATS | 5036-5113 | Statistiques |
-| REPORTS | 5113-5265 | Signalements |
-| AUTOEXPERT AI | 5265-5375 | Assistant IA |
-| AI TOOLS | 5375-5493 | Outils IA |
-| PLATE SCANNER | 5493-5542 | Scan plaque |
-| DIAGNOSTIC IA | 5542-5792 | Diagnostic IA |
-| AUCTIONS | 5792-5986 | Enchères |
-| VIDEO CALL | 5986-6019 | Appel vidéo |
-| LOYALTY PROGRAM | 6019-6242 | Fidélité |
-| REFERRAL SYSTEM | 6242-6361 | Parrainage |
-| PROMOTE/BOOST | 6361-6665 | Mise en avant |
-| FAIRE UNE OFFRE | 6665-6883 | Négociation |
-| LOTS DE PIÈCES | 6883-6965 | Lots |
-| COMPTEUR LIVE | 6965-6989 | Compteur temps réel |
-| RELANCE PANIER | 6989-7149 | Panier abandonné |
-| WIDGET EMBARQUABLE | 7149-7205 | Widget externe |
-| COUPONS | 7205-7392 | Codes promo |
-| ROOT + MIDDLEWARE | 7392-7517 | App config finale |
+### 1. config.py
+- Variables d'environnement
+- Configuration Cloudinary, Stripe, SMTP
+- Constantes globales
 
-## Priorité de Migration
+### 2. database.py
+- Connexion MongoDB async
+- Export de `db` pour tous les modules
 
-1. **Phase 1** : Extraire `config.py` et `database.py` ✅
-2. **Phase 2** : Extraire les modèles Pydantic
-3. **Phase 3** : Extraire les services (email, moderation)
-4. **Phase 4** : Migrer les routes progressivement
+### 3. models/schemas.py
+- UserCreate, UserUpdate, UserResponse
+- ListingCreate, ListingUpdate
+- OrderCreate, MessageCreate, ReviewCreate
+- OfferCreate, AlertCreate, BundleCreate
+- Constantes: WARRANTY_OPTIONS, PIECES_SUBCATEGORIES, etc.
+
+### 4. services/email_service.py
+- send_email()
+- send_welcome_email()
+- send_password_reset_email()
+- send_order_confirmation_email()
+- send_new_message_notification()
+- send_listing_sold_notification()
+- send_shipping_update_email()
+
+### 5. services/moderation_service.py
+- moderate_listing()
+- moderate_message()
+- moderate_review()
+- sanitize_text()
+- check_forbidden_words()
+- check_suspicious_patterns()
+
+### 6. utils/auth.py
+- hash_password(), verify_password()
+- create_access_token(), decode_token()
+- get_current_user(), get_current_user_optional()
+- get_admin_user()
+- generate_reset_token(), verify_reset_token()
+
+### 7. routes/auth.py
+- POST /api/auth/register
+- POST /api/auth/login
+- GET /api/auth/me
+- POST /api/auth/forgot-password
+- POST /api/auth/reset-password
+- POST /api/auth/change-password
+
+### 8. routes/videos.py
+- GET /api/listings/videos
+- GET /api/videos/featured
+- GET /api/videos/homepage-showcase
+- POST /api/video/boost/checkout
+- POST /api/video/package/checkout
+- GET /api/users/me/video-packages
+
+## Prochaines Étapes (Phase 4+)
+
+### Routes à extraire:
+- [ ] routes/listings.py - CRUD annonces
+- [ ] routes/orders.py - Commandes et livraison
+- [ ] routes/messages.py - Messagerie
+- [ ] routes/payments.py - Paiements Stripe
+- [ ] routes/admin.py - Administration
+- [ ] routes/ai.py - Outils IA
+- [ ] routes/auctions.py - Enchères
+- [ ] routes/loyalty.py - Fidélité et parrainage
+
+### Services à extraire:
+- [ ] services/stripe_service.py - Intégration Stripe
+- [ ] services/cloudinary_service.py - Upload images/vidéos
+- [ ] services/ai_service.py - Intégrations IA
+
+## Comment Utiliser les Modules
+
+```python
+# Dans server.py ou tout autre fichier
+from config import SITE_URL, JWT_SECRET
+from database import db
+from models import UserCreate, ListingCreate
+from services import send_welcome_email, moderate_listing
+from utils import get_current_user, hash_password
+from routes import auth_router, videos_router
+
+# Inclure les routers
+app.include_router(auth_router, prefix="/api")
+app.include_router(videos_router, prefix="/api")
+```
 
 ## Notes Importantes
 
-- Tester après chaque modification
-- Garder les imports synchronisés
-- Ne pas casser les dépendances circulaires
-- Utiliser `from database import db` pour l'accès BDD
+1. **Imports circulaires**: Utiliser des imports locaux si nécessaire
+2. **Tests**: Tester après chaque migration de route
+3. **Backwards compatibility**: Les anciennes routes dans server.py fonctionnent toujours
+4. **Migration progressive**: Ne pas tout migrer d'un coup
+
+## Statistiques
+
+- Lignes dans server.py: ~8070 (avant refactoring complet)
+- Modules créés: 8
+- Routes migrées: 2 (auth, videos)
+- Estimation réduction: ~15% après migration complète des routes listées
