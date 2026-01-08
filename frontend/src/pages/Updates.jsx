@@ -25,6 +25,25 @@ const CATEGORY_LABELS = {
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-8',
+    date: '2026-01-08',
+    version: '3.6.0',
+    title: 'Galerie Vidéos & Forfaits Vidéo',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🎬 Page Vidéos : galerie complète des annonces avec vidéos' },
+      { type: 'new', text: '📺 Lecteur vidéo Homepage : diffusion en continu des vidéos à la une' },
+      { type: 'new', text: '🔥 Boost Vidéo : mettez en avant votre vidéo sur la page d\'accueil (0,50€/h ou 5€/24h)' },
+      { type: 'new', text: '📹 Forfait Vidéo Intermédiaire : 3 minutes max pour 2,99€' },
+      { type: 'new', text: '🎥 Forfait Vidéo PRO : 10 minutes max pour 9,99€ - idéal pour présentations détaillées' },
+      { type: 'new', text: '🎵 Lecteur muet par défaut avec option d\'activation du son' },
+      { type: 'improvement', text: '📱 Design responsive style YouTube/TikTok' },
+      { type: 'improvement', text: '🔍 Filtres vidéos : catégorie, tri (récent, populaire, prix)' },
+      { type: 'improvement', text: '▶️ Lecture au survol sur les miniatures' },
+      { type: 'improvement', text: '🏗️ Refactoring backend : structure modulaire (models, services, routes, utils)' },
+    ]
+  },
+  {
     id: 'static-new-7',
     date: '2026-01-08',
     version: '3.5.0',
