@@ -450,5 +450,48 @@
     "initial": "Initial price",
     "current": "Current price",
     "change": "Change"
+  },
+  "pro": {
+    "title": "World Auto PRO",
+    "badge": "-10%",
+    "subtitle": "Sell more, pay less",
+    "highlight": "10% reduced fees, priority visibility",
+    "benefits": {
+      "photos": "50 photos per listing",
+      "photos_desc": "Instead of 6 with standard account",
+      "visibility": "Priority visibility",
+      "visibility_desc": "Your listings appear first",
+      "discount": "-10% on fees",
+      "discount_desc": "On all transactions",
+      "stats": "Advanced statistics",
+      "stats_desc": "Complete PRO dashboard",
+      "badge": "PRO badge",
+      "badge_desc": "Increased trust and credibility",
+      "support": "Priority support",
+      "support_desc": "Response within 24h guaranteed"
+    },
+    "trial": {
+      "cta": "Free 14-day trial",
+      "activating": "Activating...",
+      "active": "PRO trial active",
+      "days_left": "{days} days left",
+      "success": "🎉 PRO trial activated successfully!",
+      "already_used": "You have already used your free PRO trial",
+      "already_pro": "You already have an active PRO subscription"
+    },
+    "status": {
+      "is_pro": "You are PRO",
+      "enjoy": "Enjoy all the benefits",
+      "my_space": "My PRO space",
+      "view_plans": "View PRO plans"
+    },
+    "plans": {
+      "monthly": "Monthly",
+      "quarterly": "Quarterly",
+      "biannual": "Biannual",
+      "popular": "Popular",
+      "savings": "Savings"
+    },
+    "login_required": "Log in to activate your free trial"
   }
 }
