@@ -799,6 +799,18 @@ agent_communication:
     - message: "PRICING PAGE PHOTO LIMITS TESTING COMPLETED SUCCESSFULLY: Tested the French pricing page (/tarifs) as requested. ✅ ALL REQUIREMENTS MET: 1) Packs Crédits - '1 Crédit' shows '6 photos par annonce', 'Pack 5/20/50' all show '10 photos par annonce' as required. 2) Abonnements Pro - All Pro packages (1 mois, 3 mois, 6 mois) correctly show '50 photos par annonce' and NOT 'Annonces illimitées'. 3) Forbidden texts - Confirmed 'Photos illimitées' and 'Annonces illimitées' do NOT appear anywhere on the page. All photo limits are correctly implemented according to the specifications. The pricing page is working perfectly with the new photo limit requirements."
 
 backend:
+  - task: "Video Endpoints French Testing"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+        - agent: "testing"
+        - comment: "French Video Endpoints testing completed successfully. All 5 requested endpoints tested: 1) GET /api/listings/videos - Returns listings with videos, supports all filters (category, sort, search, page, limit). 2) GET /api/videos/featured - Returns array of featured videos (empty list acceptable). 3) GET /api/videos/homepage-showcase - Returns array for homepage carousel (empty list acceptable). 4) POST /api/video/package/checkout - Accepts intermediate/pro packages with admin authentication (contact@worldautofrance.com / Admin123!), fails due to invalid Stripe API key as expected. 5) GET /api/users/me/video-packages - Returns user video credits and limits structure with extended_credits, intermediate_credits, pro_credits, and limits object. All endpoints working correctly, 30/32 tests passed (2 expected Stripe failures)."
+
   - task: "Video Upload with Size Limits"
     implemented: true
     working: "NA"
