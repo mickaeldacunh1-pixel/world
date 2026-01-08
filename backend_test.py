@@ -3819,7 +3819,39 @@ class AutoPiecesAPITester:
         self.log_test("Price History - Invalid Listing Error", True, "Correctly returned 404 for non-existent listing")
         return True
 
-    def run_all_tests(self):
+    def run_corrections_tests(self):
+        """Run tests specifically for the French corrections mentioned in the review"""
+        print("🇫🇷 Testing French Corrections...")
+        print("=" * 60)
+        
+        # Test 1: Hero Settings API with category_engins_image
+        print("\n1. Testing Hero Settings API with Category Engins Image...")
+        hero_get_success = self.test_hero_settings_api()
+        
+        # Test 2: Hero Settings Save with Admin Credentials
+        print("\n2. Testing Hero Settings Save with Admin Credentials...")
+        hero_admin_success = self.test_hero_settings_admin_save()
+        
+        # Summary of corrections tests
+        print("\n" + "=" * 60)
+        print("📋 CORRECTIONS TEST SUMMARY")
+        print("=" * 60)
+        
+        corrections_results = [
+            ("Hero Settings API - GET category_engins_image", hero_get_success),
+            ("Hero Settings API - POST with Admin Auth", hero_admin_success)
+        ]
+        
+        corrections_passed = 0
+        for test_name, success in corrections_results:
+            status = "✅ PASSED" if success else "❌ FAILED"
+            print(f"{status} - {test_name}")
+            if success:
+                corrections_passed += 1
+        
+        print(f"\nCorrections Tests: {corrections_passed}/{len(corrections_results)} passed")
+        
+        return corrections_passed == len(corrections_results)
         """Run all API tests"""
         print("🚀 Starting World Auto API Tests...")
         print(f"Testing against: {self.base_url}")
