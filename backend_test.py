@@ -3905,7 +3905,7 @@ class AutoPiecesAPITester:
         print("\n2. Testing GET /api/videos/featured...")
         
         featured_result = self.run_test("Featured Videos", "GET", "videos/featured", 200)
-        if featured_result and isinstance(featured_result, list):
+        if featured_result is not None and isinstance(featured_result, list):
             self.log_test("Featured Videos - Structure", True, f"Returned {len(featured_result)} videos")
             
             # Check video structure if any videos exist
