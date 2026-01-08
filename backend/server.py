@@ -4904,6 +4904,72 @@ async def stripe_webhook(request: Request):
                         
                         logger.info(f"Added {warranty_duration} months warranty to listing {listing_id}")
                 
+                # Handle video boost purchase
+                elif metadata.get("type") == "video_boost":
+                    listing_id = metadata.get("listing_id")
+                    user_id = metadata.get("user_id")
+                    boost_duration = metadata.get("boost_duration", "1h")
+                    
+                    if listing_id and user_id:
+                        # Calculate boost end time
+                        hours = 24 if boost_duration == "24h" else 1
+                        boost_end = (datetime.now(timezone.utc) + timedelta(hours=hours)).isoformat()
+                        
+                        # Update listing with video boost
+                        await db.listings.update_one(
+                            {"id": listing_id},
+                            {"$set": {
+                                "video_boost_end": boost_end,
+                                "video_boost_started_at": datetime.now(timezone.utc).isoformat(),
+                                "video_boost_duration": boost_duration,
+                                "video_boost_priority": 1 if boost_duration == "24h" else 0
+                            }}
+                        )
+                        
+                        # Log the purchase
+                        await db.video_boost_purchases.insert_one({
+                            "id": str(uuid.uuid4()),
+                            "listing_id": listing_id,
+                            "user_id": user_id,
+                            "duration": boost_duration,
+                            "boost_end": boost_end,
+                            "session_id": session_id,
+                            "amount": session_data.get("amount_total", 0) / 100,
+                            "created_at": datetime.now(timezone.utc).isoformat()
+                        })
+                        
+                        logger.info(f"Added video boost ({boost_duration}) to listing {listing_id}")
+                
+                # Handle video package purchase
+                elif metadata.get("type") == "video_package":
+                    user_id = metadata.get("user_id")
+                    package = metadata.get("package")
+                    
+                    if user_id and package:
+                        # Add video credits based on package
+                        credit_field = {
+                            "extended": "extended_video_credits",
+                            "intermediate": "intermediate_video_credits",
+                            "pro": "pro_video_credits"
+                        }.get(package, "extended_video_credits")
+                        
+                        await db.users.update_one(
+                            {"id": user_id},
+                            {"$inc": {credit_field: 1}}
+                        )
+                        
+                        # Log the purchase
+                        await db.video_package_purchases.insert_one({
+                            "id": str(uuid.uuid4()),
+                            "user_id": user_id,
+                            "package": package,
+                            "session_id": session_id,
+                            "amount": session_data.get("amount_total", 0) / 100,
+                            "created_at": datetime.now(timezone.utc).isoformat()
+                        })
+                        
+                        logger.info(f"Added {package} video package to user {user_id}")
+                
                 else:
                     # Regular transaction (credits for listings)
                     await db.payment_transactions.update_one(
