@@ -429,6 +429,9 @@ frontend:
         - working: true
         - agent: "testing"
         - comment: "Pricing page working correctly. Page accessible at /tarifs, displays pricing structure with 4 pricing packages (Annonce Unique 2€, Pack 5 8€, Pack 20 25€, Pro Illimité 49€/mois). Stripe checkout buttons present and functional. Page renders without errors."
+        - working: true
+        - agent: "testing"
+        - comment: "PRICING PAGE PHOTO LIMITS TESTING COMPLETED: All requirements verified successfully. ✅ Packs Crédits: '1 Crédit' shows '6 photos par annonce', 'Pack 5' shows '10 photos par annonce', 'Pack 20' shows '10 photos par annonce', 'Pack 50' shows '10 photos par annonce'. ✅ Abonnements Pro: 'Pro 1 mois' shows '50 photos par annonce' (NOT 'Annonces illimitées'), 'Pro 3 mois' shows '50 photos par annonce', 'Pro 6 mois' shows '50 photos par annonce'. ✅ Forbidden texts: Confirmed 'Photos illimitées' and 'Annonces illimitées' do NOT appear on the page. All photo limits correctly implemented according to French specifications."
 
   - task: "Protected Routes Authentication"
     implemented: true
