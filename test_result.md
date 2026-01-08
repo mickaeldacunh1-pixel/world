@@ -791,6 +791,8 @@ test_plan:
 agent_communication:
     - agent: "main"
     - message: "Corrections effectuées: 1) Page Tarifs mise à jour avec nouvelles limites photos (6 pour single, 10 pour packs 5/20/50, 50 pour PRO). 2) Bug catégorie Engins corrigé - ajouté mapping dans Home.jsx et backend DEFAULT_HERO_SETTINGS. A tester: page /tarifs et modification image Engins dans admin."
+    - agent: "testing"
+    - message: "CORRECTIONS TESTING COMPLETED SUCCESSFULLY: Tested the French corrections as requested. ✅ WORKING: 1) Hero Settings API - GET /api/settings/hero correctly returns category_engins_image field with proper image URL. 2) Admin Authentication - contact@worldautofrance.com / Admin123! credentials work correctly. 3) Hero Settings Save - POST /api/settings/hero correctly saves category_engins_image with admin authentication. 4) Data Persistence - Hero settings including category_engins_image are persisted correctly. All 18/18 corrections tests passed. The category Engins image fix is working properly in the backend API."
 
 backend:
   - task: "Video Upload with Size Limits"
