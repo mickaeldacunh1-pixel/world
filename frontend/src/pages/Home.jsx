@@ -652,6 +652,7 @@ export default function Home() {
                 voitures: heroSettings.category_voitures_image,
                 motos: heroSettings.category_motos_image,
                 utilitaires: heroSettings.category_utilitaires_image,
+                engins: heroSettings.category_engins_image,
                 accessoires: heroSettings.category_accessoires_image,
               };
               const categoryImage = categoryImageMap[cat.slug] || cat.image;
