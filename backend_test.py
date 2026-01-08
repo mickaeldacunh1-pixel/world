@@ -3928,7 +3928,7 @@ class AutoPiecesAPITester:
         print("\n3. Testing GET /api/videos/homepage-showcase...")
         
         showcase_result = self.run_test("Homepage Showcase Videos", "GET", "videos/homepage-showcase", 200)
-        if showcase_result and isinstance(showcase_result, list):
+        if showcase_result is not None and isinstance(showcase_result, list):
             self.log_test("Homepage Showcase - Structure", True, f"Returned {len(showcase_result)} videos")
             
             # Check video structure if any videos exist
