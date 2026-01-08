@@ -107,14 +107,6 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Lien Tarifs - Desktop */}
-          <Link 
-            to="/tarifs" 
-            className="hidden md:flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors ml-6"
-          >
-            {t('nav.pricing')}
-          </Link>
-
           {/* Promo Banner - Tablette et Desktop */}
           <div className="hidden md:block flex-1 mx-4">
             <PromoBanner 
@@ -122,6 +114,14 @@ export default function Navbar() {
               textColor={navbarSettings.promo_text_color} 
             />
           </div>
+
+          {/* Lien Tarifs - Desktop (après le PRO) */}
+          <Link 
+            to="/tarifs" 
+            className="hidden md:flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors mr-2"
+          >
+            {t('nav.pricing')}
+          </Link>
 
           {/* Right section */}
           <div className="flex items-center gap-2">
