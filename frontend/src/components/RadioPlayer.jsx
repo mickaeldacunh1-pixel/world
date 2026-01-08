@@ -14,7 +14,7 @@ const RADIO_STATIONS = [
     name: 'NRJ',
     genre: 'Hits',
     logo: '🎵',
-    streamUrl: 'https://scdn.nrjaudio.fm/fr/30001/mp3_128.mp3',
+    streamUrl: 'https://scdn.nrjaudio.fm/adwz1/fr/30001/mp3_128.mp3?origine=webplayer',
     color: '#E31937'
   },
   {
@@ -50,19 +50,19 @@ const RADIO_STATIONS = [
     color: '#00A0E4'
   },
   {
-    id: 'virgin',
-    name: 'Virgin Radio',
-    genre: 'Rock',
-    logo: '🤘',
-    streamUrl: 'https://icecast.radiofrance.fr/fip-midfi.mp3',
-    color: '#E31937'
+    id: 'nova',
+    name: 'Radio Nova',
+    genre: 'Éclectique',
+    logo: '🌟',
+    streamUrl: 'https://novazz.ice.infomaniak.ch/novazz-128.mp3',
+    color: '#FF5500'
   },
   {
     id: 'nostalgie',
     name: 'Nostalgie',
     genre: 'Oldies',
     logo: '💿',
-    streamUrl: 'https://scdn.nrjaudio.fm/fr/30601/mp3_128.mp3',
+    streamUrl: 'https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3?origine=webplayer',
     color: '#FFD700'
   },
   {
@@ -70,7 +70,7 @@ const RADIO_STATIONS = [
     name: 'Rire & Chansons',
     genre: 'Humour',
     logo: '😂',
-    streamUrl: 'https://scdn.nrjaudio.fm/fr/30401/mp3_128.mp3',
+    streamUrl: 'https://scdn.nrjaudio.fm/adwz1/fr/30401/mp3_128.mp3?origine=webplayer',
     color: '#FF69B4'
   },
   {
@@ -78,8 +78,16 @@ const RADIO_STATIONS = [
     name: 'Chérie FM',
     genre: 'Variété',
     logo: '💖',
-    streamUrl: 'https://scdn.nrjaudio.fm/fr/30201/mp3_128.mp3',
+    streamUrl: 'https://scdn.nrjaudio.fm/adwz1/fr/30201/mp3_128.mp3?origine=webplayer',
     color: '#FF1493'
+  },
+  {
+    id: 'beurfm',
+    name: 'Beur FM',
+    genre: 'Musique du monde',
+    logo: '🌍',
+    streamUrl: 'https://beurfm.ice.infomaniak.ch/beurfm-high.mp3',
+    color: '#009933'
   },
   {
     id: 'franceinter',
@@ -100,10 +108,18 @@ const RADIO_STATIONS = [
   {
     id: 'fip',
     name: 'FIP',
-    genre: 'Éclectique',
+    genre: 'Jazz & Groove',
     logo: '🎹',
     streamUrl: 'https://icecast.radiofrance.fr/fip-midfi.mp3',
     color: '#E85D75'
+  },
+  {
+    id: 'mouv',
+    name: 'Mouv\'',
+    genre: 'Urban',
+    logo: '🔥',
+    streamUrl: 'https://icecast.radiofrance.fr/mouv-midfi.mp3',
+    color: '#00D4AA'
   }
 ];
 
