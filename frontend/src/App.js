@@ -173,6 +173,7 @@ function AppContent() {
       </main>
       <Footer />
       <Tobi />
+      <RadioPlayer />
       <CompareWidget />
       <Toaster position="top-right" richColors />
     </div>
