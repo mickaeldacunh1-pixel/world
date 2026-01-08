@@ -10,7 +10,7 @@ import sys
 
 class HeroCustomizationTester:
     def __init__(self):
-        self.base_url = "https://autogear-1.preview.emergentagent.com"
+        self.base_url = "https://autoparts-market-9.preview.emergentagent.com"
         self.api_url = f"{self.base_url}/api"
         self.token = None
         self.tests_run = 0
