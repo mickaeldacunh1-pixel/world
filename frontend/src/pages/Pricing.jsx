@@ -99,6 +99,60 @@ export default function Pricing() {
       '🏷️ -39% vs mensuel',
       '⭐ Meilleure économie',
     ],
+    // Video packages
+    video_extended: [
+      'Durée max : 2 minutes',
+      'Taille max : 100 Mo',
+      'Format MP4 optimisé',
+      '1 crédit utilisable',
+    ],
+    video_intermediate: [
+      'Durée max : 3 minutes',
+      'Taille max : 150 Mo',
+      'Format MP4 HD',
+      '1 crédit utilisable',
+      '🎬 Idéal pour présentation',
+    ],
+    video_pro: [
+      'Durée max : 10 minutes',
+      'Taille max : 500 Mo',
+      'Format MP4 Full HD',
+      '1 crédit utilisable',
+      '🎬 Présentation complète',
+      '⭐ Pour professionnels',
+    ],
+    // Video boost
+    video_boost_1h: [
+      'Diffusion : 1 heure',
+      'Page d\'accueil',
+      'Lecteur vidéo principal',
+      'Visibilité maximale',
+    ],
+    video_boost_24h: [
+      'Diffusion : 24 heures',
+      'Page d\'accueil',
+      'Lecteur vidéo principal',
+      'Priorité d\'affichage',
+      '🏷️ -58% vs tarif horaire',
+      '⭐ Meilleur rapport',
+    ],
+  };
+
+  const handleBuyVideoPackage = async (packageType) => {
+    if (!user) {
+      toast.error('Connectez-vous pour acheter un forfait vidéo');
+      return;
+    }
+
+    setLoading(prev => ({ ...prev, [packageType]: true }));
+    try {
+      const response = await axios.post(`${API}/video/package/checkout?package=${packageType}`);
+      window.location.href = response.data.checkout_url;
+    } catch (error) {
+      toast.error('Erreur lors de l\'initialisation du paiement');
+    } finally {
+      setLoading(prev => ({ ...prev, [packageType]: false }));
+    }
   };
 
   return (
