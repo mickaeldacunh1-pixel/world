@@ -115,6 +115,14 @@ export default function Navbar() {
             />
           </div>
 
+          {/* Promo Banner - Mobile (version compacte) */}
+          <div className="md:hidden">
+            <PromoBanner 
+              bgColor={navbarSettings.promo_bg_color} 
+              textColor={navbarSettings.promo_text_color} 
+            />
+          </div>
+
           {/* Lien Tarifs - Desktop (après le PRO) */}
           <Link 
             to="/tarifs" 
