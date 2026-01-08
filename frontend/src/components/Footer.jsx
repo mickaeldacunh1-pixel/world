@@ -184,6 +184,17 @@ export default function Footer() {
           <p className="text-primary-foreground/50 text-sm text-center">
             © {new Date().getFullYear()} World Auto <FranceText />. {t('footer.allRights')}.
           </p>
+          <p className="text-primary-foreground/40 text-xs text-center mt-2">
+            Made with{' '}
+            <a 
+              href="https://app.emergent.sh/?utm_source=emergent-badge" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-accent transition-colors underline"
+            >
+              Emergent
+            </a>
+          </p>
         </div>
       </div>
     </footer>
