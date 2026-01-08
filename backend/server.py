@@ -6463,7 +6463,7 @@ async def activate_pro_trial(current_user: dict = Depends(get_current_user)):
     trial_end = datetime.now(timezone.utc) + timedelta(days=14)
     
     # Activer l'essai
-    trial_pack = CREDIT_PACKS["pro_trial"]
+    trial_pack = PRICING_PACKAGES["pro_trial"]
     await db.users.update_one(
         {"id": current_user["id"]},
         {
