@@ -780,7 +780,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Corrections testing completed successfully"
+    - "Pricing Page Photo Limits Testing"
   stuck_tasks:
     - "Admin Updates Management"
   test_all: false
