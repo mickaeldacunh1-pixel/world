@@ -169,6 +169,7 @@ function AppContent() {
           } />
           <Route path="/lots" element={<Bundles />} />
           <Route path="/lot/:id" element={<BundleDetail />} />
+          <Route path="/videos" element={<Videos />} />
           <Route path="/widget" element={<Widget />} />
         </Routes>
       </main>
