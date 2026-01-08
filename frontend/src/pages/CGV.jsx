@@ -67,6 +67,31 @@ export default function CGV() {
           </section>
 
           <section>
+            <h2 className="font-heading text-xl font-bold mb-4">Article 4bis - Forfaits Vidéo et Mise en Avant</h2>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              World Auto France propose des forfaits vidéo pour enrichir les annonces :
+            </p>
+            <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4 mb-3">
+              <li>Vidéo Standard : 30 secondes max, incluse avec l'annonce</li>
+              <li>Vidéo Étendue : 2 minutes max, 100 Mo - 1,00€</li>
+              <li>Vidéo Intermédiaire : 3 minutes max, 150 Mo - 2,99€</li>
+              <li>Vidéo PRO Présentation : 10 minutes max, 500 Mo - 9,99€</li>
+            </ul>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              Options de mise en avant vidéo sur la page d'accueil :
+            </p>
+            <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
+              <li>Boost Vidéo 1 heure : 0,50€</li>
+              <li>Boost Vidéo 24 heures : 5,00€</li>
+            </ul>
+            <p className="text-muted-foreground leading-relaxed mt-3">
+              Les forfaits vidéo achetés sont valables pour une annonce. Les vidéos doivent 
+              respecter les règles de contenu de la plateforme. Les contenus inappropriés 
+              seront supprimés sans remboursement.
+            </p>
+          </section>
+
+          <section>
             <h2 className="font-heading text-xl font-bold mb-4">Article 5 - Transactions et paiements</h2>
             <p className="text-muted-foreground leading-relaxed mb-3">
               Les paiements sont sécurisés par Stripe. World Auto France agit en tant qu'intermédiaire 
