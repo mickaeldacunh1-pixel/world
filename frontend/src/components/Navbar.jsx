@@ -107,6 +107,14 @@ export default function Navbar() {
             </span>
           </Link>
 
+          {/* Lien Tarifs - Desktop */}
+          <Link 
+            to="/tarifs" 
+            className="hidden md:flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
+            {t('nav.pricing')}
+          </Link>
+
           {/* Promo Banner - Tablette et Desktop */}
           <div className="hidden md:block flex-1 mx-4">
             <PromoBanner 
