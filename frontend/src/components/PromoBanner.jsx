@@ -40,12 +40,16 @@ const ICON_MAP = {
 
 export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF' }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { user, token } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [promoConfig, setPromoConfig] = useState({
     ...DEFAULT_PROMO,
     bg_color: bgColor,
   });
   const [dismissed, setDismissed] = useState(false);
+  const [trialStatus, setTrialStatus] = useState(null);
+  const [activating, setActivating] = useState(false);
 
   useEffect(() => {
     const fetchPromoConfig = async () => {
@@ -82,6 +86,54 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
       setDismissed(true);
     }
   }, [bgColor]);
+
+  // Fetch trial status when user is logged in
+  useEffect(() => {
+    const fetchTrialStatus = async () => {
+      if (user && token) {
+        try {
+          const response = await axios.get(`${API}/pro/trial/status`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setTrialStatus(response.data);
+        } catch (error) {
+          console.log('Could not fetch trial status');
+        }
+      }
+    };
+    fetchTrialStatus();
+  }, [user, token]);
+
+  const handleActivateTrial = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!user) {
+      toast.info('Connectez-vous pour activer votre essai gratuit');
+      navigate('/auth');
+      return;
+    }
+
+    setActivating(true);
+    try {
+      const response = await axios.post(`${API}/pro/trial/activate`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success(response.data.message);
+      setTrialStatus({
+        ...trialStatus,
+        trial_active: true,
+        trial_available: false,
+        is_pro: true,
+        trial_days_left: 14
+      });
+      setIsOpen(false);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de l\'activation');
+    } finally {
+      setActivating(false);
+    }
+  };
 
   const handleDismiss = (e) => {
     e.stopPropagation();
