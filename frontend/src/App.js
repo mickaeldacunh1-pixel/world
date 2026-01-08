@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Tobi from "./components/Tobi";
+import RadioPlayer from "./components/RadioPlayer";
 import { CompareWidget } from "./components/CompareWidget";
 import Home from "./pages/Home";
 import Listings from "./pages/Listings";
