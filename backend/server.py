@@ -943,7 +943,8 @@ PRICING_PACKAGES = {
     "pack50": {"name": "Pack 50 Annonces", "price": 39.00, "credits": 50, "duration": 30, "max_photos": 20},
     "pro_monthly": {"name": "Pro Illimité (1 mois)", "price": 49.00, "credits": 999, "duration": 30, "is_pro": True, "max_photos": 50},
     "pro_3months": {"name": "Pro Illimité (3 mois)", "price": 99.00, "credits": 999, "duration": 90, "is_pro": True, "max_photos": 50},
-    "pro_6months": {"name": "Pro Illimité (6 mois)", "price": 179.00, "credits": 999, "duration": 180, "is_pro": True, "max_photos": 50}
+    "pro_6months": {"name": "Pro Illimité (6 mois)", "price": 179.00, "credits": 999, "duration": 180, "is_pro": True, "max_photos": 50},
+    "pro_trial": {"name": "Essai PRO 14 jours", "price": 0.00, "credits": 50, "duration": 14, "is_pro": True, "max_photos": 50, "is_trial": True}
 }
 
 # Extra photos package
