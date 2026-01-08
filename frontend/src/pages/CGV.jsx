@@ -13,7 +13,7 @@ export default function CGV() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-fade-in-up">
           <h1 className="font-heading text-4xl font-bold mb-4">Conditions Générales de Vente</h1>
-          <p className="text-muted-foreground">Dernière mise à jour : Janvier 2025</p>
+          <p className="text-muted-foreground">Dernière mise à jour : Janvier 2026</p>
         </div>
 
         <Card className="p-8 space-y-8 animate-fade-in-up">
