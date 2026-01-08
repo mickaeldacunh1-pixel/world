@@ -481,38 +481,98 @@ class AutoPiecesAPITester:
         return False
 
     def test_hero_settings_api(self):
-        """Test hero settings API"""
+        """Test hero settings API with category_engins_image field"""
+        print("\n🎨 Testing Hero Settings API with Category Engins Image...")
+        
         # Test GET hero settings (should work without auth)
         result = self.run_test("Get Hero Settings", "GET", "settings/hero", 200)
         if result:
-            # Check default hero settings fields
+            # Check default hero settings fields including category_engins_image
             expected_fields = ["hero_title_line1", "hero_title_line2", "hero_description", 
-                             "hero_image", "hero_cta_text", "hero_cta_link"]
+                             "hero_image", "hero_cta_text", "hero_cta_link", "category_engins_image"]
             for field in expected_fields:
                 if field in result:
                     self.log_test(f"Hero settings field {field}", True)
                 else:
                     self.log_test(f"Hero settings field {field}", False, "Field missing")
                     return False
+            
+            # Specifically check if category_engins_image has a value
+            category_engins_image = result.get("category_engins_image")
+            if category_engins_image:
+                self.log_test("Category Engins Image Present", True, f"Value: {category_engins_image}")
+            else:
+                self.log_test("Category Engins Image Present", False, "No category_engins_image value")
         else:
             return False
         
-        # Test POST hero settings (requires auth)
-        if not self.token:
-            self.log_test("Save Hero Settings", False, "No token available")
+        return True
+
+    def test_hero_settings_admin_save(self):
+        """Test saving hero settings with admin credentials"""
+        print("\n🔐 Testing Hero Settings Save with Admin Credentials...")
+        
+        # Login with admin credentials
+        admin_login = {
+            "email": "contact@worldautofrance.com",
+            "password": "Admin123!"
+        }
+        
+        login_result = self.run_test("Admin Login for Hero Settings", "POST", "auth/login", 200, admin_login)
+        if not login_result or 'token' not in login_result:
+            self.log_test("Admin Login Failed", False, "Could not login with admin credentials")
             return False
         
+        # Store original token and use admin token
+        original_token = self.token
+        admin_token = login_result['token']
+        self.token = admin_token
+        
+        # Test saving hero settings with category_engins_image
         test_settings = {
             "hero_title_line1": "Test Title Line 1",
             "hero_title_line2": "Test Title Line 2", 
             "hero_description": "Test description for hero section",
-            "hero_image": "https://example.com/test-image.jpg",
+            "hero_image": "https://example.com/test-hero.jpg",
             "hero_cta_text": "Test CTA",
-            "hero_cta_link": "/test-link"
+            "hero_cta_link": "/test-link",
+            "category_engins_image": "https://example.com/test-engins.jpg"
         }
         
-        result = self.run_test("Save Hero Settings", "POST", "settings/hero", 200, test_settings)
-        return result is not None
+        save_result = self.run_test("Save Hero Settings with Admin", "POST", "settings/hero", 200, test_settings)
+        if save_result:
+            # Verify the save was successful
+            if save_result.get("message"):
+                self.log_test("Hero Settings Save Message", True, f"Message: {save_result['message']}")
+            else:
+                self.log_test("Hero Settings Save Message", False, "No success message")
+                self.token = original_token
+                return False
+            
+            # Verify the settings were persisted by getting them again
+            verify_result = self.run_test("Verify Hero Settings Persistence", "GET", "settings/hero", 200)
+            if verify_result:
+                # Check that category_engins_image was saved correctly
+                saved_engins_image = verify_result.get("category_engins_image")
+                if saved_engins_image == test_settings["category_engins_image"]:
+                    self.log_test("Category Engins Image Persistence", True, f"Saved: {saved_engins_image}")
+                else:
+                    self.log_test("Category Engins Image Persistence", False, 
+                                f"Expected {test_settings['category_engins_image']}, got {saved_engins_image}")
+                    self.token = original_token
+                    return False
+            else:
+                self.log_test("Hero Settings Verification", False, "Could not verify saved settings")
+                self.token = original_token
+                return False
+        else:
+            self.token = original_token
+            return False
+        
+        # Restore original token
+        self.token = original_token
+        self.log_test("Hero Settings Admin Save Complete", True, "All admin hero settings tests passed")
+        return True
 
     def test_hero_advanced_customization_api(self):
         """Test Hero Advanced Customization API with new fields"""
