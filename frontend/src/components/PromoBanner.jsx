@@ -109,7 +109,7 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
     e.stopPropagation();
     
     if (!user) {
-      toast.info('Connectez-vous pour activer votre essai gratuit');
+      toast.info(t('pro.login_required'));
       navigate('/auth');
       return;
     }
@@ -119,7 +119,7 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
       const response = await axios.post(`${API}/pro/trial/activate`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success(response.data.message);
+      toast.success(t('pro.trial.success'));
       setTrialStatus({
         ...trialStatus,
         trial_active: true,
@@ -129,7 +129,7 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
       });
       setIsOpen(false);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur lors de l\'activation');
+      toast.error(error.response?.data?.detail || t('pro.trial.already_used'));
     } finally {
       setActivating(false);
     }
