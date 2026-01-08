@@ -10,14 +10,6 @@ import {
 // Liste des stations de radio françaises avec leurs flux de streaming
 const RADIO_STATIONS = [
   {
-    id: 'nrj',
-    name: 'NRJ',
-    genre: 'Hits',
-    logo: '🎵',
-    streamUrl: 'https://scdn.nrjaudio.fm/adwz1/fr/30001/mp3_128.mp3?origine=webplayer',
-    color: '#E31937'
-  },
-  {
     id: 'skyrock',
     name: 'Skyrock',
     genre: 'Rap & RnB',
@@ -58,30 +50,6 @@ const RADIO_STATIONS = [
     color: '#FF5500'
   },
   {
-    id: 'nostalgie',
-    name: 'Nostalgie',
-    genre: 'Oldies',
-    logo: '💿',
-    streamUrl: 'https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3?origine=webplayer',
-    color: '#FFD700'
-  },
-  {
-    id: 'rireetchansons',
-    name: 'Rire & Chansons',
-    genre: 'Humour',
-    logo: '😂',
-    streamUrl: 'https://scdn.nrjaudio.fm/adwz1/fr/30401/mp3_128.mp3?origine=webplayer',
-    color: '#FF69B4'
-  },
-  {
-    id: 'cherie',
-    name: 'Chérie FM',
-    genre: 'Variété',
-    logo: '💖',
-    streamUrl: 'https://scdn.nrjaudio.fm/adwz1/fr/30201/mp3_128.mp3?origine=webplayer',
-    color: '#FF1493'
-  },
-  {
     id: 'beurfm',
     name: 'Beur FM',
     genre: 'Musique du monde',
@@ -120,6 +88,38 @@ const RADIO_STATIONS = [
     logo: '🔥',
     streamUrl: 'https://icecast.radiofrance.fr/mouv-midfi.mp3',
     color: '#00D4AA'
+  },
+  {
+    id: 'francemusique',
+    name: 'France Musique',
+    genre: 'Classique',
+    logo: '🎻',
+    streamUrl: 'https://icecast.radiofrance.fr/francemusique-midfi.mp3',
+    color: '#8B4513'
+  },
+  {
+    id: 'franceculture',
+    name: 'France Culture',
+    genre: 'Culture',
+    logo: '📚',
+    streamUrl: 'https://icecast.radiofrance.fr/franceculture-midfi.mp3',
+    color: '#9932CC'
+  },
+  {
+    id: 'oui',
+    name: 'OÜI FM',
+    genre: 'Rock Indé',
+    logo: '🤘',
+    streamUrl: 'https://ouifm.ice.infomaniak.ch/ouifm-high.mp3',
+    color: '#FF0000'
+  },
+  {
+    id: 'tsfjazz',
+    name: 'TSF Jazz',
+    genre: 'Jazz',
+    logo: '🎷',
+    streamUrl: 'https://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3',
+    color: '#1E90FF'
   }
 ];
 
