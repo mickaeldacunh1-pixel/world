@@ -632,6 +632,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Video Showcase - Under Hero, before categories */}
+      <VideoShowcase />
+
       {/* Categories Bento Grid - Improved */}
       {heroSettings.hero_show_categories !== false && (
       <section className="py-16 md:py-24 bg-gradient-to-b from-secondary/50 to-background">
