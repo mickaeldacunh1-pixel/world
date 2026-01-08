@@ -21,6 +21,7 @@ import PlateScanner from '../components/PlateScanner';
 import VoiceSearch from '../components/VoiceSearch';
 import AnimatedText from '../components/AnimatedText';
 import SellerOfTheWeek from '../components/SellerOfTheWeek';
+import VideoShowcase from '../components/VideoShowcase';
 import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
