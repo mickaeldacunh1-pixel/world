@@ -110,7 +110,7 @@ export default function Navbar() {
           {/* Lien Tarifs - Desktop */}
           <Link 
             to="/tarifs" 
-            className="hidden md:flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+            className="hidden md:flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors ml-6"
           >
             {t('nav.pricing')}
           </Link>
