@@ -127,6 +127,32 @@ const faqs = [
     ]
   },
   {
+    category: "Vidéos",
+    icon: Video,
+    questions: [
+      {
+        q: "Comment ajouter une vidéo à mon annonce ?",
+        a: "Lors de la création de votre annonce, vous pouvez ajouter une vidéo de présentation. La vidéo standard (30 secondes) est incluse gratuitement. Pour des vidéos plus longues, vous pouvez acheter un forfait : Étendue (2 min, 1€), Intermédiaire (3 min, 2,99€) ou PRO (10 min, 9,99€)."
+      },
+      {
+        q: "Quels sont les forfaits vidéo disponibles ?",
+        a: "Nous proposons 4 options : Vidéo Standard (30 sec, gratuit), Vidéo Étendue (2 min, 1€), Vidéo Intermédiaire (3 min, 2,99€) et Vidéo PRO Présentation (10 min, 9,99€). Le forfait PRO est idéal pour les professionnels qui souhaitent faire des présentations détaillées."
+      },
+      {
+        q: "Comment mettre ma vidéo en avant sur la page d'accueil ?",
+        a: "Depuis votre annonce avec vidéo, vous pouvez activer le Boost Vidéo. Deux options : 1 heure (0,50€) ou 24 heures (5€). Votre vidéo sera diffusée dans le lecteur principal sur la page d'accueil, offrant une visibilité maximale."
+      },
+      {
+        q: "Où puis-je voir toutes les annonces avec vidéo ?",
+        a: "Rendez-vous sur la page Vidéos accessible depuis le menu principal. Vous y trouverez une galerie de toutes les annonces avec vidéo, avec des filtres par catégorie, tri et recherche."
+      },
+      {
+        q: "Quel format de vidéo est accepté ?",
+        a: "Nous acceptons les formats vidéo courants (MP4, MOV, AVI). La vidéo est automatiquement convertie en MP4 optimisé pour le web. La taille maximale dépend de votre forfait : 30 Mo (standard), 100 Mo (étendue), 150 Mo (intermédiaire) ou 500 Mo (PRO)."
+      }
+    ]
+  },
+  {
     category: "Litiges",
     icon: AlertTriangle,
     questions: [
