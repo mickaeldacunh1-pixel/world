@@ -25,6 +25,23 @@ const CATEGORY_LABELS = {
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-6',
+    date: '2026-01-08',
+    version: '3.4.0',
+    title: 'Essai PRO 14 jours & Améliorations Admin',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '👑 Essai PRO gratuit 14 jours : testez tous les avantages PRO sans engagement' },
+      { type: 'new', text: '🎁 50 crédits offerts pendant l\'essai PRO' },
+      { type: 'new', text: '📸 Jusqu\'à 50 photos par annonce avec PRO' },
+      { type: 'new', text: '⚙️ Panneau admin : toggle activation du bouton Premium' },
+      { type: 'new', text: '✏️ Personnalisation complète du bouton PRO (titre, badge, textes, couleurs)' },
+      { type: 'improvement', text: '🔄 Bouton Premium ne disparaît plus à la fermeture du dropdown' },
+      { type: 'improvement', text: '📱 Bouton Premium visible sur tablette (≥768px)' },
+      { type: 'fix', text: '🐛 Correction du comportement du bouton X (ferme le dropdown sans masquer le bouton)' },
+    ]
+  },
+  {
     id: 'static-new-5',
     date: '2026-01-08',
     version: '3.3.0',
