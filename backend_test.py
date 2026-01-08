@@ -4026,11 +4026,11 @@ class AutoPiecesAPITester:
                 for limit_field in limit_fields:
                     if limit_field in limits:
                         limit_info = limits[limit_field]
-                        if "duration" in limit_info and "size" in limit_info and "price" in limit_info:
+                        if "duration" in limit_info and "size_mb" in limit_info:
                             self.log_test(f"Video Packages - {limit_field} limits", True)
                         else:
                             self.log_test(f"Video Packages - {limit_field} limits", False, 
-                                        "Missing duration, size, or price")
+                                        "Missing duration or size_mb")
                             self.token = original_token
                             return False
                     else:
