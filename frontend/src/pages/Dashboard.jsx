@@ -20,10 +20,11 @@ const statusLabels = {
 };
 
 export default function Dashboard() {
-  const { user, refreshUser, lastRefresh } = useAuth();
+  const { user, refreshUser, lastRefresh, token } = useAuth();
   const [stats, setStats] = useState(null);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [exportingPdf, setExportingPdf] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -43,6 +44,33 @@ export default function Dashboard() {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleExportPdf = async () => {
+    setExportingPdf(true);
+    try {
+      const response = await axios.get(`${API}/stats/export-pdf`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob'
+      });
+      
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `worldautopro_releve_${new Date().toISOString().slice(0,10)}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('PDF téléchargé avec succès !');
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+      toast.error('Erreur lors de la génération du PDF');
+    } finally {
+      setExportingPdf(false);
     }
   };
 
