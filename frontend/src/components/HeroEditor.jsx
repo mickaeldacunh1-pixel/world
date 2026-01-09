@@ -49,6 +49,26 @@ const BUTTON_STYLE_OPTIONS = [
   { value: 'ghost', label: 'Transparent' },
 ];
 
+const BUTTON_SIZE_OPTIONS = [
+  { value: 'small', label: 'Petit' },
+  { value: 'medium', label: 'Moyen' },
+  { value: 'large', label: 'Grand' },
+];
+
+const BUTTON_RADIUS_OPTIONS = [
+  { value: 'none', label: 'Carré' },
+  { value: 'small', label: 'Légèrement arrondi' },
+  { value: 'medium', label: 'Arrondi' },
+  { value: 'large', label: 'Très arrondi' },
+  { value: 'full', label: 'Pilule' },
+];
+
+const BUTTONS_LAYOUT_OPTIONS = [
+  { value: 'horizontal', label: 'Horizontal' },
+  { value: 'vertical', label: 'Vertical' },
+  { value: 'stacked', label: 'Empilé (mobile)' },
+];
+
 const GRADIENT_DIRECTION_OPTIONS = [
   { value: 'to-r', label: 'Gauche → Droite' },
   { value: 'to-l', label: 'Droite → Gauche' },
