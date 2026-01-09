@@ -12,6 +12,35 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-14',
+    date: '2026-01-09',
+    version: '4.2.0',
+    title: '📦 Intégration Boxtal & Nouvelles catégories',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '📦 Intégration Boxtal : calcul automatique des frais de livraison' },
+      { type: 'new', text: '🚚 Multi-transporteurs : Colissimo, Mondial Relay, Chronopost, DPD et plus' },
+      { type: 'new', text: '🔍 Catégorie "Recherche" : publiez ce que vous cherchez, les vendeurs vous contactent' },
+      { type: 'new', text: '⭐ Catégorie "Rare & Collection" : pièces vintage, collector et introuvables' },
+      { type: 'new', text: '🏷️ Génération d\'étiquettes d\'expédition directement depuis la plateforme' },
+      { type: 'improvement', text: '💬 Bouton Messages déplacé à droite du sélecteur de langue' },
+      { type: 'improvement', text: '📋 FAQ mise à jour avec les nouvelles catégories et Boxtal' },
+      { type: 'improvement', text: '📜 Mentions légales et Politique de retours mises à jour' },
+    ]
+  },
+  {
+    id: 'static-new-13',
+    date: '2026-01-09',
+    version: '4.1.0',
+    title: '🌍 Traductions page Nouveautés',
+    category: 'improvement',
+    items: [
+      { type: 'new', text: '🌍 Page Nouveautés entièrement traduite en 8 langues' },
+      { type: 'improvement', text: '📅 Dates formatées selon la langue de l\'utilisateur' },
+      { type: 'improvement', text: '🏷️ Labels et catégories traduits dynamiquement' },
+    ]
+  },
+  {
     id: 'static-new-12',
     date: '2026-01-09',
     version: '4.0.0',
