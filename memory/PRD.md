@@ -83,6 +83,29 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 - ✅ Renommage "World Auto" → "World Auto Pro" (SEO, PWA, toutes pages)
 - ✅ Bug admin identity APIs (403 pour admin) corrigé
 - ✅ **Traduction page Nouveautés (Updates.jsx)** : Interface entièrement multilingue (8 langues : FR, EN, DE, ES, IT, NL, PT, SV) avec dates formatées selon la locale
+- ✅ **Bouton Messages déplacé** à droite du sélecteur de langue
+
+## Session du 2026-01-09 - Nouvelles fonctionnalités (suite)
+
+### Intégration Boxtal (v4.2.0)
+- ✅ **API Boxtal V3 intégrée** : calcul automatique des frais de livraison
+- ✅ Multi-transporteurs : Colissimo, Mondial Relay, Chronopost, DPD et plus
+- ✅ Mode production activé (clés API configurées dans .env)
+- ✅ Endpoints : `/api/boxtal/status`, `/api/boxtal/quotes`, `/api/boxtal/shipments`, `/api/boxtal/tracking/{num}`
+- ✅ Collections MongoDB : `shipping_quotes`, `shipments`
+
+### Nouvelles catégories
+- ✅ **"Recherche"** : Permet aux acheteurs de publier ce qu'ils cherchent
+- ✅ **"Rare & Collection"** : Pièces vintage, collector et introuvables
+- ✅ Ajoutées dans : Navbar, Home, CreateListing
+- ✅ Traduites dans les 8 langues
+
+### Mises à jour de contenu
+- ✅ **FAQ** : Nouvelles sections Boxtal/Livraison et Catégories spéciales
+- ✅ **Mentions légales** : Section partenaires (Stripe, Boxtal, Cloudinary)
+- ✅ **Politique de retours** : Commission min/max mise à jour
+- ✅ **Page Nouveautés** : v4.1.0 et v4.2.0 ajoutées
+- ✅ **Flyer** : "Boxtal et ses partenaires" au lieu de "Mondial Relay"
 
 ## Traductions i18n (toutes les pages)
 - ✅ Page Nouveautés (Updates.jsx) : Titre, sous-titre, légende, catégories, dates, CTA newsletter
