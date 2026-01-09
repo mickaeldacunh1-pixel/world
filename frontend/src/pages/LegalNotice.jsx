@@ -98,12 +98,12 @@ export default function LegalNotice() {
             <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
               <li><strong>Cookies essentiels :</strong> nécessaires au fonctionnement du site</li>
               <li><strong>Cookies analytiques :</strong> pour mesurer l'audience</li>
-              <li><strong>Cookies de préférence :</strong> pour mémoriser vos choix</li>
+              <li><strong>Cookies de préférence :</strong> pour mémoriser vos choix (langue, thème)</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-bold mb-4">6. Limitation de responsabilité</h2>
+            <h2 className="font-heading text-xl font-bold mb-4">7. Limitation de responsabilité</h2>
             <p className="text-muted-foreground leading-relaxed">
               World Auto Pro Pro s'efforce d'assurer l'exactitude des informations diffusées sur 
               ce site. Toutefois, elle ne peut garantir l'exactitude, la complétude et 
