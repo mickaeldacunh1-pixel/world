@@ -1358,7 +1358,7 @@ export default function AdminSettings() {
                       : '🖥️ Aperçu desktop'}
                   </p>
                   <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 font-medium">
-                    ⚠️ Modifications non publiées - Cliquez "Sauvegarder" pour appliquer
+                    ⚠️ Modifications non publiées - Cliquez sur Sauvegarder pour appliquer
                   </p>
                   <a 
                     href="/" 
