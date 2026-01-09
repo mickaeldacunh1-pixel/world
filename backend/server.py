@@ -501,6 +501,11 @@ def send_search_alert_email(user_email: str, user_name: str, alert: dict, listin
 app = FastAPI(title="World Auto Marketplace API")
 api_router = APIRouter(prefix="/api")
 
+# Import and setup radio routes
+from routes.radio import router as radio_router, set_db as set_radio_db
+set_radio_db(db)
+app.include_router(radio_router)
+
 # ================== MODELS ==================
 
 class UserCreate(BaseModel):
