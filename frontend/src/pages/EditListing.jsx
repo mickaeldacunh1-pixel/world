@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { ArrowLeft, Upload, X, ImagePlus, Loader2, Save } from 'lucide-react';
 import SEO from '../components/SEO';
+import CommissionSimulator from '../components/CommissionSimulator';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
