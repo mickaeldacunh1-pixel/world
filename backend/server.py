@@ -8877,7 +8877,7 @@ async def get_boxtal_token():
         if datetime.now() < boxtal_token_cache["expires_at"] - timedelta(minutes=5):
             return boxtal_token_cache["token"]
     
-    # Generate new token
+    # Generate new token using App ID, Access Key and Secret Key
     credentials = f"{BOXTAL_ACCESS_KEY}:{BOXTAL_SECRET_KEY}"
     encoded_credentials = base64.b64encode(credentials.encode()).decode()
     
@@ -8886,11 +8886,16 @@ async def get_boxtal_token():
         "Content-Type": "application/x-www-form-urlencoded"
     }
     
+    # Include app_id in the request if available
+    data = {"grant_type": "client_credentials"}
+    if BOXTAL_APP_ID:
+        data["app_id"] = BOXTAL_APP_ID
+    
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(
             f"{BOXTAL_API_URL}/v3/auth/token",
             headers=headers,
-            data={"grant_type": "client_credentials"}
+            data=data
         )
         
         if response.status_code != 200:
