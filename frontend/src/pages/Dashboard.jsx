@@ -167,6 +167,7 @@ export default function Dashboard() {
         <Tabs defaultValue="listings" className="space-y-6">
           <TabsList>
             <TabsTrigger value="listings">Mes annonces</TabsTrigger>
+            <TabsTrigger value="sales">💰 Ventes</TabsTrigger>
             <TabsTrigger value="stats">Statistiques</TabsTrigger>
           </TabsList>
 
