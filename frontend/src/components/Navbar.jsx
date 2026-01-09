@@ -103,7 +103,7 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2 shrink-0" data-testid="logo-link">
             <WorldAutoLogo className="w-8 h-8 sm:w-10 sm:h-10" />
             <span className="font-heading font-bold text-base sm:text-xl text-primary whitespace-nowrap">
-              World Auto <span className="hidden sm:inline"><FranceText /></span>
+              World Auto Pro
             </span>
           </Link>
 
