@@ -25,6 +25,66 @@ const CATEGORY_LABELS = {
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-12',
+    date: '2026-01-09',
+    version: '4.0.0',
+    title: '🚀 Tableau de bord Ventes & Export PDF',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '💰 Onglet "Ventes" dans le tableau de bord vendeur' },
+      { type: 'new', text: '📊 Statistiques mensuelles : ventes, revenus bruts, commission, revenus nets' },
+      { type: 'new', text: '📈 Graphique d\'évolution des revenus sur 6 mois' },
+      { type: 'new', text: '📄 Export PDF comptabilité : téléchargez un relevé complet de vos ventes' },
+      { type: 'new', text: '🧮 Simulateur de commission : voyez en temps réel combien vous recevrez' },
+      { type: 'improvement', text: '💡 Explication détaillée de la formule de commission' },
+    ]
+  },
+  {
+    id: 'static-new-11',
+    date: '2026-01-09',
+    version: '3.9.0',
+    title: '💸 Commission hybride optimisée',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '📐 Nouvelle formule : 5% avec minimum 1,50€ et maximum 15€' },
+      { type: 'new', text: '🎯 Économies sur les grosses ventes (plafond à 15€)' },
+      { type: 'new', text: '⚖️ Équité sur les petites pièces (minimum 1,50€)' },
+      { type: 'new', text: '🔢 API /commission/calculate pour simuler' },
+      { type: 'improvement', text: '📝 FAQ et profil mis à jour avec la nouvelle formule' },
+    ]
+  },
+  {
+    id: 'static-new-10',
+    date: '2026-01-09',
+    version: '3.8.0',
+    title: '📸 Stories Vendeurs & Vérification d\'identité',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '📷 Stories vendeurs : partagez photos et vidéos éphémères (24h)' },
+      { type: 'new', text: '🎬 Page dédiée /stories avec statistiques et création' },
+      { type: 'new', text: '📱 Bouton Stories (icône caméra) dans la barre de navigation' },
+      { type: 'new', text: '✅ Vérification d\'identité : obtenez le badge "Vérifié"' },
+      { type: 'new', text: '🛡️ Interface admin pour approuver/rejeter les vérifications' },
+      { type: 'improvement', text: '🔔 Section Stories sur la page d\'accueil' },
+      { type: 'improvement', text: '🌐 Sélecteur de langue déplacé à droite du panier' },
+    ]
+  },
+  {
+    id: 'static-new-9',
+    date: '2026-01-09',
+    version: '3.7.0',
+    title: '🔔 Notifications Push',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '📲 Notifications push natives dans le navigateur' },
+      { type: 'new', text: '💬 Alertes pour les nouveaux messages' },
+      { type: 'new', text: '🛒 Alertes pour les nouvelles commandes' },
+      { type: 'new', text: '⚙️ Préférences personnalisables par type de notification' },
+      { type: 'new', text: '🧪 Bouton de test pour vérifier le fonctionnement' },
+      { type: 'improvement', text: '🔐 Clés VAPID sécurisées pour l\'envoi des notifications' },
+    ]
+  },
+  {
     id: 'static-new-8',
     date: '2026-01-08',
     version: '3.6.0',
