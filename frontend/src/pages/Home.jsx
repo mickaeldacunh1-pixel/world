@@ -619,7 +619,7 @@ export default function Home() {
                   <span className="text-white/90 text-sm font-medium">{t('nav.loyalty', 'Fidélité')}</span>
                 </div>
               </Link>
-              <Link to="/kim-assistant" className="group">
+              <Link to="/kim-agent" className="group">
                 <div className="flex items-center gap-2 bg-white/10 hover:bg-blue-500/30 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 hover:border-blue-400/50 transition-all">
                   <Sparkles className="w-4 h-4 text-blue-400" />
                   <span className="text-white/90 text-sm font-medium">KIM Agent</span>
