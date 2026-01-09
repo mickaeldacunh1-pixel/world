@@ -2514,6 +2514,138 @@ export default function AdminSettings() {
           <TabsContent value="coupons" className="space-y-6">
             <CouponsManager token={token} />
           </TabsContent>
+
+          {/* Identity Verification Tab */}
+          <TabsContent value="identity" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="w-5 h-5" />
+                  Vérifications d'identité en attente
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loadingVerifications ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                ) : pendingVerifications.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <ShieldCheck className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>Aucune vérification en attente</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {pendingVerifications.map((verification) => (
+                      <div 
+                        key={verification.user_id} 
+                        className="border rounded-lg p-4 space-y-4"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
+                              <User className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold">{verification.user_name}</h4>
+                              <p className="text-sm text-muted-foreground">{verification.user_email}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Clock className="w-4 h-4" />
+                            {new Date(verification.submitted_at).toLocaleDateString('fr-FR', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-3 gap-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm flex items-center gap-1">
+                              <FileText className="w-4 h-4" />
+                              Pièce d'identité (recto)
+                            </Label>
+                            <a 
+                              href={verification.id_front_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="block"
+                            >
+                              <img 
+                                src={verification.id_front_url} 
+                                alt="ID Front" 
+                                className="w-full h-32 object-cover rounded-lg border hover:opacity-80 transition-opacity cursor-pointer"
+                              />
+                            </a>
+                          </div>
+                          {verification.id_back_url && (
+                            <div className="space-y-2">
+                              <Label className="text-sm flex items-center gap-1">
+                                <FileText className="w-4 h-4" />
+                                Pièce d'identité (verso)
+                              </Label>
+                              <a 
+                                href={verification.id_back_url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="block"
+                              >
+                                <img 
+                                  src={verification.id_back_url} 
+                                  alt="ID Back" 
+                                  className="w-full h-32 object-cover rounded-lg border hover:opacity-80 transition-opacity cursor-pointer"
+                                />
+                              </a>
+                            </div>
+                          )}
+                          <div className="space-y-2">
+                            <Label className="text-sm flex items-center gap-1">
+                              <User className="w-4 h-4" />
+                              Selfie avec pièce
+                            </Label>
+                            <a 
+                              href={verification.selfie_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="block"
+                            >
+                              <img 
+                                src={verification.selfie_url} 
+                                alt="Selfie" 
+                                className="w-full h-32 object-cover rounded-lg border hover:opacity-80 transition-opacity cursor-pointer"
+                              />
+                            </a>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3 pt-4 border-t">
+                          <Button 
+                            onClick={() => handleApproveIdentity(verification.user_id)}
+                            className="flex-1 bg-green-600 hover:bg-green-700"
+                          >
+                            <ShieldCheck className="w-4 h-4 mr-2" />
+                            Approuver
+                          </Button>
+                          <Button 
+                            variant="destructive"
+                            onClick={() => handleRejectIdentity(verification.user_id, 'Documents non conformes')}
+                            className="flex-1"
+                          >
+                            <XCircle className="w-4 h-4 mr-2" />
+                            Refuser
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         {/* Bottom Actions */}
