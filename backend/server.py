@@ -5114,6 +5114,28 @@ def calculate_platform_fee(amount: float) -> float:
     fee = min(fee, PLATFORM_COMMISSION_MAX)  # Appliquer le maximum
     return round(fee, 2)
 
+@api_router.get("/commission/calculate")
+async def calculate_commission(amount: float):
+    """
+    Calculer la commission pour un montant donné.
+    Formule: 5% avec minimum 1.50€ et maximum 15€
+    """
+    if amount <= 0:
+        raise HTTPException(status_code=400, detail="Le montant doit être positif")
+    
+    fee = calculate_platform_fee(amount)
+    seller_receives = round(amount - fee, 2)
+    
+    return {
+        "amount": amount,
+        "commission_percent": PLATFORM_COMMISSION_PERCENT,
+        "commission_min": PLATFORM_COMMISSION_MIN,
+        "commission_max": PLATFORM_COMMISSION_MAX,
+        "commission": fee,
+        "seller_receives": seller_receives,
+        "formula": f"5% (min {PLATFORM_COMMISSION_MIN}€, max {PLATFORM_COMMISSION_MAX}€)"
+    }
+
 @api_router.post("/stripe/connect/onboard")
 async def create_connect_account(request: Request, current_user: dict = Depends(get_current_user)):
     """Créer un compte Stripe Express pour un vendeur et retourner l'URL d'onboarding"""
