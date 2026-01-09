@@ -1360,6 +1360,15 @@ export default function AdminSettings() {
                   <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 font-medium">
                     ⚠️ Modifications non publiées - Cliquez "Sauvegarder" pour appliquer
                   </p>
+                  <a 
+                    href="/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-accent hover:underline mt-2"
+                  >
+                    <Eye className="w-3 h-3" />
+                    Voir le site actuel (dans un nouvel onglet)
+                  </a>
                 </div>
               </CardContent>
             </Card>
