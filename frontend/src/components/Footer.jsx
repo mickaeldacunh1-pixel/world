@@ -43,7 +43,7 @@ export default function Footer() {
           <div className="col-span-1 lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4 group">
               <WorldAutoLogo className="w-10 h-10 transition-transform group-hover:scale-110" />
-              <span className="font-heading font-bold text-xl">World Auto <FranceText /></span>
+              <span className="font-heading font-bold text-xl">World Auto Pro</span>
             </Link>
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-6">
               {t('footer.description')}
