@@ -290,6 +290,51 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
           {/* Boutons CTA */}
           <CollapsibleSection title="Boutons d'action" icon={MousePointer}>
             <div className="space-y-6">
+              {/* Options générales des boutons */}
+              <div className="p-4 border rounded-lg bg-secondary/30 space-y-4">
+                <Label className="font-bold">Options de disposition</Label>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-sm">Disposition</Label>
+                    <Select 
+                      value={settings.hero_buttons_layout || 'horizontal'} 
+                      onValueChange={(v) => updateSetting('hero_buttons_layout', v)}
+                    >
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {BUTTONS_LAYOUT_OPTIONS.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Alignement</Label>
+                    <Select 
+                      value={settings.hero_buttons_align || 'left'} 
+                      onValueChange={(v) => updateSetting('hero_buttons_align', v)}
+                    >
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {ALIGN_OPTIONS.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Espacement: {settings.hero_buttons_gap || 4}</Label>
+                    <Slider
+                      value={[parseInt(settings.hero_buttons_gap) || 4]}
+                      min={0}
+                      max={12}
+                      step={1}
+                      onValueChange={([v]) => updateSetting('hero_buttons_gap', v.toString())}
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* CTA 1 */}
               <div className="p-4 border rounded-lg space-y-4">
                 <div className="flex items-center justify-between">
@@ -300,44 +345,88 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
                   />
                 </div>
                 {settings.hero_cta1_enabled !== false && (
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Icône</Label>
-                      <Input
-                        value={settings.hero_cta1_icon || '📝'}
-                        onChange={(e) => updateSetting('hero_cta1_icon', e.target.value)}
-                        placeholder="📝"
-                      />
+                  <div className="space-y-4">
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Icône</Label>
+                        <Input
+                          value={settings.hero_cta1_icon || '📝'}
+                          onChange={(e) => updateSetting('hero_cta1_icon', e.target.value)}
+                          placeholder="📝"
+                        />
+                      </div>
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Texte</Label>
+                        <Input
+                          value={settings.hero_cta1_text || ''}
+                          onChange={(e) => updateSetting('hero_cta1_text', e.target.value)}
+                          placeholder="Déposer une annonce"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Texte</Label>
-                      <Input
-                        value={settings.hero_cta1_text || ''}
-                        onChange={(e) => updateSetting('hero_cta1_text', e.target.value)}
-                        placeholder="Déposer une annonce"
-                      />
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Lien</Label>
+                        <Input
+                          value={settings.hero_cta1_link || ''}
+                          onChange={(e) => updateSetting('hero_cta1_link', e.target.value)}
+                          placeholder="/deposer"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Style</Label>
+                        <Select 
+                          value={settings.hero_cta1_style || 'filled'} 
+                          onValueChange={(v) => updateSetting('hero_cta1_style', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_STYLE_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Taille</Label>
+                        <Select 
+                          value={settings.hero_cta1_size || 'medium'} 
+                          onValueChange={(v) => updateSetting('hero_cta1_size', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_SIZE_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Lien</Label>
-                      <Input
-                        value={settings.hero_cta1_link || ''}
-                        onChange={(e) => updateSetting('hero_cta1_link', e.target.value)}
-                        placeholder="/deposer"
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Arrondi</Label>
+                        <Select 
+                          value={settings.hero_cta1_border_radius || 'medium'} 
+                          onValueChange={(v) => updateSetting('hero_cta1_border_radius', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_RADIUS_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <ColorField 
+                        label="Couleur de fond"
+                        value={settings.hero_cta1_bg_color}
+                        onChange={(v) => updateSetting('hero_cta1_bg_color', v)}
                       />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Style</Label>
-                      <Select 
-                        value={settings.hero_cta1_style || 'filled'} 
-                        onValueChange={(v) => updateSetting('hero_cta1_style', v)}
-                      >
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {BUTTON_STYLE_OPTIONS.map(opt => (
-                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <ColorField 
+                        label="Couleur du texte"
+                        value={settings.hero_cta1_text_color}
+                        onChange={(v) => updateSetting('hero_cta1_text_color', v)}
+                      />
                     </div>
                   </div>
                 )}
@@ -353,44 +442,88 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
                   />
                 </div>
                 {settings.hero_cta2_enabled && (
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Icône</Label>
-                      <Input
-                        value={settings.hero_cta2_icon || '⚡'}
-                        onChange={(e) => updateSetting('hero_cta2_icon', e.target.value)}
-                        placeholder="⚡"
-                      />
+                  <div className="space-y-4">
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Icône</Label>
+                        <Input
+                          value={settings.hero_cta2_icon || '⚡'}
+                          onChange={(e) => updateSetting('hero_cta2_icon', e.target.value)}
+                          placeholder="⚡"
+                        />
+                      </div>
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Texte</Label>
+                        <Input
+                          value={settings.hero_cta2_text || ''}
+                          onChange={(e) => updateSetting('hero_cta2_text', e.target.value)}
+                          placeholder="Enchères en direct"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Texte</Label>
-                      <Input
-                        value={settings.hero_cta2_text || ''}
-                        onChange={(e) => updateSetting('hero_cta2_text', e.target.value)}
-                        placeholder="Enchères en direct"
-                      />
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Lien</Label>
+                        <Input
+                          value={settings.hero_cta2_link || ''}
+                          onChange={(e) => updateSetting('hero_cta2_link', e.target.value)}
+                          placeholder="/encheres"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Style</Label>
+                        <Select 
+                          value={settings.hero_cta2_style || 'outline'} 
+                          onValueChange={(v) => updateSetting('hero_cta2_style', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_STYLE_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Taille</Label>
+                        <Select 
+                          value={settings.hero_cta2_size || 'medium'} 
+                          onValueChange={(v) => updateSetting('hero_cta2_size', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_SIZE_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Lien</Label>
-                      <Input
-                        value={settings.hero_cta2_link || ''}
-                        onChange={(e) => updateSetting('hero_cta2_link', e.target.value)}
-                        placeholder="/encheres"
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Arrondi</Label>
+                        <Select 
+                          value={settings.hero_cta2_border_radius || 'medium'} 
+                          onValueChange={(v) => updateSetting('hero_cta2_border_radius', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_RADIUS_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <ColorField 
+                        label="Couleur bordure"
+                        value={settings.hero_cta2_border_color}
+                        onChange={(v) => updateSetting('hero_cta2_border_color', v)}
                       />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Style</Label>
-                      <Select 
-                        value={settings.hero_cta2_style || 'outline'} 
-                        onValueChange={(v) => updateSetting('hero_cta2_style', v)}
-                      >
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {BUTTON_STYLE_OPTIONS.map(opt => (
-                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <ColorField 
+                        label="Couleur du texte"
+                        value={settings.hero_cta2_text_color}
+                        onChange={(v) => updateSetting('hero_cta2_text_color', v)}
+                      />
                     </div>
                   </div>
                 )}
