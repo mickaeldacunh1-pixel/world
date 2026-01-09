@@ -283,6 +283,18 @@ export default function Navbar() {
 
                 {/* Sélecteur de langue - à droite du panier */}
                 <LanguageSelector />
+
+                {/* Messages - à droite du sélecteur de langue */}
+                <Link to="/messages" className="hidden sm:flex" title="Messages">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <MessageSquare className="w-5 h-5" />
+                    {unreadMessages > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                        {unreadMessages}
+                      </span>
+                    )}
+                  </Button>
+                </Link>
               </>
             ) : (
               <>
