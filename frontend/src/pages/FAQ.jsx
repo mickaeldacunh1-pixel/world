@@ -269,6 +269,28 @@ const faqs = [
         a: "Lors de la création ou modification d'une annonce, un simulateur s'affiche automatiquement dès que vous entrez un prix. Il vous montre en temps réel la commission et le montant net que vous recevrez."
       }
     ]
+  },
+  {
+    category: "Catégories spéciales",
+    icon: Package,
+    questions: [
+      {
+        q: "Qu'est-ce que la catégorie \"Recherche\" ?",
+        a: "La catégorie \"Recherche\" permet aux acheteurs de publier une annonce pour une pièce qu'ils recherchent. Si vous ne trouvez pas la pièce qu'il vous faut, créez une annonce \"Recherche\" et les vendeurs pourront vous contacter directement avec des offres."
+      },
+      {
+        q: "Qu'est-ce que \"Rare & Collection\" ?",
+        a: "Cette catégorie est dédiée aux pièces rares, vintage, de collection ou introuvables. Parfait pour les voitures anciennes, les pièces de prestige, les éditions limitées ou les véhicules historiques. Les collectionneurs y trouvent des pièces exceptionnelles."
+      },
+      {
+        q: "Comment publier une annonce \"Recherche\" ?",
+        a: "Créez une annonce normalement, mais choisissez la catégorie \"Recherche\". Décrivez précisément la pièce recherchée (marque, modèle, année, état souhaité) et votre budget maximum. Les vendeurs pourront vous contacter avec leurs offres."
+      },
+      {
+        q: "Comment certifier une pièce rare ou de collection ?",
+        a: "Pour les pièces de collection, nous vous conseillons d'ajouter un maximum de preuves : photos détaillées, documents d'origine, certificats d'authenticité si disponibles. La vérification d'identité vendeur est fortement recommandée pour ce type de pièces."
+      }
+    ]
   }
 ];
 
