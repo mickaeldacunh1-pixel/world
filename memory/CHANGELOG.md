@@ -4,6 +4,24 @@ Toutes les modifications notables du projet sont documentées ici.
 
 ---
 
+## [4.4.0] - 2026-01-09
+### Ajouté
+- 🤖 **KIM Agent PWA** : Assistant IA automobile
+  - Application accessible à `/kim-agent/`
+  - Interface de chat moderne avec dark mode
+  - Réponses IA pour diagnostic, recherche de pièces, conseils
+  - Installation PWA possible sur mobile et desktop
+  - Service Worker pour fonctionnement offline partiel
+  - Quick actions : Trouver une pièce, Diagnostic, Estimation
+- 📱 **Page de présentation KIM Agent** : `/kim-assistant`
+  - Instructions d'installation (PWA, Desktop, Web)
+  - FAQ intégrée
+- 🗞️ **Bannière Nouveautés** : Section visible en haut de la page d'accueil
+  - Lien direct vers `/nouveautes`
+  - Traductions dans 8 langues
+
+---
+
 ## [4.3.0] - 2026-01-09
 ### Ajouté
 - 💰 **Marge sur frais de port** : Pourcentage configurable (défaut 15%)
