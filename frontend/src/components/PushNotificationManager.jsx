@@ -8,8 +8,8 @@ import axios from 'axios';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
-// VAPID public key - you need to generate this
-const VAPID_PUBLIC_KEY = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
+// VAPID public key for push notifications
+const VAPID_PUBLIC_KEY = 'BIxxmJB62n-wotBH8okwq-VL4yAzUeRwlxDYuNfoNh95WItnqjTPhjEnTJfLzZKDy0aQiF2IDKxguGuMLqi__yw';
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
