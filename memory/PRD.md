@@ -149,6 +149,8 @@ docker restart worldauto-backend
 - `story_views` : Vues des stories (story_id, user_id)
 - `identity_verifications` : Demandes de vérification d'identité
 - `price_history` : Historique des changements de prix
+- `shipping_quotes` : Devis de livraison Boxtal
+- `shipments` : Expéditions créées via Boxtal
 
 ## Credentials Production
 - MongoDB: worldauto_admin / WA_Secure_2026!
