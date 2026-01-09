@@ -495,5 +495,68 @@
       "savings": "Économie"
     },
     "login_required": "Connectez-vous pour activer votre essai gratuit"
+  },
+  "stories": {
+    "title": "Stories Vendeurs",
+    "description": "Découvrez les dernières actualités de nos vendeurs",
+    "active_stories": "Stories actives",
+    "active_sellers": "Vendeurs actifs",
+    "lifetime": "Durée de vie",
+    "your_stories": "Vos stories",
+    "all_stories": "Toutes les stories",
+    "new_story": "Nouvelle story",
+    "share_update": "Partagez votre actualité",
+    "share_description": "Postez une photo ou vidéo pour promouvoir vos pièces (visible 24h)",
+    "add_caption": "Ajouter une légende...",
+    "publish": "Publier la story",
+    "publishing": "Publication...",
+    "no_stories": "Aucune story pour le moment",
+    "be_first": "Soyez le premier à partager votre actualité !",
+    "views": "vues",
+    "click_to_add": "Cliquez pour ajouter"
+  },
+  "sales": {
+    "title": "Ventes",
+    "monthly_sales": "Ventes ce mois",
+    "monthly_net": "Revenus nets ce mois",
+    "monthly_commission": "Commission ce mois",
+    "total_history": "Total historique",
+    "gross": "brut",
+    "after_commission": "Après commission",
+    "sales_count": "ventes",
+    "revenue_evolution": "Évolution des revenus (6 derniers mois)",
+    "no_sales": "Aucune vente pour le moment",
+    "stats_appear": "Vos statistiques de revenus apparaîtront ici après votre première vente",
+    "how_commission_works": "Comment fonctionne la commission ?",
+    "commission_explanation": "World Auto Pro prélève une commission de 5% sur chaque vente, avec un minimum de 1,50€ et un maximum de 15€.",
+    "export_accounting": "Export comptabilité",
+    "export_description": "Téléchargez un relevé PDF de toutes vos ventes pour votre comptabilité",
+    "download_pdf": "Télécharger PDF",
+    "generating": "Génération...",
+    "minimum": "minimum",
+    "maximum": "maximum"
+  },
+  "push": {
+    "title": "Notifications Push",
+    "enable": "Activer les notifications",
+    "disable": "Désactiver",
+    "test": "Tester les notifications",
+    "preferences": "Préférences de notification",
+    "messages": "Nouveaux messages",
+    "orders": "Nouvelles commandes",
+    "price_alerts": "Alertes de prix",
+    "promotions": "Promotions"
+  },
+  "identity": {
+    "title": "Vérification d'identité",
+    "verified": "Identité vérifiée",
+    "pending": "Vérification en cours",
+    "not_verified": "Non vérifié",
+    "submit": "Soumettre ma vérification",
+    "id_front": "Pièce d'identité (recto)",
+    "id_back": "Pièce d'identité (verso)",
+    "selfie": "Selfie avec pièce",
+    "why_verify": "Pourquoi vérifier mon identité ?",
+    "trust_badge": "Obtenez un badge de confiance sur votre profil"
   }
 }
