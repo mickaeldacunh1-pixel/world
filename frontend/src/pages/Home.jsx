@@ -34,6 +34,8 @@ const categories = [
   { slug: 'utilitaires', icon: Truck, image: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&h=400&fit=crop', count: 0, color: 'from-purple-500 to-pink-500' },
   { slug: 'engins', icon: Tractor, image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&h=400&fit=crop', count: 0, color: 'from-amber-600 to-yellow-500' },
   { slug: 'accessoires', icon: Settings, image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&h=400&fit=crop', count: 0, color: 'from-slate-500 to-gray-600' },
+  { slug: 'recherche', icon: Search, image: 'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=600&h=400&fit=crop', count: 0, color: 'from-cyan-500 to-blue-500' },
+  { slug: 'rare', icon: Star, image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&h=400&fit=crop', count: 0, color: 'from-yellow-500 to-amber-600' },
 ];
 
 const DEFAULT_HERO = {
