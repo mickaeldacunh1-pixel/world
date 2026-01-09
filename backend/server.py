@@ -9291,17 +9291,69 @@ async def get_user_shipments(current_user: dict = Depends(get_current_user)):
     
     return shipments
 
+@app.get("/api/admin/boxtal/config")
+async def get_boxtal_config(current_user: dict = Depends(get_current_user)):
+    """Get Boxtal configuration (admin only)"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    return {
+        "mode": BOXTAL_MODE,
+        "margin_percent": BOXTAL_MARGIN_PERCENT,
+        "configured": bool(BOXTAL_ACCESS_KEY and BOXTAL_SECRET_KEY)
+    }
+
+@app.put("/api/admin/boxtal/margin")
+async def update_boxtal_margin(data: dict, current_user: dict = Depends(get_current_user)):
+    """Update shipping margin percentage (admin only)"""
+    global BOXTAL_MARGIN_PERCENT
+    
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    new_margin = data.get("margin_percent")
+    if new_margin is None or not isinstance(new_margin, (int, float)):
+        raise HTTPException(status_code=400, detail="margin_percent is required and must be a number")
+    
+    if new_margin < 0 or new_margin > 100:
+        raise HTTPException(status_code=400, detail="margin_percent must be between 0 and 100")
+    
+    BOXTAL_MARGIN_PERCENT = float(new_margin)
+    
+    # Save to database for persistence
+    await db.site_settings.update_one(
+        {"setting_type": "boxtal"},
+        {"$set": {"margin_percent": BOXTAL_MARGIN_PERCENT, "updated_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True
+    )
+    
+    logger.info(f"📦 Boxtal margin updated to {BOXTAL_MARGIN_PERCENT}%")
+    
+    return {
+        "success": True,
+        "margin_percent": BOXTAL_MARGIN_PERCENT,
+        "message": f"Marge mise à jour à {BOXTAL_MARGIN_PERCENT}%"
+    }
+
 @app.on_event("startup")
 async def startup_event():
     """Démarrer les tâches planifiées au lancement de l'application"""
+    global BOXTAL_MARGIN_PERCENT
+    
     logger.info("🚀 Démarrage des tâches planifiées...")
     # Lancer le scheduler de relance panier en arrière-plan
     asyncio.create_task(process_abandoned_cart_reminders())
     logger.info("✅ Scheduler de relance panier abandonné activé")
     
+    # Load Boxtal margin from database if exists
+    boxtal_settings = await db.site_settings.find_one({"setting_type": "boxtal"})
+    if boxtal_settings and "margin_percent" in boxtal_settings:
+        BOXTAL_MARGIN_PERCENT = float(boxtal_settings["margin_percent"])
+        logger.info(f"📦 Marge Boxtal chargée depuis la base: {BOXTAL_MARGIN_PERCENT}%")
+    
     # Log Boxtal configuration
     if BOXTAL_ACCESS_KEY and BOXTAL_SECRET_KEY:
-        logger.info(f"📦 Boxtal API configuré - Mode: {BOXTAL_MODE}")
+        logger.info(f"📦 Boxtal API configuré - Mode: {BOXTAL_MODE}, Marge: {BOXTAL_MARGIN_PERCENT}%")
     else:
         logger.warning("⚠️ Boxtal API non configuré (clés manquantes)")
 
