@@ -39,8 +39,8 @@ const faqs = [
         a: "Notre système de paiement sécurisé (escrow) protège acheteurs et vendeurs. Quand vous cliquez sur \"Acheter maintenant\", l'argent est bloqué sur un compte sécurisé Stripe. Le vendeur n'est payé que lorsque vous confirmez avoir reçu l'article en bon état. En cas de problème, nous intervenons pour trouver une solution."
       },
       {
-        q: "Quelle est la commission prélevée par World Auto Pro Pro ?",
-        a: "World Auto Pro Pro prélève une commission de 5% sur chaque vente effectuée via le paiement sécurisé. Cette commission est uniquement à la charge du vendeur. L'acheteur paie le prix affiché + les frais de livraison."
+        q: "Quelle est la commission prélevée par World Auto Pro ?",
+        a: "World Auto Pro prélève une commission de 5% sur chaque vente (minimum 1,50€, maximum 15€). Par exemple : pour une pièce à 20€, la commission est de 1,50€ ; pour 100€, elle est de 5€ ; pour 500€, elle est plafonnée à 15€. Cette commission est uniquement à la charge du vendeur."
       },
       {
         q: "Comment un vendeur peut-il recevoir des paiements ?",
