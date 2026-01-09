@@ -963,6 +963,10 @@ export default function AdminSettings() {
               <Ticket className="w-4 h-4" />
               <span className="hidden sm:inline">Coupons</span>
             </TabsTrigger>
+            <TabsTrigger value="identity" className="flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              <span className="hidden sm:inline">Vérifications</span>
+            </TabsTrigger>
           </TabsList>
 
           {/* Hero Tab */}
