@@ -135,11 +135,12 @@ docker restart worldauto-backend
 
 ## Backlog
 ### P1
-- Intégration API Colissimo (en attente clés)
-- Intégration API SIV (en attente décision)
+- ⏳ Intégration API SIV (en attente décision utilisateur)
+- ⏸️ Upload d'images pour vignettes de sous-catégories (tâche 5)
 
 ### P2
 - Interface admin pour gérer les crédits en attente
+- Intégration eBay (reportée - pas de compte développeur)
 
 ## Collections MongoDB ajoutées
 - `push_subscriptions` : Abonnements push (user_id, subscription, preferences)
