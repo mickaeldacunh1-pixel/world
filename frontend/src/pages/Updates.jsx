@@ -4,24 +4,10 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { Rocket, Wrench, Bug, Sparkles, ArrowLeft, Calendar, Image, Loader2 } from 'lucide-react';
+import { Rocket, Wrench, Bug, Sparkles, ArrowLeft, Calendar, Loader2 } from 'lucide-react';
 import SEO from '../components/SEO';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
-const UPDATE_TYPES = {
-  new: { label: 'Nouveau', icon: Rocket, color: 'bg-green-500' },
-  improvement: { label: 'Amélioration', icon: Sparkles, color: 'bg-blue-500' },
-  fix: { label: 'Correction', icon: Bug, color: 'bg-orange-500' },
-  maintenance: { label: 'Maintenance', icon: Wrench, color: 'bg-gray-500' },
-};
-
-const CATEGORY_LABELS = {
-  general: 'Général',
-  feature: 'Fonctionnalité',
-  security: 'Sécurité',
-  performance: 'Performance',
-};
 
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
@@ -371,8 +357,25 @@ const STATIC_UPDATES = [
 ];
 
 export default function Updates() {
+  const { t, i18n } = useTranslation();
   const [updates, setUpdates] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Translated update types
+  const UPDATE_TYPES = {
+    new: { label: t('updates.type_new'), icon: Rocket, color: 'bg-green-500' },
+    improvement: { label: t('updates.type_improvement'), icon: Sparkles, color: 'bg-blue-500' },
+    fix: { label: t('updates.type_fix'), icon: Bug, color: 'bg-orange-500' },
+    maintenance: { label: t('updates.type_maintenance'), icon: Wrench, color: 'bg-gray-500' },
+  };
+
+  // Translated category labels
+  const CATEGORY_LABELS = {
+    general: t('updates.cat_general'),
+    feature: t('updates.cat_feature'),
+    security: t('updates.cat_security'),
+    performance: t('updates.cat_performance'),
+  };
 
   useEffect(() => {
     fetchUpdates();
@@ -403,7 +406,14 @@ export default function Updates() {
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('fr-FR', { 
+    const locale = i18n.language === 'fr' ? 'fr-FR' : 
+                   i18n.language === 'de' ? 'de-DE' :
+                   i18n.language === 'es' ? 'es-ES' :
+                   i18n.language === 'it' ? 'it-IT' :
+                   i18n.language === 'nl' ? 'nl-NL' :
+                   i18n.language === 'pt' ? 'pt-PT' :
+                   i18n.language === 'sv' ? 'sv-SE' : 'en-US';
+    return date.toLocaleDateString(locale, { 
       day: 'numeric', 
       month: 'long', 
       year: 'numeric' 
@@ -421,8 +431,8 @@ export default function Updates() {
   return (
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
-        title="Nouveautés et mises à jour"
-        description="Découvrez les dernières fonctionnalités et améliorations de World Auto Pro Pro. Nous améliorons constamment notre plateforme pour vous offrir la meilleure expérience."
+        title={t('updates.seo_title')}
+        description={t('updates.seo_description')}
       />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -430,14 +440,14 @@ export default function Updates() {
         <div className="mb-8">
           <Link to="/" className="text-muted-foreground hover:text-foreground flex items-center gap-2 mb-4">
             <ArrowLeft className="w-4 h-4" />
-            Retour à l'accueil
+            {t('updates.back_home')}
           </Link>
           <h1 className="font-heading text-3xl md:text-4xl font-bold flex items-center gap-3">
             <Sparkles className="w-8 h-8 text-accent" />
-            Nouveautés
+            {t('updates.title')}
           </h1>
           <p className="text-muted-foreground mt-2">
-            Découvrez les dernières fonctionnalités et améliorations de World Auto Pro Pro
+            {t('updates.subtitle')}
           </p>
         </div>
 
@@ -459,7 +469,7 @@ export default function Updates() {
               {index === 0 && (
                 <div className="absolute top-0 right-0">
                   <Badge className="rounded-none rounded-bl-lg bg-accent">
-                    Dernière version
+                    {t('updates.latest_version')}
                   </Badge>
                 </div>
               )}
@@ -518,16 +528,16 @@ export default function Updates() {
         <Card className="mt-8 bg-primary text-primary-foreground">
           <CardContent className="p-6 text-center">
             <h3 className="font-heading text-xl font-bold mb-2">
-              Restez informé des nouveautés !
+              {t('updates.newsletter_title')}
             </h3>
             <p className="text-primary-foreground/70 mb-4">
-              Inscrivez-vous à notre newsletter pour recevoir les dernières actualités.
+              {t('updates.newsletter_desc')}
             </p>
             <Link 
               to="/newsletter" 
               className="inline-block bg-accent hover:bg-accent/90 text-white px-6 py-2 rounded-lg font-medium transition-colors"
             >
-              S'inscrire à la newsletter
+              {t('updates.newsletter_cta')}
             </Link>
           </CardContent>
         </Card>
