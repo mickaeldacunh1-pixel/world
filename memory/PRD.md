@@ -48,6 +48,12 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
   - Sélecteur de langue déplacé à droite du panier
   - Bouton Stories ajouté entre Messages et Profil
 
+- ✅ **Commission hybride optimisée** :
+  - Formule : 5% avec minimum 1,50€ et maximum 15€
+  - API /api/commission/calculate pour simuler
+  - Appliquée aux ventes Stripe et enchères
+  - Documentation mise à jour (FAQ, Profil)
+
 ### Session précédente
 - ✅ **Lecteur Radio Configurable** : 14 stations françaises, gestion depuis l'admin
 - ✅ **Crédits en attente** : Pré-distribuer des crédits avant inscription (prospection)
