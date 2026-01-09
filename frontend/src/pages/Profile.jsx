@@ -416,7 +416,8 @@ export default function Profile() {
           </TabsContent>
 
           {/* Notifications Tab */}
-          <TabsContent value="notifications">
+          <TabsContent value="notifications" className="space-y-6">
+            <PushNotificationManager token={token} />
             <NotificationSettings />
           </TabsContent>
 
