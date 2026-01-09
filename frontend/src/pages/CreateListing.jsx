@@ -21,6 +21,8 @@ const categories = [
   { value: 'utilitaires', label: 'Utilitaires' },
   { value: 'engins', label: 'Engins' },
   { value: 'accessoires', label: 'Accessoires' },
+  { value: 'recherche', label: 'Recherche (je cherche une pièce)' },
+  { value: 'rare', label: 'Rare & Collection' },
 ];
 
 const conditions = [
