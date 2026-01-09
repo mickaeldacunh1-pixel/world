@@ -2521,7 +2521,7 @@ export default function AdminSettings() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="w-5 h-5" />
-                  Vérifications d'identité en attente
+                  Vérifications d&apos;identité en attente
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -2567,7 +2567,7 @@ export default function AdminSettings() {
                           <div className="space-y-2">
                             <Label className="text-sm flex items-center gap-1">
                               <FileText className="w-4 h-4" />
-                              Pièce d'identité (recto)
+                              Pièce d&apos;identité (recto)
                             </Label>
                             <a 
                               href={verification.id_front_url} 
@@ -2586,7 +2586,7 @@ export default function AdminSettings() {
                             <div className="space-y-2">
                               <Label className="text-sm flex items-center gap-1">
                                 <FileText className="w-4 h-4" />
-                                Pièce d'identité (verso)
+                                Pièce d&apos;identité (verso)
                               </Label>
                               <a 
                                 href={verification.id_back_url} 
