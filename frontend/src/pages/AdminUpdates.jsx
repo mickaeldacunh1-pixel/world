@@ -640,7 +640,7 @@ export default function AdminUpdates() {
                     <Input
                       value={newsletterForm.subject}
                       onChange={(e) => setNewsletterForm(prev => ({ ...prev, subject: e.target.value }))}
-                      placeholder="ex: Les nouveautés de la semaine sur World Auto France"
+                      placeholder="ex: Les nouveautés de la semaine sur World Auto Pro Pro"
                       required
                     />
                   </div>

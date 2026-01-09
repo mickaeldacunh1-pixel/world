@@ -245,7 +245,7 @@ export default function EditListing() {
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO 
         title="Modifier mon annonce"
-        description="Modifiez votre annonce sur World Auto France"
+        description="Modifiez votre annonce sur World Auto Pro Pro"
         noindex={true}
       />
       

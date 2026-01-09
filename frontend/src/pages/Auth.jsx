@@ -218,7 +218,7 @@ export default function Auth() {
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
             <WorldAutoLogo className="w-12 h-12" />
-            <span className="font-heading font-bold text-2xl">World Auto <FranceText /></span>
+            <span className="font-heading font-bold text-2xl">World Auto Pro <FranceText /></span>
           </Link>
         </div>
 
@@ -230,7 +230,7 @@ export default function Auth() {
             <CardDescription>
               {activeTab === 'login' 
                 ? 'Connectez-vous à votre compte'
-                : 'Rejoignez la communauté World Auto France'
+                : 'Rejoignez la communauté World Auto Pro Pro'
               }
             </CardDescription>
           </CardHeader>

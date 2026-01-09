@@ -46,7 +46,7 @@ export default function Newsletter() {
       <div className="min-h-screen bg-secondary/30 py-12">
         <SEO
           title="Newsletter - Inscription confirmée"
-          description="Merci pour votre inscription à la newsletter World Auto France"
+          description="Merci pour votre inscription à la newsletter World Auto Pro Pro"
           noindex={true}
         />
         <div className="max-w-md mx-auto px-4">
@@ -71,7 +71,7 @@ export default function Newsletter() {
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
         title="Newsletter - Restez informé"
-        description="Inscrivez-vous à la newsletter World Auto France pour recevoir les dernières annonces, promotions et actualités de la marketplace automobile."
+        description="Inscrivez-vous à la newsletter World Auto Pro Pro pour recevoir les dernières annonces, promotions et actualités de la marketplace automobile."
       />
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">

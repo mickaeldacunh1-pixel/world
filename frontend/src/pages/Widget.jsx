@@ -134,7 +134,7 @@ export default function Widget() {
           rel="noopener noreferrer"
           className="text-orange-500 hover:underline"
         >
-          World Auto France
+          World Auto Pro Pro
         </a>
       </div>
     </div>

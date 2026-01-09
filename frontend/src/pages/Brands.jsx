@@ -81,7 +81,7 @@ export default function Brands() {
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
         title="Toutes les marques automobiles"
-        description="Découvrez toutes les marques automobiles disponibles sur World Auto France. Pièces détachées et véhicules pour Renault, Peugeot, BMW, Mercedes, Audi et plus."
+        description="Découvrez toutes les marques automobiles disponibles sur World Auto Pro Pro. Pièces détachées et véhicules pour Renault, Peugeot, BMW, Mercedes, Audi et plus."
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

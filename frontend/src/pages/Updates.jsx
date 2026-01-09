@@ -120,7 +120,7 @@ const STATIC_UPDATES = [
     items: [
       { type: 'new', text: '🛡️ Certification "Pièce Vérifiée" : badges Or et Argent selon le score de confiance' },
       { type: 'new', text: '📋 Traçabilité des pièces : origine (casse, particulier, pro, neuf) et kilométrage véhicule' },
-      { type: 'new', text: '✅ Garantie World Auto : 3 mois (4.99€), 6 mois (7.99€) ou 12 mois (12.99€)' },
+      { type: 'new', text: '✅ Garantie World Auto Pro : 3 mois (4.99€), 6 mois (7.99€) ou 12 mois (12.99€)' },
       { type: 'new', text: '🎬 Limitation vidéo : 30s/30Mo gratuit, 2min/100Mo pour 1€' },
       { type: 'new', text: '📱 Partage réseaux sociaux : Facebook, WhatsApp, Twitter, Email, Copier le lien' },
       { type: 'new', text: '🔔 Notifications push : alertes en temps réel pour messages, commandes, avis' },
@@ -251,7 +251,7 @@ const STATIC_UPDATES = [
       { type: 'new', text: 'Email de confirmation automatique à chaque nouvelle annonce' },
       { type: 'new', text: 'Frais de port configurables dans les annonces' },
       { type: 'new', text: 'Page de modification des annonces' },
-      { type: 'improvement', text: 'Nom du site mis à jour : World Auto France' },
+      { type: 'improvement', text: 'Nom du site mis à jour : World Auto Pro Pro' },
     ]
   },
   {
@@ -295,7 +295,7 @@ const STATIC_UPDATES = [
     id: 'static-6',
     date: '2025-12-15',
     version: '2.0.0',
-    title: 'Lancement World Auto France',
+    title: 'Lancement World Auto Pro Pro',
     category: 'general',
     items: [
       { type: 'new', text: 'Marketplace de pièces détachées automobiles' },
@@ -361,7 +361,7 @@ export default function Updates() {
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
         title="Nouveautés et mises à jour"
-        description="Découvrez les dernières fonctionnalités et améliorations de World Auto France. Nous améliorons constamment notre plateforme pour vous offrir la meilleure expérience."
+        description="Découvrez les dernières fonctionnalités et améliorations de World Auto Pro Pro. Nous améliorons constamment notre plateforme pour vous offrir la meilleure expérience."
       />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -376,7 +376,7 @@ export default function Updates() {
             Nouveautés
           </h1>
           <p className="text-muted-foreground mt-2">
-            Découvrez les dernières fonctionnalités et améliorations de World Auto France
+            Découvrez les dernières fonctionnalités et améliorations de World Auto Pro Pro
           </p>
         </div>
 

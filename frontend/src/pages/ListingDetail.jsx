@@ -721,7 +721,7 @@ export default function ListingDetail() {
                       <Shield className="w-8 h-8 text-green-500" />
                       <div>
                         <p className="font-medium text-green-700 dark:text-green-400">
-                          Garantie World Auto - {listing.warranty_duration} mois
+                          Garantie World Auto Pro - {listing.warranty_duration} mois
                         </p>
                         <p className="text-sm text-muted-foreground">
                           Expire le {new Date(listing.warranty_expires).toLocaleDateString('fr-FR')}
@@ -891,7 +891,7 @@ export default function ListingDetail() {
                   </DialogHeader>
                   <div className="space-y-4 mt-4">
                     <p className="text-sm text-muted-foreground">
-                      Aidez-nous à garder World Auto France sûr. Pourquoi signalez-vous cette annonce ?
+                      Aidez-nous à garder World Auto Pro Pro sûr. Pourquoi signalez-vous cette annonce ?
                     </p>
                     <div className="space-y-2">
                       {REPORT_REASONS.map((reason) => (

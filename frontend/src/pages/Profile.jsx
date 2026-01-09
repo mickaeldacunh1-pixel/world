@@ -195,7 +195,7 @@ export default function Profile() {
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
         title="Mon Profil"
-        description="Gérez votre compte World Auto France - Modifiez vos informations personnelles et paramètres de sécurité."
+        description="Gérez votre compte World Auto Pro Pro - Modifiez vos informations personnelles et paramètres de sécurité."
         url="/profil"
         noindex={true}
       />

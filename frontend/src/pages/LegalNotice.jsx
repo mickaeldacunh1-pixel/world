@@ -6,7 +6,7 @@ export default function LegalNotice() {
     <div className="min-h-screen bg-secondary/30 py-12">
       <SEO
         title="Mentions Légales"
-        description="Mentions légales de World Auto France. Informations sur l'éditeur, l'hébergement, la propriété intellectuelle et la politique de confidentialité."
+        description="Mentions légales de World Auto Pro Pro. Informations sur l'éditeur, l'hébergement, la propriété intellectuelle et la politique de confidentialité."
         keywords="mentions légales, RGPD, politique confidentialité, world auto"
         url="/mentions-legales"
       />
@@ -20,7 +20,7 @@ export default function LegalNotice() {
           <section>
             <h2 className="font-heading text-xl font-bold mb-4">1. Éditeur du site</h2>
             <div className="text-muted-foreground space-y-2">
-              <p><strong>Nom du site :</strong> World Auto France</p>
+              <p><strong>Nom du site :</strong> World Auto Pro Pro</p>
               <p><strong>URL :</strong> https://worldautofrance.com</p>
               <p><strong>Email :</strong> contact@worldautofrance.com</p>
               <p><strong>Statut :</strong> Plateforme de mise en relation</p>
@@ -40,7 +40,7 @@ export default function LegalNotice() {
             <h2 className="font-heading text-xl font-bold mb-4">3. Propriété intellectuelle</h2>
             <p className="text-muted-foreground leading-relaxed mb-3">
               L'ensemble du contenu de ce site (textes, images, vidéos, logos, icônes, 
-              sons, logiciels, etc.) est la propriété exclusive de World Auto France ou de ses 
+              sons, logiciels, etc.) est la propriété exclusive de World Auto Pro Pro ou de ses 
               partenaires et est protégé par les lois françaises et internationales 
               relatives à la propriété intellectuelle.
             </p>
@@ -89,9 +89,9 @@ export default function LegalNotice() {
           <section>
             <h2 className="font-heading text-xl font-bold mb-4">6. Limitation de responsabilité</h2>
             <p className="text-muted-foreground leading-relaxed">
-              World Auto France s'efforce d'assurer l'exactitude des informations diffusées sur 
+              World Auto Pro Pro s'efforce d'assurer l'exactitude des informations diffusées sur 
               ce site. Toutefois, elle ne peut garantir l'exactitude, la complétude et 
-              l'actualité des informations. World Auto France décline toute responsabilité pour 
+              l'actualité des informations. World Auto Pro Pro décline toute responsabilité pour 
               tout dommage résultant d'une intrusion frauduleuse d'un tiers ou de la 
               présence d'un virus informatique.
             </p>

@@ -39,7 +39,7 @@ const HERO_IMAGE_PRESETS = [
 
 // Palettes de couleurs rapides
 const COLOR_PRESETS = [
-  { name: "World Auto (défaut)", primary: "#1E3A5F", accent: "#F97316" },
+  { name: "World Auto Pro (défaut)", primary: "#1E3A5F", accent: "#F97316" },
   { name: "Bleu Premium", primary: "#1E40AF", accent: "#3B82F6" },
   { name: "Vert Nature", primary: "#166534", accent: "#22C55E" },
   { name: "Rouge Sport", primary: "#991B1B", accent: "#EF4444" },
@@ -652,7 +652,7 @@ const DEFAULT_SETTINGS = {
   banners: [],
   
   // Footer
-  footer_text: "World Auto Pro - La marketplace des pièces automobiles",
+  footer_text: "World Auto Pro Pro - La marketplace des pièces automobiles",
   footer_email: "contact@worldautofrance.com",
   footer_phone: "",
   footer_bg_color: "#1E3A5F",
@@ -666,13 +666,13 @@ const DEFAULT_SETTINGS = {
   footer_instagram_url: "",
   footer_twitter_url: "",
   footer_youtube_url: "",
-  footer_copyright_text: "© 2025 World Auto Pro. Tous droits réservés.",
+  footer_copyright_text: "© 2025 World Auto Pro Pro. Tous droits réservés.",
   footer_custom_links: [],
   
   // Navbar
   navbar_bg_color: "#FFFFFF",
   navbar_text_color: "#0F172A",
-  navbar_logo_text: "World Auto Pro",
+  navbar_logo_text: "World Auto Pro Pro",
   navbar_show_categories_dropdown: true,
   navbar_show_tarifs_link: true,
   navbar_show_dark_mode_toggle: true,
@@ -681,7 +681,7 @@ const DEFAULT_SETTINGS = {
   navbar_custom_links: [],
   
   // SEO
-  site_title: "World Auto Pro",
+  site_title: "World Auto Pro Pro",
   site_description: "Marketplace de pièces détachées automobiles - Achetez et vendez des pièces, voitures, motos et utilitaires",
   
   // Features toggles
@@ -1743,7 +1743,7 @@ export default function AdminSettings() {
                       <Textarea
                         value={settings.footer_text}
                         onChange={(e) => setSettings({...settings, footer_text: e.target.value})}
-                        placeholder="World Auto France - La marketplace..."
+                        placeholder="World Auto Pro Pro - La marketplace..."
                         rows={2}
                       />
                     </div>
@@ -1752,7 +1752,7 @@ export default function AdminSettings() {
                       <Input
                         value={settings.footer_copyright_text}
                         onChange={(e) => setSettings({...settings, footer_copyright_text: e.target.value})}
-                        placeholder="© 2025 World Auto France. Tous droits réservés."
+                        placeholder="© 2025 World Auto Pro Pro. Tous droits réservés."
                       />
                     </div>
                   </div>
@@ -2401,7 +2401,7 @@ export default function AdminSettings() {
                     <Input
                       value={settings.site_title}
                       onChange={(e) => setSettings({...settings, site_title: e.target.value})}
-                      placeholder="World Auto France"
+                      placeholder="World Auto Pro Pro"
                     />
                   </div>
                   <div className="space-y-2">
@@ -2419,7 +2419,7 @@ export default function AdminSettings() {
                   <Input
                     value={settings.footer_text}
                     onChange={(e) => setSettings({...settings, footer_text: e.target.value})}
-                    placeholder="World Auto France - ..."
+                    placeholder="World Auto Pro Pro - ..."
                   />
                 </div>
                 

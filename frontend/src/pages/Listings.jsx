@@ -253,7 +253,7 @@ export default function Listings() {
   const pageTitle = category ? categoryNames[category] : 'Toutes les annonces';
   const pageDescription = category 
     ? categoryDescriptions[category] 
-    : 'Parcourez toutes les annonces de pièces détachées et véhicules d\'occasion sur World Auto France.';
+    : 'Parcourez toutes les annonces de pièces détachées et véhicules d\'occasion sur World Auto Pro Pro.';
   const breadcrumbItems = [
     { name: 'Accueil', url: '/' },
     { name: 'Annonces', url: '/annonces' },

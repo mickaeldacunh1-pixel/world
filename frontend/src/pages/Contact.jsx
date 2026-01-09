@@ -41,7 +41,7 @@ export default function Contact() {
       <div className="min-h-screen bg-secondary/30 py-12">
         <SEO
           title="Contact"
-          description="Contactez l'équipe World Auto France. Nous sommes là pour répondre à vos questions sur les annonces, paiements et support."
+          description="Contactez l'équipe World Auto Pro Pro. Nous sommes là pour répondre à vos questions sur les annonces, paiements et support."
           keywords="contact world auto, support, aide, question"
           url="/contact"
         />
@@ -67,7 +67,7 @@ export default function Contact() {
     <div className="min-h-screen bg-secondary/30 py-12">
       <SEO
         title="Contact"
-        description="Contactez l'équipe World Auto France. Nous sommes là pour répondre à vos questions sur les annonces, paiements et support."
+        description="Contactez l'équipe World Auto Pro Pro. Nous sommes là pour répondre à vos questions sur les annonces, paiements et support."
         keywords="contact world auto, support, aide, question"
         url="/contact"
       />

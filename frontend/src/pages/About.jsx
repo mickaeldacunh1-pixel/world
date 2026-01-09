@@ -7,14 +7,14 @@ export default function About() {
     <div className="min-h-screen bg-secondary/30 py-12">
       <SEO
         title="À propos"
-        description="Découvrez World Auto France, la marketplace automobile de référence pour l'achat et la vente de pièces détachées et véhicules d'occasion."
+        description="Découvrez World Auto Pro Pro, la marketplace automobile de référence pour l'achat et la vente de pièces détachées et véhicules d'occasion."
         keywords="à propos world auto, marketplace automobile France, qui sommes-nous"
         url="/a-propos"
       />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in-up">
-          <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4">À propos de World Auto France</h1>
+          <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4">À propos de World Auto Pro Pro</h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             La marketplace automobile de référence en France pour les particuliers et professionnels.
           </p>
@@ -27,7 +27,7 @@ export default function About() {
             Notre mission
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-4">
-            World Auto France est né d'une passion pour l'automobile et d'une volonté de simplifier 
+            World Auto Pro Pro est né d'une passion pour l'automobile et d'une volonté de simplifier 
             l'achat et la vente de pièces détachées et de véhicules d'occasion en France.
           </p>
           <p className="text-muted-foreground leading-relaxed mb-4">
@@ -37,7 +37,7 @@ export default function About() {
           </p>
           <p className="text-muted-foreground leading-relaxed">
             Que vous cherchiez une pièce rare pour votre véhicule de collection ou que vous 
-            souhaitiez vendre votre voiture, World Auto France est là pour vous accompagner.
+            souhaitiez vendre votre voiture, World Auto Pro Pro est là pour vous accompagner.
           </p>
         </Card>
 
@@ -77,7 +77,7 @@ export default function About() {
 
         {/* Chiffres */}
         <Card className="p-8 bg-primary text-primary-foreground animate-fade-in-up">
-          <h2 className="font-heading text-2xl font-bold mb-6 text-center">World Auto France en chiffres</h2>
+          <h2 className="font-heading text-2xl font-bold mb-6 text-center">World Auto Pro Pro en chiffres</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
               <p className="text-3xl font-bold text-accent">1000+</p>

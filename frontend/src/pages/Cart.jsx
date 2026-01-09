@@ -178,7 +178,7 @@ export default function Cart() {
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
         title={t('cart.title')}
-        description="Votre panier d'achats sur World Auto France"
+        description="Votre panier d'achats sur World Auto Pro Pro"
         url="/panier"
         noindex={true}
       />

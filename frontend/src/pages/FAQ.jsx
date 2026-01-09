@@ -39,8 +39,8 @@ const faqs = [
         a: "Notre système de paiement sécurisé (escrow) protège acheteurs et vendeurs. Quand vous cliquez sur \"Acheter maintenant\", l'argent est bloqué sur un compte sécurisé Stripe. Le vendeur n'est payé que lorsque vous confirmez avoir reçu l'article en bon état. En cas de problème, nous intervenons pour trouver une solution."
       },
       {
-        q: "Quelle est la commission prélevée par World Auto France ?",
-        a: "World Auto France prélève une commission de 5% sur chaque vente effectuée via le paiement sécurisé. Cette commission est uniquement à la charge du vendeur. L'acheteur paie le prix affiché + les frais de livraison."
+        q: "Quelle est la commission prélevée par World Auto Pro Pro ?",
+        a: "World Auto Pro Pro prélève une commission de 5% sur chaque vente effectuée via le paiement sécurisé. Cette commission est uniquement à la charge du vendeur. L'acheteur paie le prix affiché + les frais de livraison."
       },
       {
         q: "Comment un vendeur peut-il recevoir des paiements ?",
@@ -169,7 +169,7 @@ const faqs = [
         a: "La plupart des litiges sont résolus en 3-7 jours ouvrés. Pour les paiements sécurisés, le remboursement est effectué sous 5-7 jours après validation. Nous vous tenons informé par email à chaque étape."
       },
       {
-        q: "World Auto France peut-il bloquer un vendeur ?",
+        q: "World Auto Pro Pro peut-il bloquer un vendeur ?",
         a: "Oui, en cas de litiges répétés, de comportement frauduleux ou de non-respect de nos conditions, nous pouvons suspendre ou supprimer définitivement un compte vendeur. Les fonds en attente peuvent être gelés le temps de l'enquête."
       }
     ]
@@ -196,7 +196,7 @@ export default function FAQ() {
     <div className="min-h-screen bg-secondary/30 py-12">
       <SEO
         title="FAQ - Foire Aux Questions"
-        description="Trouvez les réponses à vos questions sur World Auto France : annonces, paiements, livraison, messagerie et sécurité."
+        description="Trouvez les réponses à vos questions sur World Auto Pro Pro : annonces, paiements, livraison, messagerie et sécurité."
         keywords="FAQ world auto, questions fréquentes, aide marketplace auto, support world auto"
         url="/faq"
         structuredData={createFAQSchema(allFaqs)}

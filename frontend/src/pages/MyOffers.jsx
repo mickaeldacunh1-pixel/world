@@ -272,7 +272,7 @@ export default function MyOffers() {
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
         title={t('offers.title')}
-        description="Gérez vos offres sur World Auto France"
+        description="Gérez vos offres sur World Auto Pro Pro"
         url="/mes-offres"
         noindex={true}
       />

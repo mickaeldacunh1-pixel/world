@@ -267,7 +267,7 @@ export default function Checkout() {
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
         title="Finaliser ma commande"
-        description="Finalisez votre commande sur World Auto France"
+        description="Finalisez votre commande sur World Auto Pro Pro"
         noindex={true}
       />
 

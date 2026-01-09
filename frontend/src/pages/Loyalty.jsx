@@ -191,7 +191,7 @@ export default function Loyalty() {
     if (navigator.share && referralData) {
       try {
         await navigator.share({
-          title: 'Rejoins World Auto France !',
+          title: 'Rejoins World Auto Pro Pro !',
           text: `Utilise mon code ${referralData.referral_code} et reçois ${referralData.rewards_config?.referee_points || 50} points de bienvenue !`,
           url: referralData.referral_link
         });
