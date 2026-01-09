@@ -62,7 +62,9 @@
     "diagnostic": "Diagnosi IA",
     "pricing": "Prezzi",
     "updates": "Novità",
-    "customization": "Personalizzazione sito"
+    "customization": "Personalizzazione sito",
+    "recherche": "Ricerca",
+    "rare": "Raro & Collezione"
   },
   "hero": {
     "title": "Ricambi Auto Usati",
@@ -82,7 +84,10 @@
     "voitures": "Auto",
     "motos": "Moto",
     "utilitaires": "Veicoli commerciali",
+    "engins": "Macchinari",
     "accessoires": "Accessori",
+    "recherche": "Ricerca",
+    "rare": "Raro & Collezione",
     "view_category": "Vedi categoria"
   },
   "listing": {
