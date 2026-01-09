@@ -397,5 +397,24 @@
     "selfie": "Selfie mit Ausweis",
     "why_verify": "Warum meine Identität verifizieren?",
     "trust_badge": "Erhalten Sie ein Vertrauensabzeichen auf Ihrem Profil"
+  },
+  "updates": {
+    "title": "Neuigkeiten",
+    "subtitle": "Entdecken Sie die neuesten Funktionen und Verbesserungen von World Auto Pro",
+    "seo_title": "Updates und Neuigkeiten",
+    "seo_description": "Entdecken Sie die neuesten Funktionen und Verbesserungen von World Auto Pro. Wir verbessern unsere Plattform ständig, um Ihnen das beste Erlebnis zu bieten.",
+    "back_home": "Zurück zur Startseite",
+    "latest_version": "Neueste Version",
+    "type_new": "Neu",
+    "type_improvement": "Verbesserung",
+    "type_fix": "Korrektur",
+    "type_maintenance": "Wartung",
+    "cat_general": "Allgemein",
+    "cat_feature": "Funktion",
+    "cat_security": "Sicherheit",
+    "cat_performance": "Leistung",
+    "newsletter_title": "Bleiben Sie über Neuigkeiten informiert!",
+    "newsletter_desc": "Abonnieren Sie unseren Newsletter, um die neuesten Nachrichten zu erhalten.",
+    "newsletter_cta": "Newsletter abonnieren"
   }
 }

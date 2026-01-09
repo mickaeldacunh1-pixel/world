@@ -397,5 +397,24 @@
     "selfie": "Selfie med ID",
     "why_verify": "Varför verifiera min identitet?",
     "trust_badge": "Få en förtroendemärke på din profil"
+  },
+  "updates": {
+    "title": "Nyheter",
+    "subtitle": "Upptäck de senaste funktionerna och förbättringarna i World Auto Pro",
+    "seo_title": "Uppdateringar och nyheter",
+    "seo_description": "Upptäck de senaste funktionerna och förbättringarna i World Auto Pro. Vi förbättrar ständigt vår plattform för att ge dig den bästa upplevelsen.",
+    "back_home": "Tillbaka till startsidan",
+    "latest_version": "Senaste versionen",
+    "type_new": "Nytt",
+    "type_improvement": "Förbättring",
+    "type_fix": "Korrigering",
+    "type_maintenance": "Underhåll",
+    "cat_general": "Allmänt",
+    "cat_feature": "Funktion",
+    "cat_security": "Säkerhet",
+    "cat_performance": "Prestanda",
+    "newsletter_title": "Håll dig informerad om nyheter!",
+    "newsletter_desc": "Prenumerera på vårt nyhetsbrev för att få de senaste nyheterna.",
+    "newsletter_cta": "Prenumerera på nyhetsbrevet"
   }
 }

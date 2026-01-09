@@ -397,5 +397,24 @@
     "selfie": "Selfie con DNI",
     "why_verify": "¿Por qué verificar mi identidad?",
     "trust_badge": "Obtén una insignia de confianza en tu perfil"
+  },
+  "updates": {
+    "title": "Novedades",
+    "subtitle": "Descubre las últimas funciones y mejoras de World Auto Pro",
+    "seo_title": "Actualizaciones y novedades",
+    "seo_description": "Descubre las últimas funciones y mejoras de World Auto Pro. Mejoramos constantemente nuestra plataforma para ofrecerte la mejor experiencia.",
+    "back_home": "Volver al inicio",
+    "latest_version": "Última versión",
+    "type_new": "Nuevo",
+    "type_improvement": "Mejora",
+    "type_fix": "Corrección",
+    "type_maintenance": "Mantenimiento",
+    "cat_general": "General",
+    "cat_feature": "Función",
+    "cat_security": "Seguridad",
+    "cat_performance": "Rendimiento",
+    "newsletter_title": "¡Mantente informado de las novedades!",
+    "newsletter_desc": "Suscríbete a nuestro boletín para recibir las últimas noticias.",
+    "newsletter_cta": "Suscribirse al boletín"
   }
 }

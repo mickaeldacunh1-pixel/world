@@ -397,5 +397,24 @@
     "selfie": "Selfie met ID",
     "why_verify": "Waarom mijn identiteit verifiëren?",
     "trust_badge": "Ontvang een vertrouwensbadge op je profiel"
+  },
+  "updates": {
+    "title": "Nieuw",
+    "subtitle": "Ontdek de nieuwste functies en verbeteringen van World Auto Pro",
+    "seo_title": "Updates en nieuws",
+    "seo_description": "Ontdek de nieuwste functies en verbeteringen van World Auto Pro. We verbeteren ons platform voortdurend om u de beste ervaring te bieden.",
+    "back_home": "Terug naar home",
+    "latest_version": "Laatste versie",
+    "type_new": "Nieuw",
+    "type_improvement": "Verbetering",
+    "type_fix": "Correctie",
+    "type_maintenance": "Onderhoud",
+    "cat_general": "Algemeen",
+    "cat_feature": "Functie",
+    "cat_security": "Beveiliging",
+    "cat_performance": "Prestaties",
+    "newsletter_title": "Blijf op de hoogte van nieuws!",
+    "newsletter_desc": "Abonneer je op onze nieuwsbrief om het laatste nieuws te ontvangen.",
+    "newsletter_cta": "Abonneer op nieuwsbrief"
   }
 }
