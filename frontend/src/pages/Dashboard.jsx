@@ -440,7 +440,7 @@ export default function Dashboard() {
                     <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center shrink-0">
                       <Percent className="w-6 h-6 text-accent" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <h3 className="font-heading font-semibold mb-2">Comment fonctionne la commission ?</h3>
                       <p className="text-sm text-muted-foreground mb-3">
                         World Auto Pro prélève une commission de <strong>5%</strong> sur chaque vente, 
@@ -464,6 +464,37 @@ export default function Dashboard() {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Export PDF Button */}
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-heading font-semibold mb-1">📄 Export comptabilité</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Téléchargez un relevé PDF de toutes vos ventes pour votre comptabilité
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={handleExportPdf} 
+                      disabled={exportingPdf}
+                      className="bg-accent hover:bg-accent/90"
+                    >
+                      {exportingPdf ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Génération...
+                        </>
+                      ) : (
+                        <>
+                          <FileDown className="w-4 h-4 mr-2" />
+                          Télécharger PDF
+                        </>
+                      )}
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
