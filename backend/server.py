@@ -8823,6 +8823,11 @@ BOXTAL_ACCESS_KEY = os.environ.get('BOXTAL_ACCESS_KEY', '')
 BOXTAL_SECRET_KEY = os.environ.get('BOXTAL_SECRET_KEY', '')
 BOXTAL_API_URL = os.environ.get('BOXTAL_API_URL', 'https://api.boxtal.com')
 BOXTAL_MODE = os.environ.get('BOXTAL_MODE', 'simulation')  # simulation or production
+BOXTAL_MARGIN_PERCENT = float(os.environ.get('BOXTAL_MARGIN_PERCENT', '15'))  # Marge sur les frais de port
+
+def apply_shipping_margin(price: float) -> float:
+    """Applique la marge sur le prix de livraison"""
+    return round(price * (1 + BOXTAL_MARGIN_PERCENT / 100), 2)
 
 class BoxtalAddress(BaseModel):
     company_name: Optional[str] = None
