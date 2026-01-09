@@ -36,7 +36,10 @@ services:
     image: mongo:6.0
     container_name: worldauto-mongodb
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=worldauto_admin
+      - MONGO_INITDB_ROOT_PASSWORD=WA_Secure_2026!
     volumes:
       - mongo_data:/data/db
     restart: unless-stopped
@@ -45,8 +48,6 @@ services:
 
 volumes:
   mongo_data:
-    external: true
-    name: worldauto_mongo_data
 
 networks:
   worldauto-network:
