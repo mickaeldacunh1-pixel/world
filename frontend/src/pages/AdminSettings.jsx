@@ -672,7 +672,7 @@ const DEFAULT_SETTINGS = {
   // Navbar
   navbar_bg_color: "#FFFFFF",
   navbar_text_color: "#0F172A",
-  navbar_logo_text: "World Auto",
+  navbar_logo_text: "World Auto Pro",
   navbar_show_categories_dropdown: true,
   navbar_show_tarifs_link: true,
   navbar_show_dark_mode_toggle: true,
@@ -681,8 +681,8 @@ const DEFAULT_SETTINGS = {
   navbar_custom_links: [],
   
   // SEO
-  site_title: "World Auto France",
-  site_description: "Marketplace de pièces détachées automobiles",
+  site_title: "World Auto Pro",
+  site_description: "Marketplace de pièces détachées automobiles - Achetez et vendez des pièces, voitures, motos et utilitaires",
   
   // Features toggles
   show_brands_section: true,
