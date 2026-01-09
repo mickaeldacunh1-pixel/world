@@ -269,6 +269,8 @@
     "subscribe_desc": "Get our best offers"
   },
   "home": {
+    "whats_new": "WHAT'S NEW",
+    "updates_cta": "Boxtal integration, new categories, shipping margin...",
     "recent_listings": "Recent listings",
     "popular_categories": "Popular categories",
     "why_choose_us": "Why choose us?",
