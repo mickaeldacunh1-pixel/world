@@ -63,7 +63,9 @@
     "diagnostic": "Diagnostic IA",
     "pricing": "Tarifs",
     "updates": "Nouveautés",
-    "customization": "Personnalisation site"
+    "customization": "Personnalisation site",
+    "recherche": "Recherche",
+    "rare": "Rare & Collection"
   },
   "hero": {
     "title": "Pièces Auto d'Occasion",
@@ -93,6 +95,8 @@
     "utilitaires": "Utilitaires",
     "engins": "Engins",
     "accessoires": "Accessoires",
+    "recherche": "Recherche",
+    "rare": "Rare & Collection",
     "view_category": "Voir la catégorie"
   },
   "listing": {
