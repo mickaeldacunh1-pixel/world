@@ -12,6 +12,19 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-15',
+    date: '2026-01-09',
+    version: '4.3.0',
+    title: '💰 Marge sur frais de port & Mode production Boxtal',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '💰 Marge automatique sur les frais de port (configurable par l\'admin)' },
+      { type: 'new', text: '⚙️ Interface admin pour ajuster le pourcentage de marge' },
+      { type: 'improvement', text: '📊 Affichage du prix de base et du prix facturé dans les devis' },
+      { type: 'improvement', text: '🔒 Sauvegarde de la marge en base de données pour persistance' },
+    ]
+  },
+  {
     id: 'static-new-14',
     date: '2026-01-09',
     version: '4.2.0',
