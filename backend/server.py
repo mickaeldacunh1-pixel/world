@@ -8816,6 +8816,462 @@ async def process_abandoned_cart_reminders():
         except Exception as e:
             logger.error(f"Erreur dans le scheduler de relance panier: {e}")
 
+# ================== BOXTAL SHIPPING API ==================
+
+# Boxtal Config
+BOXTAL_ACCESS_KEY = os.environ.get('BOXTAL_ACCESS_KEY', '')
+BOXTAL_SECRET_KEY = os.environ.get('BOXTAL_SECRET_KEY', '')
+BOXTAL_API_URL = os.environ.get('BOXTAL_API_URL', 'https://api.boxtal.com')
+BOXTAL_MODE = os.environ.get('BOXTAL_MODE', 'simulation')  # simulation or production
+
+class BoxtalAddress(BaseModel):
+    company_name: Optional[str] = None
+    first_name: str
+    last_name: str
+    street: str
+    postal_code: str
+    city: str
+    country_code: str = "FR"
+    phone: Optional[str] = None
+    email: Optional[str] = None
+
+class BoxtalParcel(BaseModel):
+    weight: float  # in grams
+    length: float  # in cm
+    width: float   # in cm
+    height: float  # in cm
+    description: Optional[str] = None
+    value: Optional[float] = None  # for insurance
+
+class BoxtalQuoteRequest(BaseModel):
+    sender_address: BoxtalAddress
+    receiver_address: BoxtalAddress
+    parcels: List[BoxtalParcel]
+
+class BoxtalShipmentRequest(BaseModel):
+    quote_id: str
+    service_id: str
+    reference: str
+    sender_address: BoxtalAddress
+    receiver_address: BoxtalAddress
+    parcels: List[BoxtalParcel]
+
+# Boxtal Auth Token Cache
+boxtal_token_cache = {
+    "token": None,
+    "expires_at": None
+}
+
+async def get_boxtal_token():
+    """Get Boxtal Bearer Token (with caching)"""
+    import base64
+    
+    # Check cache
+    if boxtal_token_cache["token"] and boxtal_token_cache["expires_at"]:
+        if datetime.now() < boxtal_token_cache["expires_at"] - timedelta(minutes=5):
+            return boxtal_token_cache["token"]
+    
+    # Generate new token
+    credentials = f"{BOXTAL_ACCESS_KEY}:{BOXTAL_SECRET_KEY}"
+    encoded_credentials = base64.b64encode(credentials.encode()).decode()
+    
+    headers = {
+        "Authorization": f"Basic {encoded_credentials}",
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+    
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.post(
+            f"{BOXTAL_API_URL}/v3/auth/token",
+            headers=headers,
+            data={"grant_type": "client_credentials"}
+        )
+        
+        if response.status_code != 200:
+            logger.error(f"Boxtal auth failed: {response.status_code} - {response.text}")
+            raise HTTPException(status_code=401, detail=f"Boxtal authentication failed: {response.text}")
+        
+        data = response.json()
+        boxtal_token_cache["token"] = data.get("access_token")
+        expires_in = data.get("expires_in", 3600)
+        boxtal_token_cache["expires_at"] = datetime.now() + timedelta(seconds=expires_in)
+        
+        return boxtal_token_cache["token"]
+
+@app.get("/api/boxtal/status")
+async def boxtal_status():
+    """Check Boxtal integration status"""
+    return {
+        "configured": bool(BOXTAL_ACCESS_KEY and BOXTAL_SECRET_KEY),
+        "mode": BOXTAL_MODE,
+        "api_url": BOXTAL_API_URL,
+        "simulation_active": BOXTAL_MODE == "simulation"
+    }
+
+@app.post("/api/boxtal/quotes")
+async def get_boxtal_quotes(request: BoxtalQuoteRequest):
+    """Get shipping quotes from Boxtal"""
+    
+    # In simulation mode, return simulated quotes
+    if BOXTAL_MODE == "simulation":
+        simulated_options = [
+            {
+                "service_id": "colissimo_domicile",
+                "carrier_name": "Colissimo",
+                "carrier_logo": "https://www.colissimo.fr/images/logo-colissimo.png",
+                "service_name": "Livraison à domicile",
+                "delivery_time_min": 2,
+                "delivery_time_max": 4,
+                "price_ht": round(5.50 + (request.parcels[0].weight / 1000) * 2, 2),
+                "price_ttc": round((5.50 + (request.parcels[0].weight / 1000) * 2) * 1.20, 2),
+                "insurance_available": True
+            },
+            {
+                "service_id": "mondial_relay_point",
+                "carrier_name": "Mondial Relay",
+                "carrier_logo": "https://www.mondialrelay.fr/media/108418/logo-mondial-relay.png",
+                "service_name": "Point Relais",
+                "delivery_time_min": 3,
+                "delivery_time_max": 5,
+                "price_ht": round(3.90 + (request.parcels[0].weight / 1000) * 1.5, 2),
+                "price_ttc": round((3.90 + (request.parcels[0].weight / 1000) * 1.5) * 1.20, 2),
+                "insurance_available": False
+            },
+            {
+                "service_id": "chronopost_express",
+                "carrier_name": "Chronopost",
+                "carrier_logo": "https://www.chronopost.fr/sites/chronopost/files/logo-chronopost.png",
+                "service_name": "Express 24h",
+                "delivery_time_min": 1,
+                "delivery_time_max": 1,
+                "price_ht": round(12.90 + (request.parcels[0].weight / 1000) * 3, 2),
+                "price_ttc": round((12.90 + (request.parcels[0].weight / 1000) * 3) * 1.20, 2),
+                "insurance_available": True
+            },
+            {
+                "service_id": "dpd_classic",
+                "carrier_name": "DPD",
+                "carrier_logo": "https://www.dpd.fr/sites/default/files/dpd_logo.png",
+                "service_name": "DPD Classic",
+                "delivery_time_min": 2,
+                "delivery_time_max": 3,
+                "price_ht": round(6.90 + (request.parcels[0].weight / 1000) * 2.2, 2),
+                "price_ttc": round((6.90 + (request.parcels[0].weight / 1000) * 2.2) * 1.20, 2),
+                "insurance_available": True
+            }
+        ]
+        
+        quote_id = f"SIM-{uuid.uuid4().hex[:12].upper()}"
+        
+        # Store quote in database for reference
+        await db.shipping_quotes.insert_one({
+            "quote_id": quote_id,
+            "mode": "simulation",
+            "request": request.dict(),
+            "options": simulated_options,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "valid_until": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
+        })
+        
+        return {
+            "quote_id": quote_id,
+            "mode": "simulation",
+            "options": simulated_options,
+            "valid_until": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
+        }
+    
+    # Production mode - call real Boxtal API
+    try:
+        token = await get_boxtal_token()
+        
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+        
+        # Format request for Boxtal API
+        payload = {
+            "shipper": {
+                "company": request.sender_address.company_name,
+                "firstname": request.sender_address.first_name,
+                "lastname": request.sender_address.last_name,
+                "street": request.sender_address.street,
+                "zipcode": request.sender_address.postal_code,
+                "city": request.sender_address.city,
+                "country": request.sender_address.country_code,
+                "phone": request.sender_address.phone,
+                "email": request.sender_address.email
+            },
+            "recipient": {
+                "company": request.receiver_address.company_name,
+                "firstname": request.receiver_address.first_name,
+                "lastname": request.receiver_address.last_name,
+                "street": request.receiver_address.street,
+                "zipcode": request.receiver_address.postal_code,
+                "city": request.receiver_address.city,
+                "country": request.receiver_address.country_code,
+                "phone": request.receiver_address.phone,
+                "email": request.receiver_address.email
+            },
+            "parcels": [{
+                "weight": p.weight / 1000,  # Convert to kg
+                "length": p.length,
+                "width": p.width,
+                "height": p.height
+            } for p in request.parcels]
+        }
+        
+        async with httpx.AsyncClient(timeout=30.0) as http_client:
+            response = await http_client.post(
+                f"{BOXTAL_API_URL}/v3/shipping/quote",
+                headers=headers,
+                json=payload
+            )
+            
+            if response.status_code != 200:
+                logger.error(f"Boxtal quote error: {response.status_code} - {response.text}")
+                raise HTTPException(status_code=response.status_code, detail=f"Boxtal error: {response.text}")
+            
+            data = response.json()
+            quote_id = data.get("id", f"BOX-{uuid.uuid4().hex[:12].upper()}")
+            
+            # Parse and format options
+            options = []
+            for offer in data.get("offers", []):
+                options.append({
+                    "service_id": offer.get("id"),
+                    "carrier_name": offer.get("carrier", {}).get("name"),
+                    "carrier_logo": offer.get("carrier", {}).get("logo"),
+                    "service_name": offer.get("service", {}).get("name"),
+                    "delivery_time_min": offer.get("delivery", {}).get("min_days", 1),
+                    "delivery_time_max": offer.get("delivery", {}).get("max_days", 5),
+                    "price_ht": float(offer.get("price", {}).get("tax_exclusive", 0)),
+                    "price_ttc": float(offer.get("price", {}).get("tax_inclusive", 0)),
+                    "insurance_available": offer.get("insurance_available", False)
+                })
+            
+            # Store quote
+            await db.shipping_quotes.insert_one({
+                "quote_id": quote_id,
+                "mode": "production",
+                "request": request.dict(),
+                "options": options,
+                "raw_response": data,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "valid_until": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
+            })
+            
+            return {
+                "quote_id": quote_id,
+                "mode": "production",
+                "options": options,
+                "valid_until": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
+            }
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Boxtal quote error: {e}")
+        raise HTTPException(status_code=500, detail=f"Error getting shipping quotes: {str(e)}")
+
+@app.post("/api/boxtal/shipments")
+async def create_boxtal_shipment(request: BoxtalShipmentRequest, current_user: dict = Depends(get_current_user)):
+    """Create a shipment with Boxtal"""
+    
+    # In simulation mode, return simulated shipment
+    if BOXTAL_MODE == "simulation":
+        shipment_id = f"SIM-SHIP-{uuid.uuid4().hex[:12].upper()}"
+        tracking_number = f"SIMTRACK{uuid.uuid4().hex[:10].upper()}"
+        
+        shipment_data = {
+            "shipment_id": shipment_id,
+            "tracking_number": tracking_number,
+            "quote_id": request.quote_id,
+            "service_id": request.service_id,
+            "reference": request.reference,
+            "user_id": current_user["id"],
+            "mode": "simulation",
+            "status": "simulated",
+            "label_url": None,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.shipments.insert_one(shipment_data)
+        
+        logger.info(f"⚠️ SIMULATION: Shipment {shipment_id} created (no real shipment)")
+        
+        return {
+            "shipment_id": shipment_id,
+            "tracking_number": tracking_number,
+            "mode": "simulation",
+            "status": "simulated",
+            "message": "Mode simulation - Aucune expédition réelle créée",
+            "label_url": None
+        }
+    
+    # Production mode - create real shipment
+    try:
+        token = await get_boxtal_token()
+        
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "quote_id": request.quote_id,
+            "offer_id": request.service_id,
+            "reference": request.reference,
+            "shipper": {
+                "company": request.sender_address.company_name,
+                "firstname": request.sender_address.first_name,
+                "lastname": request.sender_address.last_name,
+                "street": request.sender_address.street,
+                "zipcode": request.sender_address.postal_code,
+                "city": request.sender_address.city,
+                "country": request.sender_address.country_code,
+                "phone": request.sender_address.phone,
+                "email": request.sender_address.email
+            },
+            "recipient": {
+                "company": request.receiver_address.company_name,
+                "firstname": request.receiver_address.first_name,
+                "lastname": request.receiver_address.last_name,
+                "street": request.receiver_address.street,
+                "zipcode": request.receiver_address.postal_code,
+                "city": request.receiver_address.city,
+                "country": request.receiver_address.country_code,
+                "phone": request.receiver_address.phone,
+                "email": request.receiver_address.email
+            },
+            "parcels": [{
+                "weight": p.weight / 1000,
+                "length": p.length,
+                "width": p.width,
+                "height": p.height
+            } for p in request.parcels]
+        }
+        
+        async with httpx.AsyncClient(timeout=60.0) as http_client:
+            response = await http_client.post(
+                f"{BOXTAL_API_URL}/v3/shipping/order",
+                headers=headers,
+                json=payload
+            )
+            
+            if response.status_code not in [200, 201]:
+                logger.error(f"Boxtal shipment error: {response.status_code} - {response.text}")
+                raise HTTPException(status_code=response.status_code, detail=f"Boxtal error: {response.text}")
+            
+            data = response.json()
+            
+            shipment_data = {
+                "shipment_id": data.get("id"),
+                "tracking_number": data.get("tracking_number"),
+                "quote_id": request.quote_id,
+                "service_id": request.service_id,
+                "reference": request.reference,
+                "user_id": current_user["id"],
+                "mode": "production",
+                "status": data.get("status", "created"),
+                "label_url": data.get("label", {}).get("url"),
+                "carrier": data.get("carrier", {}).get("name"),
+                "raw_response": data,
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            
+            await db.shipments.insert_one(shipment_data)
+            
+            return {
+                "shipment_id": data.get("id"),
+                "tracking_number": data.get("tracking_number"),
+                "mode": "production",
+                "status": data.get("status", "created"),
+                "label_url": data.get("label", {}).get("url"),
+                "carrier": data.get("carrier", {}).get("name")
+            }
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Boxtal shipment error: {e}")
+        raise HTTPException(status_code=500, detail=f"Error creating shipment: {str(e)}")
+
+@app.get("/api/boxtal/tracking/{tracking_number}")
+async def get_boxtal_tracking(tracking_number: str):
+    """Get tracking information for a shipment"""
+    
+    # Check if simulated shipment
+    shipment = await db.shipments.find_one({"tracking_number": tracking_number})
+    
+    if shipment and shipment.get("mode") == "simulation":
+        return {
+            "tracking_number": tracking_number,
+            "mode": "simulation",
+            "status": "simulated",
+            "carrier": "Simulation",
+            "events": [
+                {
+                    "date": shipment.get("created_at"),
+                    "status": "Expédition simulée créée",
+                    "location": "Mode test"
+                }
+            ],
+            "message": "Ceci est une expédition simulée - pas de suivi réel"
+        }
+    
+    # Production mode - get real tracking
+    if BOXTAL_MODE == "simulation":
+        return {
+            "tracking_number": tracking_number,
+            "mode": "simulation",
+            "status": "unknown",
+            "message": "Mode simulation activé - pas de suivi réel disponible"
+        }
+    
+    try:
+        token = await get_boxtal_token()
+        
+        headers = {
+            "Authorization": f"Bearer {token}"
+        }
+        
+        async with httpx.AsyncClient(timeout=30.0) as http_client:
+            response = await http_client.get(
+                f"{BOXTAL_API_URL}/v3/tracking/{tracking_number}",
+                headers=headers
+            )
+            
+            if response.status_code != 200:
+                raise HTTPException(status_code=404, detail="Tracking not found")
+            
+            data = response.json()
+            
+            return {
+                "tracking_number": tracking_number,
+                "mode": "production",
+                "status": data.get("status"),
+                "carrier": data.get("carrier", {}).get("name"),
+                "estimated_delivery": data.get("estimated_delivery"),
+                "events": data.get("events", [])
+            }
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Boxtal tracking error: {e}")
+        raise HTTPException(status_code=500, detail=f"Error getting tracking: {str(e)}")
+
+@app.get("/api/boxtal/shipments")
+async def get_user_shipments(current_user: dict = Depends(get_current_user)):
+    """Get all shipments for current user"""
+    shipments = await db.shipments.find(
+        {"user_id": current_user["id"]},
+        {"_id": 0, "raw_response": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    return shipments
+
 @app.on_event("startup")
 async def startup_event():
     """Démarrer les tâches planifiées au lancement de l'application"""
@@ -8823,6 +9279,12 @@ async def startup_event():
     # Lancer le scheduler de relance panier en arrière-plan
     asyncio.create_task(process_abandoned_cart_reminders())
     logger.info("✅ Scheduler de relance panier abandonné activé")
+    
+    # Log Boxtal configuration
+    if BOXTAL_ACCESS_KEY and BOXTAL_SECRET_KEY:
+        logger.info(f"📦 Boxtal API configuré - Mode: {BOXTAL_MODE}")
+    else:
+        logger.warning("⚠️ Boxtal API non configuré (clés manquantes)")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
