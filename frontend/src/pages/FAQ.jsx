@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card } from '../components/ui/card';
-import { ChevronDown, HelpCircle, CreditCard, Package, MessageSquare, Shield, Truck, AlertTriangle, Video } from 'lucide-react';
+import { ChevronDown, HelpCircle, CreditCard, Package, MessageSquare, Shield, Truck, AlertTriangle, Video, Bell, Camera, FileText, TrendingUp } from 'lucide-react';
 import SEO, { createFAQSchema } from '../components/SEO';
 
 const faqs = [
