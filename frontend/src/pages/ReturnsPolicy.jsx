@@ -60,7 +60,7 @@ export default function ReturnsPolicy() {
                 <li>L'argent est bloqué sur un compte sécurisé (escrow) pendant l'expédition</li>
                 <li>Le vendeur n'est payé que lorsque vous confirmez la réception</li>
                 <li>En cas de litige, nous pouvons intervenir et rembourser</li>
-                <li>Commission de 5% prélevée sur le vendeur uniquement</li>
+                <li>Commission de 5% prélevée sur le vendeur uniquement (min 1,50€, max 15€)</li>
               </ul>
             </div>
           </div>
