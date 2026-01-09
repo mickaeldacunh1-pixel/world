@@ -175,6 +175,7 @@ function AppContent() {
           <Route path="/videos" element={<Videos />} />
           <Route path="/stories" element={<StoriesPage />} />
           <Route path="/kim-assistant" element={<KimAgent />} />
+          <Route path="/kim-agent" element={<KimChat />} />
           <Route path="/widget" element={<Widget />} />
         </Routes>
       </main>
