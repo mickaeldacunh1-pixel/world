@@ -5619,6 +5619,57 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
     boosted_count = sum(1 for l in listings if l.get("is_boosted"))
     featured_count = sum(1 for l in listings if l.get("is_featured"))
     
+    # ===== SALES & COMMISSION STATS =====
+    # Get orders where user is seller
+    orders = await db.orders.find({"seller_id": current_user["id"]}, {"_id": 0}).to_list(1000)
+    
+    # Calculate total sales
+    total_sales_count = len(orders)
+    total_sales_revenue = sum(float(o.get("price", 0)) for o in orders)
+    
+    # Calculate commissions using hybrid formula
+    total_commissions = 0
+    for order in orders:
+        price = float(order.get("price", 0))
+        commission = calculate_platform_fee(price)
+        total_commissions += commission
+    
+    # Net revenue (after commissions)
+    net_revenue = round(total_sales_revenue - total_commissions, 2)
+    
+    # Monthly stats (current month)
+    first_day_of_month = datetime.now(timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0).isoformat()
+    monthly_orders = [o for o in orders if o.get("created_at", "") >= first_day_of_month]
+    monthly_sales_count = len(monthly_orders)
+    monthly_sales_revenue = sum(float(o.get("price", 0)) for o in monthly_orders)
+    monthly_commissions = sum(calculate_platform_fee(float(o.get("price", 0))) for o in monthly_orders)
+    monthly_net_revenue = round(monthly_sales_revenue - monthly_commissions, 2)
+    
+    # Last 6 months revenue chart data
+    revenue_chart = []
+    for i in range(5, -1, -1):
+        month_date = datetime.now(timezone.utc) - timedelta(days=i*30)
+        month_start = month_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        if month_date.month == 12:
+            month_end = month_start.replace(year=month_start.year + 1, month=1)
+        else:
+            month_end = month_start.replace(month=month_start.month + 1)
+        
+        month_orders = [
+            o for o in orders 
+            if month_start.isoformat() <= o.get("created_at", "") < month_end.isoformat()
+        ]
+        month_revenue = sum(float(o.get("price", 0)) for o in month_orders)
+        month_commission = sum(calculate_platform_fee(float(o.get("price", 0))) for o in month_orders)
+        
+        revenue_chart.append({
+            "month": month_start.strftime("%b"),
+            "revenue": round(month_revenue, 2),
+            "net": round(month_revenue - month_commission, 2),
+            "commission": round(month_commission, 2),
+            "sales": len(month_orders)
+        })
+    
     return {
         "active_listings": active_count,
         "total_listings": len(listings),
@@ -5637,7 +5688,19 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
             for l in top_listings
         ],
         "listings_needing_attention": listings_needing_attention,
-        "total_messages_received": total_messages_received
+        "total_messages_received": total_messages_received,
+        # Sales & Commission Stats
+        "sales": {
+            "total_count": total_sales_count,
+            "total_revenue": round(total_sales_revenue, 2),
+            "total_commissions": round(total_commissions, 2),
+            "net_revenue": net_revenue,
+            "monthly_count": monthly_sales_count,
+            "monthly_revenue": round(monthly_sales_revenue, 2),
+            "monthly_commissions": round(monthly_commissions, 2),
+            "monthly_net": monthly_net_revenue,
+            "revenue_chart": revenue_chart
+        }
     }
 
 @api_router.get("/categories/stats")
