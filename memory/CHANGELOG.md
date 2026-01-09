@@ -4,6 +4,16 @@ Toutes les modifications notables du projet sont documentées ici.
 
 ---
 
+## [4.3.0] - 2026-01-09
+### Ajouté
+- 💰 **Marge sur frais de port** : Pourcentage configurable (défaut 15%)
+  - Appliquée automatiquement sur tous les devis Boxtal
+  - Interface admin pour modifier le pourcentage
+  - Sauvegarde en base de données pour persistance
+- ⚙️ Endpoints admin : `GET /api/admin/boxtal/config`, `PUT /api/admin/boxtal/margin`
+
+---
+
 ## [4.2.0] - 2026-01-09
 ### Ajouté
 - 📦 **Intégration Boxtal V3** : Calcul automatique des frais de livraison
