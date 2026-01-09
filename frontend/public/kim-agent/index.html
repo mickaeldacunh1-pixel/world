@@ -708,6 +708,8 @@
         let messages = [];
         let isTyping = false;
         let deferredPrompt = null;
+        let sessionId = localStorage.getItem('kim_session_id') || null;
+        const API_URL = window.location.origin + '/api';
 
         // Auto-resize textarea
         messageInput.addEventListener('input', function() {
