@@ -8278,7 +8278,8 @@ async def get_identity_status(current_user: dict = Depends(get_current_user)):
 @api_router.get("/admin/identity/pending")
 async def get_pending_verifications(current_user: dict = Depends(get_current_user)):
     """Get pending identity verifications (admin only)"""
-    if current_user.get("role") != "admin":
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
         raise HTTPException(status_code=403, detail="Admin only")
     
     verifications = await db.identity_verifications.find({"status": "pending"}).sort("submitted_at", -1).to_list(100)
@@ -8291,7 +8292,8 @@ async def get_pending_verifications(current_user: dict = Depends(get_current_use
 @api_router.post("/admin/identity/{user_id}/approve")
 async def approve_identity(user_id: str, current_user: dict = Depends(get_current_user)):
     """Approve identity verification (admin only)"""
-    if current_user.get("role") != "admin":
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
         raise HTTPException(status_code=403, detail="Admin only")
     
     # Update verification request
@@ -8318,7 +8320,8 @@ async def approve_identity(user_id: str, current_user: dict = Depends(get_curren
 @api_router.post("/admin/identity/{user_id}/reject")
 async def reject_identity(user_id: str, reason: str = Body(..., embed=True), current_user: dict = Depends(get_current_user)):
     """Reject identity verification (admin only)"""
-    if current_user.get("role") != "admin":
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
         raise HTTPException(status_code=403, detail="Admin only")
     
     # Update verification request
