@@ -1351,11 +1351,16 @@ export default function AdminSettings() {
                 )}
                 
                 {/* Preview Info */}
-                <p className="text-xs text-muted-foreground mt-4 text-center">
-                  {settings.preview_mode === 'mobile' 
-                    ? '📱 Vue mobile (375px) - comme sur iPhone' 
-                    : '🖥️ Vue desktop - comme sur ordinateur'}
-                </p>
+                <div className="mt-4 p-3 bg-secondary/50 rounded-lg text-center">
+                  <p className="text-xs text-muted-foreground">
+                    {settings.preview_mode === 'mobile' 
+                      ? '📱 Aperçu mobile (375px)' 
+                      : '🖥️ Aperçu desktop'}
+                  </p>
+                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 font-medium">
+                    ⚠️ Modifications non publiées - Cliquez "Sauvegarder" pour appliquer
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
