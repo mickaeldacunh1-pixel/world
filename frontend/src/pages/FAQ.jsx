@@ -160,7 +160,6 @@ const faqs = [
         q: "L'article reçu ne correspond pas à l'annonce, que faire ?",
         a: "Avec le paiement sécurisé : NE CONFIRMEZ PAS la réception et signalez le problème dans votre espace Commandes. L'argent reste bloqué pendant la médiation. Sans paiement sécurisé : contactez d'abord le vendeur via la messagerie pour trouver une solution amiable."
       },
-      },
       {
         q: "Comment ouvrir un litige ?",
         a: "Rendez-vous dans votre espace Commandes, sélectionnez la commande concernée et cliquez sur \"Signaler un problème\". Décrivez le problème avec photos si possible. Notre équipe intervient généralement sous 24-48h."
