@@ -190,6 +190,13 @@ export default function Navbar() {
                   </Button>
                 </Link>
 
+                {/* Stories */}
+                <Link to="/stories" className="hidden sm:flex" title="Stories vendeurs">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Camera className="w-5 h-5" />
+                  </Button>
+                </Link>
+
                 {/* Profil (Menu utilisateur) */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
