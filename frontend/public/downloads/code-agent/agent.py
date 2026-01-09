@@ -1,0 +1,845 @@
+#!/usr/bin/env python3
+"""
+🤖 CODE AGENT - Ton assistant de développement personnel
+Un vrai agent de code qui fait ce que tu lui demandes.
+"""
+
+import os
+import sys
+import json
+import subprocess
+import webbrowser
+import threading
+import time
+import re
+import glob
+from pathlib import Path
+from datetime import datetime
+from typing import Optional, Dict, List, Any
+
+import httpx
+from flask import Flask, render_template_string, request, jsonify, Response
+from flask_cors import CORS
+from dotenv import load_dotenv
+from rich.console import Console
+
+# Load environment variables
+load_dotenv()
+
+console = Console()
+app = Flask(__name__)
+CORS(app)
+
+# ============== CONFIGURATION ==============
+
+class Config:
+    EMERGENT_API_KEY = os.getenv('EMERGENT_API_KEY', '')
+    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
+    ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
+    DEFAULT_MODEL = os.getenv('DEFAULT_MODEL', 'gpt-4o')
+    PORT = int(os.getenv('PORT', 8888))
+    PROJECT_PATH = os.getenv('PROJECT_PATH', os.getcwd())
+
+config = Config()
+
+# ============== TOOLS (Ce que l'agent peut faire) ==============
+
+class AgentTools:
+    """Outils que l'agent peut utiliser"""
+    
+    @staticmethod
+    def read_file(path: str) -> Dict:
+        """Lire le contenu d'un fichier"""
+        try:
+            full_path = os.path.join(config.PROJECT_PATH, path) if not os.path.isabs(path) else path
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+            return {"success": True, "content": content, "path": full_path}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def write_file(path: str, content: str) -> Dict:
+        """Écrire dans un fichier"""
+        try:
+            full_path = os.path.join(config.PROJECT_PATH, path) if not os.path.isabs(path) else path
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            with open(full_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            return {"success": True, "message": f"Fichier créé/modifié: {full_path}"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def execute_command(command: str, timeout: int = 60) -> Dict:
+        """Exécuter une commande shell"""
+        try:
+            result = subprocess.run(
+                command,
+                shell=True,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+                cwd=config.PROJECT_PATH
+            )
+            return {
+                "success": result.returncode == 0,
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+                "exit_code": result.returncode
+            }
+        except subprocess.TimeoutExpired:
+            return {"success": False, "error": f"Timeout après {timeout}s"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def list_files(pattern: str = "**/*", max_depth: int = 3) -> Dict:
+        """Lister les fichiers du projet"""
+        try:
+            base = Path(config.PROJECT_PATH)
+            files = []
+            for p in base.glob(pattern):
+                if p.is_file():
+                    rel = p.relative_to(base)
+                    if len(rel.parts) <= max_depth:
+                        files.append(str(rel))
+            return {"success": True, "files": files[:200]}  # Limite à 200
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def search_in_files(query: str, file_pattern: str = "**/*") -> Dict:
+        """Rechercher du texte dans les fichiers"""
+        try:
+            base = Path(config.PROJECT_PATH)
+            results = []
+            for p in base.glob(file_pattern):
+                if p.is_file() and p.suffix in ['.py', '.js', '.jsx', '.ts', '.tsx', '.json', '.html', '.css', '.md', '.txt', '.env']:
+                    try:
+                        content = p.read_text(encoding='utf-8', errors='ignore')
+                        for i, line in enumerate(content.split('\n'), 1):
+                            if query.lower() in line.lower():
+                                results.append({
+                                    "file": str(p.relative_to(base)),
+                                    "line": i,
+                                    "content": line.strip()[:200]
+                                })
+                    except:
+                        pass
+            return {"success": True, "results": results[:50]}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def get_project_structure() -> Dict:
+        """Obtenir la structure du projet"""
+        try:
+            structure = []
+            base = Path(config.PROJECT_PATH)
+            for p in sorted(base.rglob('*')):
+                if any(x in str(p) for x in ['node_modules', '.git', '__pycache__', 'venv', '.venv']):
+                    continue
+                rel = p.relative_to(base)
+                if len(rel.parts) <= 4:
+                    prefix = "📁 " if p.is_dir() else "📄 "
+                    indent = "  " * (len(rel.parts) - 1)
+                    structure.append(f"{indent}{prefix}{rel.name}")
+            return {"success": True, "structure": "\n".join(structure[:100])}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+tools = AgentTools()
+
+# ============== LLM CLIENT ==============
+
+class LLMClient:
+    """Client pour communiquer avec les LLMs"""
+    
+    SYSTEM_PROMPT = """Tu es Code Agent, un assistant de développement expert.
+
+Tu peux:
+- Lire et écrire des fichiers
+- Exécuter des commandes shell
+- Analyser et débugger du code
+- Expliquer des concepts techniques
+- Aider à déployer des applications
+
+Quand l'utilisateur te demande quelque chose qui nécessite une action, tu dois utiliser les outils disponibles.
+
+FORMAT DE RÉPONSE POUR LES ACTIONS:
+Si tu dois effectuer une action, réponds avec un bloc JSON comme ceci:
+```action
+{"tool": "nom_outil", "params": {"param1": "valeur1"}}
+```
+
+OUTILS DISPONIBLES:
+- read_file: {"path": "chemin/du/fichier"} - Lire un fichier
+- write_file: {"path": "chemin", "content": "contenu"} - Écrire un fichier
+- execute_command: {"command": "commande bash"} - Exécuter une commande
+- list_files: {"pattern": "**/*.py"} - Lister des fichiers
+- search_in_files: {"query": "texte", "file_pattern": "**/*"} - Rechercher
+- get_project_structure: {} - Voir la structure du projet
+
+Tu peux enchaîner plusieurs actions en les séparant.
+Après chaque action, explique ce que tu as fait et le résultat.
+
+Réponds toujours en français. Sois concis mais complet."""
+
+    def __init__(self):
+        self.conversation_history = []
+    
+    async def chat(self, message: str, model: str = None) -> str:
+        """Envoyer un message et obtenir une réponse"""
+        model = model or config.DEFAULT_MODEL
+        
+        self.conversation_history.append({"role": "user", "content": message})
+        
+        # Determine which API to use
+        if config.EMERGENT_API_KEY:
+            response = await self._call_emergent(model)
+        elif 'claude' in model.lower() and config.ANTHROPIC_API_KEY:
+            response = await self._call_anthropic(model)
+        elif config.OPENAI_API_KEY:
+            response = await self._call_openai(model)
+        else:
+            response = "❌ Aucune clé API configurée. Configure EMERGENT_API_KEY, OPENAI_API_KEY ou ANTHROPIC_API_KEY dans le fichier .env"
+        
+        self.conversation_history.append({"role": "assistant", "content": response})
+        
+        # Process any actions in the response
+        response = await self._process_actions(response)
+        
+        return response
+    
+    async def _call_emergent(self, model: str) -> str:
+        """Appeler l'API Emergent"""
+        try:
+            async with httpx.AsyncClient(timeout=120) as client:
+                # Map model names
+                if 'gpt-5' in model.lower():
+                    provider, model_name = "openai", "gpt-4o"  # Fallback
+                elif 'claude' in model.lower():
+                    provider, model_name = "anthropic", "claude-sonnet-4-20250514"
+                else:
+                    provider, model_name = "openai", "gpt-4o"
+                
+                response = await client.post(
+                    "https://api.emergentagent.com/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {config.EMERGENT_API_KEY}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": model_name,
+                        "provider": provider,
+                        "messages": [
+                            {"role": "system", "content": self.SYSTEM_PROMPT},
+                            *self.conversation_history
+                        ],
+                        "max_tokens": 4096
+                    }
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    return data["choices"][0]["message"]["content"]
+                else:
+                    return f"❌ Erreur API: {response.status_code} - {response.text}"
+        except Exception as e:
+            return f"❌ Erreur: {str(e)}"
+    
+    async def _call_openai(self, model: str) -> str:
+        """Appeler l'API OpenAI directement"""
+        try:
+            async with httpx.AsyncClient(timeout=120) as client:
+                response = await client.post(
+                    "https://api.openai.com/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {config.OPENAI_API_KEY}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": model if model in ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo'] else 'gpt-4o',
+                        "messages": [
+                            {"role": "system", "content": self.SYSTEM_PROMPT},
+                            *self.conversation_history
+                        ],
+                        "max_tokens": 4096
+                    }
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    return data["choices"][0]["message"]["content"]
+                else:
+                    return f"❌ Erreur OpenAI: {response.status_code}"
+        except Exception as e:
+            return f"❌ Erreur: {str(e)}"
+    
+    async def _call_anthropic(self, model: str) -> str:
+        """Appeler l'API Anthropic directement"""
+        try:
+            async with httpx.AsyncClient(timeout=120) as client:
+                response = await client.post(
+                    "https://api.anthropic.com/v1/messages",
+                    headers={
+                        "x-api-key": config.ANTHROPIC_API_KEY,
+                        "Content-Type": "application/json",
+                        "anthropic-version": "2023-06-01"
+                    },
+                    json={
+                        "model": "claude-sonnet-4-20250514",
+                        "max_tokens": 4096,
+                        "system": self.SYSTEM_PROMPT,
+                        "messages": self.conversation_history
+                    }
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    return data["content"][0]["text"]
+                else:
+                    return f"❌ Erreur Anthropic: {response.status_code}"
+        except Exception as e:
+            return f"❌ Erreur: {str(e)}"
+    
+    async def _process_actions(self, response: str) -> str:
+        """Traiter les actions dans la réponse"""
+        action_pattern = r'```action\s*\n?({.*?})\s*\n?```'
+        matches = re.findall(action_pattern, response, re.DOTALL)
+        
+        for match in matches:
+            try:
+                action = json.loads(match)
+                tool_name = action.get('tool')
+                params = action.get('params', {})
+                
+                result = None
+                if tool_name == 'read_file':
+                    result = tools.read_file(params.get('path', ''))
+                elif tool_name == 'write_file':
+                    result = tools.write_file(params.get('path', ''), params.get('content', ''))
+                elif tool_name == 'execute_command':
+                    result = tools.execute_command(params.get('command', ''))
+                elif tool_name == 'list_files':
+                    result = tools.list_files(params.get('pattern', '**/*'))
+                elif tool_name == 'search_in_files':
+                    result = tools.search_in_files(params.get('query', ''), params.get('file_pattern', '**/*'))
+                elif tool_name == 'get_project_structure':
+                    result = tools.get_project_structure()
+                
+                if result:
+                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)[:2000]}\n```"
+                    response = response.replace(f'```action\n{match}\n```', result_str)
+                    response = response.replace(f'```action{match}```', result_str)
+            except json.JSONDecodeError:
+                pass
+        
+        return response
+    
+    def clear_history(self):
+        """Effacer l'historique de conversation"""
+        self.conversation_history = []
+
+llm = LLMClient()
+
+# ============== WEB INTERFACE ==============
+
+HTML_TEMPLATE = '''
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Code Agent</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #475569;
+            --success: #22c55e;
+            --error: #ef4444;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .logo-text { font-weight: 700; font-size: 1.25rem; }
+        .logo-sub { font-size: 0.75rem; color: var(--text-secondary); }
+        
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        select, button {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        button:hover { background: var(--accent); }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+        
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 1rem;
+        }
+        
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .message {
+            display: flex;
+            gap: 0.75rem;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.user { flex-direction: row-reverse; }
+        
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1rem;
+        }
+        
+        .message.assistant .avatar { background: linear-gradient(135deg, var(--accent), #8b5cf6); }
+        .message.user .avatar { background: var(--bg-tertiary); }
+        
+        .content {
+            max-width: 80%;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 12px;
+            line-height: 1.6;
+        }
+        
+        .message.user .content { background: var(--accent); }
+        
+        .content pre {
+            background: var(--bg-primary);
+            padding: 0.75rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+        }
+        
+        .content code {
+            background: var(--bg-tertiary);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+        
+        .content pre code { background: none; padding: 0; }
+        
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 0.5rem;
+        }
+        
+        .typing span {
+            width: 8px;
+            height: 8px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        
+        .input-area {
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            margin-top: auto;
+        }
+        
+        .input-wrapper {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        textarea {
+            flex: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.875rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            resize: none;
+            min-height: 50px;
+            max-height: 200px;
+            font-family: inherit;
+        }
+        
+        textarea:focus { outline: none; border-color: var(--accent); }
+        textarea::placeholder { color: var(--text-secondary); }
+        
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--accent);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .send-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
+        .project-path {
+            margin-top: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .project-path input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: monospace;
+        }
+        
+        .project-path input:focus { outline: none; }
+        
+        /* Markdown styling */
+        .content h1, .content h2, .content h3 { margin: 0.5rem 0; }
+        .content ul, .content ol { margin-left: 1.5rem; }
+        .content p { margin: 0.5rem 0; }
+        .content strong { color: #fff; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">🤖</div>
+            <div>
+                <div class="logo-text">Code Agent</div>
+                <div class="logo-sub">Ton assistant de développement</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="status">
+                <div class="status-dot"></div>
+                <span>Connecté</span>
+            </div>
+            <select id="modelSelect">
+                <option value="gpt-4o">GPT-4o</option>
+                <option value="gpt-4o-mini">GPT-4o Mini</option>
+                <option value="claude-sonnet">Claude Sonnet</option>
+            </select>
+            <button onclick="clearChat()">🗑️ Effacer</button>
+            <button onclick="showSettings()">⚙️</button>
+        </div>
+    </header>
+    
+    <main>
+        <div class="messages" id="messages">
+            <div class="message assistant">
+                <div class="avatar">🤖</div>
+                <div class="content">
+                    <strong>Bonjour ! Je suis Code Agent.</strong><br><br>
+                    Je suis ton assistant de développement. Je peux :<br>
+                    • 📁 Lire et écrire des fichiers<br>
+                    • 🖥️ Exécuter des commandes<br>
+                    • 🔍 Chercher dans ton code<br>
+                    • 🐛 Débugger et corriger<br><br>
+                    <em>Dis-moi ce dont tu as besoin !</em>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <div class="input-wrapper">
+                <textarea id="input" placeholder="Tape ta demande... (Entrée pour envoyer)" rows="1"></textarea>
+                <button class="send-btn" onclick="sendMessage()" id="sendBtn">➤</button>
+            </div>
+            <div class="project-path">
+                📁 Projet: <input type="text" id="projectPath" value="{{ project_path }}" onchange="updateProjectPath(this.value)">
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        const messagesEl = document.getElementById('messages');
+        const inputEl = document.getElementById('input');
+        const sendBtn = document.getElementById('sendBtn');
+        const modelSelect = document.getElementById('modelSelect');
+        
+        // Auto-resize textarea
+        inputEl.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+        });
+        
+        // Enter to send
+        inputEl.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        async function sendMessage() {
+            const message = inputEl.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            addMessage('user', message);
+            inputEl.value = '';
+            inputEl.style.height = 'auto';
+            sendBtn.disabled = true;
+            
+            // Show typing indicator
+            const typingEl = addTyping();
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        model: modelSelect.value
+                    })
+                });
+                
+                const data = await response.json();
+                typingEl.remove();
+                addMessage('assistant', data.response);
+            } catch (error) {
+                typingEl.remove();
+                addMessage('assistant', '❌ Erreur de connexion. Vérifie que l\'agent est bien lancé.');
+            }
+            
+            sendBtn.disabled = false;
+            inputEl.focus();
+        }
+        
+        function addMessage(role, content) {
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+            div.innerHTML = `
+                <div class="avatar">${role === 'assistant' ? '🤖' : '👤'}</div>
+                <div class="content">${formatContent(content)}</div>
+            `;
+            messagesEl.appendChild(div);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+        
+        function addTyping() {
+            const div = document.createElement('div');
+            div.className = 'message assistant';
+            div.innerHTML = `
+                <div class="avatar">🤖</div>
+                <div class="content"><div class="typing"><span></span><span></span><span></span></div></div>
+            `;
+            messagesEl.appendChild(div);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+            return div;
+        }
+        
+        function formatContent(content) {
+            // Convert markdown-like syntax
+            return content
+                .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+        
+        function clearChat() {
+            fetch('/api/clear', { method: 'POST' });
+            messagesEl.innerHTML = '';
+            addMessage('assistant', '🔄 Conversation effacée. Comment puis-je t\'aider ?');
+        }
+        
+        function updateProjectPath(path) {
+            fetch('/api/project-path', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: path })
+            });
+        }
+        
+        function showSettings() {
+            alert('⚙️ Configuration:\\n\\n' +
+                '• Modifie le fichier .env pour changer les clés API\\n' +
+                '• Change le chemin du projet ci-dessous\\n' +
+                '• Sélectionne le modèle dans le menu');
+        }
+        
+        // Focus input on load
+        inputEl.focus();
+    </script>
+</body>
+</html>
+'''
+
+@app.route('/')
+def index():
+    return render_template_string(HTML_TEMPLATE, project_path=config.PROJECT_PATH)
+
+@app.route('/api/chat', methods=['POST'])
+async def chat():
+    data = request.json
+    message = data.get('message', '')
+    model = data.get('model', config.DEFAULT_MODEL)
+    
+    response = await llm.chat(message, model)
+    return jsonify({"response": response})
+
+@app.route('/api/clear', methods=['POST'])
+def clear():
+    llm.clear_history()
+    return jsonify({"success": True})
+
+@app.route('/api/project-path', methods=['POST'])
+def set_project_path():
+    data = request.json
+    path = data.get('path', '')
+    if os.path.isdir(path):
+        config.PROJECT_PATH = path
+        return jsonify({"success": True})
+    return jsonify({"success": False, "error": "Chemin invalide"})
+
+# ============== MAIN ==============
+
+def main():
+    console.print("\n[bold blue]🤖 CODE AGENT[/bold blue]")
+    console.print("[dim]Ton assistant de développement personnel[/dim]\n")
+    
+    # Check for API key
+    if not any([config.EMERGENT_API_KEY, config.OPENAI_API_KEY, config.ANTHROPIC_API_KEY]):
+        console.print("[yellow]⚠️  Aucune clé API configurée![/yellow]")
+        console.print("Copie .env.example en .env et ajoute ta clé.\n")
+    
+    console.print(f"[green]✓[/green] Projet: {config.PROJECT_PATH}")
+    console.print(f"[green]✓[/green] Modèle: {config.DEFAULT_MODEL}")
+    console.print(f"[green]✓[/green] Interface: http://localhost:{config.PORT}\n")
+    
+    # Open browser after short delay
+    def open_browser():
+        time.sleep(1.5)
+        webbrowser.open(f'http://localhost:{config.PORT}')
+    
+    threading.Thread(target=open_browser, daemon=True).start()
+    
+    # Run Flask
+    console.print("[dim]Appuie sur Ctrl+C pour quitter[/dim]\n")
+    app.run(host='127.0.0.1', port=config.PORT, debug=False, use_reloader=False)
+
+if __name__ == '__main__':
+    import asyncio
+    # Patch Flask to work with async
+    from flask import Flask
+    import nest_asyncio
+    try:
+        nest_asyncio.apply()
+    except:
+        pass
+    main()
