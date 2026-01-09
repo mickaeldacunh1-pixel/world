@@ -8242,6 +8242,126 @@ async def reject_identity(user_id: str, reason: str = Body(..., embed=True), cur
     
     return {"success": True, "message": "Vérification refusée"}
 
+# ================== STORIES ==================
+
+class StoryCreate(BaseModel):
+    media_url: str
+    type: str = "image"  # image or video
+    caption: Optional[str] = None
+
+@api_router.get("/stories")
+async def get_stories(current_user: dict = Depends(get_optional_user)):
+    """Get all active stories (last 24 hours)"""
+    twenty_four_hours_ago = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
+    
+    stories = await db.stories.find({
+        "created_at": {"$gte": twenty_four_hours_ago},
+        "deleted": {"$ne": True}
+    }).sort("created_at", -1).to_list(200)
+    
+    # Get user data for each story
+    user_ids = list(set([s["user_id"] for s in stories]))
+    users = await db.users.find({"id": {"$in": user_ids}}).to_list(100)
+    users_map = {u["id"]: u for u in users}
+    
+    # Get viewed stories for current user
+    viewed_story_ids = set()
+    if current_user:
+        views = await db.story_views.find({
+            "user_id": current_user["id"],
+            "created_at": {"$gte": twenty_four_hours_ago}
+        }).to_list(500)
+        viewed_story_ids = set([v["story_id"] for v in views])
+    
+    result = []
+    for story in stories:
+        story.pop("_id", None)
+        user = users_map.get(story["user_id"], {})
+        story["user_name"] = user.get("name", "Vendeur")
+        story["user_avatar"] = user.get("avatar")
+        story["user_verified"] = user.get("identity_status") == "verified"
+        story["viewed"] = story["id"] in viewed_story_ids
+        result.append(story)
+    
+    return result
+
+@api_router.post("/stories")
+async def create_story(data: StoryCreate, current_user: dict = Depends(get_current_user)):
+    """Create a new story"""
+    story = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "media_url": data.media_url,
+        "type": data.type,
+        "caption": data.caption,
+        "views": 0,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "deleted": False
+    }
+    
+    await db.stories.insert_one(story)
+    story.pop("_id", None)
+    
+    return story
+
+@api_router.post("/stories/{story_id}/view")
+async def view_story(story_id: str, current_user: dict = Depends(get_current_user)):
+    """Mark a story as viewed"""
+    # Check if already viewed
+    existing = await db.story_views.find_one({
+        "story_id": story_id,
+        "user_id": current_user["id"]
+    })
+    
+    if not existing:
+        await db.story_views.insert_one({
+            "story_id": story_id,
+            "user_id": current_user["id"],
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        # Increment view count
+        await db.stories.update_one(
+            {"id": story_id},
+            {"$inc": {"views": 1}}
+        )
+    
+    return {"success": True}
+
+@api_router.delete("/stories/{story_id}")
+async def delete_story(story_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a story"""
+    story = await db.stories.find_one({"id": story_id})
+    
+    if not story:
+        raise HTTPException(status_code=404, detail="Story not found")
+    
+    if story["user_id"] != current_user["id"] and current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    await db.stories.update_one(
+        {"id": story_id},
+        {"$set": {"deleted": True}}
+    )
+    
+    return {"success": True}
+
+@api_router.get("/stories/my")
+async def get_my_stories(current_user: dict = Depends(get_current_user)):
+    """Get current user's stories"""
+    twenty_four_hours_ago = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
+    
+    stories = await db.stories.find({
+        "user_id": current_user["id"],
+        "created_at": {"$gte": twenty_four_hours_ago},
+        "deleted": {"$ne": True}
+    }).sort("created_at", -1).to_list(50)
+    
+    for story in stories:
+        story.pop("_id", None)
+    
+    return stories
+
 # ================== ROOT ==================
 
 @api_router.get("/")
