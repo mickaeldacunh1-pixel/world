@@ -2329,6 +2329,11 @@ export default function AdminSettings() {
             </Card>
           </TabsContent>
 
+          {/* Radio Tab */}
+          <TabsContent value="radio" className="space-y-6">
+            <RadioManager token={token} />
+          </TabsContent>
+
           {/* Sections Tab */}
           <TabsContent value="sections" className="space-y-6">
             <Card>
