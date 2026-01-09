@@ -123,7 +123,7 @@ export default function LegalNotice() {
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-bold mb-4">8. Contact</h2>
+            <h2 className="font-heading text-xl font-bold mb-4">9. Contact</h2>
             <p className="text-muted-foreground leading-relaxed">
               Pour toute question concernant ces mentions légales, vous pouvez nous 
               contacter à l'adresse : <a href="mailto:contact@worldautofrance.com" 
