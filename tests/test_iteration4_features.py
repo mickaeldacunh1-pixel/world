@@ -30,7 +30,8 @@ class TestPriceHistoryAPI:
         listings_response = requests.get(f"{BASE_URL}/api/listings?limit=1")
         assert listings_response.status_code == 200
         
-        listings = listings_response.json()
+        data = listings_response.json()
+        listings = data.get('listings', [])
         if not listings or len(listings) == 0:
             pytest.skip("No listings available for testing")
         
