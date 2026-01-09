@@ -744,7 +744,6 @@ export default function AdminSettings() {
 
   useEffect(() => {
     fetchSettings();
-    fetchPendingVerifications();
   }, []);
 
   const fetchPendingVerifications = useCallback(async () => {
