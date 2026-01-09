@@ -62,7 +62,9 @@
     "diagnostic": "KI-Diagnose",
     "pricing": "Preise",
     "updates": "Neuigkeiten",
-    "customization": "Website-Anpassung"
+    "customization": "Website-Anpassung",
+    "recherche": "Gesucht",
+    "rare": "Selten & Sammlung"
   },
   "hero": {
     "title": "Gebrauchte Autoteile",
@@ -82,7 +84,10 @@
     "voitures": "Autos",
     "motos": "Motorräder",
     "utilitaires": "Nutzfahrzeuge",
+    "engins": "Baumaschinen",
     "accessoires": "Zubehör",
+    "recherche": "Gesucht",
+    "rare": "Selten & Sammlung",
     "view_category": "Kategorie anzeigen"
   },
   "listing": {
