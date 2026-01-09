@@ -16,7 +16,7 @@ import {
   Plus, Trash2, MoveUp, MoveDown, Upload, Settings, 
   AlertCircle, CheckCircle, Loader2, Sparkles,
   Menu, Globe, Facebook, Instagram, Twitter, Youtube, Link2, Mail, Phone,
-  Ticket, Percent, Calendar, Hash
+  Ticket, Percent, Calendar, Hash, Radio, Music, Volume2, GripVertical
 } from 'lucide-react';
 import EmojiPicker from '../components/EmojiPicker';
 import { ANIMATION_OPTIONS } from '../components/SeasonalAnimation';
