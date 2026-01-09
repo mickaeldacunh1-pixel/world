@@ -5099,6 +5099,20 @@ async def stripe_webhook(request: Request):
 # ================== STRIPE CONNECT (MARKETPLACE) ROUTES ==================
 
 PLATFORM_COMMISSION_PERCENT = 5  # 5% commission
+PLATFORM_COMMISSION_MIN = 1.50  # Minimum 1.50€
+PLATFORM_COMMISSION_MAX = 15.00  # Maximum 15€
+
+def calculate_platform_fee(amount: float) -> float:
+    """
+    Calcule la commission de la plateforme avec la formule hybride:
+    - 5% du montant
+    - Minimum 1.50€
+    - Maximum 15€
+    """
+    fee = amount * PLATFORM_COMMISSION_PERCENT / 100
+    fee = max(fee, PLATFORM_COMMISSION_MIN)  # Appliquer le minimum
+    fee = min(fee, PLATFORM_COMMISSION_MAX)  # Appliquer le maximum
+    return round(fee, 2)
 
 @api_router.post("/stripe/connect/onboard")
 async def create_connect_account(request: Request, current_user: dict = Depends(get_current_user)):
