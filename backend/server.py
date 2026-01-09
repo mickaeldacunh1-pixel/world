@@ -21,6 +21,8 @@ from email.mime.multipart import MIMEMultipart
 import httpx
 from bordereau_generator import BordereauGenerator
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+from pywebpush import webpush, WebPushException
+import json
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
