@@ -133,6 +133,25 @@ nano /var/www/worldauto/backend/.env
 docker restart worldauto-backend
 ```
 
+## Session du 2026-01-09 - KIM Agent & Nouveautés
+
+### KIM Agent (v4.4.0)
+- ✅ **Application PWA KIM Agent** : Assistant IA automobile accessible à `/kim-agent/`
+  - Interface de chat moderne (dark mode)
+  - Réponses IA pour diagnostic, recherche de pièces, conseils
+  - Installation PWA possible sur mobile et desktop
+  - Service Worker pour fonctionnement offline partiel
+  - Quick actions : Trouver une pièce, Diagnostic, Estimation
+- ✅ **Page de présentation** : `/kim-assistant` avec instructions d'installation
+  - 3 méthodes : PWA, Desktop (Electron), Web direct
+  - FAQ intégrée
+- ✅ **Fichiers Desktop Electron** : `/app/frontend/public/kim-desktop/`
+
+### Section Nouveautés en haut de page
+- ✅ **Bannière "WHAT'S NEW"** visible immédiatement en haut de la page d'accueil
+- ✅ Lien direct vers `/nouveautes`
+- ✅ Traductions dans 8 langues (FR, EN, DE, ES, IT, NL, PT, SV)
+
 ## Backlog
 ### P1
 - ⏳ Intégration API SIV (en attente décision utilisateur)
