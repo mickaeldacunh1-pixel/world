@@ -5283,8 +5283,9 @@ async def create_marketplace_checkout(
     total_amount = price + shipping_cost
     total_amount_cents = int(total_amount * 100)
     
-    # Commission de la plateforme (5%)
-    platform_fee_cents = int(total_amount_cents * PLATFORM_COMMISSION_PERCENT / 100)
+    # Commission de la plateforme (5% avec min 1.50€ et max 15€)
+    platform_fee = calculate_platform_fee(total_amount)
+    platform_fee_cents = int(platform_fee * 100)
     
     # URLs de retour
     origin = request.headers.get("origin", SITE_URL)
