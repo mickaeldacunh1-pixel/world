@@ -12,6 +12,21 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-16',
+    date: '2026-01-09',
+    version: '4.4.0',
+    title: '🤖 KIM Agent - Assistant IA Automobile',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🤖 KIM Agent : Assistant IA automobile accessible à /kim-agent/' },
+      { type: 'new', text: '💬 Chat intelligent avec réponses pour diagnostic, recherche de pièces, conseils' },
+      { type: 'new', text: '📱 Application PWA installable sur mobile et desktop' },
+      { type: 'new', text: '⚡ Quick actions : Trouver une pièce, Diagnostic, Estimation' },
+      { type: 'new', text: '📄 Page de présentation /kim-assistant avec instructions' },
+      { type: 'improvement', text: '🗞️ Bannière "Nouveautés" visible en haut de la page d\'accueil' },
+    ]
+  },
+  {
     id: 'static-new-15',
     date: '2026-01-09',
     version: '4.3.0',
