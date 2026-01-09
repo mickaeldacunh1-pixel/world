@@ -161,7 +161,7 @@ const faqs = [
         a: "Avec le paiement sécurisé : NE CONFIRMEZ PAS la réception et signalez le problème dans votre espace Commandes. L'argent reste bloqué pendant la médiation. Sans paiement sécurisé : contactez d'abord le vendeur via la messagerie pour trouver une solution amiable."
       },
       {
-        q: "Comment ouvrir un litige ?",
+164|        q: "Comment ouvrir un litige ?",
         a: "Rendez-vous dans votre espace Commandes, sélectionnez la commande concernée et cliquez sur \"Signaler un problème\". Décrivez le problème avec photos si possible. Notre équipe intervient généralement sous 24-48h."
       },
       {
@@ -169,8 +169,92 @@ const faqs = [
         a: "La plupart des litiges sont résolus en 3-7 jours ouvrés. Pour les paiements sécurisés, le remboursement est effectué sous 5-7 jours après validation. Nous vous tenons informé par email à chaque étape."
       },
       {
-        q: "World Auto Pro Pro peut-il bloquer un vendeur ?",
+        q: "World Auto Pro peut-il bloquer un vendeur ?",
         a: "Oui, en cas de litiges répétés, de comportement frauduleux ou de non-respect de nos conditions, nous pouvons suspendre ou supprimer définitivement un compte vendeur. Les fonds en attente peuvent être gelés le temps de l'enquête."
+      }
+    ]
+  },
+  {
+    category: "Notifications Push",
+    icon: Bell,
+    questions: [
+      {
+        q: "Comment activer les notifications push ?",
+        a: "Rendez-vous dans votre profil, onglet \"Notifications\". Activez les notifications push et autorisez-les dans votre navigateur. Vous recevrez des alertes pour les nouveaux messages, commandes et alertes de prix."
+      },
+      {
+        q: "Quels types de notifications puis-je recevoir ?",
+        a: "Vous pouvez recevoir : des notifications de nouveaux messages, des alertes quand quelqu'un achète votre article, des alertes de prix sur vos favoris, et des informations sur les promotions. Vous pouvez personnaliser chaque type dans vos paramètres."
+      },
+      {
+        q: "Comment désactiver les notifications ?",
+        a: "Allez dans votre profil > Notifications et désactivez les types de notifications que vous ne souhaitez plus recevoir. Vous pouvez aussi les désactiver complètement depuis les paramètres de votre navigateur."
+      }
+    ]
+  },
+  {
+    category: "Stories Vendeurs",
+    icon: Camera,
+    questions: [
+      {
+        q: "Que sont les Stories vendeurs ?",
+        a: "Les Stories sont des contenus éphémères (photos ou vidéos) que les vendeurs peuvent publier pour promouvoir leurs pièces. Elles restent visibles pendant 24 heures et apparaissent sur la page d'accueil et la page /stories."
+      },
+      {
+        q: "Comment publier une Story ?",
+        a: "Cliquez sur l'icône appareil photo dans la barre de navigation, puis sur \"Nouvelle story\". Sélectionnez une photo ou vidéo de vos pièces, ajoutez une légende optionnelle et publiez. C'est gratuit et illimité !"
+      },
+      {
+        q: "Combien de temps reste visible ma Story ?",
+        a: "Les Stories restent visibles pendant 24 heures après leur publication, puis elles sont automatiquement supprimées. Vous pouvez les supprimer manuellement avant si nécessaire."
+      },
+      {
+        q: "Où puis-je voir toutes les Stories ?",
+        a: "Cliquez sur l'icône appareil photo dans la barre de navigation pour accéder à la page Stories complète. Vous y trouverez toutes les Stories actives des vendeurs avec des statistiques."
+      }
+    ]
+  },
+  {
+    category: "Vérification d'identité",
+    icon: Shield,
+    questions: [
+      {
+        q: "Pourquoi faire vérifier mon identité ?",
+        a: "La vérification d'identité ajoute un badge \"Vérifié\" sur votre profil, ce qui augmente la confiance des acheteurs. Les vendeurs vérifiés ont généralement plus de ventes et de meilleurs avis."
+      },
+      {
+        q: "Comment faire vérifier mon identité ?",
+        a: "Allez dans votre profil > Vérification d'identité. Téléchargez une photo recto/verso de votre pièce d'identité et un selfie avec le document. Notre équipe vérifie votre demande sous 24-48h."
+      },
+      {
+        q: "Quels documents sont acceptés ?",
+        a: "Nous acceptons : carte nationale d'identité, passeport, ou permis de conduire. Le document doit être valide et les informations lisibles."
+      },
+      {
+        q: "Mes documents sont-ils en sécurité ?",
+        a: "Oui, vos documents sont stockés de manière sécurisée et ne sont utilisés que pour la vérification. Ils sont supprimés après validation. Nous respectons le RGPD et ne partageons jamais vos données."
+      }
+    ]
+  },
+  {
+    category: "Tableau de bord Ventes",
+    icon: TrendingUp,
+    questions: [
+      {
+        q: "Où voir mes statistiques de ventes ?",
+        a: "Dans votre tableau de bord, cliquez sur l'onglet \"💰 Ventes\". Vous y trouverez vos revenus du mois, les commissions, un graphique d'évolution et l'historique complet de vos ventes."
+      },
+      {
+        q: "Comment télécharger un relevé pour ma comptabilité ?",
+        a: "Dans l'onglet Ventes de votre tableau de bord, cliquez sur \"Télécharger PDF\". Un document récapitulatif avec toutes vos ventes et commissions sera généré pour votre comptabilité."
+      },
+      {
+        q: "Quelle est la formule de commission ?",
+        a: "La commission est de 5% sur chaque vente, avec un minimum de 1,50€ et un maximum de 15€. Exemples : vente à 20€ → 1,50€ de commission ; vente à 100€ → 5€ ; vente à 500€ → 15€ (plafond)."
+      },
+      {
+        q: "Le simulateur de commission, comment ça marche ?",
+        a: "Lors de la création ou modification d'une annonce, un simulateur s'affiche automatiquement dès que vous entrez un prix. Il vous montre en temps réel la commission et le montant net que vous recevrez."
       }
     ]
   }
