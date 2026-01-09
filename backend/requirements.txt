@@ -134,3 +134,4 @@ zeep==4.3.2
 zipp==3.23.0
 py-vapid==1.9.4
 pywebpush==2.2.0
+reportlab==4.4.7
