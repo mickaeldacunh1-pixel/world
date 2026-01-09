@@ -561,7 +561,7 @@ export default function StoriesPage() {
         {/* All Stories */}
         <Card>
           <CardHeader>
-            <CardTitle>Toutes les stories</CardTitle>
+            <CardTitle>{t('stories.all_stories', 'Toutes les stories')}</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -573,14 +573,14 @@ export default function StoriesPage() {
             ) : stories.length === 0 && myStories.length === 0 ? (
               <div className="text-center py-12">
                 <Camera className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
-                <h3 className="font-heading text-lg font-semibold mb-2">Aucune story pour le moment</h3>
+                <h3 className="font-heading text-lg font-semibold mb-2">{t('stories.no_stories', 'Aucune story pour le moment')}</h3>
                 <p className="text-muted-foreground mb-6">
-                  Soyez le premier à partager votre actualité !
+                  {t('stories.be_first', 'Soyez le premier à partager votre actualité !')}
                 </p>
                 {user && (
                   <Button onClick={() => setShowAddDialog(true)} className="bg-accent hover:bg-accent/90">
                     <Plus className="w-4 h-4 mr-2" />
-                    Publier une story
+                    {t('stories.publish', 'Publier une story')}
                   </Button>
                 )}
               </div>
