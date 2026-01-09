@@ -62,7 +62,9 @@
     "diagnostic": "Diagnóstico IA",
     "pricing": "Precios",
     "updates": "Novedades",
-    "customization": "Personalización del sitio"
+    "customization": "Personalización del sitio",
+    "recherche": "Búsqueda",
+    "rare": "Raro & Colección"
   },
   "hero": {
     "title": "Repuestos de Segunda Mano",
@@ -82,7 +84,10 @@
     "voitures": "Coches",
     "motos": "Motos",
     "utilitaires": "Vehículos comerciales",
+    "engins": "Maquinaria",
     "accessoires": "Accesorios",
+    "recherche": "Búsqueda",
+    "rare": "Raro & Colección",
     "view_category": "Ver categoría"
   },
   "listing": {
