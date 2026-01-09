@@ -173,6 +173,7 @@ function AppContent() {
           <Route path="/lot/:id" element={<BundleDetail />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/stories" element={<StoriesPage />} />
+          <Route path="/kim-assistant" element={<KimAgent />} />
           <Route path="/widget" element={<Widget />} />
         </Routes>
       </main>
