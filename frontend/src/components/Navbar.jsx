@@ -285,20 +285,20 @@ export default function Navbar() {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Sélecteur de langue */}
-                <LanguageSelector />
-
-                {/* Panier rectangle - tout à droite */}
+                {/* Panier rectangle */}
                 <div className="hidden sm:block">
                   <CartPreview 
                     bgColor={navbarSettings.cart_bg_color}
                     textColor={navbarSettings.cart_text_color}
                   />
                 </div>
+
+                {/* Sélecteur de langue - à droite du panier */}
+                <LanguageSelector />
               </>
             ) : (
               <>
-                {/* Utilisateur non connecté : Mode sombre + Langue + Connexion/Inscription */}
+                {/* Utilisateur non connecté : Mode sombre + Connexion/Inscription + Langue */}
                 <Button 
                   variant="ghost" 
                   size="icon" 
@@ -312,13 +312,14 @@ export default function Navbar() {
                     <Moon className="w-5 h-5" />
                   )}
                 </Button>
-                <LanguageSelector />
                 <Link to="/auth">
                   <Button variant="ghost" data-testid="login-btn">{t('common.login')}</Button>
                 </Link>
                 <Link to="/auth?mode=register">
                   <Button className="bg-primary hover:bg-primary/90" data-testid="register-btn">{t('common.register')}</Button>
                 </Link>
+                {/* Sélecteur de langue - à droite */}
+                <LanguageSelector />
               </>
             )}
 
