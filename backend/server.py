@@ -6484,8 +6484,8 @@ async def end_auction(auction_id: str):
         update_data["winner_id"] = auction["highest_bidder_id"]
         update_data["final_price"] = auction["current_price"]
         
-        # Create order for winner
-        commission = auction["current_price"] * AUCTION_COMMISSION
+        # Create order for winner with hybrid commission
+        commission = calculate_platform_fee(auction["current_price"])
         
         # TODO: Create order and handle payment
     
