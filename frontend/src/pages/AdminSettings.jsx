@@ -21,6 +21,7 @@ import {
 import EmojiPicker from '../components/EmojiPicker';
 import { ANIMATION_OPTIONS } from '../components/SeasonalAnimation';
 import HeroEditor from '../components/HeroEditor';
+import RadioManager from '../components/RadioManager';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
