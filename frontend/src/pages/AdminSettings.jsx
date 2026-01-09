@@ -652,7 +652,7 @@ const DEFAULT_SETTINGS = {
   banners: [],
   
   // Footer
-  footer_text: "World Auto France - La marketplace des pièces automobiles",
+  footer_text: "World Auto Pro - La marketplace des pièces automobiles",
   footer_email: "contact@worldautofrance.com",
   footer_phone: "",
   footer_bg_color: "#1E3A5F",
@@ -666,7 +666,7 @@ const DEFAULT_SETTINGS = {
   footer_instagram_url: "",
   footer_twitter_url: "",
   footer_youtube_url: "",
-  footer_copyright_text: "© 2025 World Auto France. Tous droits réservés.",
+  footer_copyright_text: "© 2025 World Auto Pro. Tous droits réservés.",
   footer_custom_links: [],
   
   // Navbar
