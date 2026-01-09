@@ -1173,40 +1173,70 @@ export default function AdminSettings() {
             </Card>
 
             {/* Preview with Mobile/Desktop toggle */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Eye className="w-5 h-5" />
-                    Aperçu en direct
-                  </CardTitle>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    ⚠️ Cet aperçu reflète vos modifications en temps réel. Cliquez sur "Sauvegarder" pour appliquer les changements sur le site.
-                  </p>
+            <Card className="border-2 border-amber-300 bg-amber-50/30 dark:bg-amber-950/10">
+              <CardHeader className="flex flex-col gap-4">
+                {/* Warning Banner */}
+                <div className="bg-amber-100 dark:bg-amber-900/30 border border-amber-300 rounded-lg p-3 flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                      Ceci est un aperçu de vos modifications en cours
+                    </p>
+                    <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
+                      Ces changements ne sont <strong>PAS encore visibles</strong> sur votre site. 
+                      Cliquez sur <strong>"Sauvegarder"</strong> en haut de page pour les appliquer.
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 bg-secondary rounded-lg p-1">
-                  <button
-                    type="button"
-                    onClick={() => setSettings({...settings, preview_mode: 'desktop'})}
-                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                      settings.preview_mode !== 'mobile' 
-                        ? 'bg-white shadow text-foreground' 
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    🖥️ Desktop
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSettings({...settings, preview_mode: 'mobile'})}
-                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                      settings.preview_mode === 'mobile' 
-                        ? 'bg-white shadow text-foreground' 
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    📱 Mobile
-                  </button>
+
+                <div className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Eye className="w-5 h-5" />
+                      Aperçu des modifications
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Visualisez vos changements avant de les publier
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {/* Reload from server button */}
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={fetchSettings}
+                      className="text-xs"
+                    >
+                      <RefreshCw className="w-3 h-3 mr-1" />
+                      Recharger depuis le site
+                    </Button>
+                    
+                    {/* Mobile/Desktop toggle */}
+                    <div className="flex items-center gap-1 bg-secondary rounded-lg p-1">
+                      <button
+                        type="button"
+                        onClick={() => setSettings({...settings, preview_mode: 'desktop'})}
+                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                          settings.preview_mode !== 'mobile' 
+                            ? 'bg-white shadow text-foreground' 
+                            : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        🖥️ Desktop
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSettings({...settings, preview_mode: 'mobile'})}
+                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                          settings.preview_mode === 'mobile' 
+                            ? 'bg-white shadow text-foreground' 
+                            : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        📱 Mobile
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
