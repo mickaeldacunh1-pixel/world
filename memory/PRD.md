@@ -53,6 +53,7 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
   - API /api/commission/calculate pour simuler
   - Appliquée aux ventes Stripe et enchères
   - Documentation mise à jour (FAQ, Profil)
+  - **Simulateur de commission** intégré dans CreateListing et EditListing
 
 ### Session précédente
 - ✅ **Lecteur Radio Configurable** : 14 stations françaises, gestion depuis l'admin
