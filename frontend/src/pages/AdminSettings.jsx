@@ -760,6 +760,10 @@ export default function AdminSettings() {
     }
   }, [token]);
 
+  useEffect(() => {
+    fetchPendingVerifications();
+  }, [fetchPendingVerifications]);
+
   const handleApproveIdentity = async (userId) => {
     try {
       await axios.post(`${API}/admin/identity/${userId}/approve`, {}, {
