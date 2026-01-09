@@ -8126,6 +8126,122 @@ async def send_push_notification(user_id: str, title: str, body: str, url: str =
     await db.push_queue.insert_one(notification)
     return True
 
+# ================== IDENTITY VERIFICATION ==================
+
+class IdentitySubmission(BaseModel):
+    id_front_url: str
+    id_back_url: Optional[str] = None
+    selfie_url: str
+
+@api_router.post("/identity/submit")
+async def submit_identity_verification(data: IdentitySubmission, current_user: dict = Depends(get_current_user)):
+    """Submit identity verification request"""
+    
+    # Check if already verified
+    if current_user.get("identity_status") == "verified":
+        raise HTTPException(status_code=400, detail="Votre identité est déjà vérifiée")
+    
+    # Check if pending
+    if current_user.get("identity_status") == "pending":
+        raise HTTPException(status_code=400, detail="Une demande est déjà en cours de traitement")
+    
+    verification_request = {
+        "user_id": current_user["id"],
+        "user_email": current_user["email"],
+        "user_name": current_user.get("name", ""),
+        "id_front_url": data.id_front_url,
+        "id_back_url": data.id_back_url,
+        "selfie_url": data.selfie_url,
+        "status": "pending",
+        "submitted_at": datetime.now(timezone.utc).isoformat(),
+        "reviewed_at": None,
+        "reviewed_by": None,
+        "rejection_reason": None
+    }
+    
+    await db.identity_verifications.insert_one(verification_request)
+    
+    # Update user status
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"identity_status": "pending"}}
+    )
+    
+    return {"success": True, "message": "Demande de vérification soumise"}
+
+@api_router.get("/identity/status")
+async def get_identity_status(current_user: dict = Depends(get_current_user)):
+    """Get identity verification status"""
+    return {
+        "status": current_user.get("identity_status", "not_submitted"),
+        "verified": current_user.get("identity_status") == "verified"
+    }
+
+@api_router.get("/admin/identity/pending")
+async def get_pending_verifications(current_user: dict = Depends(get_current_user)):
+    """Get pending identity verifications (admin only)"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    
+    verifications = await db.identity_verifications.find({"status": "pending"}).sort("submitted_at", -1).to_list(100)
+    
+    for v in verifications:
+        v["id"] = str(v.pop("_id"))
+    
+    return verifications
+
+@api_router.post("/admin/identity/{user_id}/approve")
+async def approve_identity(user_id: str, current_user: dict = Depends(get_current_user)):
+    """Approve identity verification (admin only)"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    
+    # Update verification request
+    await db.identity_verifications.update_one(
+        {"user_id": user_id, "status": "pending"},
+        {"$set": {
+            "status": "verified",
+            "reviewed_at": datetime.now(timezone.utc).isoformat(),
+            "reviewed_by": current_user["id"]
+        }}
+    )
+    
+    # Update user
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {
+            "identity_status": "verified",
+            "identity_verified_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return {"success": True, "message": "Identité vérifiée"}
+
+@api_router.post("/admin/identity/{user_id}/reject")
+async def reject_identity(user_id: str, reason: str = Body(..., embed=True), current_user: dict = Depends(get_current_user)):
+    """Reject identity verification (admin only)"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    
+    # Update verification request
+    await db.identity_verifications.update_one(
+        {"user_id": user_id, "status": "pending"},
+        {"$set": {
+            "status": "rejected",
+            "reviewed_at": datetime.now(timezone.utc).isoformat(),
+            "reviewed_by": current_user["id"],
+            "rejection_reason": reason
+        }}
+    )
+    
+    # Update user
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"identity_status": "rejected"}}
+    )
+    
+    return {"success": True, "message": "Vérification refusée"}
+
 # ================== ROOT ==================
 
 @api_router.get("/")
