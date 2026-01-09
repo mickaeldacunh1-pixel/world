@@ -152,20 +152,6 @@ export default function Navbar() {
                   )}
                 </Button>
 
-                {/* Diagnostic IA */}
-                <Link to="/diagnostic" className="hidden sm:flex" title="Diagnostic IA">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Stethoscope className="w-5 h-5 text-accent" />
-                  </Button>
-                </Link>
-
-                {/* Vidéos */}
-                <Link to="/videos" className="hidden sm:flex" title="Vidéos">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Video className="w-5 h-5 text-red-500" />
-                  </Button>
-                </Link>
-
                 {/* Fidélité */}
                 <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
                   <Button variant="ghost" size="icon" className="relative">
