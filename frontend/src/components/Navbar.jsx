@@ -178,18 +178,6 @@ export default function Navbar() {
                   </Button>
                 </Link>
 
-                {/* Messages */}
-                <Link to="/messages" className="hidden sm:flex" title="Messages">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <MessageSquare className="w-5 h-5" />
-                    {unreadMessages > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
-                        {unreadMessages}
-                      </span>
-                    )}
-                  </Button>
-                </Link>
-
                 {/* Stories */}
                 <Link to="/stories" className="hidden sm:flex" title="Stories vendeurs">
                   <Button variant="ghost" size="icon" className="relative">
