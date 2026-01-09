@@ -17,12 +17,22 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 
 ## Session du 2026-01-09 - Accomplissements
 
-### Restauration après incident de sécurité
-- ✅ Nouvelle instance MongoDB sécurisée
-- ✅ Compte admin recréé
-- ✅ Données préservées dans le volume
+### Nouvelles fonctionnalités implémentées (cette session)
+- ✅ **Notifications Push** : 
+  - Clés VAPID générées et configurées
+  - API complète (subscribe, unsubscribe, status, test)
+  - Envoi de push via pywebpush
+  - Push automatiques sur nouveaux messages et commandes
+  - Composant frontend PushNotificationManager dans le profil
+  
+- ✅ **Stories Vendeurs** :
+  - API complète (create, view, delete, list)
+  - Expiration automatique après 24h
+  - Composant Stories type Instagram
+  - Section visible sur la page d'accueil
+  - Support images et vidéos
 
-### Nouvelles fonctionnalités
+### Session précédente
 - ✅ **Lecteur Radio Configurable** : 14 stations françaises, gestion depuis l'admin
 - ✅ **Crédits en attente** : Pré-distribuer des crédits avant inscription (prospection)
 - ✅ **Amélioration aperçu admin** : Bannière orange, bouton recharger, lien site actuel
@@ -56,13 +66,25 @@ docker restart worldauto-backend
 ```
 
 ## Backlog
+### P0 (En cours)
+- ⏳ Vérification d'identité (structure créée, logique à implémenter)
+
 ### P1
 - Intégration API Colissimo (en attente clés)
 - Intégration API SIV (en attente décision)
+- Historique des prix (à compléter)
 
 ### P2
 - Interface admin pour gérer les crédits en attente
+- Tobi multilingue
+
+## Collections MongoDB ajoutées
+- `push_subscriptions` : Abonnements push (user_id, subscription, preferences)
+- `notifications` : Historique des notifications envoyées
+- `stories` : Stories des vendeurs (media_url, type, caption, views, created_at)
+- `story_views` : Vues des stories (story_id, user_id)
 
 ## Credentials Production
 - MongoDB: worldauto_admin / WA_Secure_2026!
 - Admin: contact@worldautofrance.com / Admin123!
+- Test user: storiestest@test.com / test123456
