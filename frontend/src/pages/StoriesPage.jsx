@@ -28,7 +28,23 @@ function StoryViewer({ stories, initialIndex = 0, onClose }) {
   const progressInterval = useRef(null);
 
   const currentStory = stories[currentIndex];
-  const STORY_DURATION = currentStory?.type === 'video' ? 30000 : 5000;
+  const storyDuration = currentStory?.type === 'video' ? 30000 : 5000;
+
+  const goNext = useCallback(() => {
+    if (currentIndex < stories.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+      setProgress(0);
+    } else {
+      onClose();
+    }
+  }, [currentIndex, stories.length, onClose]);
+
+  const goPrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+      setProgress(0);
+    }
+  };
 
   useEffect(() => {
     if (isPaused) return;
@@ -39,28 +55,12 @@ function StoryViewer({ stories, initialIndex = 0, onClose }) {
           goNext();
           return 0;
         }
-        return prev + (100 / (STORY_DURATION / 100));
+        return prev + (100 / (storyDuration / 100));
       });
     }, 100);
 
     return () => clearInterval(progressInterval.current);
-  }, [currentIndex, isPaused]);
-
-  const goNext = () => {
-    if (currentIndex < stories.length - 1) {
-      setCurrentIndex(prev => prev + 1);
-      setProgress(0);
-    } else {
-      onClose();
-    }
-  };
-
-  const goPrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1);
-      setProgress(0);
-    }
-  };
+  }, [currentIndex, isPaused, goNext, storyDuration]);
 
   if (!currentStory) return null;
 
