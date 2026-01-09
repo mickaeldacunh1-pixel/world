@@ -2273,7 +2273,7 @@ export default function AdminSettings() {
                 {(!settings.banners || settings.banners.length === 0) ? (
                   <div className="text-center py-8 text-muted-foreground">
                     <Layout className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>Aucune bannière. Cliquez sur "Ajouter une bannière" pour commencer.</p>
+                    <p>Aucune bannière. Cliquez sur &quot;Ajouter une bannière&quot; pour commencer.</p>
                   </div>
                 ) : (
                   settings.banners.map((banner, index) => (
@@ -2395,14 +2395,14 @@ export default function AdminSettings() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="w-5 h-5" />
-                  Sections de la page d'accueil
+                  Sections de la page d&apos;accueil
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
                     <div>
-                      <h4 className="font-medium">Section "Rechercher par marque"</h4>
+                      <h4 className="font-medium">Section &quot;Rechercher par marque&quot;</h4>
                       <p className="text-sm text-muted-foreground">Affiche les logos des marques automobiles</p>
                     </div>
                     <Switch
@@ -2413,7 +2413,7 @@ export default function AdminSettings() {
                   
                   <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
                     <div>
-                      <h4 className="font-medium">Section "Rechercher par catégorie"</h4>
+                      <h4 className="font-medium">Section &quot;Rechercher par catégorie&quot;</h4>
                       <p className="text-sm text-muted-foreground">Affiche les catégories de pièces</p>
                     </div>
                     <Switch
@@ -2424,7 +2424,7 @@ export default function AdminSettings() {
                   
                   <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
                     <div>
-                      <h4 className="font-medium">Section "Rechercher par région"</h4>
+                      <h4 className="font-medium">Section &quot;Rechercher par région&quot;</h4>
                       <p className="text-sm text-muted-foreground">Affiche la carte des régions</p>
                     </div>
                     <Switch
