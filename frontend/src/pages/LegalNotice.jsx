@@ -105,16 +105,16 @@ export default function LegalNotice() {
           <section>
             <h2 className="font-heading text-xl font-bold mb-4">7. Limitation de responsabilité</h2>
             <p className="text-muted-foreground leading-relaxed">
-              World Auto Pro Pro s'efforce d'assurer l'exactitude des informations diffusées sur 
+              World Auto Pro s'efforce d'assurer l'exactitude des informations diffusées sur 
               ce site. Toutefois, elle ne peut garantir l'exactitude, la complétude et 
-              l'actualité des informations. World Auto Pro Pro décline toute responsabilité pour 
+              l'actualité des informations. World Auto Pro décline toute responsabilité pour 
               tout dommage résultant d'une intrusion frauduleuse d'un tiers ou de la 
               présence d'un virus informatique.
             </p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-bold mb-4">7. Droit applicable</h2>
+            <h2 className="font-heading text-xl font-bold mb-4">8. Droit applicable</h2>
             <p className="text-muted-foreground leading-relaxed">
               Les présentes mentions légales sont régies par le droit français. En cas 
               de litige, et après échec de toute tentative de recherche d'une solution 
