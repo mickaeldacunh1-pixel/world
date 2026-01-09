@@ -534,6 +534,14 @@ export default function CreateListing() {
                 </div>
               </div>
 
+              {/* Commission Simulator */}
+              {formData.price && parseFloat(formData.price) > 0 && (
+                <CommissionSimulator 
+                  price={formData.price} 
+                  shippingCost={formData.shipping_cost}
+                />
+              )}
+
               {/* Shipping / Livraison */}
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-4">
                 <h3 className="font-medium text-blue-900">📦 Livraison</h3>
