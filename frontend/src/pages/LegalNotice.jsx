@@ -67,6 +67,7 @@ export default function LegalNotice() {
               <li>Numéro de téléphone (optionnel)</li>
               <li>Adresse postale (pour les livraisons)</li>
               <li>Données de navigation (cookies)</li>
+              <li>Documents d'identité (pour la vérification vendeur, supprimés après validation)</li>
             </ul>
             <p className="text-muted-foreground leading-relaxed">
               Pour exercer vos droits, contactez-nous à : contact@worldautofrance.com
@@ -74,7 +75,22 @@ export default function LegalNotice() {
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-bold mb-4">5. Cookies</h2>
+            <h2 className="font-heading text-xl font-bold mb-4">5. Partenaires et sous-traitants</h2>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              Pour fournir nos services, nous travaillons avec les partenaires suivants :
+            </p>
+            <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4 mb-3">
+              <li><strong>Stripe :</strong> traitement sécurisé des paiements</li>
+              <li><strong>Boxtal :</strong> calcul des frais de port et génération d'étiquettes d'expédition (Colissimo, Mondial Relay, Chronopost, DPD, etc.)</li>
+              <li><strong>Cloudinary :</strong> hébergement des images et médias</li>
+            </ul>
+            <p className="text-muted-foreground leading-relaxed">
+              Ces partenaires ont accès aux données strictement nécessaires à l'exécution de leurs services et s'engagent à respecter la confidentialité de vos données conformément au RGPD.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="font-heading text-xl font-bold mb-4">6. Cookies</h2>
             <p className="text-muted-foreground leading-relaxed mb-3">
               Ce site utilise des cookies pour améliorer l'expérience utilisateur et 
               réaliser des statistiques de visite. Les cookies utilisés sont :
