@@ -99,32 +99,63 @@ self.addEventListener('message', (event) => {
 
 // Push notification event
 self.addEventListener('push', (event) => {
-  const options = {
-    body: event.data ? event.data.text() : 'Nouvelle notification',
+  let data = {
+    title: 'World Auto Pro',
+    body: 'Nouvelle notification',
     icon: '/logo192.png',
     badge: '/logo192.png',
+    tag: 'default',
+    url: '/'
+  };
+
+  if (event.data) {
+    try {
+      const payload = event.data.json();
+      data = { ...data, ...payload };
+    } catch (e) {
+      data.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body: data.body,
+    icon: data.icon || '/logo192.png',
+    badge: data.badge || '/logo192.png',
+    tag: data.tag || 'notification-' + Date.now(),
     vibrate: [100, 50, 100],
-    data: {
-      dateOfArrival: Date.now(),
-      primaryKey: 1
-    },
+    data: { url: data.url || '/' },
+    requireInteraction: data.requireInteraction || false,
     actions: [
-      { action: 'explore', title: 'Voir' },
-      { action: 'close', title: 'Fermer' }
+      { action: 'open', title: '👀 Voir' },
+      { action: 'close', title: '✕ Fermer' }
     ]
   };
 
   event.waitUntil(
-    self.registration.showNotification('World Auto France', options)
+    self.registration.showNotification(data.title, options)
   );
 });
 
 // Notification click event
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  if (event.action === 'explore') {
-    event.waitUntil(
-      clients.openWindow('/')
-    );
+  
+  const urlToOpen = event.notification.data?.url || '/';
+  
+  if (event.action === 'close') {
+    return;
   }
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (client.url.includes(self.location.origin) && 'focus' in client) {
+            client.navigate(urlToOpen);
+            return client.focus();
+          }
+        }
+        return clients.openWindow(urlToOpen);
+      })
+  );
 });
