@@ -22,7 +22,7 @@ export default function NotificationSettings() {
       toast.success('Notifications activées !');
       // Send test notification
       showNotification('Notifications activées', {
-        body: 'Vous recevrez désormais les notifications World Auto'
+        body: 'Vous recevrez désormais les notifications World Auto Pro'
       });
     } else {
       toast.error('Notifications refusées. Vous pouvez les activer dans les paramètres de votre navigateur.');

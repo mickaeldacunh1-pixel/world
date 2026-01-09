@@ -119,7 +119,7 @@ export default function AITools() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-accent" />
-            {t('home.ai_diagnostic')} - World Auto France
+            {t('home.ai_diagnostic')} - World Auto Pro
           </DialogTitle>
         </DialogHeader>
 

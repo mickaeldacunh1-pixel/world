@@ -391,7 +391,7 @@ export default function Tobi() {
           </Button>
         </div>
         <p className="text-xs text-center text-muted-foreground mt-2">
-          Propulsé par IA • World Auto France
+          Propulsé par IA • World Auto Pro
         </p>
       </form>
     </Card>

@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-const SITE_NAME = 'World Auto France';
+const SITE_NAME = 'World Auto Pro';
 const SITE_URL = 'https://worldautofrance.com';
 const DEFAULT_IMAGE = 'https://worldautofrance.com/og-image.jpg';
 
@@ -56,7 +56,7 @@ export default function SEO({
 export const createOrganizationSchema = () => ({
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'World Auto France',
+  name: 'World Auto Pro',
   url: SITE_URL,
   logo: `${SITE_URL}/logo.png`,
   description: 'Marketplace de pièces détachées automobiles et véhicules d\'occasion en France',

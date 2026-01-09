@@ -57,7 +57,7 @@ export function WarrantySelector({ listingId, currentWarranty, onPurchase }) {
             </div>
             <div>
               <p className="font-medium text-green-700 dark:text-green-400">
-                Garantie World Auto Active
+                Garantie World Auto Pro Active
               </p>
               <p className="text-sm text-green-600 dark:text-green-500">
                 {currentWarranty.duration} mois • Expire le {new Date(currentWarranty.expires).toLocaleDateString('fr-FR')}
@@ -84,7 +84,7 @@ export function WarrantySelector({ listingId, currentWarranty, onPurchase }) {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Shield className="w-5 h-5 text-accent" />
-          Garantie World Auto
+          Garantie World Auto Pro
         </CardTitle>
         <p className="text-sm text-muted-foreground">
           Protégez votre acheteur avec notre garantie officielle
