@@ -1061,6 +1061,13 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
+    # Check for pending credits
+    pending_credits = await db.pending_credits.find_one({"email": user.email.lower()})
+    if pending_credits:
+        user_doc["credits"] = pending_credits.get("credits", 0)
+        # Delete pending credits after applying
+        await db.pending_credits.delete_one({"email": user.email.lower()})
+    
     await db.users.insert_one(user_doc)
     token = create_token(user_doc["id"], user_doc["email"])
     
