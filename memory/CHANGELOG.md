@@ -4,6 +4,23 @@ Toutes les modifications notables du projet sont documentées ici.
 
 ---
 
+## [4.2.0] - 2026-01-09
+### Ajouté
+- 📦 **Intégration Boxtal V3** : Calcul automatique des frais de livraison
+  - Multi-transporteurs : Colissimo, Mondial Relay, Chronopost, DPD
+  - Mode production activé
+  - Endpoints : `/api/boxtal/status`, `/api/boxtal/quotes`, `/api/boxtal/shipments`, `/api/boxtal/tracking/{num}`
+- 🔍 **Catégorie "Recherche"** : Publiez ce que vous cherchez, les vendeurs vous contactent
+- ⭐ **Catégorie "Rare & Collection"** : Pièces vintage, collector et introuvables
+### Modifié
+- 💬 Bouton Messages déplacé à droite du sélecteur de langue
+- 📋 FAQ mise à jour avec sections Boxtal/Livraison et Catégories spéciales
+- 📜 Mentions légales : ajout section partenaires (Stripe, Boxtal, Cloudinary)
+- 🔄 Politique de retours : commission min/max mise à jour
+- 📰 Flyer : "Boxtal et ses partenaires" au lieu de "Mondial Relay"
+
+---
+
 ## [4.1.0] - 2026-01-09
 ### Ajouté
 - 🌍 **Traduction page Nouveautés** : Interface multilingue complète (8 langues)
