@@ -596,6 +596,37 @@ export default function Home() {
               </Link>
             </div>
 
+            {/* Quick Links - Raccourcis stylés */}
+            <div className={`flex flex-wrap items-center gap-3 mt-5 animate-fade-in-up stagger-4 ${
+              heroSettings.hero_text_align === 'center' ? 'justify-center' : 
+              heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
+            }`}>
+              <Link to="/videos" className="group">
+                <div className="flex items-center gap-2 bg-white/10 hover:bg-red-500/30 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 hover:border-red-400/50 transition-all">
+                  <Video className="w-4 h-4 text-red-400" />
+                  <span className="text-white/90 text-sm font-medium">{t('nav.videos', 'Vidéos')}</span>
+                </div>
+              </Link>
+              <Link to="/stories" className="group">
+                <div className="flex items-center gap-2 bg-white/10 hover:bg-pink-500/30 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 hover:border-pink-400/50 transition-all">
+                  <Camera className="w-4 h-4 text-pink-400" />
+                  <span className="text-white/90 text-sm font-medium">{t('nav.stories', 'Stories')}</span>
+                </div>
+              </Link>
+              <Link to="/fidelite" className="group">
+                <div className="flex items-center gap-2 bg-white/10 hover:bg-yellow-500/30 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 hover:border-yellow-400/50 transition-all">
+                  <Gift className="w-4 h-4 text-yellow-400" />
+                  <span className="text-white/90 text-sm font-medium">{t('nav.loyalty', 'Fidélité')}</span>
+                </div>
+              </Link>
+              <Link to="/kim-assistant" className="group">
+                <div className="flex items-center gap-2 bg-white/10 hover:bg-blue-500/30 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 hover:border-blue-400/50 transition-all">
+                  <Sparkles className="w-4 h-4 text-blue-400" />
+                  <span className="text-white/90 text-sm font-medium">KIM Agent</span>
+                </div>
+              </Link>
+            </div>
+
             {/* Quick stats - Customizable with Live Counter */}
             {heroSettings.hero_show_stats !== false && (
               <div className={`flex flex-wrap items-center gap-6 mt-8 animate-fade-in-up stagger-5 ${
