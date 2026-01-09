@@ -8106,27 +8106,75 @@ async def get_push_status(current_user: dict = Depends(get_current_user)):
 
 # Helper function to send push notification (called from other parts of the app)
 async def send_push_notification(user_id: str, title: str, body: str, url: str = "/", tag: str = "default"):
-    """Send a push notification to a user"""
+    """Send a push notification to a user using Web Push"""
     subscription = await db.push_subscriptions.find_one({"user_id": user_id})
     
-    if not subscription:
+    if not subscription or not subscription.get("subscription"):
+        logging.info(f"No push subscription found for user {user_id}")
         return False
     
-    # Here you would integrate with a push service like Firebase, OneSignal, or web-push
-    # For now, we store the notification for delivery
-    notification = {
-        "user_id": user_id,
+    # Get VAPID keys from environment
+    vapid_private_key = os.environ.get('VAPID_PRIVATE_KEY')
+    vapid_mailto = os.environ.get('VAPID_MAILTO', 'mailto:contact@worldautofrance.com')
+    
+    if not vapid_private_key:
+        logging.error("VAPID_PRIVATE_KEY not configured")
+        return False
+    
+    # Build notification payload
+    payload = json.dumps({
         "title": title,
         "body": body,
-        "url": url,
+        "icon": "/logo192.png",
+        "badge": "/logo192.png",
         "tag": tag,
-        "read": False,
-        "delivered": False,
-        "created_at": datetime.now(timezone.utc).isoformat()
-    }
+        "url": url,
+        "requireInteraction": tag in ["message", "order"]
+    })
     
-    await db.push_queue.insert_one(notification)
-    return True
+    try:
+        sub_info = subscription["subscription"]
+        webpush(
+            subscription_info=sub_info,
+            data=payload,
+            vapid_private_key=vapid_private_key,
+            vapid_claims={"sub": vapid_mailto}
+        )
+        logging.info(f"Push notification sent to user {user_id}: {title}")
+        
+        # Store notification in history
+        await db.notifications.insert_one({
+            "id": str(uuid.uuid4()),
+            "user_id": user_id,
+            "title": title,
+            "body": body,
+            "url": url,
+            "tag": tag,
+            "read": False,
+            "delivered": True,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        return True
+    except WebPushException as e:
+        logging.error(f"WebPush error for user {user_id}: {e}")
+        # If subscription is expired/invalid, remove it
+        if e.response and e.response.status_code in [404, 410]:
+            await db.push_subscriptions.delete_one({"user_id": user_id})
+            logging.info(f"Removed invalid subscription for user {user_id}")
+        return False
+    except Exception as e:
+        logging.error(f"Failed to send push notification: {e}")
+        return False
+
+
+# Helper to send push notifications to multiple users
+async def send_push_to_users(user_ids: List[str], title: str, body: str, url: str = "/", tag: str = "default"):
+    """Send push notification to multiple users"""
+    results = []
+    for user_id in user_ids:
+        success = await send_push_notification(user_id, title, body, url, tag)
+        results.append({"user_id": user_id, "success": success})
+    return results
 
 # ================== IDENTITY VERIFICATION ==================
 
