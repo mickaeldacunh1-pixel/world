@@ -996,7 +996,7 @@ export default function AdminSettings() {
                           placeholder="🎄 Livraison gratuite jusqu'au 31 décembre !"
                           className="flex-1"
                         />
-                        <EmojiPicker onSelect={(emoji) => setSettings({...settings, announcement_text: settings.announcement_text + emoji})} />
+                        <EmojiPicker onSelect={(emoji) => setSettings({...settings, announcement_text: (settings.announcement_text || '') + emoji})} />
                       </div>
                     </div>
                     <div className="grid md:grid-cols-3 gap-4">
