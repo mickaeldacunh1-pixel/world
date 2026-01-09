@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 import { Button } from './ui/button';
 import { Slider } from './ui/slider';
 import { 
@@ -7,120 +8,13 @@ import {
   SkipBack, SkipForward, Music2
 } from 'lucide-react';
 
-// Liste des stations de radio françaises avec leurs flux de streaming
-const RADIO_STATIONS = [
-  {
-    id: 'skyrock',
-    name: 'Skyrock',
-    genre: 'Rap & RnB',
-    logo: '🎤',
-    streamUrl: 'https://icecast.skyrock.net/s/natio_mp3_128k',
-    color: '#000000'
-  },
-  {
-    id: 'funradio',
-    name: 'Fun Radio',
-    genre: 'Dance',
-    logo: '🎧',
-    streamUrl: 'https://streaming.radio.funradio.fr/fun-1-44-128',
-    color: '#FF6B00'
-  },
-  {
-    id: 'rtl',
-    name: 'RTL',
-    genre: 'Généraliste',
-    logo: '📻',
-    streamUrl: 'https://streaming.radio.rtl.fr/rtl-1-44-128',
-    color: '#E30613'
-  },
-  {
-    id: 'rtl2',
-    name: 'RTL2',
-    genre: 'Pop Rock',
-    logo: '🎸',
-    streamUrl: 'https://streaming.radio.rtl2.fr/rtl2-1-44-128',
-    color: '#00A0E4'
-  },
-  {
-    id: 'nova',
-    name: 'Radio Nova',
-    genre: 'Éclectique',
-    logo: '🌟',
-    streamUrl: 'https://novazz.ice.infomaniak.ch/novazz-128.mp3',
-    color: '#FF5500'
-  },
-  {
-    id: 'beurfm',
-    name: 'Beur FM',
-    genre: 'Musique du monde',
-    logo: '🌍',
-    streamUrl: 'https://beurfm.ice.infomaniak.ch/beurfm-high.mp3',
-    color: '#009933'
-  },
-  {
-    id: 'franceinter',
-    name: 'France Inter',
-    genre: 'Généraliste',
-    logo: '🇫🇷',
-    streamUrl: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3',
-    color: '#E20074'
-  },
-  {
-    id: 'franceinfo',
-    name: 'France Info',
-    genre: 'Info',
-    logo: '📰',
-    streamUrl: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
-    color: '#0066CC'
-  },
-  {
-    id: 'fip',
-    name: 'FIP',
-    genre: 'Jazz & Groove',
-    logo: '🎹',
-    streamUrl: 'https://icecast.radiofrance.fr/fip-midfi.mp3',
-    color: '#E85D75'
-  },
-  {
-    id: 'mouv',
-    name: 'Mouv\'',
-    genre: 'Urban',
-    logo: '🔥',
-    streamUrl: 'https://icecast.radiofrance.fr/mouv-midfi.mp3',
-    color: '#00D4AA'
-  },
-  {
-    id: 'francemusique',
-    name: 'France Musique',
-    genre: 'Classique',
-    logo: '🎻',
-    streamUrl: 'https://icecast.radiofrance.fr/francemusique-midfi.mp3',
-    color: '#8B4513'
-  },
-  {
-    id: 'franceculture',
-    name: 'France Culture',
-    genre: 'Culture',
-    logo: '📚',
-    streamUrl: 'https://icecast.radiofrance.fr/franceculture-midfi.mp3',
-    color: '#9932CC'
-  },
-  {
-    id: 'oui',
-    name: 'OÜI FM',
-    genre: 'Rock Indé',
-    logo: '🤘',
-    streamUrl: 'https://ouifm.ice.infomaniak.ch/ouifm-high.mp3',
-    color: '#FF0000'
-  },
-  {
-    id: 'tsfjazz',
-    name: 'TSF Jazz',
-    genre: 'Jazz',
-    logo: '🎷',
-    streamUrl: 'https://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3',
-    color: '#1E90FF'
-  }
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+// Default stations (fallback)
+const DEFAULT_STATIONS = [
+  { id: 'skyrock', name: 'Skyrock', genre: 'Rap & RnB', logo: '🎤', stream_url: 'https://icecast.skyrock.net/s/natio_mp3_128k', color: '#000000' },
+  { id: 'funradio', name: 'Fun Radio', genre: 'Dance', logo: '🎧', stream_url: 'https://streaming.radio.funradio.fr/fun-1-44-128', color: '#FF6B00' },
+  { id: 'rtl2', name: 'RTL2', genre: 'Pop Rock', logo: '🎸', stream_url: 'https://streaming.radio.rtl2.fr/rtl2-1-44-128', color: '#00A0E4' },
 ];
 
 export default function RadioPlayer() {
@@ -131,9 +25,41 @@ export default function RadioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(70);
   const [isMuted, setIsMuted] = useState(false);
-  const [currentStation, setCurrentStation] = useState(RADIO_STATIONS[0]);
+  const [stations, setStations] = useState(DEFAULT_STATIONS);
+  const [currentStation, setCurrentStation] = useState(DEFAULT_STATIONS[0]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [settings, setSettings] = useState({
+    enabled: true,
+    position: 'bottom-left',
+    auto_play: false,
+    default_volume: 70
+  });
+
+  // Charger les stations et settings depuis l'API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [stationsRes, settingsRes] = await Promise.all([
+          axios.get(`${API}/radio/stations`),
+          axios.get(`${API}/radio/settings`)
+        ]);
+        
+        if (stationsRes.data && stationsRes.data.length > 0) {
+          setStations(stationsRes.data);
+          setCurrentStation(stationsRes.data[0]);
+        }
+        
+        if (settingsRes.data) {
+          setSettings(settingsRes.data);
+          setVolume(settingsRes.data.default_volume || 70);
+        }
+      } catch (err) {
+        console.log('Using default radio stations');
+      }
+    };
+    fetchData();
+  }, []);
 
   // Initialiser l'audio
   useEffect(() => {
@@ -187,7 +113,7 @@ export default function RadioPlayer() {
     
     setCurrentStation(station);
     setError(null);
-    audio.src = station.streamUrl;
+    audio.src = station.stream_url;
     
     if (wasPlaying) {
       setIsLoading(true);
@@ -208,7 +134,7 @@ export default function RadioPlayer() {
       setIsPlaying(false);
     } else {
       setIsLoading(true);
-      audio.src = currentStation.streamUrl;
+      audio.src = currentStation.stream_url;
       audio.play().then(() => {
         setIsPlaying(true);
         setIsLoading(false);
@@ -246,24 +172,35 @@ export default function RadioPlayer() {
 
   // Station suivante/précédente
   const nextStation = () => {
-    const currentIndex = RADIO_STATIONS.findIndex(s => s.id === currentStation.id);
-    const nextIndex = (currentIndex + 1) % RADIO_STATIONS.length;
-    changeStation(RADIO_STATIONS[nextIndex]);
+    const currentIndex = stations.findIndex(s => s.id === currentStation.id);
+    const nextIndex = (currentIndex + 1) % stations.length;
+    changeStation(stations[nextIndex]);
   };
 
   const prevStation = () => {
-    const currentIndex = RADIO_STATIONS.findIndex(s => s.id === currentStation.id);
-    const prevIndex = currentIndex === 0 ? RADIO_STATIONS.length - 1 : currentIndex - 1;
-    changeStation(RADIO_STATIONS[prevIndex]);
+    const currentIndex = stations.findIndex(s => s.id === currentStation.id);
+    const prevIndex = currentIndex === 0 ? stations.length - 1 : currentIndex - 1;
+    changeStation(stations[prevIndex]);
   };
+
+  // Si désactivé dans les settings
+  if (!settings.enabled) {
+    return null;
+  }
+
+  // Position classes
+  const positionClasses = settings.position === 'bottom-right' 
+    ? 'right-4' 
+    : 'left-4';
 
   // Bouton flottant quand fermé
   if (!isOpen) {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 left-4 z-50 w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center"
+        className={`fixed bottom-24 ${positionClasses} z-50 w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center`}
         title="Ouvrir la radio"
+        data-testid="radio-open-btn"
       >
         <Radio className="w-6 h-6" />
       </button>
@@ -271,7 +208,7 @@ export default function RadioPlayer() {
   }
 
   return (
-    <div className={`fixed bottom-24 left-4 z-50 transition-all duration-300 ${isExpanded ? 'w-80' : 'w-72'}`}>
+    <div className={`fixed bottom-24 ${positionClasses} z-50 transition-all duration-300 ${isExpanded ? 'w-80' : 'w-72'}`} data-testid="radio-player">
       {/* Mini Player */}
       <div 
         className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-border overflow-hidden"
@@ -362,6 +299,7 @@ export default function RadioPlayer() {
             disabled={isLoading}
             className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all hover:scale-105 disabled:opacity-50"
             style={{ backgroundColor: currentStation.color }}
+            data-testid="radio-play-btn"
           >
             {isPlaying ? (
               <Pause className="w-6 h-6" />
@@ -401,7 +339,7 @@ export default function RadioPlayer() {
         {isExpanded && (
           <div className="border-t max-h-60 overflow-y-auto">
             <div className="p-2 grid grid-cols-2 gap-1">
-              {RADIO_STATIONS.map((station) => (
+              {stations.map((station) => (
                 <button
                   key={station.id}
                   onClick={() => changeStation(station)}
@@ -410,6 +348,7 @@ export default function RadioPlayer() {
                       ? 'bg-primary/10 border border-primary/30'
                       : 'hover:bg-secondary'
                   }`}
+                  data-testid={`radio-station-${station.id}`}
                 >
                   <span className="text-lg">{station.logo}</span>
                   <div className="min-w-0">
