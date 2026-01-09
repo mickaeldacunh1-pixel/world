@@ -966,6 +966,18 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Stories Section */}
+      <section className="py-8 md:py-12 bg-secondary/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-4">
+            <h3 className="font-heading text-lg font-semibold text-muted-foreground">
+              {t('home.stories_title', 'Stories vendeurs')}
+            </h3>
+          </div>
+          <Stories />
+        </div>
+      </section>
+
       {/* Recent Listings - Improved cards */}
       {recentListings.length > 0 && (
         <section className="py-16 md:py-24">
