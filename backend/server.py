@@ -2631,7 +2631,7 @@ async def check_and_send_alerts(listing: dict, background_tasks: BackgroundTasks
 # ================== MESSAGES ROUTES ==================
 
 @api_router.post("/messages")
-async def send_message(message: MessageCreate, current_user: dict = Depends(get_current_user)):
+async def send_message(message: MessageCreate, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
     # Modération du contenu
     moderation = await moderate_content(message.content, context="message")
     if not moderation["allowed"]:
@@ -2641,6 +2641,9 @@ async def send_message(message: MessageCreate, current_user: dict = Depends(get_
     receiver = await db.users.find_one({"id": message.receiver_id}, {"_id": 0, "password": 0})
     if not receiver:
         raise HTTPException(status_code=404, detail="Destinataire non trouvé")
+    
+    # Get listing info for notification
+    listing = await db.listings.find_one({"id": message.listing_id}, {"_id": 0, "title": 1})
     
     message_doc = {
         "id": str(uuid.uuid4()),
@@ -2657,6 +2660,18 @@ async def send_message(message: MessageCreate, current_user: dict = Depends(get_
     }
     
     await db.messages.insert_one(message_doc)
+    
+    # Send push notification to receiver (in background)
+    async def send_message_push():
+        await send_push_notification(
+            user_id=message.receiver_id,
+            title=f"💬 {current_user['name']}",
+            body=message.content[:100] + ("..." if len(message.content) > 100 else ""),
+            url=f"/messages/{message.listing_id}/{current_user['id']}",
+            tag="message"
+        )
+    background_tasks.add_task(send_message_push)
+    
     # Return the message without MongoDB's _id field
     return {k: v for k, v in message_doc.items() if k != "_id"}
 
