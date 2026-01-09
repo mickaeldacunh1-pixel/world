@@ -391,7 +391,7 @@ export default function StoriesPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{stories.reduce((acc, s) => acc + s.stories_count, 0) + myStories.length}</p>
-                <p className="text-xs text-muted-foreground">Stories actives</p>
+                <p className="text-xs text-muted-foreground">{t('stories.active_stories', 'Stories actives')}</p>
               </div>
             </CardContent>
           </Card>
@@ -402,7 +402,7 @@ export default function StoriesPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{stories.length + (myStories.length > 0 ? 1 : 0)}</p>
-                <p className="text-xs text-muted-foreground">Vendeurs actifs</p>
+                <p className="text-xs text-muted-foreground">{t('stories.active_sellers', 'Vendeurs actifs')}</p>
               </div>
             </CardContent>
           </Card>
@@ -413,7 +413,7 @@ export default function StoriesPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">24h</p>
-                <p className="text-xs text-muted-foreground">Durée de vie</p>
+                <p className="text-xs text-muted-foreground">{t('stories.lifetime', 'Durée de vie')}</p>
               </div>
             </CardContent>
           </Card>
