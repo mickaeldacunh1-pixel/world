@@ -8104,6 +8104,28 @@ async def get_push_status(current_user: dict = Depends(get_current_user)):
     
     return {"subscribed": False, "preferences": {}}
 
+@api_router.get("/push/vapid-key")
+async def get_vapid_public_key():
+    """Get the VAPID public key for push subscriptions"""
+    vapid_public_key = os.environ.get('VAPID_PUBLIC_KEY')
+    if not vapid_public_key:
+        raise HTTPException(status_code=500, detail="VAPID key not configured")
+    return {"public_key": vapid_public_key}
+
+@api_router.post("/push/test")
+async def test_push_notification(current_user: dict = Depends(get_current_user)):
+    """Send a test push notification to the current user"""
+    success = await send_push_notification(
+        user_id=current_user["id"],
+        title="World Auto Pro",
+        body="Les notifications fonctionnent ! 🎉",
+        url="/profil",
+        tag="test"
+    )
+    if not success:
+        raise HTTPException(status_code=400, detail="Notifications non activées ou erreur d'envoi")
+    return {"success": True, "message": "Notification envoyée !"}
+
 # Helper function to send push notification (called from other parts of the app)
 async def send_push_notification(user_id: str, title: str, body: str, url: str = "/", tag: str = "default"):
     """Send a push notification to a user using Web Push"""
