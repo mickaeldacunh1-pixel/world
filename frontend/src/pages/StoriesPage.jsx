@@ -482,7 +482,7 @@ export default function StoriesPage() {
                               <Video className="w-8 h-8 text-accent" />
                             </div>
                           </div>
-                          <p className="text-sm text-muted-foreground">Cliquez pour ajouter</p>
+                          <p className="text-sm text-muted-foreground">{t('stories.click_to_add', 'Cliquez pour ajouter')}</p>
                         </div>
                       )}
 
@@ -496,7 +496,7 @@ export default function StoriesPage() {
 
                       <input
                         type="text"
-                        placeholder="Ajouter une légende..."
+                        placeholder={t('stories.add_caption', 'Ajouter une légende...')}
                         value={caption}
                         onChange={(e) => setCaption(e.target.value)}
                         className="w-full px-3 py-2 border rounded-lg bg-transparent"
@@ -508,7 +508,7 @@ export default function StoriesPage() {
                         disabled={!selectedFile || uploading}
                         className="w-full bg-accent hover:bg-accent/90"
                       >
-                        {uploading ? 'Publication...' : 'Publier la story'}
+                        {uploading ? t('stories.publishing', 'Publication...') : t('stories.publish', 'Publier la story')}
                       </Button>
                     </div>
                   </DialogContent>
@@ -524,7 +524,7 @@ export default function StoriesPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Camera className="w-5 h-5" />
-                Vos stories
+                {t('stories.your_stories', 'Vos stories')}
               </CardTitle>
             </CardHeader>
             <CardContent>
