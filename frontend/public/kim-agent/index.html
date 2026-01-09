@@ -862,36 +862,38 @@
                 .replace(/`([^`]+)`/g, '<code>$1</code>');
         }
 
-        // Simulated AI Response (replace with actual API)
+        // Real AI Response via API
         async function getAIResponse(userMessage) {
-            // Simulate network delay
-            await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1500));
+            try {
+                const response = await fetch(API_URL + '/kim/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: userMessage,
+                        session_id: sessionId
+                    })
+                });
 
-            // Simple response logic (replace with actual AI API call)
-            const lowerMsg = userMessage.toLowerCase();
-            
-            if (lowerMsg.includes('bonjour') || lowerMsg.includes('salut') || lowerMsg.includes('hello')) {
-                return "Bonjour ! Je suis KIM, votre assistant automobile. Comment puis-je vous aider aujourd'hui ? 🚗";
-            }
-            
-            if (lowerMsg.includes('bruit') && lowerMsg.includes('frein')) {
-                return "Un bruit au freinage peut avoir plusieurs causes :\n\n**Causes frequentes :**\n• **Plaquettes usees** - Le temoin d'usure metallique frotte sur le disque\n• **Disques voiles** - Provoque des vibrations et bruits\n• **Plaquettes vitreuses** - Surface durcie par la chaleur\n• **Corps etranger** - Caillou ou debris coince\n\n**Recommandation :** Je vous conseille de faire verifier vos freins rapidement, surtout si le bruit est constant. C'est un element de securite critique.\n\nVoulez-vous que je vous aide a trouver des plaquettes de frein compatibles avec votre vehicule ?";
-            }
-            
-            if (lowerMsg.includes('prix') || lowerMsg.includes('cout') || lowerMsg.includes('combien')) {
-                return "Pour vous donner une estimation precise, j'aurais besoin de quelques informations :\n\n• **Marque et modele** de votre vehicule\n• **Annee** de mise en circulation\n• **Type de piece ou reparation** concernee\n\nEn attendant, voici quelques ordres de grandeur :\n• Plaquettes de frein : 30-80€ (piece) + 50-100€ (main d'oeuvre)\n• Vidange complete : 60-150€\n• Courroie de distribution : 400-800€\n\nQuel est votre besoin specifique ?";
-            }
-            
-            if (lowerMsg.includes('piece') || lowerMsg.includes('trouver')) {
-                return "Je peux vous aider a trouver votre piece ! 🔍\n\nPour une recherche efficace, donnez-moi :\n1. **Marque et modele** du vehicule\n2. **Annee** et/ou **motorisation**\n3. **Nom de la piece** recherchee\n\nOu si vous avez la **reference OEM** (numero constructeur), c'est encore mieux !\n\n💡 Astuce : Sur World Auto France, vous pouvez scanner votre plaque d'immatriculation pour trouver automatiquement les pieces compatibles.";
-            }
-            
-            if (lowerMsg.includes('merci')) {
-                return "Avec plaisir ! 😊 N'hesitez pas si vous avez d'autres questions. Je suis la pour vous aider.\n\nBonne route ! 🚗";
-            }
+                if (!response.ok) {
+                    throw new Error('Erreur API');
+                }
 
-            // Default response
-            return "Merci pour votre question ! En tant qu'assistant automobile, je peux vous aider avec :\n\n• **Diagnostic** de problemes mecaniques\n• **Recherche** de pieces detachees\n• **Estimation** de couts de reparation\n• **Conseils** d'entretien et d'achat\n\nPourriez-vous me donner plus de details sur votre demande ?";
+                const data = await response.json();
+                
+                // Save session ID for conversation continuity
+                if (data.session_id) {
+                    sessionId = data.session_id;
+                    localStorage.setItem('kim_session_id', sessionId);
+                }
+
+                return data.response;
+            } catch (error) {
+                console.error('KIM API Error:', error);
+                // Fallback response
+                return "Désolé, je rencontre un problème technique. 😅\n\nEn attendant, voici ce que je peux vous dire :\n• Pour les **diagnostics**, décrivez vos symptômes en détail\n• Pour **trouver une pièce**, donnez-moi marque + modèle + année\n• Pour une **estimation**, précisez la pièce et l'état\n\nRéessayez dans quelques instants !";
+            }
         }
 
         // Register service worker
