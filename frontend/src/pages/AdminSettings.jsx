@@ -528,6 +528,8 @@ const DEFAULT_SETTINGS = {
   hero_cta1_bg_color: "#F97316",
   hero_cta1_text_color: "#FFFFFF",
   hero_cta1_style: "filled",
+  hero_cta1_size: "medium",
+  hero_cta1_border_radius: "medium",
   
   // Bouton CTA 2
   hero_cta2_enabled: true,
@@ -538,6 +540,13 @@ const DEFAULT_SETTINGS = {
   hero_cta2_text_color: "#FFFFFF",
   hero_cta2_border_color: "rgba(255, 255, 255, 0.3)",
   hero_cta2_style: "outline",
+  hero_cta2_size: "medium",
+  hero_cta2_border_radius: "medium",
+  
+  // Options de disposition des boutons
+  hero_buttons_layout: "horizontal",
+  hero_buttons_gap: "4",
+  hero_buttons_align: "left",
   
   // Image de fond
   hero_image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2832&auto=format&fit=crop",
