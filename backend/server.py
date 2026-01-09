@@ -5703,6 +5703,144 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
         }
     }
 
+@api_router.get("/stats/export-pdf")
+async def export_sales_pdf(current_user: dict = Depends(get_current_user)):
+    """Export sales statistics as PDF for accounting"""
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import cm
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+    from reportlab.lib.enums import TA_CENTER, TA_RIGHT
+    import io
+    
+    # Get user data
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    
+    # Get all orders where user is seller
+    orders = await db.orders.find({"seller_id": current_user["id"]}).sort("created_at", -1).to_list(1000)
+    
+    # Calculate stats
+    total_revenue = sum(float(o.get("price", 0)) for o in orders)
+    total_commissions = sum(calculate_platform_fee(float(o.get("price", 0))) for o in orders)
+    net_revenue = total_revenue - total_commissions
+    
+    # Create PDF
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=2*cm, leftMargin=2*cm, topMargin=2*cm, bottomMargin=2*cm)
+    
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle('Title', parent=styles['Heading1'], fontSize=20, alignment=TA_CENTER, spaceAfter=20)
+    subtitle_style = ParagraphStyle('Subtitle', parent=styles['Normal'], fontSize=12, alignment=TA_CENTER, textColor=colors.grey, spaceAfter=30)
+    section_style = ParagraphStyle('Section', parent=styles['Heading2'], fontSize=14, spaceBefore=20, spaceAfter=10)
+    
+    elements = []
+    
+    # Header
+    elements.append(Paragraph("World Auto Pro", title_style))
+    elements.append(Paragraph("Relevé de compte vendeur", subtitle_style))
+    elements.append(Paragraph(f"Généré le {datetime.now(timezone.utc).strftime('%d/%m/%Y à %H:%M')}", styles['Normal']))
+    elements.append(Spacer(1, 20))
+    
+    # Seller info
+    elements.append(Paragraph("Informations vendeur", section_style))
+    seller_data = [
+        ["Nom", user.get("name", "N/A")],
+        ["Email", user.get("email", "N/A")],
+        ["Téléphone", user.get("phone", "N/A")],
+        ["Membre depuis", user.get("created_at", "N/A")[:10] if user.get("created_at") else "N/A"],
+    ]
+    seller_table = Table(seller_data, colWidths=[5*cm, 10*cm])
+    seller_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (0, -1), colors.Color(0.95, 0.95, 0.95)),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+    ]))
+    elements.append(seller_table)
+    elements.append(Spacer(1, 20))
+    
+    # Summary
+    elements.append(Paragraph("Résumé financier", section_style))
+    summary_data = [
+        ["Description", "Montant"],
+        ["Nombre total de ventes", str(len(orders))],
+        ["Chiffre d'affaires brut", f"{total_revenue:.2f} €"],
+        ["Commission World Auto Pro (5%, min 1,50€, max 15€)", f"-{total_commissions:.2f} €"],
+        ["Revenus nets", f"{net_revenue:.2f} €"],
+    ]
+    summary_table = Table(summary_data, colWidths=[10*cm, 5*cm])
+    summary_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.Color(0.2, 0.4, 0.6)),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.Color(0.9, 0.95, 0.9)),
+        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+        ('TOPPADDING', (0, 0), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+    ]))
+    elements.append(summary_table)
+    elements.append(Spacer(1, 20))
+    
+    # Orders detail
+    if orders:
+        elements.append(Paragraph("Détail des ventes", section_style))
+        orders_data = [["Date", "Article", "Prix", "Commission", "Net"]]
+        for order in orders[:50]:  # Limit to 50 for PDF size
+            price = float(order.get("price", 0))
+            commission = calculate_platform_fee(price)
+            orders_data.append([
+                order.get("created_at", "")[:10],
+                order.get("listing_title", "N/A")[:30],
+                f"{price:.2f} €",
+                f"-{commission:.2f} €",
+                f"{price - commission:.2f} €"
+            ])
+        
+        orders_table = Table(orders_data, colWidths=[2.5*cm, 7*cm, 2.5*cm, 2.5*cm, 2.5*cm])
+        orders_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.Color(0.2, 0.4, 0.6)),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('ALIGN', (2, 0), (-1, -1), 'RIGHT'),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.Color(0.97, 0.97, 0.97)]),
+        ]))
+        elements.append(orders_table)
+        
+        if len(orders) > 50:
+            elements.append(Spacer(1, 10))
+            elements.append(Paragraph(f"... et {len(orders) - 50} autres ventes", styles['Normal']))
+    
+    elements.append(Spacer(1, 30))
+    
+    # Footer
+    footer_style = ParagraphStyle('Footer', parent=styles['Normal'], fontSize=8, textColor=colors.grey, alignment=TA_CENTER)
+    elements.append(Paragraph("Ce document est généré automatiquement par World Auto Pro.", footer_style))
+    elements.append(Paragraph("Pour toute question, contactez contact@worldautofrance.com", footer_style))
+    
+    # Build PDF
+    doc.build(elements)
+    buffer.seek(0)
+    
+    # Return as downloadable file
+    filename = f"worldautopro_releve_{current_user['id'][:8]}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
 @api_router.get("/categories/stats")
 async def get_category_stats():
     pipeline = [
