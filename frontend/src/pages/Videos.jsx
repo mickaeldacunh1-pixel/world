@@ -329,7 +329,7 @@ export default function Videos() {
     <>
       <SEO 
         title="Vidéos d'annonces - World Auto Pro"
-        description="Découvrez les annonces en vidéo sur World Auto. Visualisez les véhicules et pièces avant d'acheter."
+        description="Découvrez les annonces en vidéo sur World Auto Pro. Visualisez les véhicules et pièces avant d'acheter."
       />
 
       <div className="min-h-screen bg-background">

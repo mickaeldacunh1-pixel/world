@@ -65,7 +65,7 @@ export function WarrantyBadge({ duration, expiresAt }) {
             <p>Garantie expirée</p>
           ) : (
             <>
-              <p className="font-medium">Garantie World Auto</p>
+              <p className="font-medium">Garantie World Auto Pro</p>
               <p className="text-xs text-muted-foreground mt-1">
                 Expire le {new Date(expiresAt).toLocaleDateString('fr-FR')}
               </p>

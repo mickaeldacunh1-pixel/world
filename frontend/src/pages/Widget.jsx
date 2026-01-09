@@ -59,7 +59,7 @@ export default function Widget() {
           className="flex items-center gap-2"
         >
           <span className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            World Auto
+            World Auto Pro
           </span>
         </a>
         <a 
