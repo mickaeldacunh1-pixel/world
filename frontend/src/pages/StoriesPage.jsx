@@ -274,7 +274,11 @@ export default function StoriesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    fetchStories();
+  }, [fetchStories]);
 
   const openStoryViewer = (userStories, initialIndex = 0) => {
     setViewerStories(userStories);
