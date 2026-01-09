@@ -8348,7 +8348,7 @@ class StoryCreate(BaseModel):
     caption: Optional[str] = None
 
 @api_router.get("/stories")
-async def get_stories(current_user: dict = Depends(get_optional_user)):
+async def get_stories(current_user: dict = Depends(get_current_user_optional)):
     """Get all active stories (last 24 hours)"""
     twenty_four_hours_ago = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
     
