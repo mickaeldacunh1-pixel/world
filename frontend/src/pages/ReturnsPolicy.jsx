@@ -8,7 +8,7 @@ export default function ReturnsPolicy() {
     <div className="min-h-screen bg-secondary/30 py-12">
       <SEO
         title="Politique de Retours"
-        description="Politique de retours et de remboursement sur World Auto Pro Pro. Découvrez les conditions, délais et procédures pour retourner un article."
+        description="Politique de retours et de remboursement sur World Auto Pro. Découvrez les conditions, délais et procédures pour retourner un article."
         keywords="retour, remboursement, rétractation, politique retour, world auto"
         url="/politique-retours"
       />
@@ -26,7 +26,7 @@ export default function ReturnsPolicy() {
             </div>
             <div>
               <h1 className="font-heading text-3xl font-bold">Politique de Retours</h1>
-              <p className="text-muted-foreground">Conditions et procédures de retour sur World Auto Pro Pro</p>
+              <p className="text-muted-foreground">Conditions et procédures de retour sur World Auto Pro</p>
             </div>
           </div>
         </div>
@@ -38,10 +38,10 @@ export default function ReturnsPolicy() {
             <div>
               <h2 className="font-heading font-bold text-lg mb-2">Information importante</h2>
               <p className="text-muted-foreground">
-                World Auto Pro Pro est une <strong>plateforme de mise en relation</strong> entre acheteurs et vendeurs. 
+                World Auto Pro est une <strong>plateforme de mise en relation</strong> entre acheteurs et vendeurs. 
                 Pour les achats effectués via notre <strong>système de paiement sécurisé</strong>, l'argent est protégé 
                 jusqu'à confirmation de réception. Pour les transactions directes entre particuliers, 
-                World Auto Pro Pro ne peut être tenu responsable des litiges commerciaux.
+                World Auto Pro ne peut être tenu responsable des litiges commerciaux.
               </p>
             </div>
           </div>
