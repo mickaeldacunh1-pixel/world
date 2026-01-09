@@ -747,7 +747,7 @@ export default function AdminSettings() {
     fetchPendingVerifications();
   }, []);
 
-  const fetchPendingVerifications = async () => {
+  const fetchPendingVerifications = useCallback(async () => {
     setLoadingVerifications(true);
     try {
       const response = await axios.get(`${API}/admin/identity/pending`, {
@@ -759,7 +759,7 @@ export default function AdminSettings() {
     } finally {
       setLoadingVerifications(false);
     }
-  };
+  }, [token]);
 
   const handleApproveIdentity = async (userId) => {
     try {
@@ -769,7 +769,7 @@ export default function AdminSettings() {
       toast.success('Identité vérifiée avec succès !');
       fetchPendingVerifications();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur lors de l\'approbation');
+      toast.error(error.response?.data?.detail || "Erreur lors de l'approbation");
     }
   };
 
