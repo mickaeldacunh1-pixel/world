@@ -1184,7 +1184,7 @@ export default function AdminSettings() {
                     </p>
                     <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
                       Ces changements ne sont <strong>PAS encore visibles</strong> sur votre site. 
-                      Cliquez sur <strong>"Sauvegarder"</strong> en haut de page pour les appliquer.
+                      Cliquez sur <strong>Sauvegarder</strong> en haut de page pour les appliquer.
                     </p>
                   </div>
                 </div>
