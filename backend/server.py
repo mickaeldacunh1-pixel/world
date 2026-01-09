@@ -8910,7 +8910,8 @@ async def boxtal_status():
         "configured": bool(BOXTAL_ACCESS_KEY and BOXTAL_SECRET_KEY),
         "mode": BOXTAL_MODE,
         "api_url": BOXTAL_API_URL,
-        "simulation_active": BOXTAL_MODE == "simulation"
+        "simulation_active": BOXTAL_MODE == "simulation",
+        "margin_percent": BOXTAL_MARGIN_PERCENT
     }
 
 @app.post("/api/boxtal/quotes")
@@ -8919,6 +8920,12 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
     
     # In simulation mode, return simulated quotes
     if BOXTAL_MODE == "simulation":
+        # Prix de base (simulés)
+        base_colissimo = round(5.50 + (request.parcels[0].weight / 1000) * 2, 2)
+        base_mondial = round(3.90 + (request.parcels[0].weight / 1000) * 1.5, 2)
+        base_chronopost = round(12.90 + (request.parcels[0].weight / 1000) * 3, 2)
+        base_dpd = round(6.90 + (request.parcels[0].weight / 1000) * 2.2, 2)
+        
         simulated_options = [
             {
                 "service_id": "colissimo_domicile",
@@ -8927,8 +8934,9 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
                 "service_name": "Livraison à domicile",
                 "delivery_time_min": 2,
                 "delivery_time_max": 4,
-                "price_ht": round(5.50 + (request.parcels[0].weight / 1000) * 2, 2),
-                "price_ttc": round((5.50 + (request.parcels[0].weight / 1000) * 2) * 1.20, 2),
+                "price_ht_base": base_colissimo,
+                "price_ht": apply_shipping_margin(base_colissimo),
+                "price_ttc": apply_shipping_margin(base_colissimo * 1.20),
                 "insurance_available": True
             },
             {
@@ -8938,8 +8946,9 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
                 "service_name": "Point Relais",
                 "delivery_time_min": 3,
                 "delivery_time_max": 5,
-                "price_ht": round(3.90 + (request.parcels[0].weight / 1000) * 1.5, 2),
-                "price_ttc": round((3.90 + (request.parcels[0].weight / 1000) * 1.5) * 1.20, 2),
+                "price_ht_base": base_mondial,
+                "price_ht": apply_shipping_margin(base_mondial),
+                "price_ttc": apply_shipping_margin(base_mondial * 1.20),
                 "insurance_available": False
             },
             {
@@ -8949,8 +8958,9 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
                 "service_name": "Express 24h",
                 "delivery_time_min": 1,
                 "delivery_time_max": 1,
-                "price_ht": round(12.90 + (request.parcels[0].weight / 1000) * 3, 2),
-                "price_ttc": round((12.90 + (request.parcels[0].weight / 1000) * 3) * 1.20, 2),
+                "price_ht_base": base_chronopost,
+                "price_ht": apply_shipping_margin(base_chronopost),
+                "price_ttc": apply_shipping_margin(base_chronopost * 1.20),
                 "insurance_available": True
             },
             {
@@ -8960,8 +8970,9 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
                 "service_name": "DPD Classic",
                 "delivery_time_min": 2,
                 "delivery_time_max": 3,
-                "price_ht": round(6.90 + (request.parcels[0].weight / 1000) * 2.2, 2),
-                "price_ttc": round((6.90 + (request.parcels[0].weight / 1000) * 2.2) * 1.20, 2),
+                "price_ht_base": base_dpd,
+                "price_ht": apply_shipping_margin(base_dpd),
+                "price_ttc": apply_shipping_margin(base_dpd * 1.20),
                 "insurance_available": True
             }
         ]
