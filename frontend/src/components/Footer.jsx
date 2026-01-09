@@ -182,7 +182,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-primary-foreground/20 mt-10 pt-8">
           <p className="text-primary-foreground/50 text-sm text-center">
-            © {new Date().getFullYear()} World Auto <FranceText />. {t('footer.allRights')}.
+            © {new Date().getFullYear()} World Auto Pro. {t('footer.allRights')}.
           </p>
           <a 
             href="https://app.emergent.sh/?utm_source=emergent-badge" 
