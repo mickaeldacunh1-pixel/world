@@ -2971,6 +2971,17 @@ async def create_order(order: OrderCreate, background_tasks: BackgroundTasks, cu
     seller_info = {"name": seller.get("name"), "email": seller.get("email")}
     background_tasks.add_task(send_new_order_admin_email, order_doc, buyer_info, seller_info)
     
+    # Send push notification to seller
+    async def send_order_push():
+        await send_push_notification(
+            user_id=listing["seller_id"],
+            title="🛒 Nouvelle commande !",
+            body=f"{current_user['name']} a commandé : {listing['title']} - {listing['price']}€",
+            url="/commandes",
+            tag="order"
+        )
+    background_tasks.add_task(send_order_push)
+    
     return order_doc
 
 @api_router.post("/orders/checkout")
