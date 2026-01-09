@@ -940,6 +940,10 @@ export default function AdminSettings() {
               <Layout className="w-4 h-4" />
               Bannières
             </TabsTrigger>
+            <TabsTrigger value="radio" className="flex items-center gap-2">
+              <Radio className="w-4 h-4" />
+              <span className="hidden sm:inline">Radio</span>
+            </TabsTrigger>
             <TabsTrigger value="sections" className="flex items-center gap-2">
               <Settings className="w-4 h-4" />
               Sections
