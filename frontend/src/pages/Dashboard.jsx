@@ -281,6 +281,167 @@ export default function Dashboard() {
             </Card>
           </TabsContent>
 
+          {/* Sales Tab - Revenue & Commission Dashboard */}
+          <TabsContent value="sales">
+            <div className="space-y-6">
+              {/* Monthly Summary */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-green-700 dark:text-green-400">Ventes ce mois</p>
+                        <p className="text-3xl font-heading font-bold text-green-800 dark:text-green-300">
+                          {stats?.sales?.monthly_count || 0}
+                        </p>
+                        <p className="text-xs text-green-600 dark:text-green-500 mt-1">
+                          {stats?.sales?.monthly_revenue?.toFixed(2) || '0.00'} € brut
+                        </p>
+                      </div>
+                      <div className="w-14 h-14 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center">
+                        <ShoppingBag className="w-7 h-7 text-green-600 dark:text-green-400" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-blue-200 dark:border-blue-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-blue-700 dark:text-blue-400">Revenus nets ce mois</p>
+                        <p className="text-3xl font-heading font-bold text-blue-800 dark:text-blue-300">
+                          {stats?.sales?.monthly_net?.toFixed(2) || '0.00'} €
+                        </p>
+                        <p className="text-xs text-blue-600 dark:text-blue-500 mt-1 flex items-center gap-1">
+                          <ArrowUpRight className="w-3 h-3" />
+                          Après commission
+                        </p>
+                      </div>
+                      <div className="w-14 h-14 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center">
+                        <Wallet className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border-orange-200 dark:border-orange-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-orange-700 dark:text-orange-400">Commission ce mois</p>
+                        <p className="text-3xl font-heading font-bold text-orange-800 dark:text-orange-300">
+                          {stats?.sales?.monthly_commissions?.toFixed(2) || '0.00'} €
+                        </p>
+                        <p className="text-xs text-orange-600 dark:text-orange-500 mt-1">
+                          5% (min 1,50€, max 15€)
+                        </p>
+                      </div>
+                      <div className="w-14 h-14 bg-orange-100 dark:bg-orange-800 rounded-full flex items-center justify-center">
+                        <Percent className="w-7 h-7 text-orange-600 dark:text-orange-400" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border-purple-200 dark:border-purple-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-purple-700 dark:text-purple-400">Total historique</p>
+                        <p className="text-3xl font-heading font-bold text-purple-800 dark:text-purple-300">
+                          {stats?.sales?.net_revenue?.toFixed(2) || '0.00'} €
+                        </p>
+                        <p className="text-xs text-purple-600 dark:text-purple-500 mt-1">
+                          {stats?.sales?.total_count || 0} ventes
+                        </p>
+                      </div>
+                      <div className="w-14 h-14 bg-purple-100 dark:bg-purple-800 rounded-full flex items-center justify-center">
+                        <TrendingUp className="w-7 h-7 text-purple-600 dark:text-purple-400" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Revenue Chart */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-accent" />
+                    Évolution des revenus (6 derniers mois)
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {stats?.sales?.revenue_chart && stats.sales.revenue_chart.length > 0 ? (
+                    <div className="h-[300px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={stats.sales.revenue_chart}>
+                          <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                          <XAxis dataKey="month" />
+                          <YAxis />
+                          <Tooltip 
+                            formatter={(value, name) => {
+                              const labels = { revenue: 'Brut', net: 'Net', commission: 'Commission' };
+                              return [`${value.toFixed(2)} €`, labels[name] || name];
+                            }}
+                            labelFormatter={(label) => `Mois : ${label}`}
+                          />
+                          <Bar dataKey="revenue" name="revenue" fill="#10B981" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="net" name="net" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="commission" name="commission" fill="#F59E0B" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground">Aucune vente pour le moment</p>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Vos statistiques de revenus apparaîtront ici après votre première vente
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Commission Info */}
+              <Card className="bg-gradient-to-r from-accent/5 to-orange-500/5 border-accent/20">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center shrink-0">
+                      <Percent className="w-6 h-6 text-accent" />
+                    </div>
+                    <div>
+                      <h3 className="font-heading font-semibold mb-2">Comment fonctionne la commission ?</h3>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        World Auto Pro prélève une commission de <strong>5%</strong> sur chaque vente, 
+                        avec un <strong>minimum de 1,50€</strong> et un <strong>maximum de 15€</strong>.
+                      </p>
+                      <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div className="bg-background rounded-lg p-3 text-center">
+                          <p className="text-muted-foreground text-xs">Pièce à 20€</p>
+                          <p className="font-bold text-orange-600">1,50€</p>
+                          <p className="text-xs text-muted-foreground">(minimum)</p>
+                        </div>
+                        <div className="bg-background rounded-lg p-3 text-center">
+                          <p className="text-muted-foreground text-xs">Pièce à 100€</p>
+                          <p className="font-bold text-orange-600">5€</p>
+                          <p className="text-xs text-muted-foreground">(5%)</p>
+                        </div>
+                        <div className="bg-background rounded-lg p-3 text-center">
+                          <p className="text-muted-foreground text-xs">Pièce à 500€</p>
+                          <p className="font-bold text-orange-600">15€</p>
+                          <p className="text-xs text-muted-foreground">(maximum)</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
           {/* Stats Tab - PRO Dashboard */}
           <TabsContent value="stats">
             <div className="space-y-6">
