@@ -8819,6 +8819,7 @@ async def process_abandoned_cart_reminders():
 # ================== BOXTAL SHIPPING API ==================
 
 # Boxtal Config
+BOXTAL_APP_ID = os.environ.get('BOXTAL_APP_ID', '')
 BOXTAL_ACCESS_KEY = os.environ.get('BOXTAL_ACCESS_KEY', '')
 BOXTAL_SECRET_KEY = os.environ.get('BOXTAL_SECRET_KEY', '')
 BOXTAL_API_URL = os.environ.get('BOXTAL_API_URL', 'https://api.boxtal.com')
