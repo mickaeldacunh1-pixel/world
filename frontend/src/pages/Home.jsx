@@ -362,6 +362,27 @@ export default function Home() {
         url="/"
         structuredData={[createOrganizationSchema(), createWebsiteSchema()]}
       />
+
+      {/* NOUVEAUTES BANNER - Visible en haut */}
+      <section className="bg-gradient-to-r from-accent via-orange-500 to-amber-500 py-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Link 
+            to="/nouveautes" 
+            className="flex items-center justify-center gap-3 group"
+            data-testid="updates-banner"
+          >
+            <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+              <Sparkles className="w-4 h-4 text-white animate-pulse" />
+              <span className="text-white text-sm font-bold">{t('home.whats_new', 'NOUVEAUTÉS')}</span>
+            </div>
+            <span className="text-white text-sm md:text-base font-medium group-hover:underline">
+              {t('home.updates_cta', 'Boxtal, nouvelles catégories, marge frais de port...')}
+            </span>
+            <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+      </section>
+
       {/* Hero Section - Full Customization */}
       <section className={`relative ${HERO_HEIGHT_CLASSES[heroSettings.hero_height] || 'min-h-[600px] md:min-h-[700px]'} flex items-center overflow-hidden`}>
         {/* Background Image */}
