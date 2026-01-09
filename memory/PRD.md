@@ -55,6 +55,22 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
   - Documentation mise à jour (FAQ, Profil)
   - **Simulateur de commission** intégré dans CreateListing et EditListing
 
+- ✅ **Tableau de bord Ventes** :
+  - Onglet "💰 Ventes" avec 4 cartes de statistiques
+  - Graphique d'évolution des revenus sur 6 mois
+  - Explication détaillée de la commission
+  - **Export PDF comptabilité** : relevé complet pour la comptabilité
+
+- ✅ **Mise à jour FAQ** :
+  - Nouvelles sections : Notifications Push, Stories Vendeurs, Vérification d'identité, Tableau de bord Ventes
+  - Question sur la commission mise à jour avec formule hybride
+
+- ✅ **Mise à jour page Nouveautés** :
+  - v4.0.0 : Tableau de bord Ventes & Export PDF
+  - v3.9.0 : Commission hybride optimisée
+  - v3.8.0 : Stories Vendeurs & Vérification d'identité
+  - v3.7.0 : Notifications Push
+
 ### Session précédente
 - ✅ **Lecteur Radio Configurable** : 14 stations françaises, gestion depuis l'admin
 - ✅ **Crédits en attente** : Pré-distribuer des crédits avant inscription (prospection)
