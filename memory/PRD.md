@@ -82,6 +82,11 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 - ✅ Lien Emergent centré dans le footer
 - ✅ Renommage "World Auto" → "World Auto Pro" (SEO, PWA, toutes pages)
 - ✅ Bug admin identity APIs (403 pour admin) corrigé
+- ✅ **Traduction page Nouveautés (Updates.jsx)** : Interface entièrement multilingue (8 langues : FR, EN, DE, ES, IT, NL, PT, SV) avec dates formatées selon la locale
+
+## Traductions i18n (toutes les pages)
+- ✅ Page Nouveautés (Updates.jsx) : Titre, sous-titre, légende, catégories, dates, CTA newsletter
+- ✅ Toutes les nouvelles clés ajoutées dans `frontend/src/i18n/locales/*.json`
 
 ## Commandes utiles VPS
 
