@@ -263,6 +263,10 @@ export default function Profile() {
               <Palmtree className="w-4 h-4" />
               <span className="hidden sm:inline">Vacances</span>
             </TabsTrigger>
+            <TabsTrigger value="identity" className="flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              <span className="hidden sm:inline">Vérification</span>
+            </TabsTrigger>
             <TabsTrigger value="stripe" className="flex items-center gap-2">
               <CreditCard className="w-4 h-4" />
               <span className="hidden sm:inline">Paiements</span>
