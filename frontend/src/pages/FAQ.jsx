@@ -103,6 +103,10 @@ const faqs = [
         a: "Les frais de livraison sont généralement à la charge de l'acheteur, sauf accord contraire avec le vendeur. Le vendeur peut aussi proposer la livraison gratuite en l'incluant dans son prix."
       },
       {
+        q: "Comment sont calculés les frais de port ?",
+        a: "Les frais de port sont calculés en temps réel via notre partenaire Boxtal, en fonction du poids, des dimensions et de la destination. Une petite commission de service est incluse dans les frais affichés pour couvrir les coûts de gestion de la plateforme (emballage, support, etc.)."
+      },
+      {
         q: "Comment suivre ma commande ?",
         a: "Une fois l'article expédié, vous recevez un numéro de suivi par email et dans votre espace Commandes. Vous pouvez suivre votre colis en temps réel sur le site du transporteur ou directement sur World Auto Pro."
       },
