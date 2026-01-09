@@ -8019,6 +8019,113 @@ async def apply_coupon(code: str, current_user: dict = Depends(get_current_user)
     
     return {"message": "Coupon appliqué"}
 
+# ================== PUSH NOTIFICATIONS ==================
+
+class PushSubscription(BaseModel):
+    subscription: dict
+    preferences: Optional[dict] = None
+
+class PushPreferences(BaseModel):
+    preferences: dict
+
+@api_router.post("/push/subscribe")
+async def subscribe_push(data: PushSubscription, current_user: dict = Depends(get_current_user)):
+    """Subscribe to push notifications"""
+    subscription_data = {
+        "user_id": current_user["id"],
+        "endpoint": data.subscription.get("endpoint"),
+        "keys": data.subscription.get("keys"),
+        "preferences": data.preferences or {
+            "messages": True,
+            "price_alerts": True,
+            "new_offers": True,
+            "order_updates": True,
+            "promotions": False
+        },
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    # Update or create subscription
+    await db.push_subscriptions.update_one(
+        {"user_id": current_user["id"]},
+        {"$set": subscription_data},
+        upsert=True
+    )
+    
+    # Update user's push notification status
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"push_enabled": True}}
+    )
+    
+    return {"success": True, "message": "Notifications activées"}
+
+@api_router.post("/push/unsubscribe")
+async def unsubscribe_push(endpoint: str = Body(..., embed=True), current_user: dict = Depends(get_current_user)):
+    """Unsubscribe from push notifications"""
+    await db.push_subscriptions.delete_one({
+        "user_id": current_user["id"]
+    })
+    
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"push_enabled": False}}
+    )
+    
+    return {"success": True, "message": "Notifications désactivées"}
+
+@api_router.put("/push/preferences")
+async def update_push_preferences(data: PushPreferences, current_user: dict = Depends(get_current_user)):
+    """Update push notification preferences"""
+    await db.push_subscriptions.update_one(
+        {"user_id": current_user["id"]},
+        {"$set": {
+            "preferences": data.preferences,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return {"success": True}
+
+@api_router.get("/push/status")
+async def get_push_status(current_user: dict = Depends(get_current_user)):
+    """Get push notification status"""
+    subscription = await db.push_subscriptions.find_one({"user_id": current_user["id"]})
+    
+    if subscription:
+        subscription.pop("_id", None)
+        return {
+            "subscribed": True,
+            "preferences": subscription.get("preferences", {})
+        }
+    
+    return {"subscribed": False, "preferences": {}}
+
+# Helper function to send push notification (called from other parts of the app)
+async def send_push_notification(user_id: str, title: str, body: str, url: str = "/", tag: str = "default"):
+    """Send a push notification to a user"""
+    subscription = await db.push_subscriptions.find_one({"user_id": user_id})
+    
+    if not subscription:
+        return False
+    
+    # Here you would integrate with a push service like Firebase, OneSignal, or web-push
+    # For now, we store the notification for delivery
+    notification = {
+        "user_id": user_id,
+        "title": title,
+        "body": body,
+        "url": url,
+        "tag": tag,
+        "read": False,
+        "delivered": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.push_queue.insert_one(notification)
+    return True
+
 # ================== ROOT ==================
 
 @api_router.get("/")
