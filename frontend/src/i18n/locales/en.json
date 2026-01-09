@@ -62,7 +62,9 @@
     "diagnostic": "AI Diagnostic",
     "pricing": "Pricing",
     "updates": "What's New",
-    "customization": "Site Customization"
+    "customization": "Site Customization",
+    "recherche": "Wanted",
+    "rare": "Rare & Collection"
   },
   "hero": {
     "title": "Used Auto Parts",
@@ -92,6 +94,8 @@
     "utilitaires": "Commercial Vehicles",
     "engins": "Heavy Equipment",
     "accessoires": "Accessories",
+    "recherche": "Wanted",
+    "rare": "Rare & Collection",
     "view_category": "View category"
   },
   "listing": {
