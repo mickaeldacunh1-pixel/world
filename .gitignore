@@ -510,3 +510,4 @@ frontend/node_modules/.cache/default-development/16.pack
 *.env
 *.env.*
 frontend/public/kim-desktop/node_modules/electron/dist/electron
+frontend/public/kim-desktop.zip
