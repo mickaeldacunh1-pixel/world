@@ -9051,9 +9051,11 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
             data = response.json()
             quote_id = data.get("id", f"BOX-{uuid.uuid4().hex[:12].upper()}")
             
-            # Parse and format options
+            # Parse and format options with margin
             options = []
             for offer in data.get("offers", []):
+                base_price_ht = float(offer.get("price", {}).get("tax_exclusive", 0))
+                base_price_ttc = float(offer.get("price", {}).get("tax_inclusive", 0))
                 options.append({
                     "service_id": offer.get("id"),
                     "carrier_name": offer.get("carrier", {}).get("name"),
@@ -9061,8 +9063,9 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
                     "service_name": offer.get("service", {}).get("name"),
                     "delivery_time_min": offer.get("delivery", {}).get("min_days", 1),
                     "delivery_time_max": offer.get("delivery", {}).get("max_days", 5),
-                    "price_ht": float(offer.get("price", {}).get("tax_exclusive", 0)),
-                    "price_ttc": float(offer.get("price", {}).get("tax_inclusive", 0)),
+                    "price_ht_base": base_price_ht,
+                    "price_ht": apply_shipping_margin(base_price_ht),
+                    "price_ttc": apply_shipping_margin(base_price_ttc),
                     "insurance_available": offer.get("insurance_available", False)
                 })
             
