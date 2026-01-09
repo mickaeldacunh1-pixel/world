@@ -263,11 +263,15 @@ export default function PushNotificationManager({ token }) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => {
-              new Notification('World Auto Pro', {
-                body: 'Les notifications fonctionnent ! 🎉',
-                icon: '/logo192.png'
-              });
+            onClick={async () => {
+              try {
+                await axios.post(`${API}/api/push/test`, {}, {
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+                toast.success('Notification de test envoyée !');
+              } catch (error) {
+                toast.error('Erreur lors de l\'envoi de la notification test');
+              }
             }}
           >
             🔔 Tester les notifications
