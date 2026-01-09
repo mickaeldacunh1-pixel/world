@@ -564,7 +564,7 @@ export default function Profile() {
                 {/* Info */}
                 <p className="text-xs text-muted-foreground">
                   En connectant Stripe, vous acceptez les <a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">conditions d&apos;utilisation de Stripe</a>. 
-                  Une commission de 5% est prélevée sur chaque vente.
+                  Commission : 5% (min 1,50€, max 15€) prélevée sur chaque vente.
                 </p>
               </CardContent>
             </Card>
