@@ -6112,6 +6112,88 @@ async def clear_tobi_session(session_id: str):
     await db.tobi_conversations.delete_many({"session_id": session_id})
     return {"message": "Session effacée"}
 
+# ================== KIM AGENT ==================
+
+KIM_SYSTEM_PROMPT = """Tu es KIM, un assistant IA expert en automobile pour World Auto France.
+
+Tu aides les utilisateurs avec:
+- **Diagnostic de pannes** : Identifier les problèmes mécaniques à partir des symptômes
+- **Recherche de pièces** : Trouver les pièces compatibles avec leur véhicule
+- **Conseils d'entretien** : Maintenance préventive et bonnes pratiques
+- **Estimation de coûts** : Prix approximatifs des réparations
+- **Tutoriels** : Guides pas à pas pour les réparations simples
+
+Ton style:
+- Réponds en français, de manière claire et professionnelle
+- Utilise des emojis pertinents (🚗 🔧 ⚠️ ✅ 💡)
+- Structure tes réponses avec des listes et titres en gras
+- Si tu ne sais pas, dis-le honnêtement
+- Propose toujours une prochaine étape ou question de suivi
+- Mentionne World Auto France quand c'est pertinent pour trouver des pièces
+
+Tu es amical, expert et tu veux vraiment aider les automobilistes !"""
+
+# Store for KIM sessions
+kim_sessions: Dict[str, LlmChat] = {}
+
+@api_router.post("/kim/chat", response_model=ChatResponse)
+async def kim_chat(chat_message: ChatMessage):
+    """Chat avec KIM Agent, l'assistant automobile IA"""
+    try:
+        # Get or create session
+        session_id = chat_message.session_id or str(uuid.uuid4())
+        
+        # Get API key
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        if not api_key:
+            raise HTTPException(status_code=500, detail="Clé API non configurée")
+        
+        # Get or create chat instance for this session
+        if session_id not in kim_sessions:
+            kim_sessions[session_id] = LlmChat(
+                api_key=api_key,
+                session_id=session_id,
+                system_message=KIM_SYSTEM_PROMPT
+            ).with_model("openai", "gpt-4o-mini")
+        
+        chat = kim_sessions[session_id]
+        
+        # Send message and get response
+        user_message = UserMessage(text=chat_message.message)
+        response = await chat.send_message(user_message)
+        
+        # Store conversation in database
+        await db.kim_conversations.insert_one({
+            "id": str(uuid.uuid4()),
+            "session_id": session_id,
+            "user_message": chat_message.message,
+            "assistant_response": response,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        return ChatResponse(response=response, session_id=session_id)
+        
+    except Exception as e:
+        logger.error(f"KIM error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+
+@api_router.get("/kim/history/{session_id}")
+async def get_kim_history(session_id: str):
+    """Récupérer l'historique d'une conversation KIM"""
+    history = await db.kim_conversations.find(
+        {"session_id": session_id},
+        {"_id": 0}
+    ).sort("created_at", 1).to_list(100)
+    return history
+
+@api_router.delete("/kim/session/{session_id}")
+async def clear_kim_session(session_id: str):
+    """Effacer une session KIM"""
+    if session_id in kim_sessions:
+        del kim_sessions[session_id]
+    await db.kim_conversations.delete_many({"session_id": session_id})
+    return {"message": "Session KIM effacée"}
+
 # ================== AI TOOLS ==================
 
 PART_RECOGNITION_PROMPT = """Tu es un expert en pièces détachées automobiles. Analyse cette image et identifie:
