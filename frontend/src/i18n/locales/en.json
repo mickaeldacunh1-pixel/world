@@ -494,5 +494,68 @@
       "savings": "Savings"
     },
     "login_required": "Log in to activate your free trial"
+  },
+  "stories": {
+    "title": "Seller Stories",
+    "description": "Discover the latest news from our sellers",
+    "active_stories": "Active stories",
+    "active_sellers": "Active sellers",
+    "lifetime": "Lifetime",
+    "your_stories": "Your stories",
+    "all_stories": "All stories",
+    "new_story": "New story",
+    "share_update": "Share your news",
+    "share_description": "Post a photo or video to promote your parts (visible 24h)",
+    "add_caption": "Add a caption...",
+    "publish": "Publish story",
+    "publishing": "Publishing...",
+    "no_stories": "No stories yet",
+    "be_first": "Be the first to share your news!",
+    "views": "views",
+    "click_to_add": "Click to add"
+  },
+  "sales": {
+    "title": "Sales",
+    "monthly_sales": "Sales this month",
+    "monthly_net": "Net revenue this month",
+    "monthly_commission": "Commission this month",
+    "total_history": "Total history",
+    "gross": "gross",
+    "after_commission": "After commission",
+    "sales_count": "sales",
+    "revenue_evolution": "Revenue evolution (last 6 months)",
+    "no_sales": "No sales yet",
+    "stats_appear": "Your revenue statistics will appear here after your first sale",
+    "how_commission_works": "How does the commission work?",
+    "commission_explanation": "World Auto Pro charges a 5% commission on each sale, with a minimum of €1.50 and a maximum of €15.",
+    "export_accounting": "Accounting export",
+    "export_description": "Download a PDF statement of all your sales for accounting",
+    "download_pdf": "Download PDF",
+    "generating": "Generating...",
+    "minimum": "minimum",
+    "maximum": "maximum"
+  },
+  "push": {
+    "title": "Push Notifications",
+    "enable": "Enable notifications",
+    "disable": "Disable",
+    "test": "Test notifications",
+    "preferences": "Notification preferences",
+    "messages": "New messages",
+    "orders": "New orders",
+    "price_alerts": "Price alerts",
+    "promotions": "Promotions"
+  },
+  "identity": {
+    "title": "Identity Verification",
+    "verified": "Identity verified",
+    "pending": "Verification pending",
+    "not_verified": "Not verified",
+    "submit": "Submit verification",
+    "id_front": "ID card (front)",
+    "id_back": "ID card (back)",
+    "selfie": "Selfie with ID",
+    "why_verify": "Why verify my identity?",
+    "trust_badge": "Get a trust badge on your profile"
   }
 }
