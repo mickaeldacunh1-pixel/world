@@ -237,11 +237,7 @@ export default function StoriesPage() {
   const [preview, setPreview] = useState(null);
   const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    fetchStories();
-  }, []);
-
-  const fetchStories = async () => {
+  const fetchStories = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/api/stories`);
       
