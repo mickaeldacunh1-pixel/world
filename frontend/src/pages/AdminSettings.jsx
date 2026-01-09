@@ -1407,7 +1407,7 @@ export default function AdminSettings() {
                       <Input
                         value={settings.navbar_logo_text}
                         onChange={(e) => setSettings({...settings, navbar_logo_text: e.target.value})}
-                        placeholder="World Auto"
+                        placeholder="World Auto Pro"
                       />
                     </div>
                   </div>
