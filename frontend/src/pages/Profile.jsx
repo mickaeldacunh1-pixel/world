@@ -428,6 +428,11 @@ export default function Profile() {
             <VacationMode />
           </TabsContent>
 
+          {/* Identity Verification Tab */}
+          <TabsContent value="identity">
+            <IdentityVerification user={user} token={token} onVerified={refreshUser} />
+          </TabsContent>
+
           {/* Stripe Connect Tab */}
           <TabsContent value="stripe">
             <Card>
