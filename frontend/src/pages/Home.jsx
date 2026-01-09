@@ -647,13 +647,6 @@ export default function Home() {
                     <span className="ml-2 text-sm">{autoTranslate(heroSettings.hero_stat3_label)}</span>
                   </div>
                 )}
-                
-                {/* AI Tools */}
-                {heroSettings.hero_show_ai_tools !== false && (
-                  <div className={heroSettings.hero_text_align !== 'center' ? 'ml-auto' : ''}>
-                    <AITools />
-                  </div>
-                )}
               </div>
             )}
           </div>
