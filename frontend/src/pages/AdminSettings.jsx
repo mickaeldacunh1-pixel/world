@@ -739,10 +739,51 @@ export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('hero');
   const fileInputRef = useRef(null);
   const [uploadTarget, setUploadTarget] = useState(null);
+  const [pendingVerifications, setPendingVerifications] = useState([]);
+  const [loadingVerifications, setLoadingVerifications] = useState(false);
 
   useEffect(() => {
     fetchSettings();
+    fetchPendingVerifications();
   }, []);
+
+  const fetchPendingVerifications = async () => {
+    setLoadingVerifications(true);
+    try {
+      const response = await axios.get(`${API}/admin/identity/pending`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPendingVerifications(response.data);
+    } catch (error) {
+      console.error('Error fetching verifications:', error);
+    } finally {
+      setLoadingVerifications(false);
+    }
+  };
+
+  const handleApproveIdentity = async (userId) => {
+    try {
+      await axios.post(`${API}/admin/identity/${userId}/approve`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Identité vérifiée avec succès !');
+      fetchPendingVerifications();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de l\'approbation');
+    }
+  };
+
+  const handleRejectIdentity = async (userId, reason = '') => {
+    try {
+      await axios.post(`${API}/admin/identity/${userId}/reject`, { reason }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Vérification refusée');
+      fetchPendingVerifications();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors du refus');
+    }
+  };
 
   const fetchSettings = async () => {
     try {
