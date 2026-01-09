@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIM Agent - Assistant IA</title>
+    <meta name="description" content="KIM Agent - Votre assistant IA personnel pour World Auto France">
+    <meta name="theme-color" content="#3b82f6">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #475569;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .logo-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: var(--accent);
+        }
+
+        /* Main Chat Area */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            display: flex;
+            gap: 0.75rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1rem;
+        }
+
+        .message.assistant .message-avatar {
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+        }
+
+        .message.user .message-avatar {
+            background: var(--bg-tertiary);
+        }
+
+        .message-content {
+            max-width: 70%;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 16px;
+            line-height: 1.6;
+        }
+
+        .message.user .message-content {
+            background: var(--accent);
+        }
+
+        .message-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .message-content code {
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+
+        .message-content pre {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+        }
+
+        .message-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 0.5rem;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            animation: typing 1.4s infinite both;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Input Area */
+        .input-container {
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+
+        .input-field {
+            flex: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 0.875rem 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            resize: none;
+            min-height: 50px;
+            max-height: 150px;
+            font-family: inherit;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            border: none;
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .send-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* Welcome Screen */
+        .welcome {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .welcome-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .welcome h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin-bottom: 2rem;
+        }
+
+        .capabilities {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .capability {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .capability:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .capability-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .capability-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .capability-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* PWA Install Banner */
+        .install-banner {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(100px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .install-banner.hidden {
+            display: none;
+        }
+
+        .install-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.625rem 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .install-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .dismiss-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Settings Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 400px;
+            transform: scale(0.9);
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            font-weight: 500;
+        }
+
+        .setting-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Toggle Switch */
+        .toggle {
+            width: 50px;
+            height: 28px;
+            background: var(--bg-tertiary);
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle.active {
+            background: var(--accent);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s;
+        }
+
+        .toggle.active::after {
+            left: 25px;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .message-content {
+                max-width: 85%;
+            }
+
+            .welcome h1 {
+                font-size: 1.5rem;
+            }
+
+            .capabilities {
+                grid-template-columns: 1fr;
+            }
+
+            .install-banner {
+                left: 1rem;
+                right: 1rem;
+                transform: none;
+            }
+
+            @keyframes slideUp {
+                from { transform: translateY(100px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">K</div>
+            <div>
+                <div class="logo-text">KIM Agent</div>
+                <div class="logo-subtitle">Propulse par IA</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-icon" id="newChatBtn" title="Nouvelle conversation">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <button class="btn-icon" id="settingsBtn" title="Parametres">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Chat Container -->
+    <main class="chat-container">
+        <!-- Welcome Screen (shown when no messages) -->
+        <div class="welcome" id="welcomeScreen">
+            <div class="welcome-icon">K</div>
+            <h1>Bienvenue sur KIM Agent</h1>
+            <p>Votre assistant IA personnel. Posez-moi vos questions sur l'automobile, la mecanique, ou tout autre sujet !</p>
+            
+            <div class="capabilities">
+                <div class="capability" data-prompt="Quel est le prix moyen d'une Peugeot 308 d'occasion ?">
+                    <div class="capability-icon">🚗</div>
+                    <div class="capability-title">Recherche auto</div>
+                    <div class="capability-desc">Prix, conseils d'achat, comparatifs</div>
+                </div>
+                <div class="capability" data-prompt="Ma voiture fait un bruit bizarre au freinage, que faire ?">
+                    <div class="capability-icon">🔧</div>
+                    <div class="capability-title">Diagnostic</div>
+                    <div class="capability-desc">Identifier les pannes et solutions</div>
+                </div>
+                <div class="capability" data-prompt="Comment changer les plaquettes de frein sur une Clio 4 ?">
+                    <div class="capability-icon">📖</div>
+                    <div class="capability-title">Tutoriels</div>
+                    <div class="capability-desc">Guides de reparation pas a pas</div>
+                </div>
+                <div class="capability" data-prompt="Quels sont les meilleurs SUV familiaux en 2024 ?">
+                    <div class="capability-icon">💡</div>
+                    <div class="capability-title">Conseils</div>
+                    <div class="capability-desc">Recommandations personnalisees</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Container -->
+        <div class="messages" id="messagesContainer" style="display: none;"></div>
+    </main>
+
+    <!-- Input Area -->
+    <div class="input-container">
+        <div class="input-wrapper">
+            <textarea 
+                class="input-field" 
+                id="messageInput" 
+                placeholder="Posez votre question..."
+                rows="1"
+            ></textarea>
+            <button class="send-btn" id="sendBtn" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </div>
+        <div class="quick-actions">
+            <button class="quick-btn" data-prompt="Aide-moi a trouver une piece">🔍 Trouver une piece</button>
+            <button class="quick-btn" data-prompt="Diagnostic de ma voiture">🔧 Diagnostic</button>
+            <button class="quick-btn" data-prompt="Estimation du prix d'une reparation">💰 Estimation</button>
+        </div>
+    </div>
+
+    <!-- PWA Install Banner -->
+    <div class="install-banner hidden" id="installBanner">
+        <span>📱</span>
+        <div>
+            <strong>Installer KIM Agent</strong>
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">Acces rapide depuis votre ecran</div>
+        </div>
+        <button class="install-btn" id="installBtn">Installer</button>
+        <button class="dismiss-btn" id="dismissInstall">✕</button>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Parametres</h2>
+                <button class="modal-close" id="closeSettings">✕</button>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Mode sombre</div>
+                    <div class="setting-desc">Toujours actif</div>
+                </div>
+                <div class="toggle active"></div>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Notifications</div>
+                    <div class="setting-desc">Recevoir des alertes</div>
+                </div>
+                <div class="toggle" id="notifToggle"></div>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Version</div>
+                    <div class="setting-desc">KIM Agent v1.0.0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Elements
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const newChatBtn = document.getElementById('newChatBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettings = document.getElementById('closeSettings');
+        const installBanner = document.getElementById('installBanner');
+        const installBtn = document.getElementById('installBtn');
+        const dismissInstall = document.getElementById('dismissInstall');
+
+        // State
+        let messages = [];
+        let isTyping = false;
+        let deferredPrompt = null;
+
+        // Auto-resize textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            sendBtn.disabled = !this.value.trim();
+        });
+
+        // Handle Enter key
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (this.value.trim()) sendMessage();
+            }
+        });
+
+        // Send button click
+        sendBtn.addEventListener('click', sendMessage);
+
+        // Quick actions
+        document.querySelectorAll('.quick-btn, .capability').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const prompt = this.dataset.prompt;
+                if (prompt) {
+                    messageInput.value = prompt;
+                    messageInput.dispatchEvent(new Event('input'));
+                    sendMessage();
+                }
+            });
+        });
+
+        // New chat
+        newChatBtn.addEventListener('click', function() {
+            messages = [];
+            messagesContainer.innerHTML = '';
+            messagesContainer.style.display = 'none';
+            welcomeScreen.style.display = 'flex';
+            messageInput.value = '';
+            sendBtn.disabled = true;
+        });
+
+        // Settings modal
+        settingsBtn.addEventListener('click', () => settingsModal.classList.add('active'));
+        closeSettings.addEventListener('click', () => settingsModal.classList.remove('active'));
+        settingsModal.addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+
+        // Toggle switches
+        document.querySelectorAll('.toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+
+        // PWA Install
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBanner.classList.remove('hidden');
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                installBanner.classList.add('hidden');
+            }
+        });
+
+        dismissInstall.addEventListener('click', () => {
+            installBanner.classList.add('hidden');
+        });
+
+        // Send message function
+        async function sendMessage() {
+            const content = messageInput.value.trim();
+            if (!content || isTyping) return;
+
+            // Hide welcome, show messages
+            welcomeScreen.style.display = 'none';
+            messagesContainer.style.display = 'flex';
+
+            // Add user message
+            addMessage('user', content);
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            sendBtn.disabled = true;
+
+            // Show typing indicator
+            isTyping = true;
+            const typingEl = addTypingIndicator();
+
+            // Simulate AI response (replace with actual API call)
+            try {
+                const response = await getAIResponse(content);
+                typingEl.remove();
+                addMessage('assistant', response);
+            } catch (error) {
+                typingEl.remove();
+                addMessage('assistant', 'Desole, une erreur s\'est produite. Veuillez reessayer.');
+            }
+
+            isTyping = false;
+        }
+
+        // Add message to UI
+        function addMessage(role, content) {
+            const msg = { role, content, timestamp: new Date() };
+            messages.push(msg);
+
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+            div.innerHTML = `
+                <div class="message-avatar">${role === 'assistant' ? 'K' : '👤'}</div>
+                <div class="message-content">${formatMessage(content)}</div>
+            `;
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Add typing indicator
+        function addTypingIndicator() {
+            const div = document.createElement('div');
+            div.className = 'message assistant';
+            div.innerHTML = `
+                <div class="message-avatar">K</div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            return div;
+        }
+
+        // Format message content
+        function formatMessage(content) {
+            // Basic markdown-like formatting
+            return content
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>');
+        }
+
+        // Simulated AI Response (replace with actual API)
+        async function getAIResponse(userMessage) {
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1500));
+
+            // Simple response logic (replace with actual AI API call)
+            const lowerMsg = userMessage.toLowerCase();
+            
+            if (lowerMsg.includes('bonjour') || lowerMsg.includes('salut') || lowerMsg.includes('hello')) {
+                return "Bonjour ! Je suis KIM, votre assistant automobile. Comment puis-je vous aider aujourd'hui ? 🚗";
+            }
+            
+            if (lowerMsg.includes('bruit') && lowerMsg.includes('frein')) {
+                return "Un bruit au freinage peut avoir plusieurs causes :\n\n**Causes frequentes :**\n• **Plaquettes usees** - Le temoin d'usure metallique frotte sur le disque\n• **Disques voiles** - Provoque des vibrations et bruits\n• **Plaquettes vitreuses** - Surface durcie par la chaleur\n• **Corps etranger** - Caillou ou debris coince\n\n**Recommandation :** Je vous conseille de faire verifier vos freins rapidement, surtout si le bruit est constant. C'est un element de securite critique.\n\nVoulez-vous que je vous aide a trouver des plaquettes de frein compatibles avec votre vehicule ?";
+            }
+            
+            if (lowerMsg.includes('prix') || lowerMsg.includes('cout') || lowerMsg.includes('combien')) {
+                return "Pour vous donner une estimation precise, j'aurais besoin de quelques informations :\n\n• **Marque et modele** de votre vehicule\n• **Annee** de mise en circulation\n• **Type de piece ou reparation** concernee\n\nEn attendant, voici quelques ordres de grandeur :\n• Plaquettes de frein : 30-80€ (piece) + 50-100€ (main d'oeuvre)\n• Vidange complete : 60-150€\n• Courroie de distribution : 400-800€\n\nQuel est votre besoin specifique ?";
+            }
+            
+            if (lowerMsg.includes('piece') || lowerMsg.includes('trouver')) {
+                return "Je peux vous aider a trouver votre piece ! 🔍\n\nPour une recherche efficace, donnez-moi :\n1. **Marque et modele** du vehicule\n2. **Annee** et/ou **motorisation**\n3. **Nom de la piece** recherchee\n\nOu si vous avez la **reference OEM** (numero constructeur), c'est encore mieux !\n\n💡 Astuce : Sur World Auto France, vous pouvez scanner votre plaque d'immatriculation pour trouver automatiquement les pieces compatibles.";
+            }
+            
+            if (lowerMsg.includes('merci')) {
+                return "Avec plaisir ! 😊 N'hesitez pas si vous avez d'autres questions. Je suis la pour vous aider.\n\nBonne route ! 🚗";
+            }
+
+            // Default response
+            return "Merci pour votre question ! En tant qu'assistant automobile, je peux vous aider avec :\n\n• **Diagnostic** de problemes mecaniques\n• **Recherche** de pieces detachees\n• **Estimation** de couts de reparation\n• **Conseils** d'entretien et d'achat\n\nPourriez-vous me donner plus de details sur votre demande ?";
+        }
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        }
+    </script>
+</body>
+</html>
