@@ -749,6 +749,9 @@
             welcomeScreen.style.display = 'flex';
             messageInput.value = '';
             sendBtn.disabled = true;
+            // Clear session
+            sessionId = null;
+            localStorage.removeItem('kim_session_id');
         });
 
         // Settings modal
