@@ -81,11 +81,7 @@ function CouponsManager({ token }) {
     description: '',
   });
 
-  useEffect(() => {
-    fetchCoupons();
-  }, []);
-
-  const fetchCoupons = async () => {
+  const fetchCoupons = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/admin/coupons`, {
         headers: { Authorization: `Bearer ${token}` }
