@@ -13,6 +13,7 @@ import { User, Lock, Trash2, Save, Building, MapPin, Phone, Mail, Calendar, Shie
 import SEO from '../components/SEO';
 import VacationMode from '../components/VacationMode';
 import NotificationSettings from '../components/NotificationSettings';
+import PushNotificationManager from '../components/PushNotificationManager';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
