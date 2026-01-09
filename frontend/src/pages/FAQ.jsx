@@ -88,15 +88,27 @@ const faqs = [
     questions: [
       {
         q: "Comment fonctionne la livraison ?",
-        a: "La livraison est organisée entre l'acheteur et le vendeur. Vous pouvez convenir d'une remise en main propre ou d'un envoi par transporteur (Colissimo, Mondial Relay, Chronopost, etc.). Le vendeur peut générer un bordereau d'expédition depuis son espace."
+        a: "La livraison est organisée entre l'acheteur et le vendeur. Vous pouvez convenir d'une remise en main propre ou d'un envoi par transporteur. World Auto Pro est intégré avec Boxtal, qui vous donne accès à Colissimo, Mondial Relay, Chronopost, DPD et plus encore, directement depuis la plateforme."
+      },
+      {
+        q: "Quels transporteurs sont disponibles ?",
+        a: "Grâce à notre partenaire Boxtal, vous avez accès à : Colissimo (La Poste), Mondial Relay, Chronopost, DPD, et d'autres transporteurs. Les tarifs sont calculés automatiquement selon le poids et les dimensions du colis."
+      },
+      {
+        q: "Comment obtenir un devis de livraison ?",
+        a: "Lors de l'achat, les frais de port sont calculés automatiquement en fonction du poids, des dimensions et de l'adresse de livraison. Vous pouvez choisir le transporteur qui vous convient parmi les options proposées."
       },
       {
         q: "Qui paie les frais de livraison ?",
-        a: "Les frais de livraison sont généralement à la charge de l'acheteur, sauf accord contraire avec le vendeur. Discutez-en avant de finaliser l'achat."
+        a: "Les frais de livraison sont généralement à la charge de l'acheteur, sauf accord contraire avec le vendeur. Le vendeur peut aussi proposer la livraison gratuite en l'incluant dans son prix."
       },
       {
         q: "Comment suivre ma commande ?",
-        a: "Une fois l'article expédié, le vendeur doit mettre à jour le statut de la commande. Vous recevrez une notification par email avec les informations de suivi si disponibles."
+        a: "Une fois l'article expédié, vous recevez un numéro de suivi par email et dans votre espace Commandes. Vous pouvez suivre votre colis en temps réel sur le site du transporteur ou directement sur World Auto Pro."
+      },
+      {
+        q: "Comment générer une étiquette d'expédition ?",
+        a: "Après une vente, rendez-vous dans votre tableau de bord > Commandes. Cliquez sur la commande puis \"Générer étiquette\". Sélectionnez le transporteur et téléchargez l'étiquette à coller sur votre colis."
       }
     ]
   },
