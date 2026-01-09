@@ -253,12 +253,12 @@ export default function RadioPlayer() {
           {isPlaying && !isLoading ? (
             // Barres d'animation audio
             <div className="flex items-end gap-0.5 h-6">
-              {[...Array(12)].map((_, i) => (
+              {[20, 60, 40, 80, 30, 70, 50, 90, 25, 65, 45, 85].map((height, i) => (
                 <div
                   key={i}
                   className="w-1 bg-gradient-to-t from-purple-600 to-pink-500 rounded-full animate-pulse"
                   style={{
-                    height: `${Math.random() * 100}%`,
+                    height: `${height}%`,
                     animationDelay: `${i * 0.1}s`,
                     animationDuration: '0.5s'
                   }}
