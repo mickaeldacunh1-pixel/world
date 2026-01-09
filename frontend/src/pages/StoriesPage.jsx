@@ -424,7 +424,7 @@ export default function StoriesPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{myStories.length}</p>
-                <p className="text-xs text-muted-foreground">Vos stories</p>
+                <p className="text-xs text-muted-foreground">{t('stories.your_stories', 'Vos stories')}</p>
               </div>
             </CardContent>
           </Card>
@@ -436,23 +436,23 @@ export default function StoriesPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-heading font-semibold text-lg mb-1">Partagez votre actualité</h3>
+                  <h3 className="font-heading font-semibold text-lg mb-1">{t('stories.share_update', 'Partagez votre actualité')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Postez une photo ou vidéo pour promouvoir vos pièces (visible 24h)
+                    {t('stories.share_description', 'Postez une photo ou vidéo pour promouvoir vos pièces (visible 24h)')}
                   </p>
                 </div>
                 <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                   <DialogTrigger asChild>
                     <Button className="bg-accent hover:bg-accent/90 gap-2">
                       <Plus className="w-4 h-4" />
-                      Nouvelle story
+                      {t('stories.new_story', 'Nouvelle story')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-md">
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold">Nouvelle story</h3>
+                      <h3 className="text-lg font-semibold">{t('stories.new_story', 'Nouvelle story')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Partagez une photo ou vidéo de vos pièces. Elle sera visible pendant 24h.
+                        {t('stories.share_description', 'Partagez une photo ou vidéo de vos pièces. Elle sera visible pendant 24h.')}
                       </p>
 
                       {preview ? (
