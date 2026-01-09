@@ -6316,7 +6316,7 @@ class AuctionCreate(BaseModel):
 class BidCreate(BaseModel):
     amount: float = Field(..., ge=1)
 
-AUCTION_COMMISSION = 0.05  # 5% commission
+# Utilise la même fonction calculate_platform_fee définie plus haut
 
 @api_router.post("/auctions")
 async def create_auction(auction: AuctionCreate, current_user: dict = Depends(get_current_user)):
