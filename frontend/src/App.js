@@ -53,6 +53,7 @@ import BundleDetail from "./pages/BundleDetail";
 import Widget from "./pages/Widget";
 import Compare from "./pages/Compare";
 import Videos from "./pages/Videos";
+import StoriesPage from "./pages/StoriesPage";
 import "./App.css";
 
 // Composant pour scroller en haut à chaque changement de page
