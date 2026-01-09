@@ -93,7 +93,11 @@ function CouponsManager({ token }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    fetchCoupons();
+  }, [fetchCoupons]);
 
   const resetForm = () => {
     setFormData({
