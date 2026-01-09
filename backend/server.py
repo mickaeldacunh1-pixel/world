@@ -1129,11 +1129,76 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
             "name": user_doc["name"],
             "is_professional": user_doc["is_professional"],
             "country": user_doc["country"],
-            "credits": 0,
+            "credits": user_doc["credits"],
             "referral_code": my_referral_code,
             "loyalty_points": user_doc["loyalty_points"]
         }
     }
+
+# ================== PENDING CREDITS (Admin) ==================
+@api_router.post("/admin/pending-credits")
+async def add_pending_credits(
+    email: str,
+    credits: int,
+    current_user: dict = Depends(get_current_user)
+):
+    """Add pending credits to an email (will be applied on registration)"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    
+    email_lower = email.lower()
+    
+    # Check if user already exists
+    existing_user = await db.users.find_one({"email": email_lower})
+    if existing_user:
+        # User exists, add credits directly
+        await db.users.update_one(
+            {"email": email_lower},
+            {"$inc": {"credits": credits}}
+        )
+        return {"status": "credits_added", "message": f"{credits} crédits ajoutés au compte existant de {email}"}
+    
+    # User doesn't exist, create pending credits
+    existing_pending = await db.pending_credits.find_one({"email": email_lower})
+    if existing_pending:
+        # Add to existing pending credits
+        await db.pending_credits.update_one(
+            {"email": email_lower},
+            {"$inc": {"credits": credits}}
+        )
+        new_total = existing_pending.get("credits", 0) + credits
+        return {"status": "pending_updated", "message": f"Total crédits en attente pour {email}: {new_total}"}
+    else:
+        # Create new pending credits
+        await db.pending_credits.insert_one({
+            "email": email_lower,
+            "credits": credits,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "created_by": current_user["id"]
+        })
+        return {"status": "pending_created", "message": f"{credits} crédits en attente pour {email}"}
+
+@api_router.get("/admin/pending-credits")
+async def get_pending_credits(current_user: dict = Depends(get_current_user)):
+    """Get all pending credits"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    
+    pending = await db.pending_credits.find().to_list(100)
+    for p in pending:
+        p.pop("_id", None)
+    return pending
+
+@api_router.delete("/admin/pending-credits/{email}")
+async def delete_pending_credits(email: str, current_user: dict = Depends(get_current_user)):
+    """Delete pending credits for an email"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    
+    result = await db.pending_credits.delete_one({"email": email.lower()})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Pending credits not found")
+    return {"success": True}
 
 @api_router.post("/auth/login")
 async def login(credentials: UserLogin):
