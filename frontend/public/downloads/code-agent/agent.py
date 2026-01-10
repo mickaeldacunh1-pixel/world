@@ -1596,9 +1596,39 @@ HTML_TEMPLATE = r'''
 </html>
 '''
 
+def get_themed_html():
+    """Génère le HTML avec les couleurs du thème personnalisé"""
+    colors = THEME_CONFIG.get('colors', {})
+    dark_colors = THEME_CONFIG.get('dark_colors', {})
+    agent_name = THEME_CONFIG.get('agent_name', 'Cody')
+    
+    # Remplacer les variables CSS par les couleurs personnalisées
+    themed_html = HTML_TEMPLATE
+    
+    # Variables CSS à remplacer
+    css_vars = {
+        '--bg-main: #ffffff': f"--bg-main: {colors.get('bg_main', '#ffffff')}",
+        '--bg-sidebar: #f9fafb': f"--bg-sidebar: {colors.get('bg_sidebar', '#f9fafb')}",
+        '--text-primary: #1f2937': f"--text-primary: {colors.get('text_primary', '#1f2937')}",
+        '--text-secondary: #6b7280': f"--text-secondary: {colors.get('text_secondary', '#6b7280')}",
+        '--accent: #f97316': f"--accent: {colors.get('accent', '#f97316')}",
+        '--accent-hover: #ea580c': f"--accent-hover: {colors.get('accent_hover', '#ea580c')}",
+        '--border: #e5e7eb': f"--border: {colors.get('border', '#e5e7eb')}",
+        '--success: #22c55e': f"--success: {colors.get('success', '#22c55e')}",
+    }
+    
+    for old, new in css_vars.items():
+        themed_html = themed_html.replace(old, new)
+    
+    # Remplacer le nom de l'agent
+    themed_html = themed_html.replace('<title>🤖 Cody</title>', f'<title>🤖 {agent_name}</title>')
+    themed_html = themed_html.replace('Cody</span>', f'{agent_name}</span>')
+    
+    return themed_html
+
 @app.route('/')
 def index():
-    return render_template_string(HTML_TEMPLATE, project_path=config.PROJECT_PATH)
+    return render_template_string(get_themed_html(), project_path=config.PROJECT_PATH)
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
