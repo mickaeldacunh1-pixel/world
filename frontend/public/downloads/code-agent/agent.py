@@ -1071,6 +1071,12 @@ HTML_TEMPLATE = r'''
         </div>
     </main>
     
+    <!-- Status bar pour indiquer l'etat -->
+    <div class="status-bar" id="statusBar">
+        <div class="spinner"></div>
+        <span id="statusText">Code Agent reflechit...</span>
+    </div>
+    
     <script>
         const messagesEl = document.getElementById('messages');
         const inputEl = document.getElementById('input');
@@ -1079,11 +1085,23 @@ HTML_TEMPLATE = r'''
         const micBtn = document.getElementById('micBtn');
         const voiceBtn = document.getElementById('voiceBtn');
         const voiceStatus = document.getElementById('voiceStatus');
+        const statusBar = document.getElementById('statusBar');
+        const statusText = document.getElementById('statusText');
         
         let isRecording = false;
         let mediaRecorder = null;
         let audioChunks = [];
         let voiceEnabled = true;
+        
+        // Fonctions pour la barre de status
+        function showStatus(text) {
+            statusText.textContent = text;
+            statusBar.classList.add('visible');
+        }
+        
+        function hideStatus() {
+            statusBar.classList.remove('visible');
+        }
         
         // Auto-resize textarea
         inputEl.addEventListener('input', function() {
