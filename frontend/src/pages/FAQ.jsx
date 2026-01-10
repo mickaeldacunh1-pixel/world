@@ -1,7 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Card } from '../components/ui/card';
-import { ChevronDown, HelpCircle, CreditCard, Package, MessageSquare, Shield, Truck, AlertTriangle, Video, Bell, Camera, FileText, TrendingUp } from 'lucide-react';
+import { ChevronDown, HelpCircle, CreditCard, Package, MessageSquare, Shield, Truck, AlertTriangle, Video, Bell, Camera, FileText, TrendingUp, Search } from 'lucide-react';
+import { Input } from '../components/ui/input';
 import SEO, { createFAQSchema } from '../components/SEO';
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+// Default settings
+const DEFAULTS = {
+  faq_title: 'Foire Aux Questions',
+  faq_subtitle: "Trouvez rapidement des réponses à vos questions. Si vous ne trouvez pas ce que vous cherchez, n'hésitez pas à nous contacter.",
+  faq_search_enabled: true,
+  faq_search_placeholder: 'Rechercher une question...',
+  faq_categories_enabled: true,
+  faq_contact_enabled: true,
+  faq_contact_button: 'Nous contacter',
+};
 
 const faqs = [
   {
