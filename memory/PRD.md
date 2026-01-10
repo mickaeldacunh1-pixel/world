@@ -85,6 +85,27 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 - ✅ **Traduction page Nouveautés (Updates.jsx)** : Interface entièrement multilingue (8 langues : FR, EN, DE, ES, IT, NL, PT, SV) avec dates formatées selon la locale
 - ✅ **Bouton Messages déplacé** à droite du sélecteur de langue
 
+## Session du 2026-01-10 - Améliorations Hero Editor & Code Agent
+
+### Améliorations Hero Editor (P0)
+- ✅ **Grid des onglets corrigé** : Passage de 5 à 8 colonnes pour afficher tous les onglets (Textes, Couleurs, Layout, Éléments, Raccourcis, Mobile, Planning, Images)
+- ✅ **Drag & Drop des raccourcis** : Intégration de @dnd-kit pour réorganiser les raccourcis (Vidéos, Stories, Fidélité, KIM Agent) par glisser-déposer
+- ✅ **Ordre dynamique des raccourcis** : Les raccourcis sur la page d'accueil respectent maintenant l'ordre configuré dans l'admin (setting `hero_shortcuts_order`)
+- ✅ **KIM Agent visible par défaut** : Le raccourci KIM est activé par défaut sur la page d'accueil
+
+### Code Agent Local - Fix mémoire (P1)
+- ✅ **Gestion de session persistante** : Nouveau `SessionManager` pour conserver l'historique de conversation entre les messages
+- ✅ **Indicateur de mémoire** : Affichage du nombre de messages en mémoire (🧠) dans l'interface
+- ✅ **Limite d'historique** : Maximum 50 messages conservés pour éviter les dépassements de tokens
+- ✅ **Nouvel endpoint /api/history** : Pour debug et visualisation de l'historique
+- ✅ **Version mise à jour** : Code Agent v1.3.0 (ZIP régénéré)
+
+### Tests passés
+- ✅ 9/9 tests frontend (100%)
+- Hero Editor 8 onglets fonctionnels
+- Drag & drop des raccourcis vérifié
+- Raccourcis affichés dans l'ordre configuré sur la page d'accueil
+
 ## Session du 2026-01-09 - Nouvelles fonctionnalités (suite)
 
 ### Intégration Boxtal (v4.2.0)
