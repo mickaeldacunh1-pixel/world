@@ -775,27 +775,81 @@ HTML_TEMPLATE = r'''
         .content a { color: var(--accent); text-decoration: none; font-weight: 500; }
         .content a:hover { text-decoration: underline; }
         
-        /* Typing indicator */
-        .typing {
+        /* Typing indicator - Style Emergent */
+        .typing-container {
             display: flex;
-            gap: 5px;
+            align-items: center;
+            gap: 0.75rem;
             padding: 0.5rem 0;
         }
         
-        .typing span {
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dots span {
             width: 8px;
             height: 8px;
-            background: var(--text-muted);
+            background: var(--accent);
             border-radius: 50%;
             animation: typing 1.4s infinite;
         }
         
-        .typing span:nth-child(2) { animation-delay: 0.2s; }
-        .typing span:nth-child(3) { animation-delay: 0.4s; }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        
+        .typing-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
         
         @keyframes typing {
             0%, 100% { opacity: 0.3; transform: scale(0.8); }
             50% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Status bar */
+        .status-bar {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+        }
+        
+        .status-bar.visible {
+            display: flex;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .status-bar .spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         /* ========== INPUT AREA ========== */
