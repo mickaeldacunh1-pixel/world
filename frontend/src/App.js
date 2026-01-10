@@ -193,11 +193,12 @@ function App() {
   return (
     <HelmetProvider>
       <ThemeProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <CompareProvider>
-              <AppContent />
-            </CompareProvider>
+        <ColorProvider>
+          <BrowserRouter>
+            <AuthProvider>
+              <CompareProvider>
+                <AppContent />
+              </CompareProvider>
           </AuthProvider>
         </BrowserRouter>
       </ThemeProvider>
