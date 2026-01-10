@@ -1328,6 +1328,13 @@ HTML_TEMPLATE = r'''
             addMessage('assistant', 'Conversation effacee. Comment puis-je t aider ?');
         }
         
+        function toggleNotif() {
+            notifEnabled = !notifEnabled;
+            const notifBtn = document.getElementById('notifBtn');
+            notifBtn.innerHTML = notifEnabled ? '<span>🔔</span>' : '<span>🔕</span>';
+            notifBtn.title = notifEnabled ? 'Notifications activees' : 'Notifications desactivees';
+        }
+        
         function updateProjectPath(path) {
             fetch('/api/project-path', {
                 method: 'POST',
