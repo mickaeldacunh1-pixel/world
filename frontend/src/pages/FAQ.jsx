@@ -442,21 +442,32 @@ export default function FAQ() {
         </div>
 
         {/* Contact CTA */}
-        <Card className="mt-12 p-8 text-center bg-gradient-to-r from-primary to-slate-800 text-white animate-fade-in-up">
-          <h2 className="font-heading text-2xl font-bold mb-3">
-            Vous n'avez pas trouvé votre réponse ?
-          </h2>
-          <p className="text-white/70 mb-6">
-            Notre équipe est là pour vous aider. Contactez-nous et nous vous répondrons dans les plus brefs délais.
-          </p>
-          <a 
-            href="/contact" 
-            className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-          >
-            <MessageSquare className="w-5 h-5" />
-            Nous contacter
-          </a>
-        </Card>
+        {s.faq_contact_enabled !== false && (
+          <Card className="mt-12 p-8 text-center bg-gradient-to-r from-primary to-slate-800 text-white animate-fade-in-up">
+            <h2 className="font-heading text-2xl font-bold mb-3">
+              Vous n&apos;avez pas trouvé votre réponse ?
+            </h2>
+            <p className="text-white/70 mb-6">
+              Notre équipe est là pour vous aider. Contactez-nous et nous vous répondrons dans les plus brefs délais.
+            </p>
+            <a 
+              href="/contact" 
+              className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+            >
+              <MessageSquare className="w-5 h-5" />
+              {s.faq_contact_button}
+            </a>
+          </Card>
+        )}
+
+        {/* No results message */}
+        {searchQuery && filteredFaqs.length === 0 && (
+          <Card className="p-8 text-center">
+            <p className="text-muted-foreground">
+              Aucune question ne correspond à votre recherche. Essayez d&apos;autres mots-clés ou contactez-nous.
+            </p>
+          </Card>
+        )}
       </div>
     </div>
   );
