@@ -1025,8 +1025,8 @@ export default function Home() {
                   </h3>
                 </div>
               </Link>
-            )})}
-            ))}
+            );
+            })}
           </div>
 
           <div className="text-center mt-8">
