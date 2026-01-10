@@ -232,12 +232,36 @@ tools = AgentTools()
 
 # ============== SESSION MANAGER ==============
 
+import json
+import os
+
 class SessionManager:
-    """Gestionnaire de sessions pour conserver l'historique des conversations"""
+    """Gestionnaire de sessions avec persistance fichier"""
     
-    def __init__(self):
+    def __init__(self, storage_file: str = None):
+        self._storage_file = storage_file or os.path.join(os.path.dirname(__file__), '.cody_memory.json')
         self._sessions = {}
         self._default_session = "default"
+        self._load_from_file()
+    
+    def _load_from_file(self):
+        """Charger l'historique depuis le fichier"""
+        try:
+            if os.path.exists(self._storage_file):
+                with open(self._storage_file, 'r', encoding='utf-8') as f:
+                    self._sessions = json.load(f)
+                console.print(f"[green]✅ Mémoire chargée ({sum(len(v) for v in self._sessions.values())} messages)[/green]")
+        except Exception as e:
+            console.print(f"[yellow]⚠️ Impossible de charger la mémoire: {e}[/yellow]")
+            self._sessions = {}
+    
+    def _save_to_file(self):
+        """Sauvegarder l'historique dans le fichier"""
+        try:
+            with open(self._storage_file, 'w', encoding='utf-8') as f:
+                json.dump(self._sessions, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            console.print(f"[red]❌ Erreur sauvegarde mémoire: {e}[/red]")
     
     def get_history(self, session_id: str = None) -> list:
         """Obtenir l'historique d'une session"""
@@ -255,15 +279,22 @@ class SessionManager:
         # Limiter l'historique à 50 messages pour éviter les tokens trop longs
         if len(self._sessions[sid]) > 50:
             self._sessions[sid] = self._sessions[sid][-50:]
+        # Sauvegarder après chaque message
+        self._save_to_file()
     
     def clear_history(self, session_id: str = None):
         """Effacer l'historique d'une session"""
         sid = session_id or self._default_session
         self._sessions[sid] = []
+        self._save_to_file()
     
     def get_all_sessions(self) -> list:
         """Liste toutes les sessions actives"""
         return list(self._sessions.keys())
+    
+    def get_message_count(self) -> int:
+        """Nombre total de messages"""
+        return sum(len(v) for v in self._sessions.values())
 
 # Instance globale du gestionnaire de sessions
 session_manager = SessionManager()
