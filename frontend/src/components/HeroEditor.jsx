@@ -986,7 +986,7 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
           <CollapsibleSection title="Image de fond du Hero" icon={Image} defaultOpen>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>URL de l'image</Label>
+                <Label>URL image</Label>
                 <div className="flex gap-2">
                   <Input
                     value={settings.hero_image || ''}
