@@ -330,25 +330,7 @@ OUTILS:
 - search_in_files: {"query": "texte", "file_pattern": "**/*"}
 - get_project_structure: {}
 
-Réponds en français. Sois bref."""
-{"tool": "nom_outil", "params": {"param1": "valeur1"}}
-```
-
-OUTILS DISPONIBLES:
-- read_file: {"path": "chemin/fichier"} - Lire un fichier
-- write_file: {"path": "chemin", "content": "contenu"} - Écrire/créer un fichier
-- execute_command: {"command": "commande"} - Exécuter une commande shell
-- list_files: {"pattern": "**/*.py"} - Lister des fichiers
-- search_in_files: {"query": "texte", "file_pattern": "**/*"} - Rechercher dans le code
-- get_project_structure: {} - Voir l'arborescence du projet
-
-STYLE DE RÉPONSE:
-- Sois concis mais complet
-- Utilise le formatage Markdown (gras, listes, code)
-- Structure tes réponses avec des titres si nécessaire
-- Après une action, explique ce que tu as fait et le résultat
-
-Réponds toujours en français."""
+Reponds en francais. Sois bref."""
 
     def __init__(self, session_id: str = None):
         self.session_id = session_id or "default"
