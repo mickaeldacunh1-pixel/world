@@ -1196,7 +1196,12 @@ HTML_TEMPLATE = r'''
             div.innerHTML = `
                 <div class="message-wrapper">
                     <div class="avatar">🤖</div>
-                    <div class="content"><div class="typing"><span></span><span></span><span></span></div></div>
+                    <div class="content">
+                        <div class="typing-container">
+                            <div class="typing-dots"><span></span><span></span><span></span></div>
+                            <span class="typing-text">Code Agent ecrit...</span>
+                        </div>
+                    </div>
                 </div>
             `;
             messagesEl.appendChild(div);
