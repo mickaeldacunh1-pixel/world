@@ -1271,6 +1271,16 @@ HTML_TEMPLATE = r'''
             
             sendBtn.disabled = false;
             inputEl.focus();
+            scrollToBottom();
+        }
+        
+        function scrollToBottom() {
+            setTimeout(() => {
+                messagesEl.scrollTo({
+                    top: messagesEl.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 100);
         }
         
         function updateMemoryCount(count) {
