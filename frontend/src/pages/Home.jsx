@@ -384,14 +384,27 @@ export default function Home() {
       </section>
 
       {/* Hero Section - Full Customization */}
-      <section className={`relative ${HERO_HEIGHT_CLASSES[heroSettings.hero_height] || 'min-h-[600px] md:min-h-[700px]'} flex items-center overflow-hidden`}>
-        {/* Background Image */}
+      <section className={`relative ${HERO_HEIGHT_CLASSES[heroSettings.hero_height] || 'min-h-[600px] md:min-h-[700px]'} flex items-center overflow-hidden ${heroSettings.hero_mobile_height === 'small' ? 'md:min-h-[600px] min-h-[300px]' : heroSettings.hero_mobile_height === 'medium' ? 'md:min-h-[600px] min-h-[400px]' : heroSettings.hero_mobile_height === 'large' ? 'md:min-h-[600px] min-h-[500px]' : heroSettings.hero_mobile_height === 'full' ? 'md:min-h-[600px] min-h-screen' : ''}`}>
+        {/* Background - Video or Image */}
         <div className="absolute inset-0">
-          <img 
-            src={heroSettings.hero_image} 
-            alt="Hero background" 
-            className="w-full h-full object-cover"
-          />
+          {heroSettings.hero_video_enabled && heroSettings.hero_video_url ? (
+            <video 
+              autoPlay 
+              loop={heroSettings.hero_video_loop !== false}
+              muted={heroSettings.hero_video_muted !== false}
+              playsInline
+              poster={heroSettings.hero_video_poster || heroSettings.hero_image}
+              className="w-full h-full object-cover"
+            >
+              <source src={heroSettings.hero_video_url} type="video/mp4" />
+            </video>
+          ) : (
+            <img 
+              src={heroSettings.hero_image} 
+              alt="Hero background" 
+              className="w-full h-full object-cover"
+            />
+          )}
           {heroSettings.hero_overlay_enabled !== false && (
             <div 
               className={`absolute inset-0 ${heroSettings.hero_overlay_gradient ? 'bg-gradient-to-r from-black/90 to-black/50' : ''}`}
