@@ -855,12 +855,20 @@ def index():
     return render_template_string(HTML_TEMPLATE, project_path=config.PROJECT_PATH)
 
 @app.route('/api/chat', methods=['POST'])
-async def chat():
+def chat():
+    import asyncio
     data = request.json
     message = data.get('message', '')
     model = data.get('model', config.DEFAULT_MODEL)
     
-    response = await llm.chat(message, model)
+    # Run async function in sync context
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        response = loop.run_until_complete(llm.chat(message, model))
+    finally:
+        loop.close()
+    
     return jsonify({"response": response})
 
 @app.route('/api/clear', methods=['POST'])
