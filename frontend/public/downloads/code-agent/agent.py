@@ -874,6 +874,33 @@ HTML_TEMPLATE = r'''
             box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1), var(--shadow-lg);
         }
         
+        .emoji-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            padding: 0.5rem 0.25rem;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .emoji-btn {
+            font-size: 1.25rem;
+            padding: 0.25rem 0.375rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+        
+        .emoji-btn:hover {
+            background: var(--bg-sidebar);
+            transform: scale(1.2);
+        }
+        
+        .emoji-btn:active {
+            transform: scale(0.95);
+        }
+        
         .input-wrapper {
             display: flex;
             gap: 0.5rem;
