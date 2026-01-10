@@ -813,19 +813,34 @@ HTML_TEMPLATE = '''
         }
         
         function formatContent(content) {
-            // Convert markdown-like syntax
-            return content
-                .replace(/```(\\w*)\\n([\\s\\S]*?)```/g, '<pre><code>$2</code></pre>')
-                .replace(/`([^`]+)`/g, '<code>$1</code>')
-                .replace(/\\*\\*(.+?)\\*\\*/g, '<strong>$1</strong>')
-                .replace(/\\*(.+?)\\*/g, '<em>$1</em>')
-                .replace(/\\n/g, '<br>');
+            if (!content) return '';
+            // Simple formatting - avoid complex regex
+            let result = content;
+            // Code blocks
+            result = result.split('```').map((part, i) => {
+                if (i % 2 === 1) return '<pre><code>' + part + '</code></pre>';
+                return part;
+            }).join('');
+            // Inline code
+            result = result.split('`').map((part, i) => {
+                if (i % 2 === 1) return '<code>' + part + '</code>';
+                return part;
+            }).join('');
+            // Bold
+            result = result.split('**').map((part, i) => {
+                if (i % 2 === 1) return '<strong>' + part + '</strong>';
+                return part;
+            }).join('');
+            // Line breaks
+            result = result.replace(/\\n/g, '<br>');
+            result = result.replace(/\n/g, '<br>');
+            return result;
         }
         
         function clearChat() {
             fetch('/api/clear', { method: 'POST' });
             messagesEl.innerHTML = '';
-            addMessage('assistant', '🔄 Conversation effacée. Comment puis-je t\\'aider ?');
+            addMessage('assistant', '🔄 Conversation effacée. Comment puis-je t aider ?');
         }
         
         function updateProjectPath(path) {
@@ -837,10 +852,7 @@ HTML_TEMPLATE = '''
         }
         
         function showSettings() {
-            alert('⚙️ Configuration:\\n\\n' +
-                '• Modifie le fichier .env pour changer les clés API\\n' +
-                '• Change le chemin du projet ci-dessous\\n' +
-                '• Sélectionne le modèle dans le menu');
+            alert('Configuration: Modifie le fichier .env pour changer les cles API, Change le chemin du projet ci-dessous, Selectionne le modele dans le menu');
         }
         
         // Focus input on load
