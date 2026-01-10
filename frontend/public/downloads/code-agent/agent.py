@@ -1196,6 +1196,18 @@ HTML_TEMPLATE = r'''
         // Son de notification (base64 encoded beep)
         const notifSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1sbW1ub3BtcnN2eX+DhoqNjo+PkI+QkZGRkZCPj42LiYeFgoB+fHp4dXNxbm1samhmZGJgXl1bWVhWVFNSUE9OTUxLSkhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQEBAQEBAgIDBAQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w==');
         
+        // Charger le compteur de memoire au demarrage
+        async function loadMemoryCount() {
+            try {
+                const response = await fetch('/api/memory-count');
+                const data = await response.json();
+                updateMemoryCount(data.count || 0);
+            } catch (e) {
+                console.log('Memoire non chargee');
+            }
+        }
+        loadMemoryCount();
+        
         // Demander permission pour les notifications
         if ('Notification' in window && Notification.permission === 'default') {
             Notification.requestPermission();
@@ -1210,7 +1222,7 @@ HTML_TEMPLATE = r'''
             
             // Notification navigateur si permission accordee
             if ('Notification' in window && Notification.permission === 'granted') {
-                const notif = new Notification('Code Agent', {
+                const notif = new Notification('Cody', {
                     body: message || 'Reponse prete !',
                     icon: '🤖',
                     silent: true
