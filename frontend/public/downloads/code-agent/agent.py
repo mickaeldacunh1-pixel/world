@@ -1140,6 +1140,16 @@ HTML_TEMPLATE = r'''
         let audioChunks = [];
         let voiceEnabled = true;
         
+        // Fonction pour ajouter un emoji
+        function addEmoji(emoji) {
+            const cursorPos = inputEl.selectionStart;
+            const textBefore = inputEl.value.substring(0, cursorPos);
+            const textAfter = inputEl.value.substring(cursorPos);
+            inputEl.value = textBefore + emoji + textAfter;
+            inputEl.focus();
+            inputEl.selectionStart = inputEl.selectionEnd = cursorPos + emoji.length;
+        }
+        
         // Fonctions pour la barre de status
         function showStatus(text) {
             statusText.textContent = text;
