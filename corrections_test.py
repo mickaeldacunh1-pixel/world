@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 
 class CorrectionsAPITester:
-    def __init__(self, base_url="https://partshub-9.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://tobi-dev-agent.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.admin_token = None
         self.tests_run = 0
