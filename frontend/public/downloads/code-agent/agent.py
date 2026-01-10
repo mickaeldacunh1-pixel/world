@@ -304,7 +304,7 @@ session_manager = SessionManager()
 class LLMClient:
     """Client pour communiquer avec les LLMs"""
     
-    SYSTEM_PROMPT = """Tu es Code Agent, un assistant de développement expert et bienveillant.
+    SYSTEM_PROMPT = """Tu es Cody, un assistant de développement expert et bienveillant.
 
 PERSONNALITÉ:
 - Tu es amical, patient et enthousiaste
@@ -530,7 +530,7 @@ HTML_TEMPLATE = r'''
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 Code Agent</title>
+    <title>🤖 Cody</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1084,7 +1084,7 @@ HTML_TEMPLATE = r'''
     <header>
         <div class="logo">
             <div class="logo-icon">🤖</div>
-            <div class="logo-text">Code Agent</div>
+            <div class="logo-text">Cody</div>
         </div>
         <div class="header-actions">
             <div class="status-indicator">
@@ -1115,7 +1115,7 @@ HTML_TEMPLATE = r'''
                 <div class="message-wrapper">
                     <div class="avatar">🤖</div>
                     <div class="content">
-                        <strong>Bonjour ! Je suis Code Agent.</strong><br><br>
+                        <strong>Bonjour ! Je suis Cody.</strong><br><br>
                         Je suis ton assistant de développement personnel. Je peux :<br><br>
                         • <strong>📁 Lire et écrire</strong> des fichiers de ton projet<br>
                         • <strong>🖥️ Exécuter</strong> des commandes shell<br>
@@ -1130,7 +1130,7 @@ HTML_TEMPLATE = r'''
         <div class="input-area">
             <div class="input-container">
                 <div class="input-wrapper">
-                    <textarea id="input" placeholder="Message Code Agent..." rows="1"></textarea>
+                    <textarea id="input" placeholder="Message Cody..." rows="1"></textarea>
                     <div class="input-actions">
                         <button class="action-btn secondary" onclick="toggleRecording()" id="micBtn" title="Enregistrer un message vocal">🎤</button>
                         <button class="action-btn secondary" onclick="toggleVoice()" id="voiceBtn" title="Activer/Désactiver la synthèse vocale">🔊</button>
@@ -1173,7 +1173,7 @@ HTML_TEMPLATE = r'''
     <!-- Status bar pour indiquer l'etat -->
     <div class="status-bar" id="statusBar">
         <div class="spinner"></div>
-        <span id="statusText">Code Agent reflechit...</span>
+        <span id="statusText">Cody reflechit...</span>
     </div>
     
     <script>
@@ -1277,7 +1277,7 @@ HTML_TEMPLATE = r'''
             
             // Show typing indicator and status bar
             const typingEl = addTyping();
-            showStatus('Code Agent reflechit...');
+            showStatus('Cody reflechit...');
             
             try {
                 const response = await fetch('/api/chat', {
@@ -1360,7 +1360,7 @@ HTML_TEMPLATE = r'''
                     <div class="content">
                         <div class="typing-container">
                             <div class="typing-dots"><span></span><span></span><span></span></div>
-                            <span class="typing-text">Code Agent ecrit...</span>
+                            <span class="typing-text">Cody ecrit...</span>
                         </div>
                     </div>
                 </div>
