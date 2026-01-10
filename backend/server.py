@@ -4787,6 +4787,91 @@ async def get_engins_subcategories():
     """Retourne toutes les sous-catégories d'engins"""
     return ENGINS_SUBCATEGORIES
 
+# ============== SUBCATEGORY IMAGES ==============
+
+@api_router.get("/subcategory-images")
+async def get_subcategory_images():
+    """Récupère toutes les images personnalisées des sous-catégories"""
+    images = await db.subcategory_images.find({}).to_list(100)
+    result = {}
+    for img in images:
+        key = f"{img.get('category')}_{img.get('subcategory')}"
+        result[key] = img.get('image_url', '')
+    return result
+
+@api_router.post("/subcategory-images")
+async def update_subcategory_image(
+    request: Request,
+    current_user: dict = Depends(get_current_user)
+):
+    """Met à jour l'image d'une sous-catégorie (admin only)"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin requis")
+    
+    data = await request.json()
+    category = data.get("category")
+    subcategory = data.get("subcategory")
+    image_url = data.get("image_url")
+    
+    if not category or not subcategory:
+        raise HTTPException(status_code=400, detail="Catégorie et sous-catégorie requises")
+    
+    await db.subcategory_images.update_one(
+        {"category": category, "subcategory": subcategory},
+        {"$set": {
+            "category": category,
+            "subcategory": subcategory,
+            "image_url": image_url,
+            "updated_at": datetime.utcnow()
+        }},
+        upsert=True
+    )
+    
+    return {"success": True, "message": "Image mise à jour"}
+
+@api_router.post("/subcategory-images/upload")
+async def upload_subcategory_image(
+    category: str = Form(...),
+    subcategory: str = Form(...),
+    image: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """Upload une image pour une sous-catégorie via Cloudinary"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin requis")
+    
+    try:
+        # Upload to Cloudinary
+        contents = await image.read()
+        result = cloudinary.uploader.upload(
+            contents,
+            folder="subcategory_images",
+            public_id=f"{category}_{subcategory}",
+            overwrite=True,
+            transformation=[
+                {"width": 400, "height": 300, "crop": "fill", "quality": "auto"}
+            ]
+        )
+        
+        image_url = result.get("secure_url")
+        
+        # Save to DB
+        await db.subcategory_images.update_one(
+            {"category": category, "subcategory": subcategory},
+            {"$set": {
+                "category": category,
+                "subcategory": subcategory,
+                "image_url": image_url,
+                "cloudinary_id": result.get("public_id"),
+                "updated_at": datetime.utcnow()
+            }},
+            upsert=True
+        )
+        
+        return {"success": True, "image_url": image_url}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.get("/brands")
 async def get_car_brands():
     """Retourne la liste des marques automobiles"""
