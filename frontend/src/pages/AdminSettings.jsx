@@ -1665,6 +1665,10 @@ export default function AdminSettings() {
               <Shield className="w-4 h-4" />
               <span className="hidden sm:inline">Vérifications</span>
             </TabsTrigger>
+            <TabsTrigger value="cody" className="flex items-center gap-2">
+              <span className="text-lg">🤖</span>
+              <span className="hidden sm:inline">Agent Cody</span>
+            </TabsTrigger>
           </TabsList>
 
           {/* Hero Tab */}
