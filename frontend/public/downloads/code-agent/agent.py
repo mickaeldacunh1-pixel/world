@@ -653,16 +653,20 @@ HTML_TEMPLATE = r'''
             margin: 0 auto;
             width: 100%;
             padding: 0;
+            height: calc(100vh - 60px);
+            overflow: hidden;
         }
         
         /* ========== MESSAGES ========== */
         .messages {
             flex: 1;
             overflow-y: auto;
-            padding: 2rem 1.5rem;
+            padding: 1.5rem 1.5rem 2rem;
             display: flex;
             flex-direction: column;
             gap: 0;
+            scroll-behavior: smooth;
+            padding-bottom: 200px;
         }
         
         .message {
