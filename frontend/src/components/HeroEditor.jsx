@@ -152,8 +152,83 @@ const CollapsibleSection = ({ title, icon: Icon, children, defaultOpen = false }
   );
 };
 
+// Composant draggable pour les raccourcis
+const SortableShortcutItem = ({ id, shortcut, checked, onCheckedChange }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-center justify-between p-3 bg-secondary/30 rounded-lg ${isDragging ? 'z-50 shadow-lg' : ''}`}
+    >
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          className="cursor-grab active:cursor-grabbing p-1 hover:bg-secondary rounded"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="w-4 h-4 text-muted-foreground" />
+        </button>
+        <span className="text-xl">{shortcut.icon}</span>
+        <div>
+          <Label className="font-medium">{shortcut.label}</Label>
+          <p className="text-xs text-muted-foreground">Lien vers {shortcut.link}</p>
+        </div>
+      </div>
+      <Switch 
+        checked={checked}
+        onCheckedChange={onCheckedChange}
+      />
+    </div>
+  );
+};
+
 export default function HeroEditor({ settings, setSettings, onImageUpload, uploadingImage }) {
   const [activeSubTab, setActiveSubTab] = useState('content');
+
+  // Définition des raccourcis avec leur ordre par défaut
+  const defaultShortcutsOrder = ['videos', 'stories', 'loyalty', 'kim'];
+  const shortcutsOrder = settings.hero_shortcuts_order || defaultShortcutsOrder;
+  
+  const shortcutsConfig = {
+    videos: { id: 'videos', icon: '🎬', label: 'Vidéos', link: '/videos', settingKey: 'hero_shortcut_videos' },
+    stories: { id: 'stories', icon: '📸', label: 'Stories', link: '/stories', settingKey: 'hero_shortcut_stories' },
+    loyalty: { id: 'loyalty', icon: '🎁', label: 'Fidélité', link: '/fidelite', settingKey: 'hero_shortcut_loyalty' },
+    kim: { id: 'kim', icon: '🤖', label: 'KIM Agent', link: '/kim-agent', settingKey: 'hero_shortcut_kim' },
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    
+    if (active.id !== over?.id) {
+      const oldIndex = shortcutsOrder.indexOf(active.id);
+      const newIndex = shortcutsOrder.indexOf(over.id);
+      const newOrder = arrayMove(shortcutsOrder, oldIndex, newIndex);
+      setSettings({ ...settings, hero_shortcuts_order: newOrder });
+    }
+  };
 
   const updateSetting = (key, value) => {
     setSettings({ ...settings, [key]: value });
