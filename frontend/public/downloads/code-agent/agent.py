@@ -895,6 +895,11 @@ HTML_TEMPLATE = r'''
                 typingEl.remove();
                 addMessage('assistant', data.response);
                 
+                // Update memory indicator
+                if (data.history_count !== undefined) {
+                    updateMemoryCount(data.history_count);
+                }
+                
                 // Speak the response if voice is enabled
                 if (voiceEnabled && data.response) {
                     speakText(data.response);
@@ -906,6 +911,18 @@ HTML_TEMPLATE = r'''
             
             sendBtn.disabled = false;
             inputEl.focus();
+        }
+        
+        function updateMemoryCount(count) {
+            const memoryCountEl = document.getElementById('memoryCount');
+            if (memoryCountEl) {
+                memoryCountEl.textContent = count;
+                // Animation flash
+                memoryCountEl.parentElement.style.animation = 'none';
+                setTimeout(() => {
+                    memoryCountEl.parentElement.style.animation = 'pulse 0.5s ease';
+                }, 10);
+            }
         }
         
         function addMessage(role, content) {
