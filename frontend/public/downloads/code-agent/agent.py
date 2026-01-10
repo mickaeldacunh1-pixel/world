@@ -292,39 +292,39 @@ Réponds toujours en français. Sois concis mais complet."""
         return response
     
     async def _call_emergent(self, model: str) -> str:
-        """Appeler l'API Emergent"""
+        """Appeler l'API Emergent via emergentintegrations"""
         try:
-            async with httpx.AsyncClient(timeout=120) as client:
-                # Map model names
-                if 'gpt-5' in model.lower():
-                    provider, model_name = "openai", "gpt-4o"  # Fallback
-                elif 'claude' in model.lower():
-                    provider, model_name = "anthropic", "claude-sonnet-4-20250514"
-                else:
-                    provider, model_name = "openai", "gpt-4o"
-                
-                response = await client.post(
-                    "https://api.emergentagent.com/v1/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {config.EMERGENT_API_KEY}",
-                        "Content-Type": "application/json"
-                    },
-                    json={
-                        "model": model_name,
-                        "provider": provider,
-                        "messages": [
-                            {"role": "system", "content": self.SYSTEM_PROMPT},
-                            *self.conversation_history
-                        ],
-                        "max_tokens": 4096
-                    }
-                )
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    return data["choices"][0]["message"]["content"]
-                else:
-                    return f"❌ Erreur API: {response.status_code} - {response.text}"
+            from emergentintegrations.llm.chat import LlmChat, UserMessage
+            
+            # Map model names
+            if 'gpt-5' in model.lower() or 'gpt-4o' in model.lower():
+                provider, model_name = "openai", "gpt-4o"
+            elif 'gpt-4o-mini' in model.lower():
+                provider, model_name = "openai", "gpt-4o-mini"
+            elif 'claude' in model.lower():
+                provider, model_name = "anthropic", "claude-sonnet-4-20250514"
+            else:
+                provider, model_name = "openai", "gpt-4o"
+            
+            # Create chat instance
+            chat = LlmChat(
+                api_key=config.EMERGENT_API_KEY,
+                system_message=self.SYSTEM_PROMPT
+            ).with_model(provider, model_name)
+            
+            # Build conversation
+            for msg in self.conversation_history[:-1]:  # Exclude the last user message
+                if msg["role"] == "user":
+                    await chat.send_message(UserMessage(text=msg["content"]))
+            
+            # Send current message
+            last_msg = self.conversation_history[-1]["content"] if self.conversation_history else ""
+            response = await chat.send_message(UserMessage(text=last_msg))
+            
+            return response
+            
+        except ImportError:
+            return "❌ Module emergentintegrations non installé. Lance: pip install emergentintegrations --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/"
         except Exception as e:
             return f"❌ Erreur: {str(e)}"
     
