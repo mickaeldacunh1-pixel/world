@@ -60,6 +60,217 @@ const HERO_TEXT_ANIMATIONS = [
   { value: "typewriter", label: "Machine à écrire" },
 ];
 
+// ============== SUBCATEGORY IMAGES MANAGER COMPONENT ==============
+function SubcategoryImagesManager({ token }) {
+  const [subcatImages, setSubcatImages] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('pieces');
+  
+  const SUBCATEGORIES = {
+    pieces: {
+      moteur: "Moteur",
+      boite_vitesse: "Boîte de vitesse",
+      embrayage: "Embrayage",
+      transmission: "Transmission",
+      echappement: "Échappement",
+      refroidissement: "Refroidissement",
+      carrosserie: "Carrosserie",
+      optique: "Optiques/Éclairage",
+      retroviseur: "Rétroviseurs",
+      vitrage: "Vitrage",
+      interieur: "Intérieur/Sellerie",
+      freinage: "Freinage",
+      suspension: "Suspension",
+      direction: "Direction",
+      roues_pneus: "Roues/Pneus",
+      electricite: "Électricité",
+      climatisation: "Climatisation",
+      turbo: "Turbo",
+      autre: "Autres"
+    },
+    accessoires: {
+      jantes: "Jantes",
+      pneus: "Pneus",
+      gps_navigation: "GPS",
+      autoradio: "Autoradio",
+      alarme: "Alarmes",
+      camera: "Caméras",
+      eclairage_led: "LED/Tuning",
+      tapis: "Tapis",
+      coffre: "Coffres de toit",
+      attelage: "Attelages",
+      outillage: "Outillage"
+    }
+  };
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
+
+  const fetchImages = async () => {
+    try {
+      const response = await axios.get(`${API}/subcategory-images`);
+      setSubcatImages(response.data);
+    } catch (error) {
+      console.error('Erreur chargement images:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpload = async (category, subcategory, file) => {
+    setUploading(`${category}_${subcategory}`);
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('category', category);
+    formData.append('subcategory', subcategory);
+    
+    try {
+      const response = await axios.post(`${API}/subcategory-images/upload`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      setSubcatImages(prev => ({
+        ...prev,
+        [`${category}_${subcategory}`]: response.data.image_url
+      }));
+      toast.success('Image mise à jour !');
+    } catch (error) {
+      toast.error('Erreur upload: ' + (error.response?.data?.detail || error.message));
+    } finally {
+      setUploading(null);
+    }
+  };
+
+  const handleUrlChange = async (category, subcategory, url) => {
+    try {
+      await axios.post(`${API}/subcategory-images`, {
+        category,
+        subcategory,
+        image_url: url
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setSubcatImages(prev => ({
+        ...prev,
+        [`${category}_${subcategory}`]: url
+      }));
+      toast.success('URL mise à jour !');
+    } catch (error) {
+      toast.error('Erreur: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+      </div>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <ImageIcon className="w-5 h-5" />
+          Images des sous-catégories
+        </CardTitle>
+        <p className="text-sm text-muted-foreground">
+          Personnalisez les vignettes affichées sur la page d&apos;accueil
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Category selector */}
+        <div className="flex gap-2">
+          <Button
+            variant={selectedCategory === 'pieces' ? 'default' : 'outline'}
+            onClick={() => setSelectedCategory('pieces')}
+          >
+            Pièces détachées
+          </Button>
+          <Button
+            variant={selectedCategory === 'accessoires' ? 'default' : 'outline'}
+            onClick={() => setSelectedCategory('accessoires')}
+          >
+            Accessoires
+          </Button>
+        </div>
+
+        {/* Grid of subcategories */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {Object.entries(SUBCATEGORIES[selectedCategory] || {}).map(([key, label]) => {
+            const imageKey = `${selectedCategory}_${key}`;
+            const currentImage = subcatImages[imageKey];
+            const isUploading = uploading === imageKey;
+            
+            return (
+              <div key={key} className="border rounded-lg p-3 space-y-2">
+                {/* Preview */}
+                <div className="aspect-video bg-secondary/30 rounded overflow-hidden relative">
+                  {currentImage ? (
+                    <img 
+                      src={currentImage} 
+                      alt={label}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                      <ImageIcon className="w-8 h-8" />
+                    </div>
+                  )}
+                  {isUploading && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <Loader2 className="w-6 h-6 animate-spin text-white" />
+                    </div>
+                  )}
+                </div>
+                
+                {/* Label */}
+                <p className="text-sm font-medium truncate">{label}</p>
+                
+                {/* Upload button */}
+                <div className="flex gap-1">
+                  <label className="flex-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                          handleUpload(selectedCategory, key, e.target.files[0]);
+                        }
+                      }}
+                      disabled={isUploading}
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full"
+                      disabled={isUploading}
+                      asChild
+                    >
+                      <span>
+                        <Upload className="w-3 h-3 mr-1" />
+                        Upload
+                      </span>
+                    </Button>
+                  </label>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 // ============== COUPONS MANAGER COMPONENT ==============
 function CouponsManager({ token }) {
   const [coupons, setCoupons] = useState([]);
