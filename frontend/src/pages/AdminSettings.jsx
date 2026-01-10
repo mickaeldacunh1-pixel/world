@@ -3745,6 +3745,11 @@ export default function AdminSettings() {
 
           {/* Pages Editor Tab */}
           <TabsContent value="pages" className="space-y-6">
+            <PagesEditor 
+              settings={settings} 
+              updateSetting={(key, value) => setSettings({...settings, [key]: value})}
+            />
+            {/* Home Page Editor - affiché quand la page Accueil est sélectionnée */}
             <HomePageEditor 
               settings={settings} 
               updateSetting={(key, value) => setSettings({...settings, [key]: value})}
