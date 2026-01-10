@@ -1033,6 +1033,87 @@ def set_project_path():
         return jsonify({"success": True})
     return jsonify({"success": False, "error": "Chemin invalide"})
 
+@app.route('/api/speech-to-text', methods=['POST'])
+def speech_to_text():
+    """Convertir audio en texte via OpenAI Whisper"""
+    import asyncio
+    import tempfile
+    
+    if 'audio' not in request.files:
+        return jsonify({"error": "Pas de fichier audio"}), 400
+    
+    audio_file = request.files['audio']
+    
+    try:
+        from emergentintegrations.llm.stt import transcribe_audio
+        
+        # Save to temp file
+        with tempfile.NamedTemporaryFile(suffix='.webm', delete=False) as tmp:
+            audio_file.save(tmp.name)
+            tmp_path = tmp.name
+        
+        # Transcribe
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            text = loop.run_until_complete(
+                transcribe_audio(api_key=config.EMERGENT_API_KEY, audio_path=tmp_path)
+            )
+        finally:
+            loop.close()
+            os.unlink(tmp_path)
+        
+        return jsonify({"text": text})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/text-to-speech', methods=['POST'])
+def text_to_speech():
+    """Convertir texte en audio via OpenAI TTS"""
+    import asyncio
+    import tempfile
+    
+    data = request.json
+    text = data.get('text', '')
+    
+    if not text:
+        return jsonify({"error": "Pas de texte"}), 400
+    
+    # Limit text length for TTS
+    if len(text) > 500:
+        text = text[:500] + "..."
+    
+    try:
+        from emergentintegrations.llm.tts import generate_speech
+        
+        # Generate speech
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+        with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as tmp:
+            tmp_path = tmp.name
+        
+        try:
+            loop.run_until_complete(
+                generate_speech(
+                    api_key=config.EMERGENT_API_KEY,
+                    text=text,
+                    output_path=tmp_path,
+                    voice="alloy"
+                )
+            )
+        finally:
+            loop.close()
+        
+        # Read and return audio
+        with open(tmp_path, 'rb') as f:
+            audio_data = f.read()
+        os.unlink(tmp_path)
+        
+        return Response(audio_data, mimetype='audio/mpeg')
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # ============== MAIN ==============
 
 def main():
