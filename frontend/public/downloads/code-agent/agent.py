@@ -821,6 +821,11 @@ HTML_TEMPLATE = r'''
                 const data = await response.json();
                 typingEl.remove();
                 addMessage('assistant', data.response);
+                
+                // Speak the response if voice is enabled
+                if (voiceEnabled && data.response) {
+                    speakText(data.response);
+                }
             } catch (error) {
                 typingEl.remove();
                 addMessage('assistant', '❌ Erreur de connexion. Vérifie que l\'agent est bien lancé.');
