@@ -85,7 +85,7 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 - ✅ **Traduction page Nouveautés (Updates.jsx)** : Interface entièrement multilingue (8 langues : FR, EN, DE, ES, IT, NL, PT, SV) avec dates formatées selon la locale
 - ✅ **Bouton Messages déplacé** à droite du sélecteur de langue
 
-## Session du 2026-01-11 - Boutons Premium Hero Editor
+## Session du 2026-01-11 - Boutons Premium Hero Editor & Personnalisation Cody
 
 ### Hero Editor - Boutons Premium (P0) ✅
 - ✅ **CTA3 (Bouton Premium 1)** : Nouveau bouton entièrement configurable
@@ -96,6 +96,21 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 - ✅ **CTA4 (Bouton Premium 2)** : Identique à CTA3
 - ✅ **Rendu dans Home.jsx** : Les boutons s'affichent dans le Hero quand activés
 - ✅ **Tests passés** : 18/18 (100%)
+
+### Personnalisation Agent Cody (P1) ✅
+- ✅ **Nouvel onglet Admin "Agent Cody"** avec icône 🤖
+  - Nom de l'agent personnalisable
+  - Mode de thème : Clair / Sombre / Système
+  - 8 couleurs mode clair : accent, hover, fond, sidebar, textes, bordures, succès
+  - 5 couleurs mode sombre
+  - 8 thèmes prédéfinis (Orange, Bleu, Vert, Violet, Rose, Cyan, Rouge, Ambre)
+  - Typographie : police (Inter, Roboto, Poppins, etc.) et taille
+  - Options : sons, emojis, animations
+  - **Export JSON** : génère `cody_config.json` à placer dans le dossier Cody
+  - **Aperçu live** du thème avec preview du chat
+- ✅ **agent.py modifié** : Charge automatiquement `cody_config.json` au démarrage
+- ✅ **Cody v2.2.0** : ZIP régénéré avec nouvelle fonctionnalité
+- ✅ **Tests passés** : 16/16 (100%)
 
 ### Corrections
 - ✅ **Fix erreur de syntaxe Home.jsx** : Parenthèses en double corrigées (ligne 1028-1029)
