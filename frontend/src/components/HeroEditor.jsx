@@ -164,6 +164,18 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
             <Eye className="w-4 h-4" />
             <span className="hidden sm:inline">Éléments</span>
           </TabsTrigger>
+          <TabsTrigger value="shortcuts" className="flex items-center gap-1">
+            <MousePointer className="w-4 h-4" />
+            <span className="hidden sm:inline">Raccourcis</span>
+          </TabsTrigger>
+          <TabsTrigger value="mobile" className="flex items-center gap-1">
+            <Layout className="w-4 h-4" />
+            <span className="hidden sm:inline">Mobile</span>
+          </TabsTrigger>
+          <TabsTrigger value="schedule" className="flex items-center gap-1">
+            <RefreshCw className="w-4 h-4" />
+            <span className="hidden sm:inline">Planning</span>
+          </TabsTrigger>
           <TabsTrigger value="images" className="flex items-center gap-1">
             <Image className="w-4 h-4" />
             <span className="hidden sm:inline">Images</span>
