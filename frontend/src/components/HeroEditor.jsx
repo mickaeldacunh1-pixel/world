@@ -1154,7 +1154,7 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
         <TabsContent value="shortcuts" className="space-y-4 mt-4">
           <CollapsibleSection title="Raccourcis rapides" icon={MousePointer} defaultOpen>
             <p className="text-sm text-muted-foreground mb-4">
-              Configure les boutons raccourcis affichés sous les CTA. <strong>Glisse-dépose</strong> pour réorganiser l'ordre.
+              Configure les boutons raccourcis affichés sous les CTA. <strong>Glisse-dépose</strong> pour réorganiser l&apos;ordre.
             </p>
             
             <ToggleField 
