@@ -818,7 +818,7 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
                 </div>
                 <ToggleField 
                   label="Dégradé" 
-                  description="Applique un dégradé au lieu d'une couleur uniforme"
+                  description="Applique un dégradé au lieu d&apos;une couleur uniforme"
                   checked={settings.hero_overlay_gradient === true}
                   onChange={(v) => updateSetting('hero_overlay_gradient', v)}
                 />
@@ -1415,7 +1415,7 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
           {/* Image de fond Hero (existant) */}
           <CollapsibleSection title="Image de fond du Hero" icon={Image}>
             <p className="text-sm text-muted-foreground mb-4">
-              Upload une image ou utilise une URL. L'image sera visible si la vidéo est désactivée.
+              Upload une image ou utilise une URL. L&apos;image sera visible si la vidéo est désactivée.
             </p>
             <div className="space-y-4">
               <div className="space-y-2">
