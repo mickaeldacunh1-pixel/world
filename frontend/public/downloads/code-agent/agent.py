@@ -968,7 +968,11 @@ HTML_TEMPLATE = r'''
         }
         
         function clearChat() {
-            fetch('/api/clear', { method: 'POST' });
+            fetch('/api/clear', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    updateMemoryCount(0);
+                });
             messagesEl.innerHTML = '';
             addMessage('assistant', 'Conversation effacee. Comment puis-je t aider ?');
         }
