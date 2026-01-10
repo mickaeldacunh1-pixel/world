@@ -1376,8 +1376,52 @@ HTML_TEMPLATE = r'''
         function formatContent(content) {
             if (!content) return '';
             let result = content;
+            
+            // Detecter et formater les resultats JSON d'actions
+            try {
+                // Si c'est un bloc JSON de resultat
+                if (result.includes('"success"') && result.includes('"stdout"')) {
+                    const jsonMatch = result.match(/\{[\s\S]*"success"[\s\S]*\}/);
+                    if (jsonMatch) {
+                        const data = JSON.parse(jsonMatch[0]);
+                        let formatted = '';
+                        
+                        if (data.success) {
+                            formatted = '✅ ';
+                            if (data.stdout && data.stdout.trim()) {
+                                formatted += '<pre><code>' + data.stdout.trim() + '</code></pre>';
+                            } else if (data.stderr && data.stderr.trim()) {
+                                // Filtrer les messages wget/curl
+                                const stderr = data.stderr.replace(/--.*\n|Résolution.*\n|Connexion.*\n|requête.*\n|Taille.*\n|Enregistre.*\n|\s*\d+K.*\n|.*enregistré.*\n/g, '').trim();
+                                if (stderr) {
+                                    formatted += '<pre><code>' + stderr + '</code></pre>';
+                                } else {
+                                    formatted += 'Commande executee avec succes';
+                                }
+                            } else {
+                                formatted += 'Commande executee avec succes';
+                            }
+                        } else {
+                            formatted = '❌ Erreur: ' + (data.error || data.stderr || 'Echec');
+                        }
+                        
+                        result = result.replace(jsonMatch[0], formatted);
+                    }
+                }
+            } catch (e) {
+                // Pas du JSON valide, continuer normalement
+            }
+            
+            // Formatage Markdown standard
             result = result.split('```').map((part, i) => {
-                if (i % 2 === 1) return '<pre><code>' + part + '</code></pre>';
+                if (i % 2 === 1) {
+                    // Enlever le nom du langage si present (ex: ```json)
+                    const lines = part.split('\n');
+                    if (lines[0] && !lines[0].includes(' ') && lines[0].length < 15) {
+                        lines.shift();
+                    }
+                    return '<pre><code>' + lines.join('\n') + '</code></pre>';
+                }
                 return part;
             }).join('');
             result = result.split('`').map((part, i) => {
