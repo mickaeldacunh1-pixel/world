@@ -881,7 +881,17 @@ def set_project_path():
 
 def main():
     console.print("\n[bold blue]🤖 CODE AGENT[/bold blue]")
-    console.print("[dim]Ton assistant de développement personnel[/dim]\n")
+    console.print(f"[dim]Version {VERSION} - Ton assistant de développement personnel[/dim]\n")
+    
+    # Vérifier les mises à jour
+    new_version = check_for_updates()
+    if new_version:
+        response = input(f"⬆️  Version {new_version} disponible. Mettre à jour? (o/n): ")
+        if response.lower() in ['o', 'oui', 'y', 'yes']:
+            if auto_update(new_version):
+                sys.exit(0)  # Demander à l'utilisateur de relancer
+    else:
+        console.print("[green]✓[/green] Agent à jour")
     
     # Check for API key
     if not any([config.EMERGENT_API_KEY, config.OPENAI_API_KEY, config.ANTHROPIC_API_KEY]):
