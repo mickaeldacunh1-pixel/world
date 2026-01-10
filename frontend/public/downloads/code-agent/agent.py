@@ -814,25 +814,19 @@ HTML_TEMPLATE = r'''
         
         function formatContent(content) {
             if (!content) return '';
-            // Simple formatting - avoid complex regex
             let result = content;
-            // Code blocks
             result = result.split('```').map((part, i) => {
                 if (i % 2 === 1) return '<pre><code>' + part + '</code></pre>';
                 return part;
             }).join('');
-            // Inline code
             result = result.split('`').map((part, i) => {
                 if (i % 2 === 1) return '<code>' + part + '</code>';
                 return part;
             }).join('');
-            // Bold
             result = result.split('**').map((part, i) => {
                 if (i % 2 === 1) return '<strong>' + part + '</strong>';
                 return part;
             }).join('');
-            // Line breaks
-            result = result.replace(/\\n/g, '<br>');
             result = result.replace(/\n/g, '<br>');
             return result;
         }
@@ -840,7 +834,7 @@ HTML_TEMPLATE = r'''
         function clearChat() {
             fetch('/api/clear', { method: 'POST' });
             messagesEl.innerHTML = '';
-            addMessage('assistant', '🔄 Conversation effacée. Comment puis-je t aider ?');
+            addMessage('assistant', 'Conversation effacee. Comment puis-je t aider ?');
         }
         
         function updateProjectPath(path) {
@@ -852,7 +846,7 @@ HTML_TEMPLATE = r'''
         }
         
         function showSettings() {
-            alert('Configuration: Modifie le fichier .env pour changer les cles API, Change le chemin du projet ci-dessous, Selectionne le modele dans le menu');
+            alert('Configuration: Modifie le fichier .env pour changer les cles API. Change le chemin du projet ci-dessous. Selectionne le modele dans le menu.');
         }
         
         // Focus input on load
