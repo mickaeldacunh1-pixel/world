@@ -133,24 +133,40 @@ nano /var/www/worldauto/backend/.env
 docker restart worldauto-backend
 ```
 
-## Session du 2026-01-09 - KIM Agent & Nouveautés
+## Session du 2026-01-09/10 - KIM Agent & Code Agent
 
 ### KIM Agent (v4.4.0)
-- ✅ **Application PWA KIM Agent** : Assistant IA automobile accessible à `/kim-agent/`
-  - Interface de chat moderne (dark mode)
-  - Réponses IA pour diagnostic, recherche de pièces, conseils
-  - Installation PWA possible sur mobile et desktop
-  - Service Worker pour fonctionnement offline partiel
+- ✅ **Application KIM Agent** : Assistant IA automobile accessible à `/kim-agent`
+  - Interface de chat React moderne (dark mode)
+  - Connecté à l'API GPT-4o via Emergent
+  - Réponses IA réelles pour diagnostic, recherche de pièces, conseils
   - Quick actions : Trouver une pièce, Diagnostic, Estimation
 - ✅ **Page de présentation** : `/kim-assistant` avec instructions d'installation
-  - 3 méthodes : PWA, Desktop (Electron), Web direct
-  - FAQ intégrée
-- ✅ **Fichiers Desktop Electron** : `/app/frontend/public/kim-desktop/`
+
+### Améliorations UI Hero
+- ✅ **Raccourcis stylés** ajoutés entre CTA et stats :
+  - 🎬 Vidéos (rouge)
+  - 📸 Stories (rose)
+  - 🎁 Fidélité (jaune)
+  - ✨ KIM Agent (bleu)
+- ✅ **Bouton Diagnostic** déplacé sur la ligne des CTA (avec Enchères)
+- ✅ **Navbar allégée** : boutons Diag IA et Vidéos retirés
 
 ### Section Nouveautés en haut de page
 - ✅ **Bannière "WHAT'S NEW"** visible immédiatement en haut de la page d'accueil
 - ✅ Lien direct vers `/nouveautes`
 - ✅ Traductions dans 8 langues (FR, EN, DE, ES, IT, NL, PT, SV)
+
+### Code Agent (v1.1.0) - Application Desktop
+- ✅ **Agent de développement Python** téléchargeable
+  - Clone de l'agent Emergent pour usage local
+  - Interface web sur localhost:8888
+  - Lecture/écriture de fichiers
+  - Exécution de commandes shell
+  - Recherche dans le code
+  - Multi-LLM : GPT-4o + Claude via Emergent Key
+  - Auto-update intégré
+- ✅ **Téléchargement** : `/downloads/code-agent.zip`
 
 ## Backlog
 ### P1
