@@ -416,7 +416,7 @@ llm = LLMClient()
 
 # ============== WEB INTERFACE ==============
 
-HTML_TEMPLATE = '''
+HTML_TEMPLATE = r'''
 <!DOCTYPE html>
 <html lang="fr">
 <head>
