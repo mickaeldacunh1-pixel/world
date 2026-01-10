@@ -1718,6 +1718,74 @@ export default function AdminSettings() {
                   </div>
                 </div>
 
+                {/* Boutons icônes de la navbar */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">🔘 Boutons icônes</h4>
+                  <p className="text-xs text-muted-foreground">Activez ou désactivez les boutons icônes de la navbar</p>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">💬 Messages</p>
+                        <p className="text-xs text-muted-foreground">Messagerie interne</p>
+                      </div>
+                      <Switch
+                        checked={settings.navbar_show_messages !== false}
+                        onCheckedChange={(checked) => setSettings({...settings, navbar_show_messages: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">❤️ Favoris</p>
+                        <p className="text-xs text-muted-foreground">Liste de favoris</p>
+                      </div>
+                      <Switch
+                        checked={settings.navbar_show_favorites !== false}
+                        onCheckedChange={(checked) => setSettings({...settings, navbar_show_favorites: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">🎁 Fidélité</p>
+                        <p className="text-xs text-muted-foreground">Points de fidélité</p>
+                      </div>
+                      <Switch
+                        checked={settings.navbar_show_loyalty !== false}
+                        onCheckedChange={(checked) => setSettings({...settings, navbar_show_loyalty: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">🌐 Langue</p>
+                        <p className="text-xs text-muted-foreground">Sélecteur de langue</p>
+                      </div>
+                      <Switch
+                        checked={settings.navbar_show_language !== false}
+                        onCheckedChange={(checked) => setSettings({...settings, navbar_show_language: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">🛒 Panier</p>
+                        <p className="text-xs text-muted-foreground">Bouton panier</p>
+                      </div>
+                      <Switch
+                        checked={settings.navbar_show_cart !== false}
+                        onCheckedChange={(checked) => setSettings({...settings, navbar_show_cart: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">🔍 Recherche</p>
+                        <p className="text-xs text-muted-foreground">Barre de recherche</p>
+                      </div>
+                      <Switch
+                        checked={settings.navbar_show_search !== false}
+                        onCheckedChange={(checked) => setSettings({...settings, navbar_show_search: checked})}
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 {/* Liens personnalisés */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
