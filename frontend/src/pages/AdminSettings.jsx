@@ -1214,6 +1214,10 @@ export default function AdminSettings() {
               <Settings className="w-4 h-4" />
               Sections
             </TabsTrigger>
+            <TabsTrigger value="pages" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              <span className="hidden sm:inline">Pages</span>
+            </TabsTrigger>
             <TabsTrigger value="coupons" className="flex items-center gap-2">
               <Ticket className="w-4 h-4" />
               <span className="hidden sm:inline">Coupons</span>
