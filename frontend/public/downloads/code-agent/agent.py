@@ -1127,8 +1127,9 @@ HTML_TEMPLATE = r'''
             inputEl.style.height = 'auto';
             sendBtn.disabled = true;
             
-            // Show typing indicator
+            // Show typing indicator and status bar
             const typingEl = addTyping();
+            showStatus('Code Agent reflechit...');
             
             try {
                 const response = await fetch('/api/chat', {
@@ -1142,6 +1143,7 @@ HTML_TEMPLATE = r'''
                 
                 const data = await response.json();
                 typingEl.remove();
+                hideStatus();
                 addMessage('assistant', data.response);
                 
                 // Update memory indicator
@@ -1155,6 +1157,7 @@ HTML_TEMPLATE = r'''
                 }
             } catch (error) {
                 typingEl.remove();
+                hideStatus();
                 addMessage('assistant', '❌ Erreur de connexion. Verifie que l agent est bien lance.');
             }
             
