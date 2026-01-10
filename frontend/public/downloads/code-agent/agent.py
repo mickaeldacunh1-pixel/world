@@ -568,6 +568,24 @@ HTML_TEMPLATE = r'''
             background: var(--success);
         }
         
+        .memory-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+            color: var(--accent);
+            background: rgba(249, 115, 22, 0.1);
+            padding: 0.25rem 0.6rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+        }
+        
+        .memory-indicator #memoryCount {
+            font-weight: bold;
+            min-width: 1.5rem;
+            text-align: center;
+        }
+        
         main {
             flex: 1;
             display: flex;
