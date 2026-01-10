@@ -815,17 +815,17 @@ HTML_TEMPLATE = '''
         function formatContent(content) {
             // Convert markdown-like syntax
             return content
-                .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+                .replace(/```(\\w*)\\n([\\s\\S]*?)```/g, '<pre><code>$2</code></pre>')
                 .replace(/`([^`]+)`/g, '<code>$1</code>')
-                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.+?)\*/g, '<em>$1</em>')
-                .replace(/\n/g, '<br>');
+                .replace(/\\*\\*(.+?)\\*\\*/g, '<strong>$1</strong>')
+                .replace(/\\*(.+?)\\*/g, '<em>$1</em>')
+                .replace(/\\n/g, '<br>');
         }
         
         function clearChat() {
             fetch('/api/clear', { method: 'POST' });
             messagesEl.innerHTML = '';
-            addMessage('assistant', '🔄 Conversation effacée. Comment puis-je t\'aider ?');
+            addMessage('assistant', '🔄 Conversation effacée. Comment puis-je t\\'aider ?');
         }
         
         function updateProjectPath(path) {
