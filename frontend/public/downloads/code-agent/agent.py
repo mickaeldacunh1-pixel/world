@@ -866,10 +866,16 @@ HTML_TEMPLATE = r'''
         
         /* ========== INPUT AREA ========== */
         .input-area {
-            position: sticky;
+            position: fixed;
             bottom: 0;
-            background: linear-gradient(to top, var(--bg-main) 80%, transparent);
+            left: 0;
+            right: 0;
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-main);
             padding: 1rem 1.5rem 1.5rem;
+            border-top: 1px solid var(--border-light);
+            z-index: 100;
         }
         
         .input-container {
