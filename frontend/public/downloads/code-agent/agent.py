@@ -463,9 +463,14 @@ Réponds toujours en français. Sois concis mais complet."""
     
     def clear_history(self):
         """Effacer l'historique de conversation"""
-        self.conversation_history = []
+        session_manager.clear_history(self.session_id)
+    
+    def get_history_length(self) -> int:
+        """Retourne le nombre de messages dans l'historique"""
+        return len(self.conversation_history)
 
-llm = LLMClient()
+# Instance globale du client LLM
+llm = LLMClient(session_id="default")
 
 # ============== WEB INTERFACE ==============
 
