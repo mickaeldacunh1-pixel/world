@@ -353,7 +353,6 @@ Réponds toujours en français."""
         """Appeler l'API Emergent via emergentintegrations"""
         try:
             from emergentintegrations.llm.chat import LlmChat, UserMessage
-            import uuid
             
             # Map model names
             if 'gpt-5' in model.lower() or 'gpt-4o' in model.lower():
@@ -365,21 +364,30 @@ Réponds toujours en français."""
             else:
                 provider, model_name = "openai", "gpt-4o"
             
-            # Create chat instance with session_id
+            # Construire le contexte avec tout l'historique
+            history_context = ""
+            if len(self.conversation_history) > 1:
+                history_context = "HISTORIQUE DE LA CONVERSATION:\n"
+                for msg in self.conversation_history[:-1]:
+                    role = "Utilisateur" if msg["role"] == "user" else "Assistant"
+                    history_context += f"{role}: {msg['content'][:500]}...\n" if len(msg['content']) > 500 else f"{role}: {msg['content']}\n"
+                history_context += "\nMESSAGE ACTUEL:\n"
+            
+            # Create chat instance
             chat = LlmChat(
                 api_key=config.EMERGENT_API_KEY,
-                session_id=str(uuid.uuid4()),
-                system_message=self.SYSTEM_PROMPT
+                session_id=self.session_id,
+                system_message=self.SYSTEM_PROMPT + "\n\n" + history_context
             ).with_model(provider, model_name)
             
-            # Send current message
+            # Send current message (le dernier dans l'historique)
             last_msg = self.conversation_history[-1]["content"] if self.conversation_history else ""
             response = await chat.send_message(UserMessage(text=last_msg))
             
             return response
             
         except ImportError:
-            return "❌ Module emergentintegrations non installé. Lance: pip install emergentintegrations --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/"
+            return "❌ Module emergentintegrations non installe. Lance: pip install emergentintegrations --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/"
         except Exception as e:
             return f"❌ Erreur: {str(e)}"
     
