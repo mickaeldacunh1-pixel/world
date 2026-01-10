@@ -1562,6 +1562,10 @@ def text_to_speech():
     if len(text) > 500:
         text = text[:500] + "..."
     
+    # Verifier si la cle API est disponible
+    if not config.EMERGENT_API_KEY:
+        return jsonify({"error": "Cle API non configuree"}), 503
+    
     try:
         from emergentintegrations.llm.tts import generate_speech
         
