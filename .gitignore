@@ -524,3 +524,11 @@ frontend/public/kim-desktop.zip
 *.env
 *.env.*
 frontend/node_modules/.cache/default-development/9.pack_
+-e 
+# Environment files
+*.env
+*.env.*
+-e 
+# Environment files
+*.env
+*.env.*
