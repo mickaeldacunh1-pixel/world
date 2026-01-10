@@ -241,6 +241,14 @@ export default function Home() {
       } catch (error) {
         console.error('Error fetching recent listings:', error);
       }
+
+      // Fetch subcategory images
+      try {
+        const response = await axios.get(`${API}/subcategory-images`);
+        if (isMounted) setSubcatImages(response.data || {});
+      } catch (error) {
+        console.error('Error fetching subcategory images:', error);
+      }
     };
     
     loadData();
