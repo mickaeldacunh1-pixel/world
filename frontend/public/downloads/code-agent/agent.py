@@ -1061,6 +1061,10 @@ def chat():
     message = data.get('message', '')
     model = data.get('model', config.DEFAULT_MODEL)
     
+    # Log pour debug
+    history_count = llm.get_history_length()
+    console.print(f"[dim]📝 Historique: {history_count} messages[/dim]")
+    
     # Run async function in sync context
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -1069,12 +1073,27 @@ def chat():
     finally:
         loop.close()
     
-    return jsonify({"response": response})
+    new_count = llm.get_history_length()
+    return jsonify({
+        "response": response,
+        "history_count": new_count
+    })
 
 @app.route('/api/clear', methods=['POST'])
 def clear():
+    old_count = llm.get_history_length()
     llm.clear_history()
-    return jsonify({"success": True})
+    console.print(f"[yellow]🗑️ Historique effacé ({old_count} messages supprimés)[/yellow]")
+    return jsonify({"success": True, "messages_cleared": old_count})
+
+@app.route('/api/history', methods=['GET'])
+def get_history():
+    """Obtenir l'historique de conversation (pour debug)"""
+    history = llm.conversation_history
+    return jsonify({
+        "count": len(history),
+        "messages": [{"role": m["role"], "preview": m["content"][:100] + "..." if len(m["content"]) > 100 else m["content"]} for m in history[-10:]]
+    })
 
 @app.route('/api/project-path', methods=['POST'])
 def set_project_path():
