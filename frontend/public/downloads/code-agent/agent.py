@@ -764,15 +764,15 @@ HTML_TEMPLATE = r'''
         }
         
         /* Markdown elements */
-        .content h1 { font-size: 1.5rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
-        .content h2 { font-size: 1.25rem; font-weight: 600; margin: 1.25rem 0 0.625rem; }
-        .content h3 { font-size: 1.125rem; font-weight: 600; margin: 1rem 0 0.5rem; }
-        .content ul, .content ol { margin: 0.75rem 0 0.75rem 1.5rem; }
-        .content li { margin: 0.375rem 0; }
-        .content p { margin: 0.625rem 0; }
+        .content h1 { font-size: 1.625rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--text-primary); }
+        .content h2 { font-size: 1.375rem; font-weight: 600; margin: 1.25rem 0 0.625rem; color: var(--text-primary); }
+        .content h3 { font-size: 1.125rem; font-weight: 600; margin: 1rem 0 0.5rem; color: var(--text-primary); }
+        .content ul, .content ol { margin: 0.875rem 0 0.875rem 1.25rem; }
+        .content li { margin: 0.5rem 0; line-height: 1.7; }
+        .content p { margin: 0.75rem 0; }
         .content strong { font-weight: 600; color: var(--text-primary); }
         .content em { font-style: italic; color: var(--text-secondary); }
-        .content a { color: var(--accent); text-decoration: none; }
+        .content a { color: var(--accent); text-decoration: none; font-weight: 500; }
         .content a:hover { text-decoration: underline; }
         
         /* Typing indicator */
