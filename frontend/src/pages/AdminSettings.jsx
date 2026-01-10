@@ -60,6 +60,441 @@ const HERO_TEXT_ANIMATIONS = [
   { value: "typewriter", label: "Machine à écrire" },
 ];
 
+// ============== HOME PAGE EDITOR COMPONENT ==============
+function HomePageEditor({ settings, updateSetting, onImageUpload, uploadingImage }) {
+  const [activeSection, setActiveSection] = useState('hero');
+  
+  const sections = [
+    { id: 'hero', label: '🏠 Hero (Bannière)', icon: '🎯' },
+    { id: 'stats', label: '📊 Statistiques', icon: '📈' },
+    { id: 'categories', label: '📁 Catégories', icon: '📂' },
+    { id: 'brands', label: '🚗 Marques', icon: '🏷️' },
+    { id: 'parts', label: '🔧 Pièces', icon: '⚙️' },
+    { id: 'oem', label: '🔍 Référence OEM', icon: '🔎' },
+    { id: 'regions', label: '📍 Régions', icon: '🗺️' },
+    { id: 'recent', label: '🆕 Annonces récentes', icon: '📋' },
+    { id: 'diagnostic', label: '🤖 Diagnostic IA', icon: '🧠' },
+    { id: 'cta', label: '📣 Appel à l\'action', icon: '🎯' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Section Selector */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="w-5 h-5" />
+            Éditeur Page d&apos;Accueil
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Sélectionne une section pour modifier son contenu
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-2">
+            {sections.map((section) => (
+              <Button
+                key={section.id}
+                variant={activeSection === section.id ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setActiveSection(section.id)}
+                className="text-xs"
+              >
+                {section.label}
+              </Button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Hero Section Editor */}
+      {activeSection === 'hero' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>🏠 Section Hero (Bannière principale)</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              ⚠️ Le Hero a son propre onglet dédié avec plus d&apos;options. Utilisez l&apos;onglet &quot;Hero&quot; pour une personnalisation complète.
+            </p>
+            <Button variant="outline" onClick={() => document.querySelector('[value="hero"]')?.click()}>
+              Aller à l&apos;onglet Hero →
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Stats Section Editor */}
+      {activeSection === 'stats' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>📊 Section Statistiques</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>Afficher les statistiques</Label>
+              <Switch 
+                checked={settings.home_stats_enabled !== false}
+                onCheckedChange={(v) => updateSetting('home_stats_enabled', v)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Texte "annonces actives"</Label>
+                <Input 
+                  value={settings.home_stats_listings_text || 'annonces actives'}
+                  onChange={(e) => updateSetting('home_stats_listings_text', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>Texte "catégories"</Label>
+                <Input 
+                  value={settings.home_stats_categories_text || 'catégories'}
+                  onChange={(e) => updateSetting('home_stats_categories_text', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>Texte "membres"</Label>
+                <Input 
+                  value={settings.home_stats_members_text || 'membres'}
+                  onChange={(e) => updateSetting('home_stats_members_text', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>Texte "ventes"</Label>
+                <Input 
+                  value={settings.home_stats_sales_text || 'ventes réalisées'}
+                  onChange={(e) => updateSetting('home_stats_sales_text', e.target.value)}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Categories Section Editor */}
+      {activeSection === 'categories' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>📁 Section Catégories</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>Afficher la section catégories</Label>
+              <Switch 
+                checked={settings.home_categories_enabled !== false}
+                onCheckedChange={(v) => updateSetting('home_categories_enabled', v)}
+              />
+            </div>
+            <div>
+              <Label>Titre de la section</Label>
+              <Input 
+                value={settings.home_categories_title || 'Explorez nos catégories'}
+                onChange={(e) => updateSetting('home_categories_title', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Sous-titre</Label>
+              <Input 
+                value={settings.home_categories_subtitle || 'Trouvez ce que vous cherchez'}
+                onChange={(e) => updateSetting('home_categories_subtitle', e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Brands Section Editor */}
+      {activeSection === 'brands' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>🚗 Section Marques</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>Afficher la section marques</Label>
+              <Switch 
+                checked={settings.home_brands_enabled !== false}
+                onCheckedChange={(v) => updateSetting('home_brands_enabled', v)}
+              />
+            </div>
+            <div>
+              <Label>Titre</Label>
+              <Input 
+                value={settings.home_brands_title || 'Recherche par marque'}
+                onChange={(e) => updateSetting('home_brands_title', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Sous-titre</Label>
+              <Input 
+                value={settings.home_brands_subtitle || 'Trouvez des pièces pour votre véhicule'}
+                onChange={(e) => updateSetting('home_brands_subtitle', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Texte bouton "Voir toutes les marques"</Label>
+              <Input 
+                value={settings.home_brands_button || 'Voir toutes les marques'}
+                onChange={(e) => updateSetting('home_brands_button', e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Parts Section Editor */}
+      {activeSection === 'parts' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>🔧 Section Pièces par catégorie</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>Afficher la section pièces</Label>
+              <Switch 
+                checked={settings.home_parts_enabled !== false}
+                onCheckedChange={(v) => updateSetting('home_parts_enabled', v)}
+              />
+            </div>
+            <div>
+              <Label>Titre</Label>
+              <Input 
+                value={settings.home_parts_title || 'Pièces par catégorie'}
+                onChange={(e) => updateSetting('home_parts_title', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Sous-titre</Label>
+              <Input 
+                value={settings.home_parts_subtitle || 'Les pièces les plus recherchées'}
+                onChange={(e) => updateSetting('home_parts_subtitle', e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* OEM Section Editor */}
+      {activeSection === 'oem' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>🔍 Section Référence OEM</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>Afficher la section OEM</Label>
+              <Switch 
+                checked={settings.home_oem_enabled !== false}
+                onCheckedChange={(v) => updateSetting('home_oem_enabled', v)}
+              />
+            </div>
+            <div>
+              <Label>Titre</Label>
+              <Input 
+                value={settings.home_oem_title || 'Recherche par référence OEM'}
+                onChange={(e) => updateSetting('home_oem_title', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Sous-titre</Label>
+              <Textarea 
+                value={settings.home_oem_subtitle || 'Entrez la référence constructeur (OEM) pour trouver la pièce exacte'}
+                onChange={(e) => updateSetting('home_oem_subtitle', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Placeholder du champ de recherche</Label>
+              <Input 
+                value={settings.home_oem_placeholder || 'Ex: 1K0615301M, 7701209803...'}
+                onChange={(e) => updateSetting('home_oem_placeholder', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Texte du bouton</Label>
+              <Input 
+                value={settings.home_oem_button || 'Rechercher'}
+                onChange={(e) => updateSetting('home_oem_button', e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Regions Section Editor */}
+      {activeSection === 'regions' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>📍 Section Régions</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>Afficher la section régions</Label>
+              <Switch 
+                checked={settings.home_regions_enabled !== false}
+                onCheckedChange={(v) => updateSetting('home_regions_enabled', v)}
+              />
+            </div>
+            <div>
+              <Label>Titre</Label>
+              <Input 
+                value={settings.home_regions_title || 'Recherche par région'}
+                onChange={(e) => updateSetting('home_regions_title', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Sous-titre</Label>
+              <Input 
+                value={settings.home_regions_subtitle || 'Trouvez des annonces près de chez vous'}
+                onChange={(e) => updateSetting('home_regions_subtitle', e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Recent Listings Section Editor */}
+      {activeSection === 'recent' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>🆕 Section Annonces récentes</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>Afficher les annonces récentes</Label>
+              <Switch 
+                checked={settings.home_recent_enabled !== false}
+                onCheckedChange={(v) => updateSetting('home_recent_enabled', v)}
+              />
+            </div>
+            <div>
+              <Label>Titre</Label>
+              <Input 
+                value={settings.home_recent_title || 'Annonces récentes'}
+                onChange={(e) => updateSetting('home_recent_title', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Sous-titre</Label>
+              <Input 
+                value={settings.home_recent_subtitle || 'Les dernières annonces publiées'}
+                onChange={(e) => updateSetting('home_recent_subtitle', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Nombre d&apos;annonces à afficher</Label>
+              <Select 
+                value={String(settings.home_recent_count || 6)}
+                onValueChange={(v) => updateSetting('home_recent_count', parseInt(v))}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="3">3 annonces</SelectItem>
+                  <SelectItem value="6">6 annonces</SelectItem>
+                  <SelectItem value="9">9 annonces</SelectItem>
+                  <SelectItem value="12">12 annonces</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Diagnostic IA Section Editor */}
+      {activeSection === 'diagnostic' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>🤖 Section Diagnostic IA</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>Afficher la section Diagnostic IA</Label>
+              <Switch 
+                checked={settings.home_diagnostic_enabled !== false}
+                onCheckedChange={(v) => updateSetting('home_diagnostic_enabled', v)}
+              />
+            </div>
+            <div>
+              <Label>Badge</Label>
+              <Input 
+                value={settings.home_diagnostic_badge || '🤖 Nouveau'}
+                onChange={(e) => updateSetting('home_diagnostic_badge', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Titre</Label>
+              <Input 
+                value={settings.home_diagnostic_title || 'Diagnostic IA'}
+                onChange={(e) => updateSetting('home_diagnostic_title', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Sous-titre</Label>
+              <Textarea 
+                value={settings.home_diagnostic_subtitle || 'Décrivez votre problème et notre IA vous aidera à identifier la pièce'}
+                onChange={(e) => updateSetting('home_diagnostic_subtitle', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Texte bouton</Label>
+              <Input 
+                value={settings.home_diagnostic_button || 'Essayer le diagnostic'}
+                onChange={(e) => updateSetting('home_diagnostic_button', e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* CTA Section Editor */}
+      {activeSection === 'cta' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>📣 Section Appel à l&apos;action (CTA)</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>Afficher la section CTA</Label>
+              <Switch 
+                checked={settings.home_cta_enabled !== false}
+                onCheckedChange={(v) => updateSetting('home_cta_enabled', v)}
+              />
+            </div>
+            <div>
+              <Label>Titre</Label>
+              <Input 
+                value={settings.home_cta_title || 'Prêt à vendre ?'}
+                onChange={(e) => updateSetting('home_cta_title', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Sous-titre</Label>
+              <Textarea 
+                value={settings.home_cta_subtitle || 'Rejoignez des milliers de vendeurs et touchez des acheteurs dans toute la France'}
+                onChange={(e) => updateSetting('home_cta_subtitle', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Texte bouton principal</Label>
+              <Input 
+                value={settings.home_cta_button || 'Déposer une annonce'}
+                onChange={(e) => updateSetting('home_cta_button', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Texte bouton secondaire</Label>
+              <Input 
+                value={settings.home_cta_button2 || 'Voir les tarifs'}
+                onChange={(e) => updateSetting('home_cta_button2', e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
 // ============== SUBCATEGORY IMAGES MANAGER COMPONENT ==============
 function SubcategoryImagesManager({ token }) {
   const [subcatImages, setSubcatImages] = useState({});
