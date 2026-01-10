@@ -890,6 +890,102 @@ HTML_TEMPLATE = r'''
             alert('Configuration: Modifie le fichier .env pour changer les cles API. Change le chemin du projet ci-dessous. Selectionne le modele dans le menu.');
         }
         
+        // ============ VOICE FUNCTIONS ============
+        
+        function toggleVoice() {
+            voiceEnabled = !voiceEnabled;
+            voiceBtn.textContent = voiceEnabled ? '🔊' : '🔇';
+            voiceStatus.textContent = voiceEnabled ? '🔊 Voix activee' : '🔇 Voix desactivee';
+            voiceStatus.style.color = voiceEnabled ? '#22c55e' : '#94a3b8';
+        }
+        
+        async function toggleRecording() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+        
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = (e) => {
+                    audioChunks.push(e.data);
+                };
+                
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    await sendAudioToServer(audioBlob);
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                micBtn.classList.add('recording');
+                micBtn.textContent = '⏹️';
+            } catch (err) {
+                alert('Erreur micro: ' + err.message);
+            }
+        }
+        
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                micBtn.classList.remove('recording');
+                micBtn.textContent = '🎤';
+            }
+        }
+        
+        async function sendAudioToServer(audioBlob) {
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'recording.webm');
+            
+            try {
+                addMessage('user', '🎤 [Message vocal en cours de transcription...]');
+                
+                const response = await fetch('/api/speech-to-text', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                if (data.text) {
+                    // Remove placeholder and add real message
+                    messagesEl.lastChild.remove();
+                    inputEl.value = data.text;
+                    sendMessage();
+                }
+            } catch (err) {
+                console.error('STT Error:', err);
+            }
+        }
+        
+        async function speakText(text) {
+            if (!voiceEnabled) return;
+            
+            try {
+                const response = await fetch('/api/text-to-speech', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+                
+                if (response.ok) {
+                    const audioBlob = await response.blob();
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+                    audio.play();
+                }
+            } catch (err) {
+                console.error('TTS Error:', err);
+            }
+        }
+        
         // Focus input on load
         inputEl.focus();
     </script>
