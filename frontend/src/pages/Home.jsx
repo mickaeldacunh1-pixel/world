@@ -554,6 +554,8 @@ export default function Home() {
                     <SelectItem value="motos">{t('categories.motos')}</SelectItem>
                     <SelectItem value="utilitaires">{t('categories.utilitaires')}</SelectItem>
                     <SelectItem value="accessoires">{t('categories.accessoires')}</SelectItem>
+                    <SelectItem value="engins">{t('categories.engins', 'Engins & Agricole')}</SelectItem>
+                    <SelectItem value="rares">{t('categories.rares', 'Rares & Collections')}</SelectItem>
                   </SelectContent>
                 </Select>
                 {heroSettings.hero_show_voice_search !== false && (
