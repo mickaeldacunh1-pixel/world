@@ -85,6 +85,23 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 - ✅ **Traduction page Nouveautés (Updates.jsx)** : Interface entièrement multilingue (8 langues : FR, EN, DE, ES, IT, NL, PT, SV) avec dates formatées selon la locale
 - ✅ **Bouton Messages déplacé** à droite du sélecteur de langue
 
+## Session du 2026-01-11 - Boutons Premium Hero Editor
+
+### Hero Editor - Boutons Premium (P0) ✅
+- ✅ **CTA3 (Bouton Premium 1)** : Nouveau bouton entièrement configurable
+  - Icône, texte, lien, style (plein/contour/transparent)
+  - Taille, arrondi, couleurs (fond, texte, bordure)
+  - Effets hover : Aucun, Agrandir (scale), Brillance (glow), Vibration (shake)
+  - Bordure dorée distinctive dans l'admin (⭐)
+- ✅ **CTA4 (Bouton Premium 2)** : Identique à CTA3
+- ✅ **Rendu dans Home.jsx** : Les boutons s'affichent dans le Hero quand activés
+- ✅ **Tests passés** : 18/18 (100%)
+
+### Corrections
+- ✅ **Fix erreur de syntaxe Home.jsx** : Parenthèses en double corrigées (ligne 1028-1029)
+
+---
+
 ## Session du 2026-01-10 - Améliorations Hero Editor & Code Agent
 
 ### Améliorations Hero Editor (P0)
