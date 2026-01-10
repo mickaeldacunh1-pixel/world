@@ -1677,6 +1677,18 @@ def get_history():
         "messages": [{"role": m["role"], "preview": m["content"][:100] + "..." if len(m["content"]) > 100 else m["content"]} for m in history[-10:]]
     })
 
+@app.route('/api/theme', methods=['GET'])
+def get_theme():
+    """Obtenir la configuration du thème actuel"""
+    return jsonify(THEME_CONFIG)
+
+@app.route('/api/reload-theme', methods=['POST'])
+def reload_theme():
+    """Recharger la configuration du thème"""
+    global THEME_CONFIG
+    THEME_CONFIG = load_theme_config()
+    return jsonify({"success": True, "theme": THEME_CONFIG})
+
 @app.route('/api/project-path', methods=['POST'])
 def set_project_path():
     data = request.json
