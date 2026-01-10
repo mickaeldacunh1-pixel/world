@@ -687,18 +687,15 @@ HTML_TEMPLATE = r'''
             font-size: 0.9375rem;
         }
         
-        /* Message User - Style Emergent (bulle à droite) */
+        /* Message User - Style identique à l'assistant (pas de bulle) */
         .message.user {
-            display: flex;
-            justify-content: flex-end;
-            padding: 1rem 0;
+            padding: 1.5rem 0;
+            background: var(--bg-sidebar);
         }
         
         .message.user .message-wrapper {
-            max-width: 85%;
             display: flex;
-            flex-direction: row-reverse;
-            gap: 0.75rem;
+            gap: 1rem;
             align-items: flex-start;
         }
         
@@ -706,20 +703,19 @@ HTML_TEMPLATE = r'''
             width: 32px;
             height: 32px;
             border-radius: 8px;
-            background: var(--text-primary);
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             font-size: 0.875rem;
             color: white;
+            box-shadow: var(--shadow);
         }
         
         .message.user .content {
-            background: var(--bg-user-msg);
-            padding: 0.875rem 1.125rem;
-            border-radius: 18px 18px 4px 18px;
-            line-height: 1.6;
+            flex: 1;
+            line-height: 1.75;
             color: var(--text-primary);
             font-size: 0.9375rem;
         }
