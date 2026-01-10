@@ -1183,7 +1183,7 @@ export default function AdminSettings() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-8 mb-6">
             <TabsTrigger value="hero" className="flex items-center gap-2">
-              <Image className="w-4 h-4" />
+              <ImageIcon className="w-4 h-4" />
               Hero
             </TabsTrigger>
             <TabsTrigger value="navbar" className="flex items-center gap-2">
@@ -1321,7 +1321,7 @@ export default function AdminSettings() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
-                  <Image className="w-5 h-5" />
+                  <ImageIcon className="w-5 h-5" />
                   🎨 Éditeur Hero Complet
                 </CardTitle>
                 <Button 
@@ -1392,7 +1392,7 @@ export default function AdminSettings() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Image className="w-5 h-5" />
+                  <ImageIcon className="w-5 h-5" />
                   Images des catégories
                 </CardTitle>
               </CardHeader>
