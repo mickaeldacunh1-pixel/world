@@ -1103,8 +1103,10 @@ HTML_TEMPLATE = r'''
             const div = document.createElement('div');
             div.className = `message ${role}`;
             div.innerHTML = `
-                <div class="avatar">${role === 'assistant' ? '🤖' : '👤'}</div>
-                <div class="content">${formatContent(content)}</div>
+                <div class="message-wrapper">
+                    <div class="avatar">${role === 'assistant' ? '🤖' : '👤'}</div>
+                    <div class="content">${formatContent(content)}</div>
+                </div>
             `;
             messagesEl.appendChild(div);
             messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -1114,8 +1116,10 @@ HTML_TEMPLATE = r'''
             const div = document.createElement('div');
             div.className = 'message assistant';
             div.innerHTML = `
-                <div class="avatar">🤖</div>
-                <div class="content"><div class="typing"><span></span><span></span><span></span></div></div>
+                <div class="message-wrapper">
+                    <div class="avatar">🤖</div>
+                    <div class="content"><div class="typing"><span></span><span></span><span></span></div></div>
+                </div>
             `;
             messagesEl.appendChild(div);
             messagesEl.scrollTop = messagesEl.scrollHeight;
