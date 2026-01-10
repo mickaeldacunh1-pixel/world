@@ -1419,7 +1419,7 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
             </p>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>URL de l'image de fond</Label>
+                <Label>URL image de fond</Label>
                 <Input
                   value={settings.hero_image || ''}
                   onChange={(e) => updateSetting('hero_image', e.target.value)}
