@@ -2590,6 +2590,11 @@ export default function AdminSettings() {
             <CouponsManager token={token} />
           </TabsContent>
 
+          {/* Subcategory Images Tab */}
+          <TabsContent value="subcatimages" className="space-y-6">
+            <SubcategoryImagesManager token={token} />
+          </TabsContent>
+
           {/* Identity Verification Tab */}
           <TabsContent value="identity" className="space-y-6">
             <Card>
