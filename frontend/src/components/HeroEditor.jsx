@@ -631,6 +631,250 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
                   </div>
                 )}
               </div>
+
+              {/* CTA 3 - Premium */}
+              <div className="p-4 border-2 border-amber-500/30 rounded-lg space-y-4 bg-amber-500/5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-amber-500 font-bold">⭐</span>
+                    <Label className="font-bold">Bouton Premium 1</Label>
+                  </div>
+                  <Switch 
+                    checked={settings.hero_cta3_enabled === true}
+                    onCheckedChange={(v) => updateSetting('hero_cta3_enabled', v)}
+                  />
+                </div>
+                {settings.hero_cta3_enabled && (
+                  <div className="space-y-4">
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Icône</Label>
+                        <Input
+                          value={settings.hero_cta3_icon || '🎯'}
+                          onChange={(e) => updateSetting('hero_cta3_icon', e.target.value)}
+                          placeholder="🎯"
+                        />
+                      </div>
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Texte</Label>
+                        <Input
+                          value={settings.hero_cta3_text || ''}
+                          onChange={(e) => updateSetting('hero_cta3_text', e.target.value)}
+                          placeholder="Ex: Estimation gratuite"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Lien</Label>
+                        <Input
+                          value={settings.hero_cta3_link || ''}
+                          onChange={(e) => updateSetting('hero_cta3_link', e.target.value)}
+                          placeholder="/estimation"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Style</Label>
+                        <Select 
+                          value={settings.hero_cta3_style || 'filled'} 
+                          onValueChange={(v) => updateSetting('hero_cta3_style', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_STYLE_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Taille</Label>
+                        <Select 
+                          value={settings.hero_cta3_size || 'medium'} 
+                          onValueChange={(v) => updateSetting('hero_cta3_size', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_SIZE_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Arrondi</Label>
+                        <Select 
+                          value={settings.hero_cta3_border_radius || 'medium'} 
+                          onValueChange={(v) => updateSetting('hero_cta3_border_radius', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_RADIUS_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <ColorField 
+                        label="Couleur de fond"
+                        value={settings.hero_cta3_bg_color}
+                        onChange={(v) => updateSetting('hero_cta3_bg_color', v)}
+                      />
+                      <ColorField 
+                        label="Couleur du texte"
+                        value={settings.hero_cta3_text_color}
+                        onChange={(v) => updateSetting('hero_cta3_text_color', v)}
+                      />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <ColorField 
+                        label="Couleur bordure"
+                        value={settings.hero_cta3_border_color}
+                        onChange={(v) => updateSetting('hero_cta3_border_color', v)}
+                      />
+                      <div className="space-y-2">
+                        <Label>Animation au survol</Label>
+                        <Select 
+                          value={settings.hero_cta3_hover_effect || 'none'} 
+                          onValueChange={(v) => updateSetting('hero_cta3_hover_effect', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Aucune</SelectItem>
+                            <SelectItem value="scale">Agrandir</SelectItem>
+                            <SelectItem value="glow">Brillance</SelectItem>
+                            <SelectItem value="shake">Vibration</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* CTA 4 - Premium */}
+              <div className="p-4 border-2 border-amber-500/30 rounded-lg space-y-4 bg-amber-500/5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-amber-500 font-bold">⭐</span>
+                    <Label className="font-bold">Bouton Premium 2</Label>
+                  </div>
+                  <Switch 
+                    checked={settings.hero_cta4_enabled === true}
+                    onCheckedChange={(v) => updateSetting('hero_cta4_enabled', v)}
+                  />
+                </div>
+                {settings.hero_cta4_enabled && (
+                  <div className="space-y-4">
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Icône</Label>
+                        <Input
+                          value={settings.hero_cta4_icon || '💎'}
+                          onChange={(e) => updateSetting('hero_cta4_icon', e.target.value)}
+                          placeholder="💎"
+                        />
+                      </div>
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Texte</Label>
+                        <Input
+                          value={settings.hero_cta4_text || ''}
+                          onChange={(e) => updateSetting('hero_cta4_text', e.target.value)}
+                          placeholder="Ex: Devenir Pro"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Lien</Label>
+                        <Input
+                          value={settings.hero_cta4_link || ''}
+                          onChange={(e) => updateSetting('hero_cta4_link', e.target.value)}
+                          placeholder="/pro"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Style</Label>
+                        <Select 
+                          value={settings.hero_cta4_style || 'filled'} 
+                          onValueChange={(v) => updateSetting('hero_cta4_style', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_STYLE_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Taille</Label>
+                        <Select 
+                          value={settings.hero_cta4_size || 'medium'} 
+                          onValueChange={(v) => updateSetting('hero_cta4_size', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_SIZE_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Arrondi</Label>
+                        <Select 
+                          value={settings.hero_cta4_border_radius || 'medium'} 
+                          onValueChange={(v) => updateSetting('hero_cta4_border_radius', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {BUTTON_RADIUS_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <ColorField 
+                        label="Couleur de fond"
+                        value={settings.hero_cta4_bg_color}
+                        onChange={(v) => updateSetting('hero_cta4_bg_color', v)}
+                      />
+                      <ColorField 
+                        label="Couleur du texte"
+                        value={settings.hero_cta4_text_color}
+                        onChange={(v) => updateSetting('hero_cta4_text_color', v)}
+                      />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <ColorField 
+                        label="Couleur bordure"
+                        value={settings.hero_cta4_border_color}
+                        onChange={(v) => updateSetting('hero_cta4_border_color', v)}
+                      />
+                      <div className="space-y-2">
+                        <Label>Animation au survol</Label>
+                        <Select 
+                          value={settings.hero_cta4_hover_effect || 'none'} 
+                          onValueChange={(v) => updateSetting('hero_cta4_hover_effect', v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Aucune</SelectItem>
+                            <SelectItem value="scale">Agrandir</SelectItem>
+                            <SelectItem value="glow">Brillance</SelectItem>
+                            <SelectItem value="shake">Vibration</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </CollapsibleSection>
 
