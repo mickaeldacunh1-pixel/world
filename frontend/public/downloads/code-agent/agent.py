@@ -1042,7 +1042,7 @@ HTML_TEMPLATE = r'''
                 <div class="status-dot"></div>
                 <span>En ligne</span>
             </div>
-            <div class="memory-badge" id="memoryIndicator" title="Messages en mémoire">
+            <div class="memory-badge" id="memoryIndicator" title="Messages en memoire">
                 🧠 <span id="memoryCount">0</span>
             </div>
             <select class="model-select" id="modelSelect">
@@ -1050,6 +1050,9 @@ HTML_TEMPLATE = r'''
                 <option value="gpt-4o-mini">GPT-4o Mini</option>
                 <option value="claude-sonnet">Claude Sonnet</option>
             </select>
+            <button class="header-btn" onclick="toggleNotif()" id="notifBtn" title="Activer/Desactiver les notifications">
+                <span>🔔</span>
+            </button>
             <button class="header-btn" onclick="clearChat()">
                 <span>🗑️</span> Effacer
             </button>
