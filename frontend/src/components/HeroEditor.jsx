@@ -1154,7 +1154,7 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
         <TabsContent value="shortcuts" className="space-y-4 mt-4">
           <CollapsibleSection title="Raccourcis rapides" icon={MousePointer} defaultOpen>
             <p className="text-sm text-muted-foreground mb-4">
-              Configure les boutons raccourcis affichés sous les CTA (Vidéos, Stories, Fidélité, KIM Agent)
+              Configure les boutons raccourcis affichés sous les CTA. <strong>Glisse-dépose</strong> pour réorganiser l'ordre.
             </p>
             
             <ToggleField 
@@ -1164,67 +1164,32 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
               onChange={(v) => updateSetting('hero_shortcuts_enabled', v)}
             />
 
-            <div className="space-y-3 mt-4">
-              {/* Vidéos */}
-              <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">🎬</span>
-                  <div>
-                    <Label className="font-medium">Vidéos</Label>
-                    <p className="text-xs text-muted-foreground">Lien vers /videos</p>
-                  </div>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={shortcutsOrder}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-3 mt-4">
+                  {shortcutsOrder.map((shortcutId) => {
+                    const shortcut = shortcutsConfig[shortcutId];
+                    if (!shortcut) return null;
+                    return (
+                      <SortableShortcutItem
+                        key={shortcut.id}
+                        id={shortcut.id}
+                        shortcut={shortcut}
+                        checked={settings[shortcut.settingKey] !== false}
+                        onCheckedChange={(v) => updateSetting(shortcut.settingKey, v)}
+                      />
+                    );
+                  })}
                 </div>
-                <Switch 
-                  checked={settings.hero_shortcut_videos !== false}
-                  onCheckedChange={(v) => updateSetting('hero_shortcut_videos', v)}
-                />
-              </div>
-
-              {/* Stories */}
-              <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">📸</span>
-                  <div>
-                    <Label className="font-medium">Stories</Label>
-                    <p className="text-xs text-muted-foreground">Lien vers /stories</p>
-                  </div>
-                </div>
-                <Switch 
-                  checked={settings.hero_shortcut_stories !== false}
-                  onCheckedChange={(v) => updateSetting('hero_shortcut_stories', v)}
-                />
-              </div>
-
-              {/* Fidélité */}
-              <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">🎁</span>
-                  <div>
-                    <Label className="font-medium">Fidélité</Label>
-                    <p className="text-xs text-muted-foreground">Lien vers /fidelite</p>
-                  </div>
-                </div>
-                <Switch 
-                  checked={settings.hero_shortcut_loyalty !== false}
-                  onCheckedChange={(v) => updateSetting('hero_shortcut_loyalty', v)}
-                />
-              </div>
-
-              {/* KIM Agent */}
-              <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">🤖</span>
-                  <div>
-                    <Label className="font-medium">KIM Agent</Label>
-                    <p className="text-xs text-muted-foreground">Lien vers /kim-agent</p>
-                  </div>
-                </div>
-                <Switch 
-                  checked={settings.hero_shortcut_kim !== false}
-                  onCheckedChange={(v) => updateSetting('hero_shortcut_kim', v)}
-                />
-              </div>
-            </div>
+              </SortableContext>
+            </DndContext>
 
             <div className="mt-4 space-y-3">
               <Label>Style des raccourcis</Label>
