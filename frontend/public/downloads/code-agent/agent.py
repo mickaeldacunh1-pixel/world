@@ -660,6 +660,30 @@ HTML_TEMPLATE = r'''
         .send-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
         .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         
+        .voice-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 1.25rem;
+        }
+        
+        .voice-btn:hover { background: var(--accent); border-color: var(--accent); }
+        .voice-btn.recording { background: #ef4444; border-color: #ef4444; animation: pulse 1s infinite; }
+        .voice-btn.disabled { opacity: 0.5; }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
         .project-path {
             margin-top: 0.75rem;
             padding: 0.5rem 0.75rem;
