@@ -121,6 +121,61 @@ class Config:
 
 config = Config()
 
+# ============== THEME CONFIGURATION ==============
+
+def load_theme_config():
+    """Charge la configuration du thème depuis cody_config.json"""
+    default_config = {
+        "agent_name": "Cody",
+        "theme_mode": "light",
+        "colors": {
+            "accent": "#f97316",
+            "accent_hover": "#ea580c",
+            "bg_main": "#ffffff",
+            "bg_sidebar": "#f9fafb",
+            "text_primary": "#1f2937",
+            "text_secondary": "#6b7280",
+            "border": "#e5e7eb",
+            "success": "#22c55e"
+        },
+        "dark_colors": {
+            "bg_main": "#0f0f0f",
+            "bg_sidebar": "#1a1a1a",
+            "text_primary": "#f3f4f6",
+            "text_secondary": "#9ca3af",
+            "border": "#2d2d2d"
+        },
+        "font": {
+            "family": "inter",
+            "size": "normal"
+        },
+        "options": {
+            "sound_enabled": True,
+            "emoji_enabled": True,
+            "animations_enabled": True
+        }
+    }
+    
+    try:
+        config_path = Path(__file__).parent / "cody_config.json"
+        if config_path.exists():
+            with open(config_path, 'r', encoding='utf-8') as f:
+                user_config = json.load(f)
+                # Merge avec la config par défaut
+                for key in default_config:
+                    if key in user_config:
+                        if isinstance(default_config[key], dict):
+                            default_config[key].update(user_config[key])
+                        else:
+                            default_config[key] = user_config[key]
+                console.print(f"[green]✅ Configuration personnalisée chargée depuis cody_config.json[/green]")
+    except Exception as e:
+        console.print(f"[dim]ℹ️ Utilisation de la configuration par défaut ({e})[/dim]")
+    
+    return default_config
+
+THEME_CONFIG = load_theme_config()
+
 # ============== TOOLS (Ce que l'agent peut faire) ==============
 
 class AgentTools:
