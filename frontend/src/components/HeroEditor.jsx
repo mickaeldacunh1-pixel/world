@@ -1370,12 +1370,12 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
           {/* Vidéo de fond */}
           <CollapsibleSection title="Vidéo de fond" icon={Image} defaultOpen>
             <p className="text-sm text-muted-foreground mb-4">
-              Remplace l'image de fond par une vidéo en boucle
+              Remplace le fond par une vidéo en boucle
             </p>
             
             <ToggleField 
               label="Utiliser une vidéo de fond" 
-              description="Remplace l'image par une vidéo"
+              description="Remplace le fond image par une vidéo"
               checked={settings.hero_video_enabled === true}
               onChange={(v) => updateSetting('hero_video_enabled', v)}
             />
