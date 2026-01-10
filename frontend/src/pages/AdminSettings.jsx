@@ -3240,6 +3240,16 @@ export default function AdminSettings() {
             <CouponsManager token={token} />
           </TabsContent>
 
+          {/* Pages Editor Tab */}
+          <TabsContent value="pages" className="space-y-6">
+            <HomePageEditor 
+              settings={settings} 
+              updateSetting={(key, value) => setSettings({...settings, [key]: value})}
+              onImageUpload={handleImageUpload}
+              uploadingImage={uploadingImage}
+            />
+          </TabsContent>
+
           {/* Subcategory Images Tab */}
           <TabsContent value="subcatimages" className="space-y-6">
             <SubcategoryImagesManager token={token} />
