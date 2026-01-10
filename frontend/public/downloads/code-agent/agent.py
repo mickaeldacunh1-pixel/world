@@ -1319,12 +1319,9 @@ HTML_TEMPLATE = r'''
         }
         
         function scrollToBottom() {
-            setTimeout(() => {
-                messagesEl.scrollTo({
-                    top: messagesEl.scrollHeight,
-                    behavior: 'smooth'
-                });
-            }, 100);
+            requestAnimationFrame(() => {
+                messagesEl.scrollTop = messagesEl.scrollHeight + 500;
+            });
         }
         
         function updateMemoryCount(count) {
