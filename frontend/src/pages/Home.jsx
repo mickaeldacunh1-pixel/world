@@ -641,44 +641,53 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Quick Links - Raccourcis stylés (configurable) */}
+            {/* Quick Links - Raccourcis stylés (configurable avec ordre) */}
             {heroSettings.hero_shortcuts_enabled !== false && (
               <div className={`flex flex-wrap items-center gap-3 mt-5 animate-fade-in-up stagger-4 ${
                 heroSettings.hero_text_align === 'center' ? 'justify-center' : 
                 heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
               } ${heroSettings.hero_mobile_hide_shortcuts ? 'hidden md:flex' : ''}`}>
-                {heroSettings.hero_shortcut_videos !== false && (
-                  <Link to="/videos" className="group">
-                    <div className={`flex items-center gap-2 bg-white/10 hover:bg-red-500/30 backdrop-blur-sm px-4 py-2 ${heroSettings.hero_shortcuts_style === 'square' ? 'rounded-none' : heroSettings.hero_shortcuts_style === 'rounded' ? 'rounded-lg' : 'rounded-full'} border border-white/20 hover:border-red-400/50 transition-all`}>
-                      <Video className="w-4 h-4 text-red-400" />
-                      {heroSettings.hero_shortcuts_style !== 'icon-only' && <span className="text-white/90 text-sm font-medium">{t('nav.videos', 'Vidéos')}</span>}
-                    </div>
-                  </Link>
-                )}
-                {heroSettings.hero_shortcut_stories !== false && (
-                  <Link to="/stories" className="group">
-                    <div className={`flex items-center gap-2 bg-white/10 hover:bg-pink-500/30 backdrop-blur-sm px-4 py-2 ${heroSettings.hero_shortcuts_style === 'square' ? 'rounded-none' : heroSettings.hero_shortcuts_style === 'rounded' ? 'rounded-lg' : 'rounded-full'} border border-white/20 hover:border-pink-400/50 transition-all`}>
-                      <Camera className="w-4 h-4 text-pink-400" />
-                      {heroSettings.hero_shortcuts_style !== 'icon-only' && <span className="text-white/90 text-sm font-medium">{t('nav.stories', 'Stories')}</span>}
-                    </div>
-                  </Link>
-                )}
-                {heroSettings.hero_shortcut_loyalty !== false && (
-                  <Link to="/fidelite" className="group">
-                    <div className={`flex items-center gap-2 bg-white/10 hover:bg-yellow-500/30 backdrop-blur-sm px-4 py-2 ${heroSettings.hero_shortcuts_style === 'square' ? 'rounded-none' : heroSettings.hero_shortcuts_style === 'rounded' ? 'rounded-lg' : 'rounded-full'} border border-white/20 hover:border-yellow-400/50 transition-all`}>
-                      <Gift className="w-4 h-4 text-yellow-400" />
-                      {heroSettings.hero_shortcuts_style !== 'icon-only' && <span className="text-white/90 text-sm font-medium">{t('nav.loyalty', 'Fidélité')}</span>}
-                    </div>
-                  </Link>
-                )}
-                {heroSettings.hero_shortcut_kim !== false && (
-                  <Link to="/kim-agent" className="group">
-                    <div className={`flex items-center gap-2 bg-white/10 hover:bg-blue-500/30 backdrop-blur-sm px-4 py-2 ${heroSettings.hero_shortcuts_style === 'square' ? 'rounded-none' : heroSettings.hero_shortcuts_style === 'rounded' ? 'rounded-lg' : 'rounded-full'} border border-white/20 hover:border-blue-400/50 transition-all`}>
-                      <Sparkles className="w-4 h-4 text-blue-400" />
-                      {heroSettings.hero_shortcuts_style !== 'icon-only' && <span className="text-white/90 text-sm font-medium">KIM Agent</span>}
-                    </div>
-                  </Link>
-                )}
+                {(() => {
+                  const defaultOrder = ['videos', 'stories', 'loyalty', 'kim'];
+                  const order = heroSettings.hero_shortcuts_order || defaultOrder;
+                  
+                  const shortcutComponents = {
+                    videos: heroSettings.hero_shortcut_videos !== false && (
+                      <Link key="videos" to="/videos" className="group">
+                        <div className={`flex items-center gap-2 bg-white/10 hover:bg-red-500/30 backdrop-blur-sm px-4 py-2 ${heroSettings.hero_shortcuts_style === 'square' ? 'rounded-none' : heroSettings.hero_shortcuts_style === 'rounded' ? 'rounded-lg' : 'rounded-full'} border border-white/20 hover:border-red-400/50 transition-all`}>
+                          <Video className="w-4 h-4 text-red-400" />
+                          {heroSettings.hero_shortcuts_style !== 'icon-only' && <span className="text-white/90 text-sm font-medium">{t('nav.videos', 'Vidéos')}</span>}
+                        </div>
+                      </Link>
+                    ),
+                    stories: heroSettings.hero_shortcut_stories !== false && (
+                      <Link key="stories" to="/stories" className="group">
+                        <div className={`flex items-center gap-2 bg-white/10 hover:bg-pink-500/30 backdrop-blur-sm px-4 py-2 ${heroSettings.hero_shortcuts_style === 'square' ? 'rounded-none' : heroSettings.hero_shortcuts_style === 'rounded' ? 'rounded-lg' : 'rounded-full'} border border-white/20 hover:border-pink-400/50 transition-all`}>
+                          <Camera className="w-4 h-4 text-pink-400" />
+                          {heroSettings.hero_shortcuts_style !== 'icon-only' && <span className="text-white/90 text-sm font-medium">{t('nav.stories', 'Stories')}</span>}
+                        </div>
+                      </Link>
+                    ),
+                    loyalty: heroSettings.hero_shortcut_loyalty !== false && (
+                      <Link key="loyalty" to="/fidelite" className="group">
+                        <div className={`flex items-center gap-2 bg-white/10 hover:bg-yellow-500/30 backdrop-blur-sm px-4 py-2 ${heroSettings.hero_shortcuts_style === 'square' ? 'rounded-none' : heroSettings.hero_shortcuts_style === 'rounded' ? 'rounded-lg' : 'rounded-full'} border border-white/20 hover:border-yellow-400/50 transition-all`}>
+                          <Gift className="w-4 h-4 text-yellow-400" />
+                          {heroSettings.hero_shortcuts_style !== 'icon-only' && <span className="text-white/90 text-sm font-medium">{t('nav.loyalty', 'Fidélité')}</span>}
+                        </div>
+                      </Link>
+                    ),
+                    kim: heroSettings.hero_shortcut_kim !== false && (
+                      <Link key="kim" to="/kim-agent" className="group">
+                        <div className={`flex items-center gap-2 bg-white/10 hover:bg-blue-500/30 backdrop-blur-sm px-4 py-2 ${heroSettings.hero_shortcuts_style === 'square' ? 'rounded-none' : heroSettings.hero_shortcuts_style === 'rounded' ? 'rounded-lg' : 'rounded-full'} border border-white/20 hover:border-blue-400/50 transition-all`}>
+                          <Sparkles className="w-4 h-4 text-blue-400" />
+                          {heroSettings.hero_shortcuts_style !== 'icon-only' && <span className="text-white/90 text-sm font-medium">KIM Agent</span>}
+                        </div>
+                      </Link>
+                    ),
+                  };
+                  
+                  return order.map(id => shortcutComponents[id]).filter(Boolean);
+                })()}
               </div>
             )}
 
