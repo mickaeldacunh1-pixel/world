@@ -230,6 +230,44 @@ class AgentTools:
 
 tools = AgentTools()
 
+# ============== SESSION MANAGER ==============
+
+class SessionManager:
+    """Gestionnaire de sessions pour conserver l'historique des conversations"""
+    
+    def __init__(self):
+        self._sessions = {}
+        self._default_session = "default"
+    
+    def get_history(self, session_id: str = None) -> list:
+        """Obtenir l'historique d'une session"""
+        sid = session_id or self._default_session
+        if sid not in self._sessions:
+            self._sessions[sid] = []
+        return self._sessions[sid]
+    
+    def add_message(self, role: str, content: str, session_id: str = None):
+        """Ajouter un message à l'historique"""
+        sid = session_id or self._default_session
+        if sid not in self._sessions:
+            self._sessions[sid] = []
+        self._sessions[sid].append({"role": role, "content": content})
+        # Limiter l'historique à 50 messages pour éviter les tokens trop longs
+        if len(self._sessions[sid]) > 50:
+            self._sessions[sid] = self._sessions[sid][-50:]
+    
+    def clear_history(self, session_id: str = None):
+        """Effacer l'historique d'une session"""
+        sid = session_id or self._default_session
+        self._sessions[sid] = []
+    
+    def get_all_sessions(self) -> list:
+        """Liste toutes les sessions actives"""
+        return list(self._sessions.keys())
+
+# Instance globale du gestionnaire de sessions
+session_manager = SessionManager()
+
 # ============== LLM CLIENT ==============
 
 class LLMClient:
@@ -263,16 +301,24 @@ OUTILS DISPONIBLES:
 Tu peux enchaîner plusieurs actions en les séparant.
 Après chaque action, explique ce que tu as fait et le résultat.
 
+IMPORTANT: Tu as accès à l'historique de la conversation. Utilise-le pour maintenir le contexte.
+
 Réponds toujours en français. Sois concis mais complet."""
 
-    def __init__(self):
-        self.conversation_history = []
+    def __init__(self, session_id: str = None):
+        self.session_id = session_id or "default"
+    
+    @property
+    def conversation_history(self) -> list:
+        """Obtenir l'historique depuis le gestionnaire de sessions"""
+        return session_manager.get_history(self.session_id)
     
     async def chat(self, message: str, model: str = None) -> str:
         """Envoyer un message et obtenir une réponse"""
         model = model or config.DEFAULT_MODEL
         
-        self.conversation_history.append({"role": "user", "content": message})
+        # Ajouter le message utilisateur à l'historique persistant
+        session_manager.add_message("user", message, self.session_id)
         
         # Determine which API to use
         if config.EMERGENT_API_KEY:
@@ -284,7 +330,8 @@ Réponds toujours en français. Sois concis mais complet."""
         else:
             response = "❌ Aucune clé API configurée. Configure EMERGENT_API_KEY, OPENAI_API_KEY ou ANTHROPIC_API_KEY dans le fichier .env"
         
-        self.conversation_history.append({"role": "assistant", "content": response})
+        # Ajouter la réponse à l'historique persistant
+        session_manager.add_message("assistant", response, self.session_id)
         
         # Process any actions in the response
         response = await self._process_actions(response)
