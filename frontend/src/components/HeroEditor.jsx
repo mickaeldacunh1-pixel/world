@@ -11,8 +11,24 @@ import { Slider } from './ui/slider';
 import { 
   Type, Palette, Layout, Image, Eye, Sparkles, 
   Search, BarChart3, MousePointer, ChevronDown, ChevronUp,
-  RefreshCw, Upload
+  RefreshCw, Upload, GripVertical
 } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 // Options pour les selects
 const SIZE_OPTIONS = [
