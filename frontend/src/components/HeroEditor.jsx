@@ -910,7 +910,7 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Vitesse d'animation</Label>
+                <Label>Vitesse animation</Label>
                 <Select 
                   value={settings.hero_animation_speed || 'normal'} 
                   onValueChange={(v) => updateSetting('hero_animation_speed', v)}
