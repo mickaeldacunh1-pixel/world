@@ -3,6 +3,7 @@ import { Toaster } from "sonner";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { ColorProvider } from "./context/ColorContext";
 import { CompareProvider } from "./context/CompareContext";
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
