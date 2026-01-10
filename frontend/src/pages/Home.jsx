@@ -179,7 +179,39 @@ export default function Home() {
       try {
         const response = await axios.get(`${API}/settings/hero${cacheBuster}`);
         if (isMounted && response.data) {
-          setHeroSettings(prev => ({ ...prev, ...response.data }));
+          let settings = { ...DEFAULT_HERO, ...response.data };
+          
+          // Apply schedule logic
+          if (settings.hero_schedule_enabled) {
+            const now = new Date();
+            const hour = now.getHours();
+            const day = now.getDay(); // 0 = Sunday, 6 = Saturday
+            const isWeekend = day === 0 || day === 6;
+            const isNight = hour >= 20 || hour < 8;
+            
+            // Check for event first (highest priority)
+            if (settings.hero_event_start && settings.hero_event_end) {
+              const eventStart = new Date(settings.hero_event_start);
+              const eventEnd = new Date(settings.hero_event_end);
+              if (now >= eventStart && now <= eventEnd) {
+                if (settings.hero_event_title) settings.hero_title_line1 = settings.hero_event_title;
+                if (settings.hero_event_badge) settings.hero_badge_text = settings.hero_event_badge;
+                if (settings.hero_event_image) settings.hero_image = settings.hero_event_image;
+              }
+            }
+            // Weekend mode
+            else if (isWeekend && settings.hero_weekend_enabled) {
+              if (settings.hero_weekend_title) settings.hero_title_line1 = settings.hero_weekend_title;
+              if (settings.hero_weekend_badge) settings.hero_badge_text = settings.hero_weekend_badge;
+            }
+            // Night mode
+            else if (isNight && settings.hero_night_enabled) {
+              if (settings.hero_night_title) settings.hero_title_line1 = settings.hero_night_title;
+              if (settings.hero_night_image) settings.hero_image = settings.hero_night_image;
+            }
+          }
+          
+          setHeroSettings(settings);
         }
       } catch (error) {
         console.error('Error fetching hero settings:', error);
