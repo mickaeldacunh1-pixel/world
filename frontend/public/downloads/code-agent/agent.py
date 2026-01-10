@@ -1149,7 +1149,7 @@ HTML_TEMPLATE = r'''
         let isRecording = false;
         let mediaRecorder = null;
         let audioChunks = [];
-        let voiceEnabled = true;
+        let voiceEnabled = false; // Desactive par defaut (TTS peut ne pas etre disponible)
         let notifEnabled = true;
         
         // Son de notification (base64 encoded beep)
