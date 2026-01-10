@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Switch } from '../components/ui/switch';
 import { 
-  Save, Eye, Image, Type, RefreshCw, Palette, Layout, 
+  Save, Eye, Image as ImageIcon, Type, RefreshCw, Palette, Layout, 
   Plus, Trash2, MoveUp, MoveDown, Upload, Settings, 
   AlertCircle, CheckCircle, Loader2, Sparkles,
   Menu, Globe, Facebook, Instagram, Twitter, Youtube, Link2, Mail, Phone,
