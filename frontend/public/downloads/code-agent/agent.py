@@ -1557,6 +1557,12 @@ def clear():
     console.print(f"[yellow]🗑️ Historique effacé ({old_count} messages supprimés)[/yellow]")
     return jsonify({"success": True, "messages_cleared": old_count})
 
+@app.route('/api/memory-count', methods=['GET'])
+def get_memory_count():
+    """Obtenir le nombre de messages en mémoire"""
+    count = session_manager.get_message_count()
+    return jsonify({"count": count})
+
 @app.route('/api/history', methods=['GET'])
 def get_history():
     """Obtenir l'historique de conversation (pour debug)"""
