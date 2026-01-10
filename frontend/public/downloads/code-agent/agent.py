@@ -731,11 +731,14 @@ HTML_TEMPLATE = r'''
         
         <div class="input-area">
             <div class="input-wrapper">
-                <textarea id="input" placeholder="Tape ta demande... (Entrée pour envoyer)" rows="1"></textarea>
+                <button class="voice-btn" onclick="toggleRecording()" id="micBtn" title="Parler">🎤</button>
+                <textarea id="input" placeholder="Tape ta demande ou clique sur 🎤 pour parler..." rows="1"></textarea>
                 <button class="send-btn" onclick="sendMessage()" id="sendBtn">➤</button>
+                <button class="voice-btn" onclick="toggleVoice()" id="voiceBtn" title="Activer/Desactiver la voix">🔊</button>
             </div>
             <div class="project-path">
                 📁 Projet: <input type="text" id="projectPath" value="{{ project_path }}" onchange="updateProjectPath(this.value)">
+                <span id="voiceStatus" style="margin-left: 10px; font-size: 0.75rem; color: #22c55e;">🔊 Voix activee</span>
             </div>
         </div>
     </main>
@@ -745,6 +748,14 @@ HTML_TEMPLATE = r'''
         const inputEl = document.getElementById('input');
         const sendBtn = document.getElementById('sendBtn');
         const modelSelect = document.getElementById('modelSelect');
+        const micBtn = document.getElementById('micBtn');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const voiceStatus = document.getElementById('voiceStatus');
+        
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let voiceEnabled = true;
         
         // Auto-resize textarea
         inputEl.addEventListener('input', function() {
