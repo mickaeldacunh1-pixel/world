@@ -779,6 +779,9 @@ HTML_TEMPLATE = r'''
                 <div class="status-dot"></div>
                 <span>Connecté</span>
             </div>
+            <div class="memory-indicator" id="memoryIndicator" title="Nombre de messages en mémoire">
+                🧠 <span id="memoryCount">0</span>
+            </div>
             <select id="modelSelect">
                 <option value="gpt-4o">GPT-4o</option>
                 <option value="gpt-4o-mini">GPT-4o Mini</option>
