@@ -1080,7 +1080,7 @@ HTML_TEMPLATE = r'''
                 }
             } catch (error) {
                 typingEl.remove();
-                addMessage('assistant', '❌ Erreur de connexion. Vérifie que l\'agent est bien lancé.');
+                addMessage('assistant', '❌ Erreur de connexion. Verifie que l agent est bien lance.');
             }
             
             sendBtn.disabled = false;
