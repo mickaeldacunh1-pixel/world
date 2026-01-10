@@ -1244,7 +1244,7 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
         <TabsContent value="schedule" className="space-y-4 mt-4">
           <CollapsibleSection title="Planification du Hero" icon={RefreshCw} defaultOpen>
             <p className="text-sm text-muted-foreground mb-4">
-              Programme des changements automatiques du Hero selon l'heure ou la date
+              Programme des changements automatiques du Hero selon le moment ou la date
             </p>
             
             <ToggleField 
