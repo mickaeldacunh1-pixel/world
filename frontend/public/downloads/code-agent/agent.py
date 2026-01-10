@@ -1230,6 +1230,9 @@ HTML_TEMPLATE = r'''
                 hideStatus();
                 addMessage('assistant', data.response);
                 
+                // Notification sonore + push
+                playNotification('Reponse prete !');
+                
                 // Update memory indicator
                 if (data.history_count !== undefined) {
                     updateMemoryCount(data.history_count);
