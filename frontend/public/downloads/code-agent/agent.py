@@ -1139,6 +1139,33 @@ HTML_TEMPLATE = r'''
         let mediaRecorder = null;
         let audioChunks = [];
         let voiceEnabled = true;
+        let notifEnabled = true;
+        
+        // Son de notification (base64 encoded beep)
+        const notifSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1sbW1ub3BtcnN2eX+DhoqNjo+PkI+QkZGRkZCPj42LiYeFgoB+fHp4dXNxbm1samhmZGJgXl1bWVhWVFNSUE9OTUxLSkhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQEBAQEBAgIDBAQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w==');
+        
+        // Demander permission pour les notifications
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+        
+        // Fonction pour jouer le son et afficher notification
+        function playNotification(message) {
+            if (!notifEnabled) return;
+            
+            // Jouer le son
+            notifSound.play().catch(() => {});
+            
+            // Notification navigateur si permission accordee
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const notif = new Notification('Code Agent', {
+                    body: message || 'Reponse prete !',
+                    icon: '🤖',
+                    silent: true
+                });
+                setTimeout(() => notif.close(), 4000);
+            }
+        }
         
         // Fonction pour ajouter un emoji
         function addEmoji(emoji) {
