@@ -295,6 +295,7 @@ Réponds toujours en français. Sois concis mais complet."""
         """Appeler l'API Emergent via emergentintegrations"""
         try:
             from emergentintegrations.llm.chat import LlmChat, UserMessage
+            import uuid
             
             # Map model names
             if 'gpt-5' in model.lower() or 'gpt-4o' in model.lower():
@@ -306,16 +307,12 @@ Réponds toujours en français. Sois concis mais complet."""
             else:
                 provider, model_name = "openai", "gpt-4o"
             
-            # Create chat instance
+            # Create chat instance with session_id
             chat = LlmChat(
                 api_key=config.EMERGENT_API_KEY,
+                session_id=str(uuid.uuid4()),
                 system_message=self.SYSTEM_PROMPT
             ).with_model(provider, model_name)
-            
-            # Build conversation
-            for msg in self.conversation_history[:-1]:  # Exclude the last user message
-                if msg["role"] == "user":
-                    await chat.send_message(UserMessage(text=msg["content"]))
             
             # Send current message
             last_msg = self.conversation_history[-1]["content"] if self.conversation_history else ""
