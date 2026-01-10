@@ -199,8 +199,9 @@ function App() {
               <CompareProvider>
                 <AppContent />
               </CompareProvider>
-          </AuthProvider>
-        </BrowserRouter>
+            </AuthProvider>
+          </BrowserRouter>
+        </ColorProvider>
       </ThemeProvider>
     </HelmetProvider>
   );
