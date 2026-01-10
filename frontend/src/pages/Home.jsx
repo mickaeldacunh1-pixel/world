@@ -167,6 +167,7 @@ export default function Home() {
   const [referralData, setReferralData] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
   const [liveStats, setLiveStats] = useState(null);
+  const [subcatImages, setSubcatImages] = useState({});
 
   // Initial data fetch on mount
   useEffect(() => {
