@@ -1,0 +1,30 @@
+{
+  "agent_name": "Cody",
+  "theme_mode": "light",
+  "colors": {
+    "accent": "#f97316",
+    "accent_hover": "#ea580c",
+    "bg_main": "#ffffff",
+    "bg_sidebar": "#f9fafb",
+    "text_primary": "#1f2937",
+    "text_secondary": "#6b7280",
+    "border": "#e5e7eb",
+    "success": "#22c55e"
+  },
+  "dark_colors": {
+    "bg_main": "#0f0f0f",
+    "bg_sidebar": "#1a1a1a",
+    "text_primary": "#f3f4f6",
+    "text_secondary": "#9ca3af",
+    "border": "#2d2d2d"
+  },
+  "font": {
+    "family": "inter",
+    "size": "normal"
+  },
+  "options": {
+    "sound_enabled": true,
+    "emoji_enabled": true,
+    "animations_enabled": true
+  }
+}
