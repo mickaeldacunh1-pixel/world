@@ -1594,7 +1594,11 @@ def text_to_speech():
         os.unlink(tmp_path)
         
         return Response(audio_data, mimetype='audio/mpeg')
+    except ImportError:
+        console.print("[yellow]TTS non disponible - module manquant[/yellow]")
+        return jsonify({"error": "TTS non disponible"}), 503
     except Exception as e:
+        console.print(f"[red]Erreur TTS: {e}[/red]")
         return jsonify({"error": str(e)}), 500
 
 # ============== MAIN ==============
