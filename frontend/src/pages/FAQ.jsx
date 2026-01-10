@@ -315,6 +315,22 @@ const faqs = [
 
 export default function FAQ() {
   const [openItems, setOpenItems] = useState({});
+  const [settings, setSettings] = useState(DEFAULTS);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await axios.get(`${API}/settings`);
+        setSettings({ ...DEFAULTS, ...res.data });
+      } catch (err) {
+        console.log('Using default FAQ settings');
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const s = settings;
 
   const toggleItem = (categoryIndex, questionIndex) => {
     const key = `${categoryIndex}-${questionIndex}`;
@@ -323,6 +339,17 @@ export default function FAQ() {
       [key]: !prev[key]
     }));
   };
+
+  // Filter FAQs based on search
+  const filteredFaqs = searchQuery 
+    ? faqs.map(cat => ({
+        ...cat,
+        questions: cat.questions.filter(q => 
+          q.q.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          q.a.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      })).filter(cat => cat.questions.length > 0)
+    : faqs;
 
   // Prepare FAQ data for schema
   const allFaqs = faqs.flatMap(cat => 
@@ -333,7 +360,7 @@ export default function FAQ() {
     <div className="min-h-screen bg-secondary/30 py-12">
       <SEO
         title="FAQ - Foire Aux Questions"
-        description="Trouvez les réponses à vos questions sur World Auto Pro Pro : annonces, paiements, livraison, messagerie et sécurité."
+        description="Trouvez les réponses à vos questions sur World Auto Pro : annonces, paiements, livraison, messagerie et sécurité."
         keywords="FAQ world auto, questions fréquentes, aide marketplace auto, support world auto"
         url="/faq"
         structuredData={createFAQSchema(allFaqs)}
@@ -344,24 +371,41 @@ export default function FAQ() {
           <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <HelpCircle className="w-8 h-8 text-accent" />
           </div>
-          <h1 className="font-heading text-4xl font-bold mb-4">Foire Aux Questions</h1>
+          <h1 className="font-heading text-4xl font-bold mb-4">{s.faq_title}</h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Trouvez rapidement des réponses à vos questions. Si vous ne trouvez pas ce que vous cherchez, 
-            n'hésitez pas à nous contacter.
+            {s.faq_subtitle}
           </p>
         </div>
 
+        {/* Search Bar */}
+        {s.faq_search_enabled !== false && (
+          <div className="mb-8 animate-fade-in-up">
+            <div className="relative max-w-xl mx-auto">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder={s.faq_search_placeholder}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 py-6 text-lg"
+              />
+            </div>
+          </div>
+        )}
+
         {/* FAQ Categories */}
         <div className="space-y-8">
-          {faqs.map((category, categoryIndex) => (
+          {filteredFaqs.map((category, categoryIndex) => (
             <Card key={category.category} className="overflow-hidden animate-fade-in-up" style={{ animationDelay: `${categoryIndex * 0.1}s` }}>
               {/* Category Header */}
-              <div className="bg-primary/5 px-6 py-4 border-b">
-                <h2 className="font-heading text-xl font-bold flex items-center gap-3">
-                  <category.icon className="w-6 h-6 text-accent" />
-                  {category.category}
-                </h2>
-              </div>
+              {s.faq_categories_enabled !== false && (
+                <div className="bg-primary/5 px-6 py-4 border-b">
+                  <h2 className="font-heading text-xl font-bold flex items-center gap-3">
+                    <category.icon className="w-6 h-6 text-accent" />
+                    {category.category}
+                  </h2>
+                </div>
+              )}
 
               {/* Questions */}
               <div className="divide-y">
