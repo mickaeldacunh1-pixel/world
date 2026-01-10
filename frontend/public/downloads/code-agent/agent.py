@@ -900,13 +900,13 @@ HTML_TEMPLATE = r'''
         .input-area {
             position: fixed;
             bottom: 0;
-            left: 0;
-            right: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
             max-width: 900px;
-            margin: 0 auto;
             background: var(--bg-main);
-            padding: 1rem 1.5rem 1.5rem;
-            border-top: 1px solid var(--border-light);
+            padding: 1rem 1.5rem 1.25rem;
+            border-top: 1px solid var(--border);
             z-index: 100;
         }
         
