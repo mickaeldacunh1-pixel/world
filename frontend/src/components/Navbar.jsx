@@ -268,44 +268,52 @@ export default function Navbar() {
                 </DropdownMenu>
 
                 {/* Panier rectangle */}
-                <div className="hidden sm:block">
-                  <CartPreview 
-                    bgColor={navbarSettings.cart_bg_color}
-                    textColor={navbarSettings.cart_text_color}
-                  />
-                </div>
+                {navbarSettings.navbar_show_cart !== false && (
+                  <div className="hidden sm:block">
+                    <CartPreview 
+                      bgColor={navbarSettings.cart_bg_color}
+                      textColor={navbarSettings.cart_text_color}
+                    />
+                  </div>
+                )}
 
                 {/* Sélecteur de langue - à droite du panier */}
-                <LanguageSelector />
+                {navbarSettings.navbar_show_language !== false && (
+                  <LanguageSelector />
+                )}
 
                 {/* Messages - à droite du sélecteur de langue */}
-                <Link to="/messages" className="hidden sm:flex" title="Messages">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <MessageSquare className="w-5 h-5" />
-                    {unreadMessages > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
-                        {unreadMessages}
-                      </span>
-                    )}
-                  </Button>
-                </Link>
+                {navbarSettings.navbar_show_messages !== false && (
+                  <Link to="/messages" className="hidden sm:flex" title="Messages">
+                    <Button variant="ghost" size="icon" className="relative">
+                      <MessageSquare className="w-5 h-5" />
+                      {unreadMessages > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                          {unreadMessages}
+                        </span>
+                      )}
+                    </Button>
+                  </Link>
+                )}
               </>
             ) : (
               <>
                 {/* Utilisateur non connecté : Mode sombre + Connexion/Inscription + Langue */}
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={toggleTheme}
-                  title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
-                  className="hidden sm:flex"
-                >
-                  {theme === 'dark' ? (
-                    <Sun className="w-5 h-5 text-yellow-500" />
-                  ) : (
-                    <Moon className="w-5 h-5" />
-                  )}
-                </Button>
+                {navbarSettings.navbar_show_dark_mode_toggle !== false && (
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={toggleTheme}
+                    title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+                    className="hidden sm:flex"
+                  >
+                    {theme === 'dark' ? (
+                      <Sun className="w-5 h-5 text-yellow-500" />
+                    ) : (
+                      <Moon className="w-5 h-5" />
+                    )}
+                  </Button>
+                )}
                 <Link to="/auth">
                   <Button variant="ghost" data-testid="login-btn">{t('common.login')}</Button>
                 </Link>
