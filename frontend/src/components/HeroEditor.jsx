@@ -147,36 +147,36 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
     <div className="space-y-6">
       {/* Sub-navigation */}
       <Tabs value={activeSubTab} onValueChange={setActiveSubTab}>
-        <TabsList className="grid grid-cols-5 w-full">
-          <TabsTrigger value="content" className="flex items-center gap-1">
+        <TabsList className="grid grid-cols-4 sm:grid-cols-8 w-full gap-1">
+          <TabsTrigger value="content" className="flex items-center gap-1 text-xs sm:text-sm">
             <Type className="w-4 h-4" />
             <span className="hidden sm:inline">Textes</span>
           </TabsTrigger>
-          <TabsTrigger value="style" className="flex items-center gap-1">
+          <TabsTrigger value="style" className="flex items-center gap-1 text-xs sm:text-sm">
             <Palette className="w-4 h-4" />
             <span className="hidden sm:inline">Couleurs</span>
           </TabsTrigger>
-          <TabsTrigger value="layout" className="flex items-center gap-1">
+          <TabsTrigger value="layout" className="flex items-center gap-1 text-xs sm:text-sm">
             <Layout className="w-4 h-4" />
             <span className="hidden sm:inline">Layout</span>
           </TabsTrigger>
-          <TabsTrigger value="elements" className="flex items-center gap-1">
+          <TabsTrigger value="elements" className="flex items-center gap-1 text-xs sm:text-sm">
             <Eye className="w-4 h-4" />
             <span className="hidden sm:inline">Éléments</span>
           </TabsTrigger>
-          <TabsTrigger value="shortcuts" className="flex items-center gap-1">
+          <TabsTrigger value="shortcuts" className="flex items-center gap-1 text-xs sm:text-sm">
             <MousePointer className="w-4 h-4" />
             <span className="hidden sm:inline">Raccourcis</span>
           </TabsTrigger>
-          <TabsTrigger value="mobile" className="flex items-center gap-1">
+          <TabsTrigger value="mobile" className="flex items-center gap-1 text-xs sm:text-sm">
             <Layout className="w-4 h-4" />
             <span className="hidden sm:inline">Mobile</span>
           </TabsTrigger>
-          <TabsTrigger value="schedule" className="flex items-center gap-1">
+          <TabsTrigger value="schedule" className="flex items-center gap-1 text-xs sm:text-sm">
             <RefreshCw className="w-4 h-4" />
             <span className="hidden sm:inline">Planning</span>
           </TabsTrigger>
-          <TabsTrigger value="images" className="flex items-center gap-1">
+          <TabsTrigger value="images" className="flex items-center gap-1 text-xs sm:text-sm">
             <Image className="w-4 h-4" />
             <span className="hidden sm:inline">Images</span>
           </TabsTrigger>
