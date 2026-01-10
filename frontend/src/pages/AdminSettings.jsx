@@ -495,6 +495,505 @@ function HomePageEditor({ settings, updateSetting, onImageUpload, uploadingImage
   );
 }
 
+// ============== PAGES EDITOR COMPONENT ==============
+function PagesEditor({ settings, updateSetting }) {
+  const [activePage, setActivePage] = useState('home');
+  
+  const pages = [
+    { id: 'home', label: '🏠 Accueil', description: 'Page principale du site' },
+    { id: 'about', label: '📖 À propos', description: 'Présentation de World Auto Pro' },
+    { id: 'contact', label: '📧 Contact', description: 'Formulaire de contact' },
+    { id: 'faq', label: '❓ FAQ', description: 'Questions fréquentes' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Page Selector */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="w-5 h-5" />
+            Éditeur de Pages
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Sélectionnez une page pour modifier son contenu
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {pages.map((page) => (
+              <Button
+                key={page.id}
+                variant={activePage === page.id ? 'default' : 'outline'}
+                onClick={() => setActivePage(page.id)}
+                className="h-auto py-4 flex flex-col items-center gap-1"
+              >
+                <span className="text-lg">{page.label}</span>
+                <span className="text-xs opacity-70">{page.description}</span>
+              </Button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Home Page - Redirect to HomePageEditor */}
+      {activePage === 'home' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>🏠 Page d&apos;Accueil</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              L&apos;éditeur de la page d&apos;accueil est intégré ci-dessous. Vous pouvez modifier toutes les sections de la home.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* About Page Editor */}
+      {activePage === 'about' && (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>📖 Page À propos - En-tête</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Titre principal</Label>
+                <Input 
+                  value={settings.about_title || 'À propos de World Auto Pro'}
+                  onChange={(e) => updateSetting('about_title', e.target.value)}
+                  placeholder="À propos de World Auto Pro"
+                />
+              </div>
+              <div>
+                <Label>Sous-titre</Label>
+                <Input 
+                  value={settings.about_subtitle || 'La marketplace automobile de référence en France pour les particuliers et professionnels.'}
+                  onChange={(e) => updateSetting('about_subtitle', e.target.value)}
+                  placeholder="La marketplace automobile de référence..."
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>🎯 Section Mission</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Titre de la section</Label>
+                <Input 
+                  value={settings.about_mission_title || 'Notre mission'}
+                  onChange={(e) => updateSetting('about_mission_title', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>Paragraphe 1</Label>
+                <Textarea 
+                  value={settings.about_mission_p1 || 'World Auto Pro est né d\'une passion pour l\'automobile et d\'une volonté de simplifier l\'achat et la vente de pièces détachées et de véhicules d\'occasion en France.'}
+                  onChange={(e) => updateSetting('about_mission_p1', e.target.value)}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <Label>Paragraphe 2</Label>
+                <Textarea 
+                  value={settings.about_mission_p2 || 'Notre plateforme met en relation acheteurs et vendeurs, qu\'ils soient particuliers ou professionnels du secteur automobile.'}
+                  onChange={(e) => updateSetting('about_mission_p2', e.target.value)}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <Label>Paragraphe 3</Label>
+                <Textarea 
+                  value={settings.about_mission_p3 || 'Que vous cherchiez une pièce rare pour votre véhicule de collection ou que vous souhaitiez vendre votre voiture, World Auto Pro est là pour vous accompagner.'}
+                  onChange={(e) => updateSetting('about_mission_p3', e.target.value)}
+                  rows={3}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>💎 Section Valeurs</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <Label>Titre de la section</Label>
+                <Input 
+                  value={settings.about_values_title || 'Nos valeurs'}
+                  onChange={(e) => updateSetting('about_values_title', e.target.value)}
+                />
+              </div>
+              
+              {/* Valeur 1 */}
+              <div className="p-4 border rounded-lg space-y-3">
+                <Label className="font-bold">Valeur 1</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs">Icône (emoji)</Label>
+                    <Input 
+                      value={settings.about_value1_icon || '🛡️'}
+                      onChange={(e) => updateSetting('about_value1_icon', e.target.value)}
+                      className="text-center text-xl"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Titre</Label>
+                    <Input 
+                      value={settings.about_value1_title || 'Sécurité'}
+                      onChange={(e) => updateSetting('about_value1_title', e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs">Description</Label>
+                  <Textarea 
+                    value={settings.about_value1_desc || 'Paiements sécurisés via Stripe et vérification des vendeurs professionnels.'}
+                    onChange={(e) => updateSetting('about_value1_desc', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+              </div>
+
+              {/* Valeur 2 */}
+              <div className="p-4 border rounded-lg space-y-3">
+                <Label className="font-bold">Valeur 2</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs">Icône (emoji)</Label>
+                    <Input 
+                      value={settings.about_value2_icon || '👥'}
+                      onChange={(e) => updateSetting('about_value2_icon', e.target.value)}
+                      className="text-center text-xl"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Titre</Label>
+                    <Input 
+                      value={settings.about_value2_title || 'Communauté'}
+                      onChange={(e) => updateSetting('about_value2_title', e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs">Description</Label>
+                  <Textarea 
+                    value={settings.about_value2_desc || 'Une communauté de passionnés et de professionnels de l\'automobile.'}
+                    onChange={(e) => updateSetting('about_value2_desc', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+              </div>
+
+              {/* Valeur 3 */}
+              <div className="p-4 border rounded-lg space-y-3">
+                <Label className="font-bold">Valeur 3</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs">Icône (emoji)</Label>
+                    <Input 
+                      value={settings.about_value3_icon || '🏆'}
+                      onChange={(e) => updateSetting('about_value3_icon', e.target.value)}
+                      className="text-center text-xl"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Titre</Label>
+                    <Input 
+                      value={settings.about_value3_title || 'Qualité'}
+                      onChange={(e) => updateSetting('about_value3_title', e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs">Description</Label>
+                  <Textarea 
+                    value={settings.about_value3_desc || 'Des annonces vérifiées et un système d\'avis pour garantir la qualité.'}
+                    onChange={(e) => updateSetting('about_value3_desc', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>📊 Section Chiffres</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label>Afficher la section chiffres</Label>
+                <Switch 
+                  checked={settings.about_stats_enabled !== false}
+                  onCheckedChange={(v) => updateSetting('about_stats_enabled', v)}
+                />
+              </div>
+              <div>
+                <Label>Titre de la section</Label>
+                <Input 
+                  value={settings.about_stats_title || 'World Auto Pro en chiffres'}
+                  onChange={(e) => updateSetting('about_stats_title', e.target.value)}
+                />
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-xs">Stat 1 - Valeur</Label>
+                  <Input 
+                    value={settings.about_stat1_value || '1000+'}
+                    onChange={(e) => updateSetting('about_stat1_value', e.target.value)}
+                  />
+                  <Label className="text-xs">Stat 1 - Label</Label>
+                  <Input 
+                    value={settings.about_stat1_label || 'Annonces publiées'}
+                    onChange={(e) => updateSetting('about_stat1_label', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs">Stat 2 - Valeur</Label>
+                  <Input 
+                    value={settings.about_stat2_value || '500+'}
+                    onChange={(e) => updateSetting('about_stat2_value', e.target.value)}
+                  />
+                  <Label className="text-xs">Stat 2 - Label</Label>
+                  <Input 
+                    value={settings.about_stat2_label || 'Utilisateurs actifs'}
+                    onChange={(e) => updateSetting('about_stat2_label', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs">Stat 3 - Valeur</Label>
+                  <Input 
+                    value={settings.about_stat3_value || '50+'}
+                    onChange={(e) => updateSetting('about_stat3_value', e.target.value)}
+                  />
+                  <Label className="text-xs">Stat 3 - Label</Label>
+                  <Input 
+                    value={settings.about_stat3_label || 'Vendeurs PRO'}
+                    onChange={(e) => updateSetting('about_stat3_label', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs">Stat 4 - Valeur</Label>
+                  <Input 
+                    value={settings.about_stat4_value || '98%'}
+                    onChange={(e) => updateSetting('about_stat4_value', e.target.value)}
+                  />
+                  <Label className="text-xs">Stat 4 - Label</Label>
+                  <Input 
+                    value={settings.about_stat4_label || 'Clients satisfaits'}
+                    onChange={(e) => updateSetting('about_stat4_label', e.target.value)}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Contact Page Editor */}
+      {activePage === 'contact' && (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>📧 Page Contact - En-tête</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Titre principal</Label>
+                <Input 
+                  value={settings.contact_title || 'Contactez-nous'}
+                  onChange={(e) => updateSetting('contact_title', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>Sous-titre</Label>
+                <Input 
+                  value={settings.contact_subtitle || 'Une question ? Un problème ? Notre équipe est là pour vous aider.'}
+                  onChange={(e) => updateSetting('contact_subtitle', e.target.value)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>📬 Informations de contact</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Email de contact</Label>
+                <Input 
+                  value={settings.contact_email || 'contact@worldautofrance.com'}
+                  onChange={(e) => updateSetting('contact_email', e.target.value)}
+                  type="email"
+                />
+              </div>
+              <div>
+                <Label>Téléphone (optionnel)</Label>
+                <Input 
+                  value={settings.contact_phone || ''}
+                  onChange={(e) => updateSetting('contact_phone', e.target.value)}
+                  placeholder="+33 1 23 45 67 89"
+                />
+              </div>
+              <div>
+                <Label>Horaires de disponibilité</Label>
+                <Input 
+                  value={settings.contact_hours || 'Lun-Ven : 9h-18h'}
+                  onChange={(e) => updateSetting('contact_hours', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>Adresse (optionnel)</Label>
+                <Textarea 
+                  value={settings.contact_address || ''}
+                  onChange={(e) => updateSetting('contact_address', e.target.value)}
+                  placeholder="123 Rue de l'Automobile&#10;75000 Paris"
+                  rows={2}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>📝 Formulaire de contact</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label>Activer le formulaire de contact</Label>
+                <Switch 
+                  checked={settings.contact_form_enabled !== false}
+                  onCheckedChange={(v) => updateSetting('contact_form_enabled', v)}
+                />
+              </div>
+              <div>
+                <Label>Message de succès</Label>
+                <Input 
+                  value={settings.contact_success_message || 'Merci de nous avoir contacté. Nous vous répondrons dans les plus brefs délais.'}
+                  onChange={(e) => updateSetting('contact_success_message', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>Titre du formulaire</Label>
+                <Input 
+                  value={settings.contact_form_title || 'Envoyez-nous un message'}
+                  onChange={(e) => updateSetting('contact_form_title', e.target.value)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>ℹ️ Section Informations supplémentaires</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label>Afficher les informations sur le délai de réponse</Label>
+                <Switch 
+                  checked={settings.contact_show_response_time !== false}
+                  onCheckedChange={(v) => updateSetting('contact_show_response_time', v)}
+                />
+              </div>
+              <div>
+                <Label>Texte délai de réponse</Label>
+                <Input 
+                  value={settings.contact_response_time || 'Nous répondons généralement sous 24h'}
+                  onChange={(e) => updateSetting('contact_response_time', e.target.value)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* FAQ Page Editor */}
+      {activePage === 'faq' && (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>❓ Page FAQ - En-tête</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Titre principal</Label>
+                <Input 
+                  value={settings.faq_title || 'Questions fréquentes'}
+                  onChange={(e) => updateSetting('faq_title', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>Sous-titre</Label>
+                <Input 
+                  value={settings.faq_subtitle || 'Trouvez rapidement les réponses à vos questions'}
+                  onChange={(e) => updateSetting('faq_subtitle', e.target.value)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>📚 Configuration FAQ</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label>Afficher la barre de recherche FAQ</Label>
+                <Switch 
+                  checked={settings.faq_search_enabled !== false}
+                  onCheckedChange={(v) => updateSetting('faq_search_enabled', v)}
+                />
+              </div>
+              <div>
+                <Label>Placeholder recherche</Label>
+                <Input 
+                  value={settings.faq_search_placeholder || 'Rechercher une question...'}
+                  onChange={(e) => updateSetting('faq_search_placeholder', e.target.value)}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label>Afficher les catégories FAQ</Label>
+                <Switch 
+                  checked={settings.faq_categories_enabled !== false}
+                  onCheckedChange={(v) => updateSetting('faq_categories_enabled', v)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>📞 Section Contact FAQ</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label>Afficher la section &quot;Vous n&apos;avez pas trouvé votre réponse ?&quot;</Label>
+                <Switch 
+                  checked={settings.faq_contact_enabled !== false}
+                  onCheckedChange={(v) => updateSetting('faq_contact_enabled', v)}
+                />
+              </div>
+              <div>
+                <Label>Texte du bouton contact</Label>
+                <Input 
+                  value={settings.faq_contact_button || 'Contactez-nous'}
+                  onChange={(e) => updateSetting('faq_contact_button', e.target.value)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ============== SUBCATEGORY IMAGES MANAGER COMPONENT ==============
 function SubcategoryImagesManager({ token }) {
   const [subcatImages, setSubcatImages] = useState({});
