@@ -1058,6 +1058,432 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
             </div>
           </CollapsibleSection>
         </TabsContent>
+
+        {/* ============ RACCOURCIS HERO ============ */}
+        <TabsContent value="shortcuts" className="space-y-4 mt-4">
+          <CollapsibleSection title="Raccourcis rapides" icon={MousePointer} defaultOpen>
+            <p className="text-sm text-muted-foreground mb-4">
+              Configure les boutons raccourcis affichés sous les CTA (Vidéos, Stories, Fidélité, KIM Agent)
+            </p>
+            
+            <ToggleField 
+              label="Afficher les raccourcis" 
+              description="Affiche une ligne de boutons sous les CTA"
+              checked={settings.hero_shortcuts_enabled !== false}
+              onChange={(v) => updateSetting('hero_shortcuts_enabled', v)}
+            />
+
+            <div className="space-y-3 mt-4">
+              {/* Vidéos */}
+              <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">🎬</span>
+                  <div>
+                    <Label className="font-medium">Vidéos</Label>
+                    <p className="text-xs text-muted-foreground">Lien vers /videos</p>
+                  </div>
+                </div>
+                <Switch 
+                  checked={settings.hero_shortcut_videos !== false}
+                  onCheckedChange={(v) => updateSetting('hero_shortcut_videos', v)}
+                />
+              </div>
+
+              {/* Stories */}
+              <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">📸</span>
+                  <div>
+                    <Label className="font-medium">Stories</Label>
+                    <p className="text-xs text-muted-foreground">Lien vers /stories</p>
+                  </div>
+                </div>
+                <Switch 
+                  checked={settings.hero_shortcut_stories !== false}
+                  onCheckedChange={(v) => updateSetting('hero_shortcut_stories', v)}
+                />
+              </div>
+
+              {/* Fidélité */}
+              <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">🎁</span>
+                  <div>
+                    <Label className="font-medium">Fidélité</Label>
+                    <p className="text-xs text-muted-foreground">Lien vers /fidelite</p>
+                  </div>
+                </div>
+                <Switch 
+                  checked={settings.hero_shortcut_loyalty !== false}
+                  onCheckedChange={(v) => updateSetting('hero_shortcut_loyalty', v)}
+                />
+              </div>
+
+              {/* KIM Agent */}
+              <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">🤖</span>
+                  <div>
+                    <Label className="font-medium">KIM Agent</Label>
+                    <p className="text-xs text-muted-foreground">Lien vers /kim-agent</p>
+                  </div>
+                </div>
+                <Switch 
+                  checked={settings.hero_shortcut_kim !== false}
+                  onCheckedChange={(v) => updateSetting('hero_shortcut_kim', v)}
+                />
+              </div>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              <Label>Style des raccourcis</Label>
+              <Select 
+                value={settings.hero_shortcuts_style || 'pill'} 
+                onValueChange={(v) => updateSetting('hero_shortcuts_style', v)}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pill">Pilule (arrondi)</SelectItem>
+                  <SelectItem value="square">Carré</SelectItem>
+                  <SelectItem value="rounded">Arrondi léger</SelectItem>
+                  <SelectItem value="icon-only">Icône seule</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CollapsibleSection>
+        </TabsContent>
+
+        {/* ============ OPTIONS MOBILE ============ */}
+        <TabsContent value="mobile" className="space-y-4 mt-4">
+          <CollapsibleSection title="Textes Mobile" icon={Layout} defaultOpen>
+            <p className="text-sm text-muted-foreground mb-4">
+              Personnalise les textes pour les écrans mobiles (si différents du desktop)
+            </p>
+            
+            <ToggleField 
+              label="Textes différents sur mobile" 
+              description="Utilise des textes plus courts sur mobile"
+              checked={settings.hero_mobile_custom === true}
+              onChange={(v) => updateSetting('hero_mobile_custom', v)}
+            />
+
+            {settings.hero_mobile_custom && (
+              <div className="space-y-4 mt-4 p-4 border rounded-lg">
+                <div className="space-y-2">
+                  <Label>Titre ligne 1 (mobile)</Label>
+                  <Input
+                    value={settings.hero_mobile_title1 || ''}
+                    onChange={(e) => updateSetting('hero_mobile_title1', e.target.value)}
+                    placeholder="Ex: La marketplace"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Titre ligne 2 (mobile)</Label>
+                  <Input
+                    value={settings.hero_mobile_title2 || ''}
+                    onChange={(e) => updateSetting('hero_mobile_title2', e.target.value)}
+                    placeholder="Ex: auto"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Description (mobile)</Label>
+                  <Textarea
+                    value={settings.hero_mobile_description || ''}
+                    onChange={(e) => updateSetting('hero_mobile_description', e.target.value)}
+                    placeholder="Description courte pour mobile..."
+                    rows={2}
+                  />
+                </div>
+              </div>
+            )}
+          </CollapsibleSection>
+
+          <CollapsibleSection title="Éléments à masquer sur mobile" icon={Eye}>
+            <div className="space-y-3">
+              <ToggleField 
+                label="Masquer la barre de recherche" 
+                checked={settings.hero_mobile_hide_search === true}
+                onChange={(v) => updateSetting('hero_mobile_hide_search', v)}
+              />
+              <ToggleField 
+                label="Masquer les statistiques" 
+                checked={settings.hero_mobile_hide_stats === true}
+                onChange={(v) => updateSetting('hero_mobile_hide_stats', v)}
+              />
+              <ToggleField 
+                label="Masquer les raccourcis" 
+                checked={settings.hero_mobile_hide_shortcuts === true}
+                onChange={(v) => updateSetting('hero_mobile_hide_shortcuts', v)}
+              />
+              <ToggleField 
+                label="Masquer le badge" 
+                checked={settings.hero_mobile_hide_badge === true}
+                onChange={(v) => updateSetting('hero_mobile_hide_badge', v)}
+              />
+            </div>
+          </CollapsibleSection>
+
+          <CollapsibleSection title="Hauteur mobile" icon={Layout}>
+            <Select 
+              value={settings.hero_mobile_height || 'auto'} 
+              onValueChange={(v) => updateSetting('hero_mobile_height', v)}
+            >
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="auto">Auto</SelectItem>
+                <SelectItem value="small">Petit (300px)</SelectItem>
+                <SelectItem value="medium">Moyen (400px)</SelectItem>
+                <SelectItem value="large">Grand (500px)</SelectItem>
+                <SelectItem value="full">Plein écran</SelectItem>
+              </SelectContent>
+            </Select>
+          </CollapsibleSection>
+        </TabsContent>
+
+        {/* ============ PLANIFICATION ============ */}
+        <TabsContent value="schedule" className="space-y-4 mt-4">
+          <CollapsibleSection title="Planification du Hero" icon={RefreshCw} defaultOpen>
+            <p className="text-sm text-muted-foreground mb-4">
+              Programme des changements automatiques du Hero selon l'heure ou la date
+            </p>
+            
+            <ToggleField 
+              label="Activer la planification" 
+              description="Change automatiquement le Hero selon le planning"
+              checked={settings.hero_schedule_enabled === true}
+              onChange={(v) => updateSetting('hero_schedule_enabled', v)}
+            />
+          </CollapsibleSection>
+
+          {settings.hero_schedule_enabled && (
+            <>
+              <CollapsibleSection title="Hero de nuit (20h - 8h)" icon={Sparkles}>
+                <ToggleField 
+                  label="Activer le mode nuit" 
+                  checked={settings.hero_night_enabled === true}
+                  onChange={(v) => updateSetting('hero_night_enabled', v)}
+                />
+                {settings.hero_night_enabled && (
+                  <div className="space-y-4 mt-4">
+                    <div className="space-y-2">
+                      <Label>Titre de nuit</Label>
+                      <Input
+                        value={settings.hero_night_title || ''}
+                        onChange={(e) => updateSetting('hero_night_title', e.target.value)}
+                        placeholder="Ex: Bonne soirée !"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Image de fond (nuit)</Label>
+                      <Input
+                        value={settings.hero_night_image || ''}
+                        onChange={(e) => updateSetting('hero_night_image', e.target.value)}
+                        placeholder="URL de l'image de nuit"
+                      />
+                    </div>
+                  </div>
+                )}
+              </CollapsibleSection>
+
+              <CollapsibleSection title="Hero weekend" icon={Sparkles}>
+                <ToggleField 
+                  label="Hero différent le weekend" 
+                  checked={settings.hero_weekend_enabled === true}
+                  onChange={(v) => updateSetting('hero_weekend_enabled', v)}
+                />
+                {settings.hero_weekend_enabled && (
+                  <div className="space-y-4 mt-4">
+                    <div className="space-y-2">
+                      <Label>Titre weekend</Label>
+                      <Input
+                        value={settings.hero_weekend_title || ''}
+                        onChange={(e) => updateSetting('hero_weekend_title', e.target.value)}
+                        placeholder="Ex: Profitez du weekend !"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Badge weekend</Label>
+                      <Input
+                        value={settings.hero_weekend_badge || ''}
+                        onChange={(e) => updateSetting('hero_weekend_badge', e.target.value)}
+                        placeholder="Ex: 🎉 Promos weekend"
+                      />
+                    </div>
+                  </div>
+                )}
+              </CollapsibleSection>
+
+              <CollapsibleSection title="Événements spéciaux" icon={Sparkles}>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Programme un Hero spécial pour une date précise (ex: Black Friday, Noël)
+                </p>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Date de début</Label>
+                    <Input
+                      type="date"
+                      value={settings.hero_event_start || ''}
+                      onChange={(e) => updateSetting('hero_event_start', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Date de fin</Label>
+                    <Input
+                      type="date"
+                      value={settings.hero_event_end || ''}
+                      onChange={(e) => updateSetting('hero_event_end', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Titre événement</Label>
+                    <Input
+                      value={settings.hero_event_title || ''}
+                      onChange={(e) => updateSetting('hero_event_title', e.target.value)}
+                      placeholder="Ex: 🎄 Joyeux Noël !"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Badge événement</Label>
+                    <Input
+                      value={settings.hero_event_badge || ''}
+                      onChange={(e) => updateSetting('hero_event_badge', e.target.value)}
+                      placeholder="Ex: -20% sur tout !"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Image événement</Label>
+                    <Input
+                      value={settings.hero_event_image || ''}
+                      onChange={(e) => updateSetting('hero_event_image', e.target.value)}
+                      placeholder="URL de l'image événement"
+                    />
+                  </div>
+                </div>
+              </CollapsibleSection>
+            </>
+          )}
+        </TabsContent>
+
+        {/* ============ IMAGES & VIDEO ============ */}
+        <TabsContent value="images" className="space-y-4 mt-4">
+          
+          {/* Vidéo de fond */}
+          <CollapsibleSection title="Vidéo de fond" icon={Image} defaultOpen>
+            <p className="text-sm text-muted-foreground mb-4">
+              Remplace l'image de fond par une vidéo en boucle
+            </p>
+            
+            <ToggleField 
+              label="Utiliser une vidéo de fond" 
+              description="Remplace l'image par une vidéo"
+              checked={settings.hero_video_enabled === true}
+              onChange={(v) => updateSetting('hero_video_enabled', v)}
+            />
+
+            {settings.hero_video_enabled && (
+              <div className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label>URL de la vidéo (MP4)</Label>
+                  <Input
+                    value={settings.hero_video_url || ''}
+                    onChange={(e) => updateSetting('hero_video_url', e.target.value)}
+                    placeholder="https://exemple.com/video.mp4"
+                  />
+                </div>
+                <ToggleField 
+                  label="Boucle infinie" 
+                  checked={settings.hero_video_loop !== false}
+                  onChange={(v) => updateSetting('hero_video_loop', v)}
+                />
+                <ToggleField 
+                  label="Muet" 
+                  checked={settings.hero_video_muted !== false}
+                  onChange={(v) => updateSetting('hero_video_muted', v)}
+                />
+                <div className="space-y-2">
+                  <Label>Image de repli (si vidéo ne charge pas)</Label>
+                  <Input
+                    value={settings.hero_video_poster || ''}
+                    onChange={(e) => updateSetting('hero_video_poster', e.target.value)}
+                    placeholder="URL de l'image de repli"
+                  />
+                </div>
+              </div>
+            )}
+          </CollapsibleSection>
+
+          {/* Image de fond Hero (existant) */}
+          <CollapsibleSection title="Image de fond du Hero" icon={Image}>
+            <p className="text-sm text-muted-foreground mb-4">
+              Upload une image ou utilise une URL. L'image sera visible si la vidéo est désactivée.
+            </p>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>URL de l'image de fond</Label>
+                <Input
+                  value={settings.hero_image || ''}
+                  onChange={(e) => updateSetting('hero_image', e.target.value)}
+                  placeholder="https://..."
+                />
+              </div>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => onImageUpload && onImageUpload('hero_image')}
+                disabled={uploadingImage}
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                Upload une image
+              </Button>
+              {settings.hero_image && (
+                <img 
+                  src={settings.hero_image} 
+                  alt="Hero preview" 
+                  className="w-full h-40 object-cover rounded-lg"
+                />
+              )}
+            </div>
+          </CollapsibleSection>
+
+          {/* Images des catégories */}
+          <CollapsibleSection title="Images des catégories" icon={Image}>
+            <p className="text-sm text-muted-foreground mb-4">
+              Images de vignette pour chaque catégorie
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { key: 'category_image_pieces', label: 'Pièces détachées' },
+                { key: 'category_image_cars', label: 'Voitures' },
+                { key: 'category_image_motos', label: 'Motos' },
+                { key: 'category_image_trucks', label: 'Utilitaires' },
+                { key: 'category_image_agri', label: 'Agricole' },
+                { key: 'category_image_search', label: 'Recherche' },
+                { key: 'category_image_rare', label: 'Rare & Collection' },
+              ].map((cat) => (
+                <div key={cat.key} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs">{cat.label}</Label>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => onImageUpload && onImageUpload(cat.key)}
+                      disabled={uploadingImage}
+                    >
+                      <Upload className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  {settings[cat.key] && (
+                    <img 
+                      src={settings[cat.key]} 
+                      alt={cat.label} 
+                      className="w-full h-20 object-cover rounded"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </CollapsibleSection>
+        </TabsContent>
       </Tabs>
     </div>
   );
