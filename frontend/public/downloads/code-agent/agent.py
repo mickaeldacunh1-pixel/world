@@ -32,8 +32,17 @@ console = Console()
 app = Flask(__name__)
 CORS(app)
 
-# Version actuelle
-VERSION = "1.1.0"
+# Version actuelle - lue depuis version.txt
+def get_version():
+    try:
+        version_file = Path(__file__).parent / "version.txt"
+        if version_file.exists():
+            return version_file.read_text().strip()
+    except:
+        pass
+    return "1.0.0"
+
+VERSION = get_version()
 UPDATE_URL = "https://partshub-9.preview.emergentagent.com/downloads/code-agent"
 VERSION_URL = f"{UPDATE_URL}/version.txt"
 ZIP_URL = f"{UPDATE_URL}.zip"
