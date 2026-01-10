@@ -13,6 +13,8 @@ import threading
 import time
 import re
 import glob
+import shutil
+import zipfile
 from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict, List, Any
@@ -29,6 +31,74 @@ load_dotenv()
 console = Console()
 app = Flask(__name__)
 CORS(app)
+
+# Version actuelle
+VERSION = "1.1.0"
+UPDATE_URL = "https://partshub-9.preview.emergentagent.com/downloads/code-agent"
+VERSION_URL = f"{UPDATE_URL}/version.txt"
+ZIP_URL = f"{UPDATE_URL}.zip"
+
+# ============== AUTO-UPDATE ==============
+
+def check_for_updates():
+    """Vérifie si une mise à jour est disponible"""
+    try:
+        console.print("[dim]🔄 Vérification des mises à jour...[/dim]")
+        response = httpx.get(VERSION_URL, timeout=5)
+        if response.status_code == 200:
+            latest_version = response.text.strip()
+            if latest_version > VERSION:
+                return latest_version
+    except Exception:
+        pass
+    return None
+
+def auto_update(new_version):
+    """Télécharge et installe la mise à jour"""
+    try:
+        console.print(f"[yellow]⬆️  Nouvelle version disponible: {new_version}[/yellow]")
+        console.print("[dim]Téléchargement en cours...[/dim]")
+        
+        # Télécharger le zip
+        response = httpx.get(ZIP_URL, timeout=30)
+        if response.status_code != 200:
+            console.print("[red]❌ Échec du téléchargement[/red]")
+            return False
+        
+        # Sauvegarder le zip
+        zip_path = Path(__file__).parent / "update.zip"
+        with open(zip_path, 'wb') as f:
+            f.write(response.content)
+        
+        # Extraire
+        extract_dir = Path(__file__).parent / "update_temp"
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(extract_dir)
+        
+        # Copier les nouveaux fichiers (sauf .env)
+        source_dir = extract_dir / "code-agent"
+        for item in source_dir.iterdir():
+            if item.name == '.env':
+                continue  # Ne pas écraser la config
+            dest = Path(__file__).parent / item.name
+            if item.is_file():
+                shutil.copy2(item, dest)
+            else:
+                if dest.exists():
+                    shutil.rmtree(dest)
+                shutil.copytree(item, dest)
+        
+        # Nettoyage
+        zip_path.unlink()
+        shutil.rmtree(extract_dir)
+        
+        console.print(f"[green]✅ Mis à jour vers la version {new_version}![/green]")
+        console.print("[yellow]🔄 Redémarrage nécessaire. Relance l'agent.[/yellow]")
+        return True
+        
+    except Exception as e:
+        console.print(f"[red]❌ Erreur de mise à jour: {e}[/red]")
+        return False
 
 # ============== CONFIGURATION ==============
 
