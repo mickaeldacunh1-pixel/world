@@ -3390,6 +3390,574 @@ export default function AdminSettings() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Agent Cody Tab */}
+          <TabsContent value="cody" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  🤖 Configuration de l&apos;Agent Cody
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Personnalisez l&apos;apparence de votre agent de développement local
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Agent Name */}
+                <div className="space-y-2">
+                  <Label>Nom de l&apos;agent</Label>
+                  <Input
+                    value={settings.cody_agent_name || 'Cody'}
+                    onChange={(e) => setSettings({...settings, cody_agent_name: e.target.value})}
+                    placeholder="Cody"
+                  />
+                </div>
+
+                {/* Theme Mode */}
+                <div className="space-y-2">
+                  <Label>Mode de thème</Label>
+                  <Select 
+                    value={settings.cody_theme_mode || 'light'} 
+                    onValueChange={(v) => setSettings({...settings, cody_theme_mode: v})}
+                  >
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="light">☀️ Clair</SelectItem>
+                      <SelectItem value="dark">🌙 Sombre</SelectItem>
+                      <SelectItem value="system">💻 Système</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Colors Section */}
+                <div className="border-t pt-6">
+                  <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <Palette className="w-4 h-4" />
+                    Couleurs (Mode Clair)
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Couleur d&apos;accentuation</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_accent_color || '#f97316'}
+                          onChange={(e) => setSettings({...settings, cody_accent_color: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_accent_color || '#f97316'}
+                          onChange={(e) => setSettings({...settings, cody_accent_color: e.target.value})}
+                          placeholder="#f97316"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Couleur d&apos;accentuation (hover)</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_accent_hover || '#ea580c'}
+                          onChange={(e) => setSettings({...settings, cody_accent_hover: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_accent_hover || '#ea580c'}
+                          onChange={(e) => setSettings({...settings, cody_accent_hover: e.target.value})}
+                          placeholder="#ea580c"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Fond principal</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_bg_main || '#ffffff'}
+                          onChange={(e) => setSettings({...settings, cody_bg_main: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_bg_main || '#ffffff'}
+                          onChange={(e) => setSettings({...settings, cody_bg_main: e.target.value})}
+                          placeholder="#ffffff"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Fond sidebar/secondaire</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_bg_sidebar || '#f9fafb'}
+                          onChange={(e) => setSettings({...settings, cody_bg_sidebar: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_bg_sidebar || '#f9fafb'}
+                          onChange={(e) => setSettings({...settings, cody_bg_sidebar: e.target.value})}
+                          placeholder="#f9fafb"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Texte principal</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_text_primary || '#1f2937'}
+                          onChange={(e) => setSettings({...settings, cody_text_primary: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_text_primary || '#1f2937'}
+                          onChange={(e) => setSettings({...settings, cody_text_primary: e.target.value})}
+                          placeholder="#1f2937"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Texte secondaire</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_text_secondary || '#6b7280'}
+                          onChange={(e) => setSettings({...settings, cody_text_secondary: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_text_secondary || '#6b7280'}
+                          onChange={(e) => setSettings({...settings, cody_text_secondary: e.target.value})}
+                          placeholder="#6b7280"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Bordures</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_border_color || '#e5e7eb'}
+                          onChange={(e) => setSettings({...settings, cody_border_color: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_border_color || '#e5e7eb'}
+                          onChange={(e) => setSettings({...settings, cody_border_color: e.target.value})}
+                          placeholder="#e5e7eb"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Couleur succès</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_success_color || '#22c55e'}
+                          onChange={(e) => setSettings({...settings, cody_success_color: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_success_color || '#22c55e'}
+                          onChange={(e) => setSettings({...settings, cody_success_color: e.target.value})}
+                          placeholder="#22c55e"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dark Mode Colors */}
+                <div className="border-t pt-6">
+                  <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    🌙 Couleurs (Mode Sombre)
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Fond principal (dark)</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_dark_bg_main || '#0f0f0f'}
+                          onChange={(e) => setSettings({...settings, cody_dark_bg_main: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_dark_bg_main || '#0f0f0f'}
+                          onChange={(e) => setSettings({...settings, cody_dark_bg_main: e.target.value})}
+                          placeholder="#0f0f0f"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Fond sidebar (dark)</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_dark_bg_sidebar || '#1a1a1a'}
+                          onChange={(e) => setSettings({...settings, cody_dark_bg_sidebar: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_dark_bg_sidebar || '#1a1a1a'}
+                          onChange={(e) => setSettings({...settings, cody_dark_bg_sidebar: e.target.value})}
+                          placeholder="#1a1a1a"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Texte principal (dark)</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_dark_text_primary || '#f3f4f6'}
+                          onChange={(e) => setSettings({...settings, cody_dark_text_primary: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_dark_text_primary || '#f3f4f6'}
+                          onChange={(e) => setSettings({...settings, cody_dark_text_primary: e.target.value})}
+                          placeholder="#f3f4f6"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Texte secondaire (dark)</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_dark_text_secondary || '#9ca3af'}
+                          onChange={(e) => setSettings({...settings, cody_dark_text_secondary: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_dark_text_secondary || '#9ca3af'}
+                          onChange={(e) => setSettings({...settings, cody_dark_text_secondary: e.target.value})}
+                          placeholder="#9ca3af"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Bordures (dark)</Label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={settings.cody_dark_border || '#2d2d2d'}
+                          onChange={(e) => setSettings({...settings, cody_dark_border: e.target.value})}
+                          className="w-10 h-10 rounded cursor-pointer border-2 border-border"
+                        />
+                        <Input
+                          value={settings.cody_dark_border || '#2d2d2d'}
+                          onChange={(e) => setSettings({...settings, cody_dark_border: e.target.value})}
+                          placeholder="#2d2d2d"
+                          className="flex-1 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Presets rapides */}
+                <div className="border-t pt-6">
+                  <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4" />
+                    Thèmes prédéfinis
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {[
+                      { name: 'Orange (défaut)', accent: '#f97316', hover: '#ea580c' },
+                      { name: 'Bleu Ocean', accent: '#3b82f6', hover: '#2563eb' },
+                      { name: 'Vert Nature', accent: '#22c55e', hover: '#16a34a' },
+                      { name: 'Violet Luxe', accent: '#8b5cf6', hover: '#7c3aed' },
+                      { name: 'Rose Moderne', accent: '#ec4899', hover: '#db2777' },
+                      { name: 'Cyan Tech', accent: '#06b6d4', hover: '#0891b2' },
+                      { name: 'Rouge Sport', accent: '#ef4444', hover: '#dc2626' },
+                      { name: 'Ambre Chaud', accent: '#f59e0b', hover: '#d97706' },
+                    ].map((preset) => (
+                      <Button
+                        key={preset.name}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSettings({
+                          ...settings, 
+                          cody_accent_color: preset.accent,
+                          cody_accent_hover: preset.hover
+                        })}
+                        className="justify-start gap-2"
+                      >
+                        <div 
+                          className="w-4 h-4 rounded-full" 
+                          style={{ backgroundColor: preset.accent }}
+                        />
+                        <span className="text-xs">{preset.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Font Settings */}
+                <div className="border-t pt-6">
+                  <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <Type className="w-4 h-4" />
+                    Typographie
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Police principale</Label>
+                      <Select 
+                        value={settings.cody_font_family || 'inter'} 
+                        onValueChange={(v) => setSettings({...settings, cody_font_family: v})}
+                      >
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="inter">Inter (défaut)</SelectItem>
+                          <SelectItem value="roboto">Roboto</SelectItem>
+                          <SelectItem value="poppins">Poppins</SelectItem>
+                          <SelectItem value="nunito">Nunito</SelectItem>
+                          <SelectItem value="jetbrains">JetBrains Mono</SelectItem>
+                          <SelectItem value="fira">Fira Code</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Taille du texte</Label>
+                      <Select 
+                        value={settings.cody_font_size || 'normal'} 
+                        onValueChange={(v) => setSettings({...settings, cody_font_size: v})}
+                      >
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="small">Petit</SelectItem>
+                          <SelectItem value="normal">Normal</SelectItem>
+                          <SelectItem value="large">Grand</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Other Settings */}
+                <div className="border-t pt-6">
+                  <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <Settings className="w-4 h-4" />
+                    Autres options
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Sons de notification</Label>
+                        <p className="text-sm text-muted-foreground">Jouer un son lors des réponses</p>
+                      </div>
+                      <Switch
+                        checked={settings.cody_sound_enabled !== false}
+                        onCheckedChange={(checked) => setSettings({...settings, cody_sound_enabled: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Emojis dans les réponses</Label>
+                        <p className="text-sm text-muted-foreground">L&apos;agent utilise des emojis</p>
+                      </div>
+                      <Switch
+                        checked={settings.cody_emoji_enabled !== false}
+                        onCheckedChange={(checked) => setSettings({...settings, cody_emoji_enabled: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Animations</Label>
+                        <p className="text-sm text-muted-foreground">Animations de frappe et transitions</p>
+                      </div>
+                      <Switch
+                        checked={settings.cody_animations_enabled !== false}
+                        onCheckedChange={(checked) => setSettings({...settings, cody_animations_enabled: checked})}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Export Config Button */}
+                <div className="border-t pt-6">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        const codyConfig = {
+                          agent_name: settings.cody_agent_name || 'Cody',
+                          theme_mode: settings.cody_theme_mode || 'light',
+                          colors: {
+                            accent: settings.cody_accent_color || '#f97316',
+                            accent_hover: settings.cody_accent_hover || '#ea580c',
+                            bg_main: settings.cody_bg_main || '#ffffff',
+                            bg_sidebar: settings.cody_bg_sidebar || '#f9fafb',
+                            text_primary: settings.cody_text_primary || '#1f2937',
+                            text_secondary: settings.cody_text_secondary || '#6b7280',
+                            border: settings.cody_border_color || '#e5e7eb',
+                            success: settings.cody_success_color || '#22c55e'
+                          },
+                          dark_colors: {
+                            bg_main: settings.cody_dark_bg_main || '#0f0f0f',
+                            bg_sidebar: settings.cody_dark_bg_sidebar || '#1a1a1a',
+                            text_primary: settings.cody_dark_text_primary || '#f3f4f6',
+                            text_secondary: settings.cody_dark_text_secondary || '#9ca3af',
+                            border: settings.cody_dark_border || '#2d2d2d'
+                          },
+                          font: {
+                            family: settings.cody_font_family || 'inter',
+                            size: settings.cody_font_size || 'normal'
+                          },
+                          options: {
+                            sound_enabled: settings.cody_sound_enabled !== false,
+                            emoji_enabled: settings.cody_emoji_enabled !== false,
+                            animations_enabled: settings.cody_animations_enabled !== false
+                          }
+                        };
+                        const blob = new Blob([JSON.stringify(codyConfig, null, 2)], { type: 'application/json' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'cody_config.json';
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        toast.success('Configuration Cody exportée !');
+                      }}
+                      className="flex-1"
+                    >
+                      📥 Exporter la configuration
+                    </Button>
+                    <p className="text-sm text-muted-foreground">
+                      Téléchargez le fichier <code className="bg-muted px-1 rounded">cody_config.json</code> et placez-le dans le dossier de Cody pour appliquer vos personnalisations.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Preview Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Eye className="w-4 h-4" />
+                  Aperçu du thème
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div 
+                  className="rounded-lg overflow-hidden border"
+                  style={{
+                    backgroundColor: settings.cody_bg_main || '#ffffff',
+                    borderColor: settings.cody_border_color || '#e5e7eb'
+                  }}
+                >
+                  {/* Header Preview */}
+                  <div 
+                    className="p-4 border-b flex items-center gap-3"
+                    style={{ 
+                      backgroundColor: settings.cody_bg_main || '#ffffff',
+                      borderColor: settings.cody_border_color || '#e5e7eb'
+                    }}
+                  >
+                    <div 
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold"
+                      style={{ 
+                        background: `linear-gradient(135deg, ${settings.cody_accent_color || '#f97316'}, #fb923c)` 
+                      }}
+                    >
+                      C
+                    </div>
+                    <span 
+                      className="font-semibold"
+                      style={{ color: settings.cody_text_primary || '#1f2937' }}
+                    >
+                      {settings.cody_agent_name || 'Cody'}
+                    </span>
+                    <span 
+                      className="text-sm ml-auto"
+                      style={{ color: settings.cody_text_secondary || '#6b7280' }}
+                    >
+                      Agent de développement
+                    </span>
+                  </div>
+                  
+                  {/* Message Preview */}
+                  <div className="p-4 space-y-4">
+                    {/* User message */}
+                    <div className="flex justify-end">
+                      <div 
+                        className="max-w-[80%] p-3 rounded-2xl rounded-tr-md"
+                        style={{ 
+                          backgroundColor: settings.cody_accent_color || '#f97316',
+                          color: '#ffffff'
+                        }}
+                      >
+                        Salut Cody ! Peux-tu m&apos;aider ?
+                      </div>
+                    </div>
+                    
+                    {/* Agent message */}
+                    <div className="flex gap-3">
+                      <div 
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                        style={{ 
+                          background: `linear-gradient(135deg, ${settings.cody_accent_color || '#f97316'}, #fb923c)` 
+                        }}
+                      >
+                        C
+                      </div>
+                      <div 
+                        className="max-w-[80%] p-3 rounded-2xl rounded-tl-md"
+                        style={{ 
+                          backgroundColor: settings.cody_bg_sidebar || '#f9fafb',
+                          color: settings.cody_text_primary || '#1f2937'
+                        }}
+                      >
+                        Bien sûr ! Je suis là pour t&apos;aider avec ton code. Que veux-tu faire ? 🚀
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Input Preview */}
+                  <div 
+                    className="p-4 border-t"
+                    style={{ borderColor: settings.cody_border_color || '#e5e7eb' }}
+                  >
+                    <div 
+                      className="flex items-center gap-2 p-3 rounded-xl border"
+                      style={{ 
+                        backgroundColor: settings.cody_bg_main || '#ffffff',
+                        borderColor: settings.cody_border_color || '#e5e7eb'
+                      }}
+                    >
+                      <span 
+                        className="flex-1"
+                        style={{ color: settings.cody_text_secondary || '#6b7280' }}
+                      >
+                        Écris ton message...
+                      </span>
+                      <div 
+                        className="px-4 py-2 rounded-lg text-white text-sm"
+                        style={{ backgroundColor: settings.cody_accent_color || '#f97316' }}
+                      >
+                        Envoyer
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         {/* Bottom Actions */}
