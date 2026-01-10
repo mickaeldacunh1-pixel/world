@@ -138,33 +138,39 @@ export default function Navbar() {
             {user ? (
               <>
                 {/* Mode sombre */}
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={toggleTheme}
-                  title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
-                  className="hidden sm:flex"
-                >
-                  {theme === 'dark' ? (
-                    <Sun className="w-5 h-5 text-yellow-500" />
-                  ) : (
-                    <Moon className="w-5 h-5" />
-                  )}
-                </Button>
+                {navbarSettings.navbar_show_dark_mode_toggle !== false && (
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={toggleTheme}
+                    title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+                    className="hidden sm:flex"
+                  >
+                    {theme === 'dark' ? (
+                      <Sun className="w-5 h-5 text-yellow-500" />
+                    ) : (
+                      <Moon className="w-5 h-5" />
+                    )}
+                  </Button>
+                )}
 
                 {/* Fidélité */}
-                <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Gift className="w-5 h-5" />
-                  </Button>
-                </Link>
+                {navbarSettings.navbar_show_loyalty !== false && (
+                  <Link to="/fidelite" className="hidden sm:flex" title="Programme Fidélité">
+                    <Button variant="ghost" size="icon" className="relative">
+                      <Gift className="w-5 h-5" />
+                    </Button>
+                  </Link>
+                )}
 
                 {/* Favoris */}
-                <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Heart className="w-5 h-5" />
-                  </Button>
-                </Link>
+                {navbarSettings.navbar_show_favorites !== false && (
+                  <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
+                    <Button variant="ghost" size="icon" className="relative">
+                      <Heart className="w-5 h-5" />
+                    </Button>
+                  </Link>
+                )}
 
                 {/* Stories */}
                 <Link to="/stories" className="hidden sm:flex" title="Stories vendeurs">
