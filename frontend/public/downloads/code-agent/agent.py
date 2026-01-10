@@ -481,38 +481,51 @@ HTML_TEMPLATE = r'''
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🤖 Code Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #334155;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --border: #475569;
+            --bg-main: #ffffff;
+            --bg-sidebar: #f9fafb;
+            --bg-user-msg: #f3f4f6;
+            --bg-input: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --accent: #f97316;
+            --accent-hover: #ea580c;
+            --border: #e5e7eb;
+            --border-light: #f3f4f6;
             --success: #22c55e;
-            --error: #ef4444;
+            --code-bg: #1e1e1e;
+            --code-text: #d4d4d4;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
         }
         
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-main);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         
+        /* ========== HEADER ========== */
         header {
-            background: var(--bg-secondary);
+            background: var(--bg-main);
             border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
+            padding: 0.75rem 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         
         .logo {
@@ -522,156 +535,247 @@ HTML_TEMPLATE = r'''
         }
         
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), #fb923c);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
+            box-shadow: var(--shadow);
         }
         
-        .logo-text { font-weight: 700; font-size: 1.25rem; }
-        .logo-sub { font-size: 0.75rem; color: var(--text-secondary); }
+        .logo-text { 
+            font-weight: 700; 
+            font-size: 1.125rem;
+            color: var(--text-primary);
+        }
         
         .header-actions {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
             align-items: center;
         }
         
-        select, button {
-            background: var(--bg-tertiary);
+        .header-btn {
+            background: var(--bg-sidebar);
             border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            padding: 0.5rem 0.875rem;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.875rem;
-        }
-        
-        button:hover { background: var(--accent); }
-        
-        .status {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
+            gap: 0.375rem;
+        }
+        
+        .header-btn:hover { 
+            background: var(--bg-main);
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
+        
+        select.model-select {
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.5rem 0.875rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            font-family: inherit;
+        }
+        
+        .memory-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            background: rgba(249, 115, 22, 0.1);
+            padding: 0.375rem 0.625rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(249, 115, 22, 0.2);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            color: var(--success);
         }
         
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: var(--success);
+            animation: pulse-dot 2s infinite;
         }
         
-        .memory-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            font-size: 0.8rem;
-            color: var(--accent);
-            background: rgba(249, 115, 22, 0.1);
-            padding: 0.25rem 0.6rem;
-            border-radius: 1rem;
-            border: 1px solid rgba(249, 115, 22, 0.3);
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
-        .memory-indicator #memoryCount {
-            font-weight: bold;
-            min-width: 1.5rem;
-            text-align: center;
-        }
-        
+        /* ========== MAIN CONTENT ========== */
         main {
             flex: 1;
             display: flex;
             flex-direction: column;
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             width: 100%;
-            padding: 1rem;
+            padding: 0;
         }
         
+        /* ========== MESSAGES ========== */
         .messages {
             flex: 1;
             overflow-y: auto;
-            padding: 1rem 0;
+            padding: 2rem 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0;
         }
         
         .message {
-            display: flex;
-            gap: 0.75rem;
             animation: fadeIn 0.3s ease;
+            padding: 1.5rem 0;
+        }
+        
+        .message + .message {
+            border-top: 1px solid var(--border-light);
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .message.user { flex-direction: row-reverse; }
+        /* Message Assistant - Style Emergent */
+        .message.assistant .message-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
         
-        .avatar {
-            width: 36px;
-            height: 36px;
+        .message.assistant .avatar {
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent), #fb923c);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-size: 1rem;
+            font-size: 0.875rem;
+            box-shadow: var(--shadow);
         }
         
-        .message.assistant .avatar { background: linear-gradient(135deg, var(--accent), #8b5cf6); }
-        .message.user .avatar { background: var(--bg-tertiary); }
+        .message.assistant .content {
+            flex: 1;
+            line-height: 1.75;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+        }
         
-        .content {
-            max-width: 80%;
-            background: var(--bg-secondary);
-            padding: 1rem;
-            border-radius: 12px;
+        /* Message User - Style Emergent (bulle à droite) */
+        .message.user {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1rem 0;
+        }
+        
+        .message.user .message-wrapper {
+            max-width: 85%;
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+        
+        .message.user .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.875rem;
+            color: white;
+        }
+        
+        .message.user .content {
+            background: var(--bg-user-msg);
+            padding: 0.875rem 1.125rem;
+            border-radius: 18px 18px 4px 18px;
             line-height: 1.6;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
         }
         
-        .message.user .content { background: var(--accent); }
-        
+        /* Code blocks */
         .content pre {
-            background: var(--bg-primary);
-            padding: 0.75rem;
-            border-radius: 6px;
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1rem;
+            border-radius: 8px;
             overflow-x: auto;
-            margin: 0.5rem 0;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            box-shadow: var(--shadow);
         }
         
         .content code {
-            background: var(--bg-tertiary);
-            padding: 0.15rem 0.4rem;
+            background: rgba(0,0,0,0.06);
+            padding: 0.125rem 0.375rem;
             border-radius: 4px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.9em;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.875em;
+            color: #c7254e;
         }
         
-        .content pre code { background: none; padding: 0; }
+        .content pre code { 
+            background: none; 
+            padding: 0; 
+            color: inherit;
+        }
         
+        /* Markdown elements */
+        .content h1 { font-size: 1.5rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+        .content h2 { font-size: 1.25rem; font-weight: 600; margin: 1.25rem 0 0.625rem; }
+        .content h3 { font-size: 1.125rem; font-weight: 600; margin: 1rem 0 0.5rem; }
+        .content ul, .content ol { margin: 0.75rem 0 0.75rem 1.5rem; }
+        .content li { margin: 0.375rem 0; }
+        .content p { margin: 0.625rem 0; }
+        .content strong { font-weight: 600; color: var(--text-primary); }
+        .content em { font-style: italic; color: var(--text-secondary); }
+        .content a { color: var(--accent); text-decoration: none; }
+        .content a:hover { text-decoration: underline; }
+        
+        /* Typing indicator */
         .typing {
             display: flex;
-            gap: 4px;
-            padding: 0.5rem;
+            gap: 5px;
+            padding: 0.5rem 0;
         }
         
         .typing span {
             width: 8px;
             height: 8px;
-            background: var(--text-secondary);
+            background: var(--text-muted);
             border-radius: 50%;
             animation: typing 1.4s infinite;
         }
@@ -684,158 +788,221 @@ HTML_TEMPLATE = r'''
             50% { opacity: 1; transform: scale(1); }
         }
         
+        /* ========== INPUT AREA ========== */
         .input-area {
-            padding: 1rem;
-            background: var(--bg-secondary);
+            position: sticky;
+            bottom: 0;
+            background: linear-gradient(to top, var(--bg-main) 80%, transparent);
+            padding: 1rem 1.5rem 1.5rem;
+        }
+        
+        .input-container {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
             border-radius: 16px;
-            margin-top: auto;
+            padding: 0.75rem;
+            box-shadow: var(--shadow-lg);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+        
+        .input-container:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1), var(--shadow-lg);
         }
         
         .input-wrapper {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.5rem;
+            align-items: flex-end;
         }
         
         textarea {
             flex: 1;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 0.875rem;
+            background: transparent;
+            border: none;
+            padding: 0.5rem 0.75rem;
             color: var(--text-primary);
-            font-size: 1rem;
+            font-size: 0.9375rem;
             resize: none;
-            min-height: 50px;
+            min-height: 24px;
             max-height: 200px;
             font-family: inherit;
+            line-height: 1.5;
         }
         
-        textarea:focus { outline: none; border-color: var(--accent); }
-        textarea::placeholder { color: var(--text-secondary); }
+        textarea:focus { outline: none; }
+        textarea::placeholder { color: var(--text-muted); }
         
-        .send-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            background: var(--accent);
+        .input-actions {
+            display: flex;
+            gap: 0.375rem;
+        }
+        
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             border: none;
-            color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            transition: all 0.15s ease;
+            font-size: 1rem;
         }
         
-        .send-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
-        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .action-btn.secondary {
+            background: var(--bg-sidebar);
+            color: var(--text-secondary);
+        }
         
-        .voice-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
+        .action-btn.secondary:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+        
+        .action-btn.primary {
+            background: var(--accent);
             color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            font-size: 1.25rem;
         }
         
-        .voice-btn:hover { background: var(--accent); border-color: var(--accent); }
-        .voice-btn.recording { background: #ef4444; border-color: #ef4444; animation: pulse 1s infinite; }
-        .voice-btn.disabled { opacity: 0.5; }
+        .action-btn.primary:hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+        }
         
-        @keyframes pulse {
+        .action-btn.primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .action-btn.recording {
+            background: #ef4444 !important;
+            animation: pulse-record 1s infinite;
+        }
+        
+        @keyframes pulse-record {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
         
+        .input-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.625rem;
+            padding: 0 0.25rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
         .project-path {
-            margin-top: 0.75rem;
-            padding: 0.5rem 0.75rem;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.375rem;
         }
         
         .project-path input {
-            flex: 1;
             background: transparent;
             border: none;
-            color: var(--text-primary);
-            font-family: monospace;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            width: 300px;
         }
         
-        .project-path input:focus { outline: none; }
+        .project-path input:focus { outline: none; color: var(--text-primary); }
         
-        /* Markdown styling */
-        .content h1, .content h2, .content h3 { margin: 0.5rem 0; }
-        .content ul, .content ol { margin-left: 1.5rem; }
-        .content p { margin: 0.5rem 0; }
-        .content strong { color: #fff; }
+        .voice-status {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        /* ========== SCROLLBAR ========== */
+        .messages::-webkit-scrollbar { width: 6px; }
+        .messages::-webkit-scrollbar-track { background: transparent; }
+        .messages::-webkit-scrollbar-thumb { 
+            background: var(--border); 
+            border-radius: 3px;
+        }
+        .messages::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            header { padding: 0.625rem 1rem; }
+            .logo-text { font-size: 1rem; }
+            .messages { padding: 1rem; }
+            .input-area { padding: 0.75rem 1rem 1rem; }
+            .message.user .message-wrapper { max-width: 95%; }
+            .project-path input { width: 150px; }
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="logo">
             <div class="logo-icon">🤖</div>
-            <div>
-                <div class="logo-text">Code Agent</div>
-                <div class="logo-sub">Ton assistant de développement</div>
-            </div>
+            <div class="logo-text">Code Agent</div>
         </div>
         <div class="header-actions">
-            <div class="status">
+            <div class="status-indicator">
                 <div class="status-dot"></div>
-                <span>Connecté</span>
+                <span>En ligne</span>
             </div>
-            <div class="memory-indicator" id="memoryIndicator" title="Nombre de messages en mémoire">
+            <div class="memory-badge" id="memoryIndicator" title="Messages en mémoire">
                 🧠 <span id="memoryCount">0</span>
             </div>
-            <select id="modelSelect">
+            <select class="model-select" id="modelSelect">
                 <option value="gpt-4o">GPT-4o</option>
                 <option value="gpt-4o-mini">GPT-4o Mini</option>
                 <option value="claude-sonnet">Claude Sonnet</option>
             </select>
-            <button onclick="clearChat()">🗑️ Effacer</button>
-            <button onclick="showSettings()">⚙️</button>
+            <button class="header-btn" onclick="clearChat()">
+                <span>🗑️</span> Effacer
+            </button>
+            <button class="header-btn" onclick="showSettings()">⚙️</button>
         </div>
     </header>
     
     <main>
         <div class="messages" id="messages">
             <div class="message assistant">
-                <div class="avatar">🤖</div>
-                <div class="content">
-                    <strong>Bonjour ! Je suis Code Agent.</strong><br><br>
-                    Je suis ton assistant de développement. Je peux :<br>
-                    • 📁 Lire et écrire des fichiers<br>
-                    • 🖥️ Exécuter des commandes<br>
-                    • 🔍 Chercher dans ton code<br>
-                    • 🐛 Débugger et corriger<br><br>
-                    <em>Dis-moi ce dont tu as besoin !</em>
+                <div class="message-wrapper">
+                    <div class="avatar">🤖</div>
+                    <div class="content">
+                        <strong>Bonjour ! Je suis Code Agent.</strong><br><br>
+                        Je suis ton assistant de développement personnel. Je peux :<br><br>
+                        • <strong>📁 Lire et écrire</strong> des fichiers de ton projet<br>
+                        • <strong>🖥️ Exécuter</strong> des commandes shell<br>
+                        • <strong>🔍 Rechercher</strong> dans ton code<br>
+                        • <strong>🐛 Débugger</strong> et corriger des bugs<br><br>
+                        <em>Je garde le contexte de notre conversation. Dis-moi ce dont tu as besoin !</em>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="input-area">
-            <div class="input-wrapper">
-                <button class="voice-btn" onclick="toggleRecording()" id="micBtn" title="Parler">🎤</button>
-                <textarea id="input" placeholder="Tape ta demande ou clique sur 🎤 pour parler..." rows="1"></textarea>
-                <button class="send-btn" onclick="sendMessage()" id="sendBtn">➤</button>
-                <button class="voice-btn" onclick="toggleVoice()" id="voiceBtn" title="Activer/Desactiver la voix">🔊</button>
-            </div>
-            <div class="project-path">
-                📁 Projet: <input type="text" id="projectPath" value="{{ project_path }}" onchange="updateProjectPath(this.value)">
-                <span id="voiceStatus" style="margin-left: 10px; font-size: 0.75rem; color: #22c55e;">🔊 Voix activee</span>
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <textarea id="input" placeholder="Message Code Agent..." rows="1"></textarea>
+                    <div class="input-actions">
+                        <button class="action-btn secondary" onclick="toggleRecording()" id="micBtn" title="Enregistrer un message vocal">🎤</button>
+                        <button class="action-btn secondary" onclick="toggleVoice()" id="voiceBtn" title="Activer/Désactiver la synthèse vocale">🔊</button>
+                        <button class="action-btn primary" onclick="sendMessage()" id="sendBtn" title="Envoyer">➤</button>
+                    </div>
+                </div>
+                <div class="input-footer">
+                    <div class="project-path">
+                        <span>📁</span>
+                        <input type="text" id="projectPath" value="{{ project_path }}" onchange="updateProjectPath(this.value)" title="Chemin du projet">
+                    </div>
+                    <div class="voice-status" id="voiceStatus">
+                        <span>🔊</span> Voix activée
+                    </div>
+                </div>
             </div>
         </div>
     </main>
