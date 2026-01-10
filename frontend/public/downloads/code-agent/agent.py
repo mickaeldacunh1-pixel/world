@@ -1007,7 +1007,7 @@ HTML_TEMPLATE = r'''
                         <input type="text" id="projectPath" value="{{ project_path }}" onchange="updateProjectPath(this.value)" title="Chemin du projet">
                     </div>
                     <div class="voice-status" id="voiceStatus">
-                        <span>🔊</span> Voix activée
+                        <span>🔊</span> Voix activee
                     </div>
                 </div>
             </div>
