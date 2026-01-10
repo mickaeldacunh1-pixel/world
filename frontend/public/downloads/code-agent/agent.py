@@ -674,28 +674,30 @@ HTML_TEMPLATE = r'''
         /* Message Assistant - Style Emergent */
         .message.assistant .message-wrapper {
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem;
             align-items: flex-start;
+            max-width: 800px;
         }
         
         .message.assistant .avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             background: linear-gradient(135deg, var(--accent), #fb923c);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-size: 0.875rem;
+            font-size: 1rem;
             box-shadow: var(--shadow);
         }
         
         .message.assistant .content {
             flex: 1;
-            line-height: 1.75;
+            line-height: 1.8;
             color: var(--text-primary);
-            font-size: 0.9375rem;
+            font-size: 1rem;
+            letter-spacing: -0.01em;
         }
         
         /* Message User - Style identique à l'assistant (pas de bulle) */
@@ -706,27 +708,28 @@ HTML_TEMPLATE = r'''
         
         .message.user .message-wrapper {
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem;
             align-items: flex-start;
+            max-width: 800px;
         }
         
         .message.user .avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-size: 0.875rem;
+            font-size: 1rem;
             color: white;
             box-shadow: var(--shadow);
         }
         
         .message.user .content {
             flex: 1;
-            line-height: 1.75;
+            line-height: 1.8;
             color: var(--text-primary);
             font-size: 0.9375rem;
         }
