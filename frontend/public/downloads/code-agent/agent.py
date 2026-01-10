@@ -1058,6 +1058,26 @@ HTML_TEMPLATE = r'''
                         <button class="action-btn primary" onclick="sendMessage()" id="sendBtn" title="Envoyer">➤</button>
                     </div>
                 </div>
+                <div class="emoji-bar">
+                    <span class="emoji-btn" onclick="addEmoji('😊')" title="Content">😊</span>
+                    <span class="emoji-btn" onclick="addEmoji('👍')" title="Super">👍</span>
+                    <span class="emoji-btn" onclick="addEmoji('🎉')" title="Celebration">🎉</span>
+                    <span class="emoji-btn" onclick="addEmoji('🚀')" title="Fusee">🚀</span>
+                    <span class="emoji-btn" onclick="addEmoji('💡')" title="Idee">💡</span>
+                    <span class="emoji-btn" onclick="addEmoji('🔥')" title="Feu">🔥</span>
+                    <span class="emoji-btn" onclick="addEmoji('✅')" title="OK">✅</span>
+                    <span class="emoji-btn" onclick="addEmoji('❌')" title="Non">❌</span>
+                    <span class="emoji-btn" onclick="addEmoji('⚠️')" title="Attention">⚠️</span>
+                    <span class="emoji-btn" onclick="addEmoji('❓')" title="Question">❓</span>
+                    <span class="emoji-btn" onclick="addEmoji('💻')" title="Code">💻</span>
+                    <span class="emoji-btn" onclick="addEmoji('🐛')" title="Bug">🐛</span>
+                    <span class="emoji-btn" onclick="addEmoji('🎯')" title="Objectif">🎯</span>
+                    <span class="emoji-btn" onclick="addEmoji('⭐')" title="Etoile">⭐</span>
+                    <span class="emoji-btn" onclick="addEmoji('😂')" title="MDR">😂</span>
+                    <span class="emoji-btn" onclick="addEmoji('🤔')" title="Reflexion">🤔</span>
+                    <span class="emoji-btn" onclick="addEmoji('👀')" title="Regarder">👀</span>
+                    <span class="emoji-btn" onclick="addEmoji('💪')" title="Force">💪</span>
+                </div>
                 <div class="input-footer">
                     <div class="project-path">
                         <span>📁</span>
