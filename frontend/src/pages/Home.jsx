@@ -80,6 +80,32 @@ const DEFAULT_HERO = {
   hero_cta2_border_color: "rgba(255, 255, 255, 0.3)",
   hero_cta2_style: "outline",
   
+  // CTA3 - Premium Button 1
+  hero_cta3_enabled: false,
+  hero_cta3_text: "",
+  hero_cta3_link: "",
+  hero_cta3_icon: "🎯",
+  hero_cta3_bg_color: "#EAB308",
+  hero_cta3_text_color: "#FFFFFF",
+  hero_cta3_border_color: "rgba(234, 179, 8, 0.5)",
+  hero_cta3_style: "filled",
+  hero_cta3_size: "medium",
+  hero_cta3_border_radius: "medium",
+  hero_cta3_hover_effect: "none",
+  
+  // CTA4 - Premium Button 2
+  hero_cta4_enabled: false,
+  hero_cta4_text: "",
+  hero_cta4_link: "",
+  hero_cta4_icon: "💎",
+  hero_cta4_bg_color: "#8B5CF6",
+  hero_cta4_text_color: "#FFFFFF",
+  hero_cta4_border_color: "rgba(139, 92, 246, 0.5)",
+  hero_cta4_style: "filled",
+  hero_cta4_size: "medium",
+  hero_cta4_border_radius: "medium",
+  hero_cta4_hover_effect: "none",
+  
   // Background
   hero_image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2832&auto=format&fit=crop",
   hero_overlay_enabled: true,
