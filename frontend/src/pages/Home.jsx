@@ -640,6 +640,46 @@ export default function Home() {
                 </Link>
               )}
 
+              {/* CTA Button 3 - Premium */}
+              {heroSettings.hero_cta3_enabled && heroSettings.hero_cta3_text && (
+                <Link to={heroSettings.hero_cta3_link || '#'}>
+                  <Button 
+                    className={`gap-2 ${heroSettings.hero_cta3_hover_effect === 'scale' ? 'hover:scale-105' : heroSettings.hero_cta3_hover_effect === 'glow' ? 'hover:shadow-lg hover:shadow-amber-500/50' : heroSettings.hero_cta3_hover_effect === 'shake' ? 'hover:animate-pulse' : ''} transition-all duration-300`}
+                    style={{ 
+                      backgroundColor: heroSettings.hero_cta3_style === 'filled' ? (heroSettings.hero_cta3_bg_color || '#EAB308') : 'transparent',
+                      color: heroSettings.hero_cta3_text_color || '#FFFFFF',
+                      borderColor: heroSettings.hero_cta3_border_color || 'rgba(234, 179, 8, 0.5)',
+                      borderWidth: heroSettings.hero_cta3_style === 'outline' ? '2px' : undefined,
+                      borderStyle: heroSettings.hero_cta3_style === 'outline' ? 'solid' : undefined,
+                      borderRadius: heroSettings.hero_cta3_border_radius === 'none' ? '0' : heroSettings.hero_cta3_border_radius === 'small' ? '4px' : heroSettings.hero_cta3_border_radius === 'large' ? '12px' : heroSettings.hero_cta3_border_radius === 'full' ? '9999px' : '6px'
+                    }}
+                  >
+                    {heroSettings.hero_cta3_icon && <span>{heroSettings.hero_cta3_icon}</span>}
+                    {autoTranslate(heroSettings.hero_cta3_text)}
+                  </Button>
+                </Link>
+              )}
+
+              {/* CTA Button 4 - Premium */}
+              {heroSettings.hero_cta4_enabled && heroSettings.hero_cta4_text && (
+                <Link to={heroSettings.hero_cta4_link || '#'}>
+                  <Button 
+                    className={`gap-2 ${heroSettings.hero_cta4_hover_effect === 'scale' ? 'hover:scale-105' : heroSettings.hero_cta4_hover_effect === 'glow' ? 'hover:shadow-lg hover:shadow-purple-500/50' : heroSettings.hero_cta4_hover_effect === 'shake' ? 'hover:animate-pulse' : ''} transition-all duration-300`}
+                    style={{ 
+                      backgroundColor: heroSettings.hero_cta4_style === 'filled' ? (heroSettings.hero_cta4_bg_color || '#8B5CF6') : 'transparent',
+                      color: heroSettings.hero_cta4_text_color || '#FFFFFF',
+                      borderColor: heroSettings.hero_cta4_border_color || 'rgba(139, 92, 246, 0.5)',
+                      borderWidth: heroSettings.hero_cta4_style === 'outline' ? '2px' : undefined,
+                      borderStyle: heroSettings.hero_cta4_style === 'outline' ? 'solid' : undefined,
+                      borderRadius: heroSettings.hero_cta4_border_radius === 'none' ? '0' : heroSettings.hero_cta4_border_radius === 'small' ? '4px' : heroSettings.hero_cta4_border_radius === 'large' ? '12px' : heroSettings.hero_cta4_border_radius === 'full' ? '9999px' : '6px'
+                    }}
+                  >
+                    {heroSettings.hero_cta4_icon && <span>{heroSettings.hero_cta4_icon}</span>}
+                    {autoTranslate(heroSettings.hero_cta4_text)}
+                  </Button>
+                </Link>
+              )}
+
               {/* Diagnostic IA Button */}
               <Link to="/diagnostic">
                 <Button 
