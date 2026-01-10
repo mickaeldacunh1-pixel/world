@@ -1305,7 +1305,7 @@ HTML_TEMPLATE = r'''
                 </div>
             `;
             messagesEl.appendChild(div);
-            messagesEl.scrollTop = messagesEl.scrollHeight;
+            scrollToBottom();
         }
         
         function addTyping() {
@@ -1323,7 +1323,7 @@ HTML_TEMPLATE = r'''
                 </div>
             `;
             messagesEl.appendChild(div);
-            messagesEl.scrollTop = messagesEl.scrollHeight;
+            scrollToBottom();
             return div;
         }
         
