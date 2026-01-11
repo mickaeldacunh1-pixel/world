@@ -620,10 +620,13 @@ export default function Home() {
             )}
 
             {/* CTA Buttons - Fully Customizable */}
-            <div className={`flex flex-wrap items-center gap-4 mt-6 animate-fade-in-up stagger-4 ${
-              heroSettings.hero_text_align === 'center' ? 'justify-center' : 
-              heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
-            }`}>
+            <div 
+              className={`flex flex-wrap items-center gap-4 mt-6 animate-fade-in-up stagger-4 w-full ${
+                heroSettings.hero_text_align === 'center' ? 'justify-center' : 
+                heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
+              }`}
+              style={{ order: (heroSettings.hero_elements_order || []).indexOf('cta_buttons') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('cta_buttons') : 5 }}
+            >
               {/* Dropdown Catégories */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
