@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card } from '../components/ui/card';
-import { ChevronDown, HelpCircle, CreditCard, Package, MessageSquare, Shield, Truck, AlertTriangle, Video, Bell, Camera, FileText, TrendingUp, Search } from 'lucide-react';
+import { ChevronDown, HelpCircle, CreditCard, Package, MessageSquare, Shield, Truck, AlertTriangle, Video, Bell, Camera, FileText, TrendingUp, Search, Sparkles } from 'lucide-react';
 import { Input } from '../components/ui/input';
 import SEO, { createFAQSchema } from '../components/SEO';
 
