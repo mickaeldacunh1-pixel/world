@@ -354,30 +354,154 @@ class SessionManager:
 # Instance globale du gestionnaire de sessions
 session_manager = SessionManager()
 
+# ============== PROJECT KNOWLEDGE ==============
+
+class ProjectKnowledge:
+    """Base de connaissances du projet - mémorise les infos importantes"""
+    
+    def __init__(self):
+        self._knowledge_file = os.path.join(os.path.dirname(__file__), '.cody_knowledge.json')
+        self._knowledge = self._load()
+    
+    def _load(self) -> dict:
+        """Charger les connaissances"""
+        try:
+            if os.path.exists(self._knowledge_file):
+                with open(self._knowledge_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+        except:
+            pass
+        return {
+            "project_type": None,
+            "important_paths": {},
+            "commands": {},
+            "last_scan": None,
+            "notes": []
+        }
+    
+    def _save(self):
+        """Sauvegarder les connaissances"""
+        try:
+            with open(self._knowledge_file, 'w', encoding='utf-8') as f:
+                json.dump(self._knowledge, f, ensure_ascii=False, indent=2)
+        except:
+            pass
+    
+    def scan_project(self) -> str:
+        """Scanner et mémoriser la structure du projet"""
+        import datetime
+        results = []
+        
+        # Détecter le type de projet
+        project_path = Path(config.PROJECT_PATH)
+        
+        # Fichiers de config importants à chercher
+        important_files = {
+            "backend/.env": "Configuration backend (variables d'environnement)",
+            "frontend/.env": "Configuration frontend",
+            ".env": "Configuration principale",
+            "docker-compose.yml": "Configuration Docker",
+            "package.json": "Dépendances Node.js",
+            "requirements.txt": "Dépendances Python",
+            "backend/server.py": "Serveur backend principal",
+            "frontend/src/App.js": "Application React principale"
+        }
+        
+        found_paths = {}
+        for rel_path, description in important_files.items():
+            full_path = project_path / rel_path
+            if full_path.exists():
+                found_paths[rel_path] = description
+                results.append(f"✅ {rel_path} - {description}")
+        
+        self._knowledge["important_paths"] = found_paths
+        
+        # Détecter le type de projet
+        if (project_path / "backend").exists() and (project_path / "frontend").exists():
+            self._knowledge["project_type"] = "fullstack"
+            self._knowledge["commands"] = {
+                "restart_backend": "cd backend && docker-compose restart backend || sudo supervisorctl restart backend",
+                "restart_frontend": "cd frontend && npm start || yarn start",
+                "install_backend": "cd backend && pip install -r requirements.txt",
+                "install_frontend": "cd frontend && npm install || yarn install"
+            }
+        elif (project_path / "package.json").exists():
+            self._knowledge["project_type"] = "node"
+        elif (project_path / "requirements.txt").exists():
+            self._knowledge["project_type"] = "python"
+        
+        self._knowledge["last_scan"] = datetime.datetime.now().isoformat()
+        self._save()
+        
+        return "\n".join(results) if results else "Aucun fichier important trouvé"
+    
+    def get_env_path(self) -> str:
+        """Retourne le chemin du fichier .env principal"""
+        for path in ["backend/.env", ".env", "frontend/.env"]:
+            if path in self._knowledge.get("important_paths", {}):
+                return os.path.join(config.PROJECT_PATH, path)
+        return None
+    
+    def add_note(self, note: str):
+        """Ajouter une note/mémo"""
+        self._knowledge.setdefault("notes", []).append({
+            "text": note,
+            "date": datetime.datetime.now().isoformat()
+        })
+        self._save()
+    
+    def get_summary(self) -> str:
+        """Résumé des connaissances du projet"""
+        k = self._knowledge
+        lines = [
+            f"📁 Type de projet: {k.get('project_type', 'inconnu')}",
+            f"📅 Dernier scan: {k.get('last_scan', 'jamais')}",
+            f"📄 Fichiers importants: {len(k.get('important_paths', {}))}",
+        ]
+        if k.get("notes"):
+            lines.append(f"📝 Notes mémorisées: {len(k['notes'])}")
+        return "\n".join(lines)
+
+# Instance globale
+project_knowledge = ProjectKnowledge()
+
 # ============== LLM CLIENT ==============
 
 class LLMClient:
     """Client pour communiquer avec les LLMs"""
     
-    SYSTEM_PROMPT = """Tu es Cody, un assistant de développement.
+    SYSTEM_PROMPT = """Tu es Cody, un assistant de développement EXPERT et AUTONOME.
 
-STYLE DE REPONSE:
-- Sois CONCIS et DIRECT (max 3-4 phrases par réponse)
-- Pas de blabla, va droit au but
-- Utilise des listes courtes si nécessaire
-- Pour les actions, montre juste le résultat
+🎯 COMPORTEMENT:
+- Tu es PROACTIF : tu agis sans demander confirmation pour les tâches simples
+- Tu MÉMORISES : tu retiens les chemins, commandes et préférences de l'utilisateur
+- Tu NOTIFIES : tu dis toujours clairement quand une tâche est terminée (✅ Terminé!)
+- Tu es CONCIS : réponses courtes et directes (max 3-4 phrases)
 
-CAPACITES:
-- Lire/écrire des fichiers
-- Exécuter des commandes shell
-- Débugger du code
+📁 GESTION DU PROJET:
+- Au premier message, scanne le projet avec get_project_structure
+- Mémorise les chemins importants (backend/.env, frontend/.env, etc.)
+- N'oublie JAMAIS la structure du projet entre les messages
 
-FORMAT POUR LES ACTIONS:
-```action
-{"tool": "nom_outil", "params": {...}}
-```
+🔧 ACTIONS AUTOMATIQUES (fais-les sans demander):
+- Trouver un fichier → cherche et affiche le résultat
+- Modifier une variable → fais la modification directement
+- Installer une dépendance → exécute la commande
+- Redémarrer un service → exécute: docker-compose restart [service] ou supervisorctl restart [service]
 
-OUTILS:
+⚠️ DEMANDE CONFIRMATION SEULEMENT POUR:
+- Supprimer des fichiers
+- Modifier du code complexe
+- Actions irréversibles
+
+📋 FORMAT DE RÉPONSE:
+- Utilise des emojis pour la clarté
+- ✅ pour les succès
+- ❌ pour les erreurs
+- 📁 pour les chemins
+- ⚙️ pour les commandes
+
+🔨 OUTILS DISPONIBLES:
 - read_file: {"path": "chemin"}
 - write_file: {"path": "chemin", "content": "..."}
 - execute_command: {"command": "..."}
