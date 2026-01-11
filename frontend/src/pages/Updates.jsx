@@ -12,6 +12,22 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-22',
+    date: '2026-01-12',
+    version: '5.1.0',
+    title: '🏢 Essai PRO Automatique & Restriction Vendeurs',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🎁 Essai PRO automatique : les professionnels reçoivent 10 crédits + 14 jours PRO dès l\'inscription !' },
+      { type: 'new', text: '🌍 Acheteurs internationaux : création de compte ouverte à tous les pays du monde' },
+      { type: 'new', text: '🛡️ Vendeurs vérifiés : création d\'annonces limitée aux 9 pays européens autorisés' },
+      { type: 'new', text: '📋 Nouvelle section FAQ : "Comptes Professionnels" avec tous les détails' },
+      { type: 'new', text: '🔗 Nouvel endpoint /api/countries/allowed pour la liste des pays autorisés' },
+      { type: 'improvement', text: '💳 Page Tarifs entièrement refaite : 6 packs crédits + 4 abos Pro + forfaits vidéo' },
+      { type: 'improvement', text: '📖 FAQ mise à jour : section "Inscription & Pays autorisés"' },
+    ]
+  },
+  {
     id: 'static-new-21',
     date: '2026-01-12',
     version: '5.0.0',
