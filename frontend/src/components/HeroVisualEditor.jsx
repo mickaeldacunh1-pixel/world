@@ -386,6 +386,7 @@ export default function HeroVisualEditor({ settings, onChange }) {
           hero_elements_order: newOrder.map(el => el.id)
         });
         
+        setHasChanges(true);
         return newOrder;
       });
     }
@@ -397,6 +398,7 @@ export default function HeroVisualEditor({ settings, onChange }) {
       ...settings,
       [key]: currentValue === false ? true : false
     });
+    setHasChanges(true);
   };
 
   const activeElement = activeId ? elements.find(el => el.id === activeId) : null;
@@ -404,10 +406,31 @@ export default function HeroVisualEditor({ settings, onChange }) {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-orange-500 to-amber-500 text-white">
-        <CardTitle className="flex items-center gap-2">
-          <Move className="w-5 h-5" />
-          Éditeur Visuel du Hero
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Move className="w-5 h-5" />
+              Éditeur Visuel du Hero
+            </CardTitle>
+            <p className="text-white/80 text-sm mt-1">
+              Glissez les éléments pour les réorganiser
+            </p>
+          </div>
+          {hasChanges && (
+            <Button 
+              onClick={saveToServer}
+              disabled={saving}
+              className="bg-white text-orange-600 hover:bg-white/90"
+            >
+              {saving ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sauvegarde...</>
+              ) : (
+                <><Save className="w-4 h-4 mr-2" /> Sauvegarder l'ordre</>
+              )}
+            </Button>
+          )}
+        </div>
+      </CardHeader>
         <p className="text-white/80 text-sm">
           Cliquez et glissez les éléments pour les réorganiser. Survolez pour voir les options.
         </p>
