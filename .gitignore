@@ -634,3 +634,4 @@ frontend/build/kim-desktop/node_modules/electron/dist/electron
 # Environment files
 *.env
 *.env.*
+frontend/node_modules/.cache/default-development/17.pack_
