@@ -87,6 +87,15 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 
 ## Session du 2026-01-11 - Boutons Premium Hero Editor & Personnalisation Cody & Éditeur Pages
 
+### Éditeur Navbar - Avantages Premium (2026-01-11) ✅
+- ✅ **3 champs d'avantages Premium** ajoutés dans l'onglet Navbar de l'admin
+  - Avantage 1 (icône: percent) : "10% de réduction sur tous les frais"
+  - Avantage 2 (icône: crown) : "Visibilité prioritaire"
+  - Avantage 3 (icône: shield) : "Jusqu'à 50 photos par annonce"
+- ✅ **PromoBanner.jsx modifié** : Récupère dynamiquement les textes depuis l'API `/api/settings/hero`
+- ✅ **AdminSettings.jsx modifié** : Nouveaux champs `promo_benefit_1`, `promo_benefit_2`, `promo_benefit_3`
+- ✅ **Tests visuels passés** : Les 3 avantages s'affichent correctement dans le popup du bouton "Compte Premium"
+
 ### Corrections et améliorations rapides (2026-01-11)
 - ✅ **Boutons Premium activés** : CTA3 et CTA4 activés dans la base de données
 - ✅ **Aperçu live amélioré** : Affichage des boutons CTA1-4 dans l'aperçu admin avec couleurs personnalisées
