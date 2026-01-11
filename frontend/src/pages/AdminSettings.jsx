@@ -2630,24 +2630,34 @@ export default function AdminSettings() {
                 )}
                 
                 {/* Preview Info */}
-                <div className="mt-4 p-3 bg-secondary/50 rounded-lg text-center">
-                  <p className="text-xs text-muted-foreground">
-                    {settings.preview_mode === 'mobile' 
-                      ? '📱 Aperçu mobile (375px)' 
-                      : '🖥️ Aperçu desktop'}
-                  </p>
-                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 font-medium">
-                    ⚠️ Modifications non publiées - Cliquez sur Sauvegarder pour appliquer
-                  </p>
-                  <a 
-                    href="/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-accent hover:underline mt-2"
-                  >
-                    <Eye className="w-3 h-3" />
-                    Voir le site actuel (dans un nouvel onglet)
-                  </a>
+                <div className="mt-4 p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Eye className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-amber-800 dark:text-amber-200 text-sm">
+                        🔴 Aperçu en temps réel
+                      </h4>
+                      <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
+                        Cet aperçu reflète vos modifications actuelles. Cliquez sur <strong>Sauvegarder</strong> en haut de la page pour les appliquer au site.
+                      </p>
+                      <div className="flex items-center gap-3 mt-3">
+                        <span className="text-xs text-muted-foreground">
+                          {settings.preview_mode === 'mobile' ? '📱 Vue mobile (375px)' : '🖥️ Vue desktop'}
+                        </span>
+                        <span className="text-xs text-muted-foreground">•</span>
+                        <a 
+                          href="/" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-accent hover:underline font-medium"
+                        >
+                          Ouvrir le site réel →
+                        </a>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
