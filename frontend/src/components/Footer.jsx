@@ -179,54 +179,56 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/annonces/pieces" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group">
+                <Link to="/annonces/pieces" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group" style={linkStyle}>
                   <Wrench className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                   {t('nav.parts')}
                 </Link>
               </li>
               <li>
-                <Link to="/annonces/voitures" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group">
+                <Link to="/annonces/voitures" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group" style={linkStyle}>
                   <Car className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   {t('nav.cars')}
                 </Link>
               </li>
               <li>
-                <Link to="/annonces/motos" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group">
+                <Link to="/annonces/motos" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group" style={linkStyle}>
                   <Bike className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   {t('nav.motorcycles')}
                 </Link>
               </li>
               <li>
-                <Link to="/annonces/utilitaires" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group">
+                <Link to="/annonces/utilitaires" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-2 group" style={linkStyle}>
                   <Truck className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   {t('nav.utilities')}
                 </Link>
               </li>
             </ul>
           </div>
+          )}
 
           {/* Liens utiles */}
+          {s.footer_show_links !== false && (
           <div>
             <h3 className="font-heading font-bold text-lg mb-4">{t('footer.useful_links')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/nouveautes" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-1">
+                <Link to="/nouveautes" className="text-primary-foreground/70 hover:text-accent transition-colors flex items-center gap-1" style={linkStyle}>
                   <Sparkles className="w-3 h-3" />
                   {t('nav.updates')}
                 </Link>
               </li>
               <li>
-                <Link to="/a-propos" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                <Link to="/a-propos" className="text-primary-foreground/70 hover:text-accent transition-colors" style={linkStyle}>
                   {t('footer.about')}
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                <Link to="/faq" className="text-primary-foreground/70 hover:text-accent transition-colors" style={linkStyle}>
                   {t('footer.faq')}
                 </Link>
               </li>
               <li>
-                <Link to="/cgv" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                <Link to="/cgv" className="text-primary-foreground/70 hover:text-accent transition-colors" style={linkStyle}>
                   {t('footer.terms')}
                 </Link>
               </li>
