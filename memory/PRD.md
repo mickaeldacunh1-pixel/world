@@ -87,6 +87,30 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 
 ## Session du 2026-01-11 - Boutons Premium Hero Editor & Personnalisation Cody & Éditeur Pages
 
+### Système Promo "Offre de Lancement" (2026-01-11) ✅
+- ✅ **Système de code promo LANCEMENT** :
+  - Lien spécial : `/auth?mode=register&promo=LANCEMENT`
+  - 100 annonces gratuites par nouvel inscrit
+  - Limite globale : 1000 annonces gratuites au total
+  - Compteur automatique des annonces distribuées
+- ✅ **Backend** :
+  - Nouveau champ `promo_code` dans `UserCreate`
+  - Nouveaux champs utilisateur : `free_ads_remaining`, `promo_code_used`
+  - Collection `promo_stats` pour suivre les statistiques
+  - API `/api/promo/{code}/status` pour vérifier le statut
+  - Logique de création d'annonce modifiée : utilise d'abord les annonces gratuites
+- ✅ **Frontend** :
+  - Page Auth détecte `?promo=LANCEMENT` dans l'URL
+  - Bannière orange "🎉 OFFRE DE LANCEMENT !" sur la page d'inscription
+  - Affiche le compteur d'annonces restantes
+- ✅ **FAQ mise à jour** : Nouvelle section "Offre de Lancement" avec 5 questions/réponses
+
+### Synchronisation Cody v2.5.0 (2026-01-11) ✅
+- ✅ **Sync automatique depuis l'API** : L'agent Cody télécharge sa config depuis worldautofrance.com au démarrage
+- ✅ **Nouvel endpoint `/api/sync-theme`** : Pour forcer la resynchronisation
+- ✅ **Sauvegarde locale** : La config téléchargée est sauvegardée dans `cody_config.json`
+- ✅ **ZIP mis à jour** : code-agent.zip régénéré avec v2.5.0
+
 ### Éditeur Navbar - Avantages Premium (2026-01-11) ✅
 - ✅ **3 champs d'avantages Premium** ajoutés dans l'onglet Navbar de l'admin
   - Avantage 1 (icône: percent) : "10% de réduction sur tous les frais"
