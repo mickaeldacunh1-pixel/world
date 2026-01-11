@@ -710,17 +710,6 @@ export default function Home() {
                   </Button>
                 </Link>
               )}
-
-              {/* Diagnostic IA Button */}
-              <Link to="/diagnostic">
-                <Button 
-                  variant="outline" 
-                  className="gap-2 bg-gradient-to-r from-green-500/20 to-teal-500/20 backdrop-blur-sm border-green-400/50 text-white hover:from-green-500/30 hover:to-teal-500/30"
-                >
-                  <Stethoscope className="w-4 h-4" />
-                  {t('home.ai_diagnostic')}
-                </Button>
-              </Link>
             </div>
 
             {/* Quick Links - Raccourcis stylés (configurable avec ordre) */}
