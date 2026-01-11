@@ -90,6 +90,32 @@ const faqs = [
     ]
   },
   {
+    category: "Comptes Professionnels",
+    icon: Shield,
+    questions: [
+      {
+        q: "Quels sont les avantages d'un compte professionnel ?",
+        a: "Les professionnels bénéficient de : 10 crédits offerts automatiquement à l'inscription (essai PRO 14 jours), 50 photos par annonce (contre 6 pour les particuliers), un badge PRO vérifié sur toutes leurs annonces, des statistiques avancées, et un support VIP prioritaire."
+      },
+      {
+        q: "Comment créer un compte professionnel ?",
+        a: "Lors de l'inscription, cochez la case 'Je suis un professionnel' et entrez votre numéro SIRET. Le SIRET est vérifié automatiquement via l'API officielle du gouvernement français. Une fois validé, votre essai PRO de 14 jours démarre immédiatement avec 10 crédits offerts."
+      },
+      {
+        q: "L'essai PRO est-il vraiment gratuit ?",
+        a: "Oui ! Dès votre inscription en tant que professionnel, vous recevez automatiquement 10 crédits gratuits et accédez à toutes les fonctionnalités PRO pendant 14 jours. Aucune carte bancaire requise, aucun engagement."
+      },
+      {
+        q: "Que se passe-t-il après les 14 jours d'essai ?",
+        a: "Après l'essai, vous conservez vos crédits restants et pouvez continuer à publier des annonces. Pour conserver les avantages PRO (50 photos, badge, stats avancées), vous pouvez souscrire à un abonnement Pro à partir de 29€/mois."
+      },
+      {
+        q: "Puis-je cumuler l'essai PRO avec le code LANCEMENT ?",
+        a: "Oui ! Si vous êtes professionnel et utilisez le code LANCEMENT, vous cumulez : 10 crédits (essai PRO) + 20 annonces gratuites (offre lancement) + 50 points fidélité. C'est l'offre la plus avantageuse !"
+      }
+    ]
+  },
+  {
     category: "Annonces",
     icon: Package,
     questions: [
@@ -99,7 +125,11 @@ const faqs = [
       },
       {
         q: "Combien coûte la publication d'une annonce ?",
-        a: "La publication d'une annonce coûte 1 crédit. Vous pouvez acheter des packs de crédits sur notre page Tarifs : Pack Starter (5 crédits), Pack Pro (15 crédits), Pack Business (30 crédits) ou Pack Premium (50 crédits). Plus le pack est grand, plus le prix par crédit est avantageux. Note : Si vous avez des annonces gratuites (offre de lancement), elles seront utilisées en priorité."
+        a: "La publication d'une annonce coûte 1 crédit. Vous pouvez acheter des packs de crédits sur notre page Tarifs : de 2€ l'unité jusqu'à 0,69€/annonce avec le Pack 100. Les professionnels reçoivent 10 crédits gratuits à l'inscription. Si vous avez des annonces gratuites (offre de lancement), elles seront utilisées en priorité."
+      },
+      {
+        q: "Combien de photos puis-je ajouter ?",
+        a: "Les particuliers peuvent ajouter jusqu'à 6 photos par annonce (jusqu'à 25 avec le Pack 100). Les professionnels bénéficient de 50 photos par annonce, idéal pour montrer tous les détails de vos pièces."
       },
       {
         q: "Combien de temps reste visible mon annonce ?",
