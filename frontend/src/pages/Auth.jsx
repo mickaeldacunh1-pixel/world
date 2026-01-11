@@ -76,6 +76,31 @@ export default function Auth() {
     }
   }, [user, navigate]);
   
+  // Vérifier le code promo au chargement
+  useEffect(() => {
+    const promoCode = searchParams.get('promo');
+    if (promoCode) {
+      setPromoStatus({ checking: true, valid: null, free_ads: 0, message: null });
+      axios.get(`${API}/api/promo/${promoCode}/status`)
+        .then(response => {
+          setPromoStatus({
+            checking: false,
+            valid: response.data.valid,
+            free_ads: response.data.free_ads_per_user || 0,
+            remaining: response.data.remaining_global || 0,
+            message: response.data.description || response.data.message
+          });
+          // Forcer l'onglet inscription si promo valide
+          if (response.data.valid) {
+            setActiveTab('register');
+          }
+        })
+        .catch(() => {
+          setPromoStatus({ checking: false, valid: false, free_ads: 0, message: 'Code promo invalide' });
+        });
+    }
+  }, [searchParams]);
+  
   // Validate referral code
   useEffect(() => {
     const code = registerData.referral_code?.trim();
