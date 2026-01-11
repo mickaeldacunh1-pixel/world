@@ -431,10 +431,6 @@ export default function HeroVisualEditor({ settings, onChange }) {
           )}
         </div>
       </CardHeader>
-        <p className="text-white/80 text-sm">
-          Cliquez et glissez les éléments pour les réorganiser. Survolez pour voir les options.
-        </p>
-      </CardHeader>
       <CardContent className="p-0">
         {/* Zone de prévisualisation */}
         <div 
