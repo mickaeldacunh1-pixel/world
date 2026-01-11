@@ -282,6 +282,97 @@ class AgentTools:
             return {"success": True, "structure": "\n".join(structure[:100])}
         except Exception as e:
             return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def scan_project() -> Dict:
+        """Scanner et mémoriser la structure du projet"""
+        try:
+            result = project_knowledge.scan_project()
+            return {"success": True, "message": result, "summary": project_knowledge.get_summary()}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def get_env_value(key: str) -> Dict:
+        """Lire une valeur du fichier .env"""
+        try:
+            env_path = project_knowledge.get_env_path()
+            if not env_path:
+                # Chercher le fichier .env
+                for possible in ["backend/.env", ".env", "frontend/.env"]:
+                    full = os.path.join(config.PROJECT_PATH, possible)
+                    if os.path.exists(full):
+                        env_path = full
+                        break
+            
+            if not env_path or not os.path.exists(env_path):
+                return {"success": False, "error": "Fichier .env non trouvé"}
+            
+            with open(env_path, 'r') as f:
+                for line in f:
+                    if line.strip().startswith(key + '='):
+                        value = line.strip().split('=', 1)[1]
+                        return {"success": True, "key": key, "value": value, "path": env_path}
+            
+            return {"success": False, "error": f"Clé {key} non trouvée"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def set_env_value(key: str, value: str) -> Dict:
+        """Modifier ou ajouter une valeur dans le fichier .env"""
+        try:
+            env_path = project_knowledge.get_env_path()
+            if not env_path:
+                for possible in ["backend/.env", ".env"]:
+                    full = os.path.join(config.PROJECT_PATH, possible)
+                    if os.path.exists(full):
+                        env_path = full
+                        break
+            
+            if not env_path:
+                return {"success": False, "error": "Fichier .env non trouvé"}
+            
+            # Lire le contenu actuel
+            with open(env_path, 'r') as f:
+                lines = f.readlines()
+            
+            # Chercher et remplacer la clé
+            found = False
+            new_lines = []
+            for line in lines:
+                if line.strip().startswith(key + '='):
+                    new_lines.append(f"{key}={value}\n")
+                    found = True
+                else:
+                    new_lines.append(line)
+            
+            # Ajouter si non trouvé
+            if not found:
+                new_lines.append(f"{key}={value}\n")
+            
+            # Écrire
+            with open(env_path, 'w') as f:
+                f.writelines(new_lines)
+            
+            action = "modifiée" if found else "ajoutée"
+            return {"success": True, "message": f"✅ {key} {action} dans {env_path}"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def add_note(note: str) -> Dict:
+        """Mémoriser une note importante"""
+        try:
+            project_knowledge.add_note(note)
+            return {"success": True, "message": f"📝 Note mémorisée: {note}"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def get_knowledge() -> Dict:
+        """Obtenir le résumé des connaissances du projet"""
+        return {"success": True, "summary": project_knowledge.get_summary(), "knowledge": project_knowledge._knowledge}
 
 tools = AgentTools()
 
