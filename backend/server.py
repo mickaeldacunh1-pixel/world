@@ -955,14 +955,22 @@ class ConversationResponse(BaseModel):
 
 # Pricing packages (Opisto-style)
 PRICING_PACKAGES = {
+    # Packs ponctuels (occasionnels)
     "single": {"name": "Annonce Unique", "price": 2.00, "credits": 1, "duration": 30, "max_photos": 6},
+    "pack3": {"name": "Pack Starter", "price": 5.00, "credits": 3, "duration": 30, "max_photos": 8, "badge": "Idéal pour débuter"},
     "pack5": {"name": "Pack 5 Annonces", "price": 8.00, "credits": 5, "duration": 30, "max_photos": 10},
-    "pack20": {"name": "Pack 20 Annonces", "price": 25.00, "credits": 20, "duration": 30, "max_photos": 15},
-    "pack50": {"name": "Pack 50 Annonces", "price": 39.00, "credits": 50, "duration": 30, "max_photos": 20},
-    "pro_monthly": {"name": "Pro Illimité (1 mois)", "price": 49.00, "credits": 999, "duration": 30, "is_pro": True, "max_photos": 50},
-    "pro_3months": {"name": "Pro Illimité (3 mois)", "price": 99.00, "credits": 999, "duration": 90, "is_pro": True, "max_photos": 50},
-    "pro_6months": {"name": "Pro Illimité (6 mois)", "price": 179.00, "credits": 999, "duration": 180, "is_pro": True, "max_photos": 50},
-    "pro_trial": {"name": "Essai PRO 14 jours", "price": 0.00, "credits": 50, "duration": 14, "is_pro": True, "max_photos": 50, "is_trial": True}
+    "pack20": {"name": "Pack 20 Annonces", "price": 25.00, "credits": 20, "duration": 30, "max_photos": 15, "bonus_points": 50},
+    "pack50": {"name": "Pack 50 Annonces", "price": 39.00, "credits": 50, "duration": 30, "max_photos": 20, "bonus_points": 150, "badge": "Populaire"},
+    "pack100": {"name": "Pack 100 Annonces", "price": 69.00, "credits": 100, "duration": 60, "max_photos": 25, "bonus_points": 400, "badge": "Meilleur rapport"},
+    
+    # Abonnements Pro (crédits mensuels + avantages)
+    "pro_monthly": {"name": "Pro Mensuel", "price": 29.00, "credits": 30, "duration": 30, "is_pro": True, "max_photos": 50, "badge": "PRO"},
+    "pro_3months": {"name": "Pro Trimestriel", "price": 69.00, "credits": 100, "duration": 90, "is_pro": True, "max_photos": 50, "badge": "PRO", "savings": "20%"},
+    "pro_6months": {"name": "Pro Semestriel", "price": 119.00, "credits": 200, "duration": 180, "is_pro": True, "max_photos": 50, "badge": "PRO", "savings": "32%"},
+    "pro_annual": {"name": "Pro Annuel", "price": 199.00, "credits": 500, "duration": 365, "is_pro": True, "max_photos": 50, "badge": "PRO ⭐", "savings": "45%"},
+    
+    # Essai gratuit
+    "pro_trial": {"name": "Essai PRO 14 jours", "price": 0.00, "credits": 10, "duration": 14, "is_pro": True, "max_photos": 50, "is_trial": True}
 }
 
 # Extra photos package
