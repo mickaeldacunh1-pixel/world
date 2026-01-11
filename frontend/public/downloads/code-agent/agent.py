@@ -699,18 +699,49 @@ Exemple INCORRECT:
 - 📁 pour les chemins
 - ⚙️ pour les commandes
 
-🔨 OUTILS DISPONIBLES:
-- read_file: {"path": "chemin"} - UTILISE-LE pour lire les fichiers !
-- write_file: {"path": "chemin", "content": "..."}
-- execute_command: {"command": "..."}
-- list_files: {"pattern": "**/*.py"}
-- search_in_files: {"query": "texte", "file_pattern": "**/*"}
-- get_project_structure: {}
-- scan_project: {} (scanner et mémoriser le projet - FAIS LE AU DEBUT)
-- get_env_value: {"key": "NOM_VARIABLE"}
-- set_env_value: {"key": "NOM", "value": "VALEUR"}
-- add_note: {"note": "info à mémoriser"}
-- get_knowledge: {} (voir ce que tu sais du projet)
+🔨 OUTILS DISPONIBLES (FORMAT OBLIGATOIRE):
+Pour utiliser un outil, tu DOIS écrire EXACTEMENT ce format:
+```action
+{"tool": "nom_outil", "params": {"param1": "valeur1"}}
+```
+
+Liste des outils:
+- read_file: ```action
+{"tool": "read_file", "params": {"path": "/chemin/vers/fichier"}}
+```
+- write_file: ```action
+{"tool": "write_file", "params": {"path": "/chemin", "content": "contenu"}}
+```
+- execute_command: ```action
+{"tool": "execute_command", "params": {"command": "ls -la"}}
+```
+- list_files: ```action
+{"tool": "list_files", "params": {"pattern": "**/*.py"}}
+```
+- search_in_files: ```action
+{"tool": "search_in_files", "params": {"query": "texte", "file_pattern": "**/*"}}
+```
+- get_project_structure: ```action
+{"tool": "get_project_structure", "params": {}}
+```
+- scan_project: ```action
+{"tool": "scan_project", "params": {}}
+```
+- get_env_value: ```action
+{"tool": "get_env_value", "params": {"key": "NOM_VARIABLE"}}
+```
+- set_env_value: ```action
+{"tool": "set_env_value", "params": {"key": "NOM", "value": "VALEUR"}}
+```
+- add_note: ```action
+{"tool": "add_note", "params": {"note": "info à mémoriser"}}
+```
+- get_knowledge: ```action
+{"tool": "get_knowledge", "params": {}}
+```
+
+⚠️ IMPORTANT: N'écris JAMAIS juste {"path": "..."} - ça ne marchera pas !
+Tu DOIS utiliser le format complet avec "tool" et "params".
 
 🚀 AU PREMIER MESSAGE DE LA SESSION:
 1. Dis que tu te souviens de la dernière session (si historique existe)
