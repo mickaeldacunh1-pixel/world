@@ -1113,6 +1113,16 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
         # Delete pending credits after applying
         await db.pending_credits.delete_one({"email": user.email.lower()})
     
+    # ================== ESSAI PRO AUTOMATIQUE POUR LES PROFESSIONNELS ==================
+    if user.is_professional:
+        trial_pack = PRICING_PACKAGES["pro_trial"]
+        trial_end = datetime.now(timezone.utc) + timedelta(days=14)
+        user_doc["credits"] = user_doc.get("credits", 0) + trial_pack["credits"]  # +10 crédits
+        user_doc["pro_trial_used"] = True
+        user_doc["pro_trial_start"] = datetime.now(timezone.utc).isoformat()
+        user_doc["pro_trial_end"] = trial_end.isoformat()
+        user_doc["max_photos_per_listing"] = trial_pack["max_photos"]  # 50 photos
+    
     await db.users.insert_one(user_doc)
     token = create_token(user_doc["id"], user_doc["email"])
     
