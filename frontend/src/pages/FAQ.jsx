@@ -20,16 +20,42 @@ const DEFAULTS = {
 
 const faqs = [
   {
+    category: "Offre de Lancement",
+    icon: Package,
+    questions: [
+      {
+        q: "Qu'est-ce que l'offre de lancement ?",
+        a: "Pour célébrer notre lancement, nous offrons les 1000 premières annonces gratuitement ! Chaque nouvel inscrit via notre lien spécial reçoit jusqu'à 100 annonces gratuites. C'est notre façon de vous remercier de faire partie des premiers utilisateurs de World Auto Pro."
+      },
+      {
+        q: "Comment profiter des 100 annonces gratuites ?",
+        a: "Inscrivez-vous en utilisant notre lien spécial avec le code promo LANCEMENT. Vos 100 annonces gratuites seront automatiquement créditées sur votre compte dès l'inscription. Aucun code à entrer, c'est automatique !"
+      },
+      {
+        q: "L'offre est-elle limitée ?",
+        a: "Oui, l'offre est limitée aux 1000 premières annonces gratuites distribuées au total. Chaque utilisateur peut recevoir jusqu'à 100 annonces gratuites. Une fois ce quota atteint, l'offre prendra fin automatiquement. Ne tardez pas !"
+      },
+      {
+        q: "Mes annonces gratuites ont-elles une date d'expiration ?",
+        a: "Non ! Une fois créditées sur votre compte, vos annonces gratuites n'expirent jamais. Utilisez-les quand vous le souhaitez."
+      },
+      {
+        q: "Puis-je cumuler les annonces gratuites avec d'autres offres ?",
+        a: "Oui, vos annonces gratuites de l'offre de lancement peuvent être utilisées en plus de tout crédit acheté. Le système utilise d'abord vos annonces gratuites, puis vos crédits payants."
+      }
+    ]
+  },
+  {
     category: "Annonces",
     icon: Package,
     questions: [
       {
         q: "Comment créer une annonce ?",
-        a: "Pour créer une annonce, connectez-vous à votre compte, cliquez sur \"Déposer une annonce\" et remplissez le formulaire avec les détails de votre pièce ou véhicule. Ajoutez des photos de qualité pour attirer plus d'acheteurs. Vous devez avoir des crédits pour publier une annonce."
+        a: "Pour créer une annonce, connectez-vous à votre compte, cliquez sur \"Déposer une annonce\" et remplissez le formulaire avec les détails de votre pièce ou véhicule. Ajoutez des photos de qualité pour attirer plus d'acheteurs. Vous devez avoir des crédits ou des annonces gratuites pour publier."
       },
       {
         q: "Combien coûte la publication d'une annonce ?",
-        a: "La publication d'une annonce coûte 1 crédit. Vous pouvez acheter des packs de crédits sur notre page Tarifs : Pack Starter (5 crédits), Pack Pro (15 crédits), Pack Business (30 crédits) ou Pack Premium (50 crédits). Plus le pack est grand, plus le prix par crédit est avantageux."
+        a: "La publication d'une annonce coûte 1 crédit. Vous pouvez acheter des packs de crédits sur notre page Tarifs : Pack Starter (5 crédits), Pack Pro (15 crédits), Pack Business (30 crédits) ou Pack Premium (50 crédits). Plus le pack est grand, plus le prix par crédit est avantageux. Note : Si vous avez des annonces gratuites (offre de lancement), elles seront utilisées en priorité."
       },
       {
         q: "Combien de temps reste visible mon annonce ?",
