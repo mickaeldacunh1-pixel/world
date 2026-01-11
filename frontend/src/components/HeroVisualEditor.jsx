@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { 
   DndContext, 
   closestCenter, 
@@ -18,7 +19,10 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { GripVertical, Eye, EyeOff, Settings2, Move, Check, X } from 'lucide-react';
+import { GripVertical, Eye, EyeOff, Settings2, Move, Check, X, Save, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+
+const API = process.env.REACT_APP_BACKEND_URL;
 
 // Élément draggable du Hero
 function SortableHeroElement({ id, element, settings, isSelected, onSelect, onToggleVisibility }) {
