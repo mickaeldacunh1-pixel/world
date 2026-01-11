@@ -727,7 +727,7 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
             chat = LlmChat(
                 api_key=config.EMERGENT_API_KEY,
                 session_id=self.session_id,
-                system_message=self.SYSTEM_PROMPT + capabilities_reminder + history_context
+                system_message=self.SYSTEM_PROMPT + memory_reminder + capabilities_reminder + history_context
             ).with_model(provider, model_name)
             
             # Send current message
