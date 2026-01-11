@@ -209,7 +209,7 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
     videos: { id: 'videos', icon: '🎬', label: 'Vidéos', link: '/videos', settingKey: 'hero_shortcut_videos' },
     stories: { id: 'stories', icon: '📸', label: 'Stories', link: '/stories', settingKey: 'hero_shortcut_stories' },
     loyalty: { id: 'loyalty', icon: '🎁', label: 'Fidélité', link: '/fidelite', settingKey: 'hero_shortcut_loyalty' },
-    kim: { id: 'kim', icon: '🤖', label: 'KIM Agent', link: '/kim-agent', settingKey: 'hero_shortcut_kim' },
+    kim: { id: 'kim', icon: '🤖', label: 'Tobi', link: '/tobi-chat', settingKey: 'hero_shortcut_kim' },
   };
 
   const sensors = useSensors(
