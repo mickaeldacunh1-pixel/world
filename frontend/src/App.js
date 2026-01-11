@@ -185,7 +185,7 @@ function AppContent() {
         </Routes>
       </main>
       <Footer />
-      <Tobi />
+      {/* Tobi flottant supprimé - utiliser /tobi-chat à la place */}
       <RadioPlayer />
       <CompareWidget />
       <Toaster position="top-right" richColors />
