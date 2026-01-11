@@ -87,6 +87,14 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 
 ## Session du 2026-01-11 - Boutons Premium Hero Editor & Personnalisation Cody & Éditeur Pages
 
+### Éditeur Visuel Drag & Drop du Hero (2026-01-11) ✅
+- ✅ **Nouveau composant `HeroVisualEditor.jsx`** avec drag & drop (@dnd-kit)
+- ✅ **Éléments déplaçables** : Badge, Titre 1, Titre 2, Description, Barre de recherche, Boutons CTA, Boutons Premium, Raccourcis, Stats
+- ✅ **Contrôles au survol** : Icône de déplacement, nom de l'élément, bouton afficher/masquer
+- ✅ **Sauvegarde de l'ordre** dans `hero_elements_order`
+- ✅ **Home.jsx modifié** : Les éléments du Hero utilisent CSS `order` pour respecter l'ordre sauvegardé
+- ✅ **Preview temps réel** avec le fond et les couleurs configurés
+
 ### Système Promo "Offre de Lancement" (2026-01-11) ✅
 - ✅ **Système de code promo LANCEMENT** :
   - Lien spécial : `/auth?mode=register&promo=LANCEMENT`
