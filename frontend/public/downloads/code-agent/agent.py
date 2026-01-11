@@ -1442,9 +1442,9 @@ HTML_TEMPLATE = r'''
                 <div class="message-wrapper">
                     <div class="avatar">🤖</div>
                     <div class="content">
-                        <strong>Salut, je suis Cody !</strong><br><br>
-                        Je peux lire/écrire des fichiers, exécuter des commandes et t'aider à coder.<br>
-                        Dis-moi ce que tu veux faire.
+                        <strong>Salut ! Je suis Cody, ton assistant de développement.</strong><br><br>
+                        Je me souviens de nos conversations précédentes et je connais ton projet.<br>
+                        Que veux-tu faire aujourd'hui ? 🚀
                     </div>
                 </div>
             </div>
