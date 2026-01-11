@@ -663,21 +663,51 @@ Reponds en francais. Sois bref mais informatif. Termine TOUJOURS par ✅ quand u
             # Construire le contexte avec tout l'historique
             history_context = ""
             if len(self.conversation_history) > 1:
-                history_context = "HISTORIQUE DE LA CONVERSATION:\n"
+                history_context = "\n\nHISTORIQUE DE LA CONVERSATION:\n"
                 for msg in self.conversation_history[:-1]:
-                    role = "Utilisateur" if msg["role"] == "user" else "Assistant"
+                    role = "👤 Utilisateur" if msg["role"] == "user" else "🤖 Cody"
                     history_context += f"{role}: {msg['content'][:500]}...\n" if len(msg['content']) > 500 else f"{role}: {msg['content']}\n"
-                history_context += "\nMESSAGE ACTUEL:\n"
+                history_context += "\n---\nMESSAGE ACTUEL:\n"
+            
+            # Ajouter un rappel des capacités si c'est une question sur les fonctionnalités
+            last_msg = self.conversation_history[-1]["content"] if self.conversation_history else ""
+            capabilities_reminder = ""
+            
+            keywords = ["fonctionnalit", "capacit", "peux-tu", "peux tu", "sais-tu", "sais tu", "mise a jour", "mise à jour", "version", "appris", "nouveau"]
+            if any(kw in last_msg.lower() for kw in keywords):
+                capabilities_reminder = """
+
+🔔 RAPPEL DE TES CAPACITÉS (Cody v2.3.0):
+
+📁 GESTION DE FICHIERS:
+- read_file: Lire un fichier
+- write_file: Écrire/créer un fichier  
+- list_files: Lister les fichiers
+- search_in_files: Chercher du texte
+
+⚙️ COMMANDES:
+- execute_command: Exécuter des commandes shell
+
+🔧 ENVIRONNEMENT:
+- get_env_value: Lire une variable .env
+- set_env_value: Modifier une variable .env
+
+🧠 MÉMOIRE:
+- scan_project: Scanner et mémoriser le projet
+- add_note: Mémoriser une info
+- get_knowledge: Voir ce que tu sais
+
+Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sais faire !
+"""
             
             # Create chat instance
             chat = LlmChat(
                 api_key=config.EMERGENT_API_KEY,
                 session_id=self.session_id,
-                system_message=self.SYSTEM_PROMPT + "\n\n" + history_context
+                system_message=self.SYSTEM_PROMPT + capabilities_reminder + history_context
             ).with_model(provider, model_name)
             
-            # Send current message (le dernier dans l'historique)
-            last_msg = self.conversation_history[-1]["content"] if self.conversation_history else ""
+            # Send current message
             response = await chat.send_message(UserMessage(text=last_msg))
             
             return response
