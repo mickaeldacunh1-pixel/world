@@ -316,6 +316,8 @@ export default function HeroVisualEditor({ settings, onChange }) {
   const [elements, setElements] = useState([]);
   const [selectedElement, setSelectedElement] = useState(null);
   const [activeId, setActiveId] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
   // Initialiser l'ordre des éléments
   useEffect(() => {
@@ -334,6 +336,24 @@ export default function HeroVisualEditor({ settings, onChange }) {
       setElements(defaultElements);
     }
   }, []);
+
+  // Sauvegarder directement sur le serveur
+  const saveToServer = async () => {
+    setSaving(true);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/api/settings/hero`, settings, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Ordre sauvegardé !');
+      setHasChanges(false);
+    } catch (error) {
+      toast.error('Erreur lors de la sauvegarde');
+      console.error(error);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
