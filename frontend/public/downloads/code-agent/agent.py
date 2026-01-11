@@ -766,6 +766,16 @@ Reponds en francais. Sois bref mais informatif. Termine TOUJOURS par ✅ quand u
                     result = tools.search_in_files(params.get('query', ''), params.get('file_pattern', '**/*'))
                 elif tool_name == 'get_project_structure':
                     result = tools.get_project_structure()
+                elif tool_name == 'scan_project':
+                    result = tools.scan_project()
+                elif tool_name == 'get_env_value':
+                    result = tools.get_env_value(params.get('key', ''))
+                elif tool_name == 'set_env_value':
+                    result = tools.set_env_value(params.get('key', ''), params.get('value', ''))
+                elif tool_name == 'add_note':
+                    result = tools.add_note(params.get('note', ''))
+                elif tool_name == 'get_knowledge':
+                    result = tools.get_knowledge()
                 
                 if result:
                     result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)[:2000]}\n```"
