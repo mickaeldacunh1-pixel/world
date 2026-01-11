@@ -527,35 +527,40 @@ export default function Home() {
             
             {/* Title Line 1 */}
             <h1 
-              className={`font-heading ${TITLE_SIZE_CLASSES[heroSettings.hero_title_line1_size || heroSettings.hero_title_size] || 'text-4xl md:text-5xl lg:text-7xl'} font-black tracking-tight leading-none mb-6 animate-fade-in-up stagger-2`}
-              style={{ order: (heroSettings.hero_elements_order || []).indexOf('title1') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('title1') : 1 }}
+              className={`font-heading ${TITLE_SIZE_CLASSES[heroSettings.hero_title_line1_size || heroSettings.hero_title_size] || 'text-4xl md:text-5xl lg:text-7xl'} font-black tracking-tight leading-none mb-2 animate-fade-in-up stagger-2`}
+              style={{ 
+                color: heroSettings.hero_title_line1_color || '#FFFFFF',
+                order: (heroSettings.hero_elements_order || []).indexOf('title1') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('title1') : 1 
+              }}
             >
-              <span style={{ color: heroSettings.hero_title_line1_color || '#FFFFFF' }}>
-                <AnimatedText 
-                  text={autoTranslate(heroSettings.hero_title_line1) || t('hero.titleLine1')} 
-                  animation={heroSettings.hero_text_animation}
-                  className="block"
-                />
-              </span><br />
-              {/* Title Line 2 - with optional gradient */}
-              <span 
-                style={heroSettings.hero_title_line2_gradient ? {
+              <AnimatedText 
+                text={autoTranslate(heroSettings.hero_title_line1) || t('hero.titleLine1')} 
+                animation={heroSettings.hero_text_animation}
+                className="block"
+              />
+            </h1>
+            
+            {/* Title Line 2 - with optional gradient */}
+            <h2 
+              className={`font-heading ${TITLE_SIZE_CLASSES[heroSettings.hero_title_line2_size || heroSettings.hero_title_size] || 'text-4xl md:text-5xl lg:text-7xl'} font-black tracking-tight leading-none mb-6 animate-fade-in-up stagger-2 ${heroSettings.hero_text_animation === 'glow' ? 'animate-text-glow' : ''}`}
+              style={{
+                ...(heroSettings.hero_title_line2_gradient ? {
                   backgroundImage: `linear-gradient(90deg, ${heroSettings.hero_title_line2_gradient_from || '#F97316'}, ${heroSettings.hero_title_line2_gradient_to || '#EA580C'})`,
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text'
                 } : { 
                   color: heroSettings.hero_title_line2_color || '#F97316' 
-                }}
-                className={heroSettings.hero_text_animation === 'glow' ? 'animate-text-glow' : ''}
-              >
-                <AnimatedText 
-                  text={autoTranslate(heroSettings.hero_title_line2) || t('hero.titleLine2')} 
-                  animation={heroSettings.hero_text_animation}
-                  delay={heroSettings.hero_text_animation === 'typewriter' ? (autoTranslate(heroSettings.hero_title_line1) || t('hero.titleLine1')).length * 50 + 200 : 200}
-                />
-              </span>
-            </h1>
+                }),
+                order: (heroSettings.hero_elements_order || []).indexOf('title2') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('title2') : 2
+              }}
+            >
+              <AnimatedText 
+                text={autoTranslate(heroSettings.hero_title_line2) || t('hero.titleLine2')} 
+                animation={heroSettings.hero_text_animation}
+                delay={heroSettings.hero_text_animation === 'typewriter' ? (autoTranslate(heroSettings.hero_title_line1) || t('hero.titleLine1')).length * 50 + 200 : 200}
+              />
+            </h2>
             
             {/* Description */}
             <p 
