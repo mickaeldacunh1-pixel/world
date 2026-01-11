@@ -1171,9 +1171,44 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
             "is_professional": user_doc["is_professional"],
             "country": user_doc["country"],
             "credits": user_doc["credits"],
+            "free_ads_remaining": user_doc.get("free_ads_remaining", 0),
+            "promo_code_used": user_doc.get("promo_code_used"),
             "referral_code": my_referral_code,
             "loyalty_points": user_doc["loyalty_points"]
         }
+    }
+
+# ================== PROMO STATUS ==================
+@api_router.get("/promo/{code}/status")
+async def get_promo_status(code: str):
+    """Vérifier le statut d'un code promo"""
+    code_upper = code.upper()
+    if code_upper not in PROMO_CODES:
+        raise HTTPException(status_code=404, detail="Code promo invalide")
+    
+    promo = PROMO_CODES[code_upper]
+    if not promo["active"]:
+        return {"valid": False, "message": "Cette offre n'est plus active"}
+    
+    promo_stats = await db.promo_stats.find_one({"code": code_upper})
+    total_used = promo_stats.get("total_ads_claimed", 0) if promo_stats else 0
+    users_count = promo_stats.get("users_count", 0) if promo_stats else 0
+    
+    remaining = promo["total_limit"] - total_used
+    
+    if remaining <= 0:
+        return {
+            "valid": False,
+            "message": "L'offre de lancement est terminée - toutes les annonces gratuites ont été distribuées"
+        }
+    
+    return {
+        "valid": True,
+        "free_ads_per_user": promo["free_ads"],
+        "remaining_global": remaining,
+        "total_limit": promo["total_limit"],
+        "users_registered": users_count,
+        "description": promo["description"]
     }
 
 # ================== PENDING CREDITS (Admin) ==================
