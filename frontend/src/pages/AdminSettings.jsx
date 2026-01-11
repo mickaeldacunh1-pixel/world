@@ -2523,6 +2523,65 @@ export default function AdminSettings() {
                       </Button>
                     </div>
                     
+                    {/* CTA Buttons Preview */}
+                    <div className={`flex flex-wrap gap-2 mt-3 ${settings.hero_text_align === 'center' ? 'justify-center' : ''}`}>
+                      {settings.hero_cta1_enabled && settings.hero_cta1_text && (
+                        <Button 
+                          size="sm"
+                          style={{ 
+                            backgroundColor: settings.hero_cta1_style === 'filled' ? (settings.hero_cta1_bg_color || settings.color_accent) : 'transparent',
+                            color: settings.hero_cta1_text_color || '#FFFFFF',
+                            borderColor: settings.hero_cta1_border_color || 'transparent',
+                            borderWidth: '1px',
+                            borderStyle: 'solid'
+                          }}
+                        >
+                          {settings.hero_cta1_icon} {settings.hero_cta1_text}
+                        </Button>
+                      )}
+                      {settings.hero_cta2_enabled && settings.hero_cta2_text && (
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          style={{ 
+                            backgroundColor: settings.hero_cta2_style === 'filled' ? settings.hero_cta2_bg_color : 'transparent',
+                            color: settings.hero_cta2_text_color || '#FFFFFF',
+                            borderColor: settings.hero_cta2_border_color || 'rgba(255,255,255,0.3)'
+                          }}
+                        >
+                          {settings.hero_cta2_icon} {settings.hero_cta2_text}
+                        </Button>
+                      )}
+                      {settings.hero_cta3_enabled && settings.hero_cta3_text && (
+                        <Button 
+                          size="sm"
+                          style={{ 
+                            backgroundColor: settings.hero_cta3_style === 'filled' ? (settings.hero_cta3_bg_color || '#EAB308') : 'transparent',
+                            color: settings.hero_cta3_text_color || '#FFFFFF',
+                            borderColor: settings.hero_cta3_border_color || 'rgba(234, 179, 8, 0.5)',
+                            borderWidth: '1px',
+                            borderStyle: 'solid'
+                          }}
+                        >
+                          {settings.hero_cta3_icon} {settings.hero_cta3_text}
+                        </Button>
+                      )}
+                      {settings.hero_cta4_enabled && settings.hero_cta4_text && (
+                        <Button 
+                          size="sm"
+                          style={{ 
+                            backgroundColor: settings.hero_cta4_style === 'filled' ? (settings.hero_cta4_bg_color || '#8B5CF6') : 'transparent',
+                            color: settings.hero_cta4_text_color || '#FFFFFF',
+                            borderColor: settings.hero_cta4_border_color || 'rgba(139, 92, 246, 0.5)',
+                            borderWidth: '1px',
+                            borderStyle: 'solid'
+                          }}
+                        >
+                          {settings.hero_cta4_icon} {settings.hero_cta4_text}
+                        </Button>
+                      )}
+                    </div>
+                    
                     {/* Search bar preview */}
                     {settings.hero_show_search !== false && (
                       <div className={`mt-6 ${settings.hero_text_align === 'center' ? 'mx-auto' : ''} max-w-xl`}>
