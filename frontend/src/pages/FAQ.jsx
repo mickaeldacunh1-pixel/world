@@ -20,6 +20,32 @@ const DEFAULTS = {
 
 const faqs = [
   {
+    category: "Inscription & Pays autorisés",
+    icon: Shield,
+    questions: [
+      {
+        q: "Quels pays sont autorisés pour créer un compte ?",
+        a: "Les comptes acheteurs peuvent être créés depuis n'importe quel pays du monde. Vous pouvez parcourir les annonces, contacter les vendeurs et acheter des pièces où que vous soyez."
+      },
+      {
+        q: "Quels pays sont autorisés pour vendre ?",
+        a: "Pour créer des annonces et vendre sur World Auto Pro, vous devez être situé dans l'un des pays suivants : France, Belgique, Suisse, Allemagne, Pays-Bas, Italie, Espagne, Portugal, Suède. Cette restriction garantit la qualité des transactions et la protection des acheteurs."
+      },
+      {
+        q: "Pourquoi cette restriction pour les vendeurs ?",
+        a: "Cette restriction permet d'assurer un service de qualité avec des délais de livraison raisonnables, une protection juridique claire, et de réduire les risques de fraude. Les acheteurs peuvent cependant commander depuis le monde entier."
+      },
+      {
+        q: "Je suis dans un pays non autorisé, puis-je quand même acheter ?",
+        a: "Oui ! Les acheteurs peuvent créer un compte et acheter des pièces depuis n'importe quel pays. Seule la création d'annonces (vente) est limitée aux pays autorisés."
+      },
+      {
+        q: "Les frais de livraison sont-ils plus élevés pour les pays hors Europe ?",
+        a: "Les frais de livraison dépendent de la distance et du transporteur choisi. Pour les destinations hors Europe, les frais peuvent être plus élevés. Nous vous recommandons de demander un devis au vendeur avant l'achat."
+      }
+    ]
+  },
+  {
     category: "Offre de Lancement",
     icon: Package,
     questions: [
