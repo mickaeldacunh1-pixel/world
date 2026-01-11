@@ -485,6 +485,16 @@ export default function Home() {
         
         {/* Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 w-full">
+          {(() => {
+            // Fonction pour obtenir l'ordre d'un élément
+            const defaultOrder = ['badge', 'title1', 'title2', 'description', 'search', 'cta_buttons', 'premium_buttons', 'shortcuts', 'stats'];
+            const savedOrder = heroSettings.hero_elements_order || defaultOrder;
+            const getOrder = (id) => {
+              const idx = savedOrder.indexOf(id);
+              return idx >= 0 ? idx : 99;
+            };
+            
+            return (
           <div 
             className={`animate-fade-in-up flex flex-col ${
               heroSettings.hero_text_align === 'center' ? 'mx-auto text-center max-w-4xl items-center' : 
@@ -492,17 +502,6 @@ export default function Home() {
               'max-w-3xl items-start'
             }`}
           >
-            {/* Fonction pour obtenir l'ordre d'un élément */}
-            {(() => {
-              const defaultOrder = ['badge', 'title1', 'title2', 'description', 'search', 'cta_buttons', 'premium_buttons', 'shortcuts', 'stats'];
-              const savedOrder = heroSettings.hero_elements_order || defaultOrder;
-              const getOrder = (id) => {
-                const idx = savedOrder.indexOf(id);
-                return idx >= 0 ? idx : 99;
-              };
-              
-              return null;
-            })()}
             
             {/* Badge - Customizable */}
             {heroSettings.hero_show_badge !== false && (
@@ -515,7 +514,7 @@ export default function Home() {
                   borderColor: heroSettings.hero_badge_border_color || 'rgba(249, 115, 22, 0.3)',
                   borderWidth: '1px',
                   borderStyle: 'solid',
-                  order: (heroSettings.hero_elements_order || []).indexOf('badge') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('badge') : 0
+                  order: getOrder('badge')
                 }}
               >
                 <span>{heroSettings.hero_badge_icon || '✨'}</span>
