@@ -2173,6 +2173,12 @@ export default function AdminSettings() {
 
           {/* Hero Tab */}
           <TabsContent value="hero" className="space-y-6">
+            {/* Éditeur Visuel Drag & Drop */}
+            <HeroVisualEditor 
+              settings={settings} 
+              onChange={setSettings}
+            />
+
             {/* Announcement Bar Card */}
             <Card>
               <CardHeader>
