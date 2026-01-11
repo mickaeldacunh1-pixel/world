@@ -166,6 +166,28 @@ const getHeroElements = () => [
     )
   },
   {
+    id: 'search',
+    key: 'hero_show_search',
+    label: 'Barre de recherche',
+    getVisibility: (s) => s.hero_show_search !== false,
+    render: (s) => (
+      <div className="w-full max-w-3xl mx-auto">
+        <div className="flex flex-col sm:flex-row gap-3 bg-white/10 backdrop-blur-lg p-2 rounded-2xl border border-white/20">
+          <div className="flex-1 bg-white/5 rounded-xl px-4 py-3 flex items-center gap-2">
+            <span className="text-white/50">🔍</span>
+            <span className="text-white/50 text-sm">{s.hero_search_placeholder || 'Rechercher une pièce...'}</span>
+          </div>
+          <button 
+            className="px-6 py-3 rounded-xl font-medium"
+            style={{ backgroundColor: s.hero_search_button_bg || '#F97316', color: '#FFFFFF' }}
+          >
+            {s.hero_search_button_text || 'Rechercher'}
+          </button>
+        </div>
+      </div>
+    )
+  },
+  {
     id: 'cta_buttons',
     key: 'hero_cta_buttons_enabled',
     label: 'Boutons CTA',
