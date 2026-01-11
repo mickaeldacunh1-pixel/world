@@ -1677,6 +1677,14 @@ async def get_photo_limit(current_user: dict = Depends(get_current_user)):
 
 @api_router.post("/listings", response_model=ListingResponse)
 async def create_listing(listing: ListingCreate, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
+    # Vérifier que le pays du vendeur est autorisé pour la création d'annonces
+    user_country = current_user.get("country", "France")
+    if user_country not in ALLOWED_COUNTRIES:
+        raise HTTPException(
+            status_code=403, 
+            detail=f"La création d'annonces est limitée aux vendeurs situés dans : {', '.join(ALLOWED_COUNTRIES)}. Votre pays ({user_country}) n'est pas autorisé pour la vente."
+        )
+    
     # Vérifier si l'utilisateur a des annonces gratuites
     free_ads = current_user.get("free_ads_remaining", 0)
     has_credits = current_user.get("credits", 0) > 0
