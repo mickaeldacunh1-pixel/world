@@ -12,6 +12,35 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-21',
+    date: '2026-01-12',
+    version: '5.0.0',
+    title: '🎉 Offre de Lancement & Tobi Assistant',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🎁 OFFRE DE LANCEMENT : 20 annonces gratuites pour les nouveaux inscrits !' },
+      { type: 'new', text: '🤖 Tobi : notre assistant IA automobile (fusion de KIM et Tobi)' },
+      { type: 'new', text: '💬 Interface de chat Tobi améliorée accessible via /tobi-chat' },
+      { type: 'new', text: '🩺 Diagnostic IA : icône dans la navbar pour un accès rapide' },
+      { type: 'improvement', text: '🚀 Bannière "Offre de Lancement" en haut du site' },
+      { type: 'improvement', text: '📱 Optimisation du chargement (lazy loading images)' },
+    ]
+  },
+  {
+    id: 'static-new-20',
+    date: '2026-01-11',
+    version: '4.8.0',
+    title: '🎨 Éditeur Visuel du Hero (Drag & Drop)',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🖱️ Éditeur visuel : glissez-déposez pour réorganiser les éléments du Hero' },
+      { type: 'new', text: '👁️ Masquer/afficher des éléments en un clic' },
+      { type: 'new', text: '💾 Sauvegarde instantanée de l\'ordre des éléments' },
+      { type: 'new', text: '📱 Aperçu temps réel avec fond et couleurs' },
+      { type: 'improvement', text: '⚡ Synchronisation automatique avec la page d\'accueil' },
+    ]
+  },
+  {
     id: 'static-new-19',
     date: '2026-01-11',
     version: '4.7.0',
