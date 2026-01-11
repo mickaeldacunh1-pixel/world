@@ -621,25 +621,13 @@ export default function Home() {
               }`}
               style={{ order: (heroSettings.hero_elements_order || []).indexOf('cta_buttons') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('cta_buttons') : 5 }}
             >
-              {/* Dropdown Catégories */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20">
-                    <Menu className="w-4 h-4" />
-                    {t('nav.categories')}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56">
-                  {categories.map((cat) => (
-                    <DropdownMenuItem key={cat.slug} asChild>
-                      <Link to={`/annonces/${cat.slug}`} className="flex items-center gap-2 cursor-pointer">
-                        <cat.icon className="w-4 h-4" />
-                        {t(`categories.${cat.slug}`)}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {/* Bouton KIM Agent */}
+              <Link to="/kim">
+                <Button variant="outline" className="gap-2 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20">
+                  <Sparkles className="w-4 h-4" />
+                  KIM Agent
+                </Button>
+              </Link>
 
               {/* Plate Scanner */}
               {heroSettings.hero_show_plate_scanner !== false && (
