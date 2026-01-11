@@ -667,22 +667,39 @@ Reponds en francais. Sois bref mais informatif. Termine TOUJOURS par ✅ quand u
             
             # Construire le contexte avec tout l'historique
             history_context = ""
+            memory_reminder = ""
+            
             if len(self.conversation_history) > 1:
-                history_context = "\n\nHISTORIQUE DE LA CONVERSATION:\n"
+                history_context = "\n\n📜 HISTORIQUE DE LA SESSION PRÉCÉDENTE:\n"
                 for msg in self.conversation_history[:-1]:
                     role = "👤 Utilisateur" if msg["role"] == "user" else "🤖 Cody"
                     history_context += f"{role}: {msg['content'][:500]}...\n" if len(msg['content']) > 500 else f"{role}: {msg['content']}\n"
-                history_context += "\n---\nMESSAGE ACTUEL:\n"
+                history_context += "\n---\n🆕 MESSAGE ACTUEL:\n"
+                
+                # Rappel de mémoire si c'est le premier message après redémarrage
+                memory_reminder = """
+⚠️ IMPORTANT: Tu as un historique de conversation ci-dessus. 
+Quand l'utilisateur te demande si tu te souviens, réponds OUI et résume les derniers échanges.
+"""
             
             # Ajouter un rappel des capacités si c'est une question sur les fonctionnalités
             last_msg = self.conversation_history[-1]["content"] if self.conversation_history else ""
             capabilities_reminder = ""
             
+            # Détection de question sur la mémoire
+            memory_keywords = ["souviens", "rappel", "mémoire", "dernière session", "session précédente", "avant", "hier"]
+            if any(kw in last_msg.lower() for kw in memory_keywords) and len(self.conversation_history) > 1:
+                capabilities_reminder = f"""
+
+🧠 RAPPEL MÉMOIRE: Tu as {len(self.conversation_history) - 1} messages en mémoire de la session précédente.
+Réponds OUI tu te souviens et résume brièvement ce qui a été fait !
+"""
+            
             keywords = ["fonctionnalit", "capacit", "peux-tu", "peux tu", "sais-tu", "sais tu", "mise a jour", "mise à jour", "version", "appris", "nouveau"]
             if any(kw in last_msg.lower() for kw in keywords):
-                capabilities_reminder = """
+                capabilities_reminder += """
 
-🔔 RAPPEL DE TES CAPACITÉS (Cody v2.3.0):
+🔔 RAPPEL DE TES CAPACITÉS (Cody v2.3.1):
 
 📁 GESTION DE FICHIERS:
 - read_file: Lire un fichier
@@ -697,10 +714,11 @@ Reponds en francais. Sois bref mais informatif. Termine TOUJOURS par ✅ quand u
 - get_env_value: Lire une variable .env
 - set_env_value: Modifier une variable .env
 
-🧠 MÉMOIRE:
+🧠 MÉMOIRE PERSISTANTE:
 - scan_project: Scanner et mémoriser le projet
 - add_note: Mémoriser une info
 - get_knowledge: Voir ce que tu sais
+- Tu conserves l'historique entre les sessions !
 
 Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sais faire !
 """
