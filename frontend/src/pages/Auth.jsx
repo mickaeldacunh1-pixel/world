@@ -61,10 +61,14 @@ export default function Auth() {
     city: '',
     postal_code: '',
     referral_code: searchParams.get('ref') || '',
+    promo_code: searchParams.get('promo') || '',  // Code promo (ex: LANCEMENT)
   });
   
   // Referral code validation state
   const [referralStatus, setReferralStatus] = useState({ checking: false, valid: null, referrer_name: null });
+  
+  // Promo code status
+  const [promoStatus, setPromoStatus] = useState({ checking: false, valid: null, free_ads: 0, message: null });
 
   useEffect(() => {
     if (user) {
