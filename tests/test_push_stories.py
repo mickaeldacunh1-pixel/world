@@ -14,7 +14,7 @@ import uuid
 from datetime import datetime
 
 # Get base URL from environment
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://tobi-dashboard.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://webflow-clone-5.preview.emergentagent.com')
 
 # Test credentials
 TEST_USER_EMAIL = "storiestest@test.com"
