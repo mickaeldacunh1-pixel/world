@@ -1188,7 +1188,9 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
             "free_ads_remaining": user_doc.get("free_ads_remaining", 0),
             "promo_code_used": user_doc.get("promo_code_used"),
             "referral_code": my_referral_code,
-            "loyalty_points": user_doc["loyalty_points"]
+            "loyalty_points": user_doc["loyalty_points"],
+            "pro_trial_active": user_doc.get("pro_trial_used", False),
+            "pro_trial_end": user_doc.get("pro_trial_end")
         }
     }
 
