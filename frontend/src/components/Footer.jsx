@@ -233,42 +233,46 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/politique-retours" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                <Link to="/politique-retours" className="text-primary-foreground/70 hover:text-accent transition-colors" style={linkStyle}>
                   {t('footer.returns')}
                 </Link>
               </li>
               <li>
-                <Link to="/mentions-legales" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                <Link to="/mentions-legales" className="text-primary-foreground/70 hover:text-accent transition-colors" style={linkStyle}>
                   {t('footer.legal')}
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                <Link to="/contact" className="text-primary-foreground/70 hover:text-accent transition-colors" style={linkStyle}>
                   {t('footer.contact')}
                 </Link>
               </li>
             </ul>
           </div>
+          )}
 
           {/* Contact */}
+          {s.footer_show_contact !== false && (
           <div>
             <h3 className="font-heading font-bold text-lg mb-4">{t('footer.contact')}</h3>
             <a 
-              href="mailto:contact@worldautofrance.com" 
+              href={`mailto:${s.footer_email || 'contact@worldautofrance.com'}`}
               className="flex items-center gap-3 text-primary-foreground/70 hover:text-accent transition-colors group"
+              style={linkStyle}
             >
               <div className="w-10 h-10 bg-accent/20 rounded-full flex items-center justify-center group-hover:bg-accent/30 transition-colors">
                 <Mail className="w-5 h-5 text-accent" />
               </div>
-              <span className="text-sm">contact@worldautofrance.com</span>
+              <span className="text-sm">{s.footer_email || 'contact@worldautofrance.com'}</span>
             </a>
           </div>
+          )}
         </div>
 
         {/* Bottom bar */}
         <div className="border-t border-primary-foreground/20 mt-10 pt-8">
-          <p className="text-primary-foreground/50 text-sm text-center">
-            © {new Date().getFullYear()} World Auto Pro. {t('footer.allRights')}.
+          <p className="text-primary-foreground/50 text-sm text-center" style={linkStyle}>
+            {copyrightText}
           </p>
           <a 
             href="https://app.emergent.sh/?utm_source=emergent-badge" 
