@@ -15,6 +15,28 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 - ✅ Port 27017 non exposé publiquement
 - ✅ docker-compose.yml mis à jour avec auth intégrée
 
+## Session du 2026-01-11 - Corrections et Améliorations
+
+### Corrections effectuées (cette session)
+- ✅ **Page Tarifs (Pricing.jsx) corrigée** :
+  - Fichier était corrompu avec du code JSX orphelin
+  - Page entièrement reconstruite et fonctionnelle
+  - 6 packs crédits (1, 3, 5, 20, 50, 100)
+  - Essai PRO Gratuit 14 jours
+  - 4 abonnements Pro (Mensuel, Trimestriel, Semestriel, Annuel)
+  - 3 forfaits vidéo + boost vidéo
+
+- ✅ **Restriction pays pour vendeurs uniquement** :
+  - Les acheteurs peuvent s'inscrire de n'importe quel pays
+  - Les vendeurs sont restreints à 9 pays : France, Belgique, Suisse, Allemagne, Pays-Bas, Italie, Espagne, Portugal, Suède
+  - Nouvel endpoint `/api/countries/allowed` pour récupérer la liste
+  - Vérification ajoutée à la création d'annonces (pas à l'inscription)
+
+- ✅ **FAQ mise à jour** :
+  - Nouvelle section "Inscription & Pays autorisés" en tête de page
+  - 5 questions/réponses sur les restrictions géographiques
+  - Explication claire de la différence acheteur/vendeur
+
 ## Session du 2026-01-09 - Accomplissements
 
 ### Nouvelles fonctionnalités implémentées (cette session)
