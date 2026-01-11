@@ -743,10 +743,13 @@ export default function Home() {
 
             {/* Quick Links - Raccourcis stylés (configurable avec ordre) */}
             {heroSettings.hero_shortcuts_enabled !== false && (
-              <div className={`flex flex-wrap items-center gap-3 mt-5 animate-fade-in-up stagger-4 ${
-                heroSettings.hero_text_align === 'center' ? 'justify-center' : 
-                heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
-              } ${heroSettings.hero_mobile_hide_shortcuts ? 'hidden md:flex' : ''}`}>
+              <div 
+                className={`flex flex-wrap items-center gap-3 mt-5 animate-fade-in-up stagger-4 w-full ${
+                  heroSettings.hero_text_align === 'center' ? 'justify-center' : 
+                  heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
+                } ${heroSettings.hero_mobile_hide_shortcuts ? 'hidden md:flex' : ''}`}
+                style={{ order: (heroSettings.hero_elements_order || []).indexOf('shortcuts') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('shortcuts') : 6 }}
+              >
                 {(() => {
                   const defaultOrder = ['videos', 'stories', 'loyalty', 'kim'];
                   const order = heroSettings.hero_shortcuts_order || defaultOrder;
