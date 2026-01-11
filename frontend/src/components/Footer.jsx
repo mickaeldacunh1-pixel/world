@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Mail, Car, Wrench, Bike, Truck, Send, Loader2, Sparkles, CheckCircle } from 'lucide-react';
+import { Mail, Car, Wrench, Bike, Truck, Send, Loader2, Sparkles, CheckCircle, Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import WorldAutoLogo from './WorldAutoLogo';
@@ -11,11 +11,48 @@ import FranceText from './FranceText';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+// Default footer settings
+const DEFAULTS = {
+  footer_company_name: 'World Auto Pro',
+  footer_email: 'contact@worldautofrance.com',
+  footer_description: '',
+  footer_copyright: '© {year} World Auto Pro. Tous droits réservés.',
+  footer_show_newsletter: true,
+  footer_newsletter_title: 'Restez informé',
+  footer_show_categories: true,
+  footer_show_links: true,
+  footer_show_contact: true,
+  footer_bg_color: '',
+  footer_text_color: '',
+  footer_link_color: '',
+  footer_accent_color: '',
+  footer_show_social: true,
+  footer_facebook: '',
+  footer_instagram: '',
+  footer_twitter: '',
+  footer_linkedin: '',
+};
+
 export default function Footer() {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
+  const [settings, setSettings] = useState(DEFAULTS);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await axios.get(`${API}/settings`);
+        setSettings({ ...DEFAULTS, ...res.data });
+      } catch (err) {
+        // Use defaults
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const s = settings;
 
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
@@ -35,18 +72,35 @@ export default function Footer() {
     }
   };
 
+  // Dynamic styles
+  const footerStyle = {
+    backgroundColor: s.footer_bg_color || undefined,
+    color: s.footer_text_color || undefined,
+  };
+
+  const linkStyle = {
+    color: s.footer_link_color || undefined,
+  };
+
+  const copyrightText = (s.footer_copyright || '© {year} World Auto Pro. Tous droits réservés.')
+    .replace('{year}', new Date().getFullYear().toString());
+
   return (
-    <footer className="bg-primary text-primary-foreground mt-auto" data-testid="footer">
+    <footer 
+      className="bg-primary text-primary-foreground mt-auto" 
+      data-testid="footer"
+      style={footerStyle}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo & Description */}
           <div className="col-span-1 lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4 group">
               <WorldAutoLogo className="w-10 h-10 transition-transform group-hover:scale-110" />
-              <span className="font-heading font-bold text-xl">World Auto Pro</span>
+              <span className="font-heading font-bold text-xl">{s.footer_company_name || 'World Auto Pro'}</span>
             </Link>
-            <p className="text-primary-foreground/70 text-sm leading-relaxed mb-6">
-              {t('footer.description')}
+            <p className="text-primary-foreground/70 text-sm leading-relaxed mb-6" style={linkStyle}>
+              {s.footer_description || t('footer.description')}
             </p>
 
             {/* Newsletter Form */}
