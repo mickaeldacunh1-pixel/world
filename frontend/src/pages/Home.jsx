@@ -751,10 +751,10 @@ export default function Home() {
                       </Link>
                     ),
                     kim: heroSettings.hero_shortcut_kim !== false && (
-                      <Link key="kim" to="/kim-agent" className="group">
+                      <Link key="tobi" to="/tobi-chat" className="group">
                         <div className={`flex items-center gap-2 bg-white/10 hover:bg-blue-500/30 backdrop-blur-sm px-4 py-2 ${heroSettings.hero_shortcuts_style === 'square' ? 'rounded-none' : heroSettings.hero_shortcuts_style === 'rounded' ? 'rounded-lg' : 'rounded-full'} border border-white/20 hover:border-blue-400/50 transition-all`}>
                           <Sparkles className="w-4 h-4 text-blue-400" />
-                          {heroSettings.hero_shortcuts_style !== 'icon-only' && <span className="text-white/90 text-sm font-medium">KIM Agent</span>}
+                          {heroSettings.hero_shortcuts_style !== 'icon-only' && <span className="text-white/90 text-sm font-medium">Tobi</span>}
                         </div>
                       </Link>
                     ),
