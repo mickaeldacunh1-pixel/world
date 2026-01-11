@@ -179,6 +179,25 @@ export default function Navbar() {
                   </Button>
                 </Link>
 
+                {/* Diagnostic IA */}
+                <Link to="/diagnostic" className="hidden sm:flex" title="Diagnostic IA">
+                  <Button variant="ghost" size="icon" className="relative text-green-500 hover:text-green-600">
+                    <Stethoscope className="w-5 h-5" />
+                  </Button>
+                </Link>
+
+                {/* Messages */}
+                <Link to="/messages" className="hidden sm:flex" title="Messages">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <MessageSquare className="w-5 h-5" />
+                    {unreadMessages > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                        {unreadMessages > 9 ? '9+' : unreadMessages}
+                      </span>
+                    )}
+                  </Button>
+                </Link>
+
                 {/* Profil (Menu utilisateur) */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
