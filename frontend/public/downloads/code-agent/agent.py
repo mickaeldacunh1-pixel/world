@@ -2053,6 +2053,16 @@ def reload_theme():
     THEME_CONFIG = load_theme_config()
     return jsonify({"success": True, "theme": THEME_CONFIG})
 
+@app.route('/api/sync-theme', methods=['POST'])
+def sync_theme_from_server():
+    """Synchroniser la configuration du thème depuis le serveur World Auto Pro"""
+    global THEME_CONFIG
+    try:
+        sync_config_from_api(THEME_CONFIG)
+        return jsonify({"success": True, "theme": THEME_CONFIG, "message": "Configuration synchronisée avec succès"})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route('/api/project-path', methods=['POST'])
 def set_project_path():
     data = request.json
