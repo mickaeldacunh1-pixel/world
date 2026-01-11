@@ -1638,8 +1638,12 @@ async def get_photo_limit(current_user: dict = Depends(get_current_user)):
 
 @api_router.post("/listings", response_model=ListingResponse)
 async def create_listing(listing: ListingCreate, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
-    # Check credits
-    if current_user.get("credits", 0) <= 0:
+    # Vérifier si l'utilisateur a des annonces gratuites
+    free_ads = current_user.get("free_ads_remaining", 0)
+    has_credits = current_user.get("credits", 0) > 0
+    
+    # Check credits or free ads
+    if free_ads <= 0 and not has_credits:
         raise HTTPException(status_code=402, detail="Crédits insuffisants. Veuillez acheter un pack d'annonces.")
     
     # Check photo limit
@@ -1679,16 +1683,24 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
         "compatible_models": listing.compatible_models,
         "compatible_years": listing.compatible_years,
         "oem_reference": listing.oem_reference,
-        "aftermarket_reference": listing.aftermarket_reference
+        "aftermarket_reference": listing.aftermarket_reference,
+        # Marquer si c'est une annonce gratuite promo
+        "is_promo_free": free_ads > 0
     }
     
     await db.listings.insert_one(listing_doc)
     
-    # Deduct credit
-    await db.users.update_one(
-        {"id": current_user["id"]},
-        {"$inc": {"credits": -1}}
-    )
+    # Déduire une annonce gratuite OU un crédit
+    if free_ads > 0:
+        await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$inc": {"free_ads_remaining": -1}}
+        )
+    else:
+        await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$inc": {"credits": -1}}
+        )
     
     # Check alerts and send notifications
     await check_and_send_alerts(listing_doc, background_tasks)
