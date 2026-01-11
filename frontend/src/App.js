@@ -55,8 +55,8 @@ import Widget from "./pages/Widget";
 import Compare from "./pages/Compare";
 import Videos from "./pages/Videos";
 import StoriesPage from "./pages/StoriesPage";
-import KimAgent from "./pages/KimAgent";
-import KimChat from "./pages/KimChat";
+import TobiAgent from "./pages/TobiAgent";
+import TobiChat from "./pages/TobiChat";
 import "./App.css";
 
 // Composant pour scroller en haut à chaque changement de page
