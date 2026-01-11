@@ -1071,8 +1071,36 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
         "referral_count": 0,
         "loyalty_points": SIGNUP_BONUS_POINTS + (REFERRAL_REWARDS["referee_points"] if referred_by else 0),
         "loyalty_lifetime_points": SIGNUP_BONUS_POINTS + (REFERRAL_REWARDS["referee_points"] if referred_by else 0),
+        "free_ads_remaining": 0,  # Annonces gratuites restantes
+        "promo_code_used": None,  # Code promo utilisé à l'inscription
         "created_at": datetime.now(timezone.utc).isoformat()
     }
+    
+    # ================== GESTION CODE PROMO LANCEMENT ==================
+    if user.promo_code and user.promo_code.upper() in PROMO_CODES:
+        promo = PROMO_CODES[user.promo_code.upper()]
+        if promo["active"]:
+            # Vérifier la limite globale
+            promo_stats = await db.promo_stats.find_one({"code": user.promo_code.upper()})
+            total_used = promo_stats.get("total_ads_claimed", 0) if promo_stats else 0
+            
+            if total_used < promo["total_limit"]:
+                # Calculer combien d'annonces gratuites on peut donner
+                remaining_global = promo["total_limit"] - total_used
+                free_ads_to_give = min(promo["free_ads"], remaining_global)
+                
+                user_doc["free_ads_remaining"] = free_ads_to_give
+                user_doc["promo_code_used"] = user.promo_code.upper()
+                
+                # Mettre à jour les stats promo
+                await db.promo_stats.update_one(
+                    {"code": user.promo_code.upper()},
+                    {
+                        "$inc": {"total_ads_claimed": free_ads_to_give, "users_count": 1},
+                        "$setOnInsert": {"created_at": datetime.now(timezone.utc).isoformat()}
+                    },
+                    upsert=True
+                )
     
     # Check for pending credits
     pending_credits = await db.pending_credits.find_one({"email": user.email.lower()})
