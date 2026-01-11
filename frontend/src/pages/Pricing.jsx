@@ -193,7 +193,7 @@ export default function Pricing() {
     <div className="min-h-screen bg-secondary/30 py-12" data-testid="pricing-page">
       <SEO
         title="Tarifs"
-        description="Découvrez nos packs de crédits pour publier vos annonces sur World Auto Pro Pro. Des tarifs simples et transparents pour particuliers et professionnels."
+        description="Découvrez nos packs de crédits pour publier vos annonces sur World Auto Pro. Des tarifs simples et transparents pour particuliers et professionnels."
         keywords="tarifs annonces auto, prix publication annonce, crédits world auto, pack annonces"
         url="/tarifs"
       />
@@ -265,6 +265,7 @@ export default function Pricing() {
                   size="sm"
                   onClick={() => handleBuyPackage('single')}
                   disabled={loading.single}
+                  data-testid="buy-single"
                 >
                   {loading.single ? '...' : 'Acheter'}
                 </Button>
@@ -300,6 +301,7 @@ export default function Pricing() {
                   size="sm"
                   onClick={() => handleBuyPackage('pack3')}
                   disabled={loading.pack3}
+                  data-testid="buy-pack3"
                 >
                   {loading.pack3 ? '...' : 'Acheter'}
                 </Button>
@@ -332,6 +334,7 @@ export default function Pricing() {
                   size="sm"
                   onClick={() => handleBuyPackage('pack5')}
                   disabled={loading.pack5}
+                  data-testid="buy-pack5"
                 >
                   {loading.pack5 ? '...' : 'Acheter'}
                 </Button>
@@ -364,6 +367,7 @@ export default function Pricing() {
                   size="sm"
                   onClick={() => handleBuyPackage('pack20')}
                   disabled={loading.pack20}
+                  data-testid="buy-pack20"
                 >
                   {loading.pack20 ? '...' : 'Acheter'}
                 </Button>
@@ -401,6 +405,7 @@ export default function Pricing() {
                   size="sm"
                   onClick={() => handleBuyPackage('pack50')}
                   disabled={loading.pack50}
+                  data-testid="buy-pack50"
                 >
                   {loading.pack50 ? '...' : 'Acheter'}
                 </Button>
@@ -437,6 +442,7 @@ export default function Pricing() {
                   size="sm"
                   onClick={() => handleBuyPackage('pack100')}
                   disabled={loading.pack100}
+                  data-testid="buy-pack100"
                 >
                   {loading.pack100 ? '...' : 'Acheter'}
                 </Button>
@@ -462,6 +468,7 @@ export default function Pricing() {
                 className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
                 onClick={() => handleBuyPackage('pro_trial')}
                 disabled={loading.pro_trial}
+                data-testid="buy-pro-trial"
               >
                 {loading.pro_trial ? 'Chargement...' : 'Commencer l\'essai gratuit'}
               </Button>
@@ -470,37 +477,22 @@ export default function Pricing() {
         </Card>
 
         {/* Abonnements PRO */}
-              </CardContent>
-              <CardFooter>
-                <Button
-                  className="w-full bg-accent hover:bg-accent/90"
-                  onClick={() => handleBuyPackage('pack50')}
-                  disabled={loading.pack50}
-                  data-testid="buy-pack50"
-                >
-                  {loading.pack50 ? 'Chargement...' : 'Acheter'}
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        </div>
-
-        {/* Pricing Cards - Professionnels */}
         <div className="mb-8">
           <h2 className="font-heading text-2xl font-bold mb-6 text-center">
             🏢 Abonnements Pro
-            <span className="block text-sm font-normal text-muted-foreground mt-1">Pour les professionnels</span>
+            <span className="block text-sm font-normal text-muted-foreground mt-1">Pour les professionnels - Crédits renouvelés automatiquement</span>
           </h2>
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {/* Pro 1 mois */}
             <Card className="relative card-hover bg-primary text-primary-foreground" data-testid="package-pro-monthly">
               <CardHeader>
-                <CardTitle className="font-heading text-primary-foreground">Pro 1 mois</CardTitle>
-                <CardDescription className="text-primary-foreground/70">49€/mois</CardDescription>
+                <CardTitle className="font-heading text-primary-foreground">Pro Mensuel</CardTitle>
+                <CardDescription className="text-primary-foreground/70">30 crédits/mois</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="mb-6">
-                  <span className="text-4xl font-heading font-black">49€</span>
+                  <span className="text-4xl font-heading font-black">29€</span>
+                  <span className="text-primary-foreground/70">/mois</span>
                 </div>
                 <ul className="space-y-3">
                   {pricingFeatures.pro_monthly.map((feature, i) => (
@@ -532,12 +524,13 @@ export default function Pricing() {
                 </Badge>
               </div>
               <CardHeader>
-                <CardTitle className="font-heading text-primary-foreground">Pro 3 mois</CardTitle>
-                <CardDescription className="text-primary-foreground/70">33€/mois</CardDescription>
+                <CardTitle className="font-heading text-primary-foreground">Pro Trimestriel</CardTitle>
+                <CardDescription className="text-primary-foreground/70">100 crédits (3 mois)</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="mb-6">
-                  <span className="text-4xl font-heading font-black">99€</span>
+                  <span className="text-4xl font-heading font-black">69€</span>
+                  <span className="text-primary-foreground/70 ml-2 line-through">87€</span>
                 </div>
                 <ul className="space-y-3">
                   {pricingFeatures.pro_3months.map((feature, i) => (
@@ -564,16 +557,17 @@ export default function Pricing() {
             <Card className="relative card-hover bg-primary text-primary-foreground" data-testid="package-pro-6months">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <Badge className="bg-green-500 text-white">
-                  Meilleure économie
+                  🏷️ -32%
                 </Badge>
               </div>
               <CardHeader>
-                <CardTitle className="font-heading text-primary-foreground">Pro 6 mois</CardTitle>
-                <CardDescription className="text-primary-foreground/70">~30€/mois</CardDescription>
+                <CardTitle className="font-heading text-primary-foreground">Pro Semestriel</CardTitle>
+                <CardDescription className="text-primary-foreground/70">200 crédits (6 mois)</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="mb-6">
-                  <span className="text-4xl font-heading font-black">179€</span>
+                  <span className="text-4xl font-heading font-black">119€</span>
+                  <span className="text-primary-foreground/70 ml-2 line-through">174€</span>
                 </div>
                 <ul className="space-y-3">
                   {pricingFeatures.pro_6months.map((feature, i) => (
@@ -592,6 +586,43 @@ export default function Pricing() {
                   data-testid="buy-pro-6months"
                 >
                   {loading.pro_6months ? 'Chargement...' : 'Souscrire'}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* Pro Annuel - Best Value */}
+            <Card className="relative card-hover bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-2 border-yellow-500" data-testid="package-pro-annual">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <Badge className="bg-yellow-500 text-yellow-900">
+                  ⭐ Meilleure économie
+                </Badge>
+              </div>
+              <CardHeader>
+                <CardTitle className="font-heading">Pro Annuel</CardTitle>
+                <CardDescription>500 crédits (1 an)</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black">199€</span>
+                  <span className="text-muted-foreground ml-2 line-through">348€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.pro_annual.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-yellow-900"
+                  onClick={() => handleBuyPackage('pro_annual')}
+                  disabled={loading.pro_annual}
+                  data-testid="buy-pro-annual"
+                >
+                  {loading.pro_annual ? 'Chargement...' : 'Souscrire'}
                 </Button>
               </CardFooter>
             </Card>
@@ -633,6 +664,7 @@ export default function Pricing() {
                   variant="outline"
                   onClick={() => handleBuyVideoPackage('extended')}
                   disabled={loading.extended}
+                  data-testid="buy-video-extended"
                 >
                   {loading.extended ? 'Chargement...' : 'Acheter'}
                 </Button>
@@ -672,6 +704,7 @@ export default function Pricing() {
                   className="w-full bg-accent hover:bg-accent/90"
                   onClick={() => handleBuyVideoPackage('intermediate')}
                   disabled={loading.intermediate}
+                  data-testid="buy-video-intermediate"
                 >
                   {loading.intermediate ? 'Chargement...' : 'Acheter'}
                 </Button>
@@ -710,6 +743,7 @@ export default function Pricing() {
                   className="w-full bg-white text-purple-700 hover:bg-white/90"
                   onClick={() => handleBuyVideoPackage('pro')}
                   disabled={loading.pro}
+                  data-testid="buy-video-pro"
                 >
                   {loading.pro ? 'Chargement...' : 'Acheter'}
                 </Button>
