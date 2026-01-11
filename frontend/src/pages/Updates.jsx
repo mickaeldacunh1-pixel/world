@@ -12,6 +12,54 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-19',
+    date: '2026-01-11',
+    version: '4.7.0',
+    title: '📝 Éditeur de Pages Complet',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '📝 Éditeur de pages : modifiez le contenu de toutes les pages depuis l\'admin' },
+      { type: 'new', text: '📖 Page À propos : titre, mission, valeurs, statistiques personnalisables' },
+      { type: 'new', text: '📧 Page Contact : informations, formulaire, délai de réponse configurables' },
+      { type: 'new', text: '❓ Page FAQ : titre, sous-titre, barre de recherche, options personnalisables' },
+      { type: 'new', text: '🔍 Recherche FAQ : filtrage en temps réel des questions' },
+      { type: 'improvement', text: '⚡ Chargement dynamique du contenu depuis la base de données' },
+    ]
+  },
+  {
+    id: 'static-new-18',
+    date: '2026-01-11',
+    version: '4.6.0',
+    title: '🤖 Personnalisation Agent Cody',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🎨 Nouvel onglet "Agent Cody" dans l\'administration' },
+      { type: 'new', text: '🌈 8 couleurs personnalisables pour le mode clair' },
+      { type: 'new', text: '🌙 5 couleurs personnalisables pour le mode sombre' },
+      { type: 'new', text: '🎯 8 thèmes prédéfinis : Orange, Bleu, Vert, Violet, Rose, Cyan, Rouge, Ambre' },
+      { type: 'new', text: '📝 Typographie : choix de la police et taille du texte' },
+      { type: 'new', text: '📥 Export JSON de la configuration pour votre agent local' },
+      { type: 'new', text: '👁️ Aperçu en temps réel du thème dans l\'admin' },
+      { type: 'improvement', text: '⚡ Cody v2.2.0 : chargement automatique de cody_config.json' },
+    ]
+  },
+  {
+    id: 'static-new-17',
+    date: '2026-01-11',
+    version: '4.5.0',
+    title: '⭐ Boutons Premium Hero & Aperçu Live',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '⭐ Bouton Premium 1 (CTA3) : entièrement personnalisable' },
+      { type: 'new', text: '💎 Bouton Premium 2 (CTA4) : entièrement personnalisable' },
+      { type: 'new', text: '🎨 Options avancées : icône, couleurs, style, taille, arrondi' },
+      { type: 'new', text: '✨ Effets hover : Agrandir, Brillance, Vibration' },
+      { type: 'new', text: '👁️ Aperçu en temps réel : visualisez tous les boutons CTA dans l\'admin' },
+      { type: 'improvement', text: '📱 Aperçu desktop/mobile amélioré avec indicateur visuel' },
+      { type: 'improvement', text: '🔔 Message d\'information clair sur l\'état des modifications' },
+    ]
+  },
+  {
     id: 'static-new-16',
     date: '2026-01-09',
     version: '4.4.0',
