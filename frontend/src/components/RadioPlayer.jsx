@@ -66,6 +66,8 @@ export default function RadioPlayer() {
     if (!audioRef.current) {
       audioRef.current = new Audio();
       audioRef.current.volume = volume / 100;
+      // Empêcher le préchargement automatique pour éviter que le navigateur reste en "chargement"
+      audioRef.current.preload = 'none';
     }
 
     const audio = audioRef.current;
