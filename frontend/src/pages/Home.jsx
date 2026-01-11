@@ -796,10 +796,13 @@ export default function Home() {
 
             {/* Quick stats - Customizable with Live Counter */}
             {heroSettings.hero_show_stats !== false && (
-              <div className={`flex flex-wrap items-center gap-6 mt-8 animate-fade-in-up stagger-5 ${
-                heroSettings.hero_text_align === 'center' ? 'justify-center' : 
-                heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
-              } ${heroSettings.hero_mobile_hide_stats ? 'hidden md:flex' : ''}`}>
+              <div 
+                className={`flex flex-wrap items-center gap-6 mt-8 animate-fade-in-up stagger-5 w-full ${
+                  heroSettings.hero_text_align === 'center' ? 'justify-center' : 
+                  heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
+                } ${heroSettings.hero_mobile_hide_stats ? 'hidden md:flex' : ''}`}
+                style={{ order: (heroSettings.hero_elements_order || []).indexOf('stats') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('stats') : 7 }}
+              >
                 {/* Stat 1 - Annonces (Live si activé) */}
                 <div style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
                   {heroSettings.hero_stat1_icon && <span className="mr-1">{heroSettings.hero_stat1_icon}</span>}
