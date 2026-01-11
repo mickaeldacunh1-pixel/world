@@ -115,9 +115,10 @@ export default function RadioPlayer() {
     
     setCurrentStation(station);
     setError(null);
-    audio.src = station.stream_url;
     
+    // Ne charger le stream que si la radio était en lecture
     if (wasPlaying) {
+      audio.src = station.stream_url;
       setIsLoading(true);
       audio.play().catch(() => {
         setError('Impossible de lire cette station');
