@@ -443,7 +443,7 @@ export default function Home() {
               <span className="text-white text-sm font-bold">OFFRE DE LANCEMENT</span>
             </div>
             <span className="text-white text-sm md:text-base font-medium group-hover:underline">
-              100 annonces gratuites pour les nouveaux inscrits !
+              20 annonces gratuites pour les nouveaux inscrits !
             </span>
             <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
           </Link>
