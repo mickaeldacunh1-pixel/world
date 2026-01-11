@@ -486,12 +486,24 @@ export default function Home() {
         {/* Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 w-full">
           <div 
-            className={`animate-fade-in-up ${
-              heroSettings.hero_text_align === 'center' ? 'mx-auto text-center max-w-4xl' : 
-              heroSettings.hero_text_align === 'right' ? 'ml-auto text-right max-w-3xl' : 
-              'max-w-3xl'
+            className={`animate-fade-in-up flex flex-col ${
+              heroSettings.hero_text_align === 'center' ? 'mx-auto text-center max-w-4xl items-center' : 
+              heroSettings.hero_text_align === 'right' ? 'ml-auto text-right max-w-3xl items-end' : 
+              'max-w-3xl items-start'
             }`}
           >
+            {/* Fonction pour obtenir l'ordre d'un élément */}
+            {(() => {
+              const defaultOrder = ['badge', 'title1', 'title2', 'description', 'search', 'cta_buttons', 'premium_buttons', 'shortcuts', 'stats'];
+              const savedOrder = heroSettings.hero_elements_order || defaultOrder;
+              const getOrder = (id) => {
+                const idx = savedOrder.indexOf(id);
+                return idx >= 0 ? idx : 99;
+              };
+              
+              return null;
+            })()}
+            
             {/* Badge - Customizable */}
             {heroSettings.hero_show_badge !== false && (
               <div 
@@ -502,7 +514,8 @@ export default function Home() {
                   backgroundColor: heroSettings.hero_badge_bg_color || 'rgba(249, 115, 22, 0.2)',
                   borderColor: heroSettings.hero_badge_border_color || 'rgba(249, 115, 22, 0.3)',
                   borderWidth: '1px',
-                  borderStyle: 'solid'
+                  borderStyle: 'solid',
+                  order: (heroSettings.hero_elements_order || []).indexOf('badge') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('badge') : 0
                 }}
               >
                 <span>{heroSettings.hero_badge_icon || '✨'}</span>
@@ -513,7 +526,10 @@ export default function Home() {
             )}
             
             {/* Title Line 1 */}
-            <h1 className={`font-heading ${TITLE_SIZE_CLASSES[heroSettings.hero_title_line1_size || heroSettings.hero_title_size] || 'text-4xl md:text-5xl lg:text-7xl'} font-black tracking-tight leading-none mb-6 animate-fade-in-up stagger-2`}>
+            <h1 
+              className={`font-heading ${TITLE_SIZE_CLASSES[heroSettings.hero_title_line1_size || heroSettings.hero_title_size] || 'text-4xl md:text-5xl lg:text-7xl'} font-black tracking-tight leading-none mb-6 animate-fade-in-up stagger-2`}
+              style={{ order: (heroSettings.hero_elements_order || []).indexOf('title1') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('title1') : 1 }}
+            >
               <span style={{ color: heroSettings.hero_title_line1_color || '#FFFFFF' }}>
                 <AnimatedText 
                   text={autoTranslate(heroSettings.hero_title_line1) || t('hero.titleLine1')} 
