@@ -430,20 +430,20 @@ export default function Home() {
         structuredData={[createOrganizationSchema(), createWebsiteSchema()]}
       />
 
-      {/* NOUVEAUTES BANNER - Visible en haut */}
+      {/* OFFRE DE LANCEMENT BANNER */}
       <section className="bg-gradient-to-r from-accent via-orange-500 to-amber-500 py-3">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
-            to="/nouveautes" 
+            to="/auth?mode=register&promo=LANCEMENT" 
             className="flex items-center justify-center gap-3 group"
-            data-testid="updates-banner"
+            data-testid="promo-banner"
           >
             <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-              <Sparkles className="w-4 h-4 text-white animate-pulse" />
-              <span className="text-white text-sm font-bold">{t('home.whats_new', 'NOUVEAUTÉS')}</span>
+              <Gift className="w-4 h-4 text-white animate-pulse" />
+              <span className="text-white text-sm font-bold">OFFRE DE LANCEMENT</span>
             </div>
             <span className="text-white text-sm md:text-base font-medium group-hover:underline">
-              {t('home.updates_cta', 'Boxtal, nouvelles catégories, marge frais de port...')}
+              100 annonces gratuites pour les nouveaux inscrits !
             </span>
             <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
           </Link>
