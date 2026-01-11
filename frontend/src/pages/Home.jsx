@@ -621,11 +621,11 @@ export default function Home() {
               }`}
               style={{ order: (heroSettings.hero_elements_order || []).indexOf('cta_buttons') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('cta_buttons') : 5 }}
             >
-              {/* Bouton KIM Agent */}
-              <Link to="/kim">
+              {/* Bouton Tobi Agent */}
+              <Link to="/tobi">
                 <Button variant="outline" className="gap-2 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20">
                   <Sparkles className="w-4 h-4" />
-                  KIM Agent
+                  Tobi
                 </Button>
               </Link>
 
