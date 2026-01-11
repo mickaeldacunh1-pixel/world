@@ -25,15 +25,15 @@ const faqs = [
     questions: [
       {
         q: "Qu'est-ce que l'offre de lancement ?",
-        a: "Pour célébrer notre lancement, nous offrons les 1000 premières annonces gratuitement ! Chaque nouvel inscrit via notre lien spécial reçoit jusqu'à 100 annonces gratuites. C'est notre façon de vous remercier de faire partie des premiers utilisateurs de World Auto Pro."
+        a: "Pour célébrer notre lancement, nous offrons les 1000 premières annonces gratuitement ! Chaque nouvel inscrit via notre lien spécial reçoit jusqu'à 20 annonces gratuites. C'est notre façon de vous remercier de faire partie des premiers utilisateurs de World Auto Pro."
       },
       {
-        q: "Comment profiter des 100 annonces gratuites ?",
-        a: "Inscrivez-vous en utilisant notre lien spécial avec le code promo LANCEMENT. Vos 100 annonces gratuites seront automatiquement créditées sur votre compte dès l'inscription. Aucun code à entrer, c'est automatique !"
+        q: "Comment profiter des 20 annonces gratuites ?",
+        a: "Inscrivez-vous en utilisant notre lien spécial avec le code promo LANCEMENT. Vos 20 annonces gratuites seront automatiquement créditées sur votre compte dès l'inscription. Aucun code à entrer, c'est automatique !"
       },
       {
         q: "L'offre est-elle limitée ?",
-        a: "Oui, l'offre est limitée aux 1000 premières annonces gratuites distribuées au total. Chaque utilisateur peut recevoir jusqu'à 100 annonces gratuites. Une fois ce quota atteint, l'offre prendra fin automatiquement. Ne tardez pas !"
+        a: "Oui, l'offre est limitée aux 1000 premières annonces gratuites distribuées au total. Chaque utilisateur peut recevoir jusqu'à 20 annonces gratuites. Une fois ce quota atteint, l'offre prendra fin automatiquement. Ne tardez pas !"
       },
       {
         q: "Mes annonces gratuites ont-elles une date d'expiration ?",
@@ -42,6 +42,24 @@ const faqs = [
       {
         q: "Puis-je cumuler les annonces gratuites avec d'autres offres ?",
         a: "Oui, vos annonces gratuites de l'offre de lancement peuvent être utilisées en plus de tout crédit acheté. Le système utilise d'abord vos annonces gratuites, puis vos crédits payants."
+      }
+    ]
+  },
+  {
+    category: "Tobi - Assistant IA",
+    icon: Sparkles,
+    questions: [
+      {
+        q: "Qu'est-ce que Tobi ?",
+        a: "Tobi est notre assistant IA automobile intelligent. Il peut vous aider à trouver des pièces, diagnostiquer des problèmes sur votre véhicule, estimer des prix et répondre à vos questions techniques."
+      },
+      {
+        q: "Comment utiliser Tobi ?",
+        a: "Cliquez sur le bouton 'Tobi' sur la page d'accueil ou accédez directement à /tobi-chat. Posez votre question en langage naturel et Tobi vous répondra instantanément."
+      },
+      {
+        q: "Tobi est-il gratuit ?",
+        a: "Oui, Tobi est entièrement gratuit pour tous les utilisateurs de World Auto Pro. Utilisez-le autant que vous le souhaitez !"
       }
     ]
   },
