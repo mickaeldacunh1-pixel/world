@@ -599,8 +599,18 @@ class LLMClient:
 - list_files: {"pattern": "**/*.py"}
 - search_in_files: {"query": "texte", "file_pattern": "**/*"}
 - get_project_structure: {}
+- scan_project: {} (scanner et mémoriser le projet - FAIS LE AU DEBUT)
+- get_env_value: {"key": "NOM_VARIABLE"}
+- set_env_value: {"key": "NOM", "value": "VALEUR"}
+- add_note: {"note": "info à mémoriser"}
+- get_knowledge: {} (voir ce que tu sais du projet)
 
-Reponds en francais. Sois bref."""
+🚀 AU PREMIER MESSAGE:
+1. Utilise scan_project pour découvrir le projet
+2. Mémorise les chemins importants
+3. Dis bonjour et montre ce que tu as trouvé
+
+Reponds en francais. Sois bref mais informatif. Termine TOUJOURS par ✅ quand une tâche est finie."""
 
     def __init__(self, session_id: str = None):
         self.session_id = session_id or "default"
