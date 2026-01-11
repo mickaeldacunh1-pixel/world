@@ -1035,12 +1035,8 @@ async def get_current_user_optional(request: Request) -> Optional[dict]:
 
 @api_router.post("/auth/register")
 async def register(user: UserCreate, background_tasks: BackgroundTasks):
-    # Vérifier que le pays est autorisé
-    if user.country not in ALLOWED_COUNTRIES:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Les inscriptions sont limitées aux pays suivants : {', '.join(ALLOWED_COUNTRIES)}"
-        )
+    # Note: Les acheteurs peuvent s'inscrire de n'importe quel pays
+    # La restriction des pays s'applique uniquement aux vendeurs (création d'annonces)
     
     existing = await db.users.find_one({"email": user.email})
     if existing:
