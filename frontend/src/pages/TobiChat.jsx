@@ -65,7 +65,7 @@ export default function TobiChat() {
 
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
     } catch (error) {
-      console.error('KIM Error:', error);
+      console.error('Tobi Error:', error);
       setMessages(prev => [...prev, { 
         role: 'assistant', 
         content: 'Désolé, je rencontre un problème technique. 😅 Réessayez dans quelques instants !' 
@@ -108,7 +108,7 @@ export default function TobiChat() {
             <span className="text-white font-bold text-lg">K</span>
           </div>
           <div>
-            <div className="text-white font-bold">KIM Agent</div>
+            <div className="text-white font-bold">Tobi</div>
             <div className="text-slate-400 text-xs">Propulsé par IA</div>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function TobiChat() {
             <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center mb-6 animate-bounce">
               <span className="text-5xl font-black text-white">K</span>
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Bienvenue sur KIM Agent</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">Bienvenue sur Tobi</h1>
             <p className="text-slate-400 mb-8 max-w-md">
               Votre assistant IA personnel. Posez-moi vos questions sur l'automobile, la mécanique, ou tout autre sujet !
             </p>
@@ -262,7 +262,7 @@ export default function TobiChat() {
               </div>
               <div className="py-3">
                 <div className="text-white font-medium">Version</div>
-                <div className="text-slate-400 text-sm">KIM Agent v1.0.0</div>
+                <div className="text-slate-400 text-sm">Tobi v1.0.0</div>
               </div>
             </div>
           </div>
