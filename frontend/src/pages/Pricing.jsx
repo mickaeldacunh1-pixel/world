@@ -206,7 +206,7 @@ export default function Pricing() {
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Choisissez le pack qui correspond à vos besoins. 
-            Tous les packs incluent la publication d'annonces pendant 30 jours.
+            Tous les packs incluent la publication d&apos;annonces pendant 30 jours.
           </p>
         </div>
 
@@ -756,7 +756,7 @@ export default function Pricing() {
         <div className="mb-8">
           <h2 className="font-heading text-2xl font-bold mb-6 text-center">
             🔥 Boost Vidéo Homepage
-            <span className="block text-sm font-normal text-muted-foreground mt-1">Diffusez votre vidéo sur la page d'accueil</span>
+            <span className="block text-sm font-normal text-muted-foreground mt-1">Diffusez votre vidéo sur la page d&apos;accueil</span>
           </h2>
           <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {/* Boost 1h */}
@@ -842,13 +842,13 @@ export default function Pricing() {
               <h3 className="font-heading font-bold mb-2">Comment ça marche ?</h3>
               <p className="text-muted-foreground text-sm">
                 Chaque crédit vous permet de publier une annonce qui restera visible pendant 30 jours. 
-                Vous pouvez acheter des crédits à l'unité ou en pack pour économiser.
+                Vous pouvez acheter des crédits à l&apos;unité ou en pack pour économiser.
               </p>
             </Card>
             <Card className="p-6">
               <h3 className="font-heading font-bold mb-2">Les crédits expirent-ils ?</h3>
               <p className="text-muted-foreground text-sm">
-                Non, vos crédits n'expirent jamais. Vous pouvez les utiliser quand vous le souhaitez 
+                Non, vos crédits n&apos;expirent jamais. Vous pouvez les utiliser quand vous le souhaitez 
                 pour publier vos annonces.
               </p>
             </Card>
