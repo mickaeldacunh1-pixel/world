@@ -329,6 +329,26 @@ export default function Auth() {
 
               {/* Register Form */}
               <TabsContent value="register">
+                {/* Bannière promo LANCEMENT */}
+                {promoStatus.valid && (
+                  <div className="mb-4 p-4 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg text-white">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xl">🎉</span>
+                      <span className="font-bold">OFFRE DE LANCEMENT !</span>
+                    </div>
+                    <p className="text-sm opacity-90">
+                      Inscrivez-vous maintenant et recevez <strong>{promoStatus.free_ads} annonces gratuites</strong> !
+                    </p>
+                    <p className="text-xs mt-1 opacity-75">
+                      Plus que {promoStatus.remaining} annonces disponibles sur 1000
+                    </p>
+                  </div>
+                )}
+                {promoStatus.valid === false && promoStatus.message && (
+                  <div className="mb-4 p-3 bg-red-100 border border-red-300 rounded-lg text-red-700 text-sm">
+                    {promoStatus.message}
+                  </div>
+                )}
                 <form onSubmit={handleRegister} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="register-name">Nom complet *</Label>
