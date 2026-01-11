@@ -528,7 +528,7 @@ class UserCreate(BaseModel):
 # ================== SYSTÈME PROMO LANCEMENT ==================
 PROMO_CODES = {
     "LANCEMENT": {
-        "free_ads": 100,  # Annonces gratuites par utilisateur
+        "free_ads": 20,  # Annonces gratuites par utilisateur (modifié de 100 à 20)
         "total_limit": 1000,  # Limite globale d'annonces gratuites
         "active": True,
         "description": "Offre de lancement - 1000 premières annonces gratuites"
