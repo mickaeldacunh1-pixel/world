@@ -124,7 +124,7 @@ config = Config()
 # ============== THEME CONFIGURATION ==============
 
 def load_theme_config():
-    """Charge la configuration du thème depuis cody_config.json"""
+    """Charge la configuration du thème depuis cody_config.json ou depuis l'API"""
     default_config = {
         "agent_name": "Cody",
         "theme_mode": "light",
@@ -156,6 +156,8 @@ def load_theme_config():
         }
     }
     
+    # 1. Essayer de charger depuis le fichier local
+    config_loaded = False
     try:
         config_path = Path(__file__).parent / "cody_config.json"
         if config_path.exists():
@@ -169,10 +171,83 @@ def load_theme_config():
                         else:
                             default_config[key] = user_config[key]
                 console.print(f"[green]✅ Configuration personnalisée chargée depuis cody_config.json[/green]")
+                config_loaded = True
     except Exception as e:
-        console.print(f"[dim]ℹ️ Utilisation de la configuration par défaut ({e})[/dim]")
+        console.print(f"[dim]ℹ️ Pas de fichier cody_config.json local ({e})[/dim]")
+    
+    # 2. Si pas de config locale, essayer de synchroniser depuis l'API
+    if not config_loaded:
+        try:
+            sync_config_from_api(default_config)
+        except:
+            pass
     
     return default_config
+
+def sync_config_from_api(config):
+    """Synchronise la configuration depuis l'API World Auto Pro"""
+    SITE_URL = os.environ.get('SITE_URL', 'https://worldautofrance.com')
+    API_URL = f"{SITE_URL}/api/settings/hero"
+    
+    try:
+        console.print(f"[dim]🔄 Synchronisation de la config depuis {SITE_URL}...[/dim]")
+        response = httpx.get(API_URL, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            
+            # Mapper les settings de l'API vers la config Cody
+            if data.get('cody_agent_name'):
+                config['agent_name'] = data['cody_agent_name']
+            if data.get('cody_theme_mode'):
+                config['theme_mode'] = data['cody_theme_mode']
+            
+            # Couleurs mode clair
+            color_mappings = {
+                'cody_accent_color': ('colors', 'accent'),
+                'cody_accent_hover': ('colors', 'accent_hover'),
+                'cody_bg_main': ('colors', 'bg_main'),
+                'cody_bg_sidebar': ('colors', 'bg_sidebar'),
+                'cody_text_primary': ('colors', 'text_primary'),
+                'cody_text_secondary': ('colors', 'text_secondary'),
+                'cody_border_color': ('colors', 'border'),
+                'cody_success_color': ('colors', 'success'),
+            }
+            
+            for api_key, (section, key) in color_mappings.items():
+                if data.get(api_key):
+                    config[section][key] = data[api_key]
+            
+            # Couleurs mode sombre
+            dark_mappings = {
+                'cody_dark_bg_main': ('dark_colors', 'bg_main'),
+                'cody_dark_bg_sidebar': ('dark_colors', 'bg_sidebar'),
+                'cody_dark_text_primary': ('dark_colors', 'text_primary'),
+                'cody_dark_text_secondary': ('dark_colors', 'text_secondary'),
+                'cody_dark_border': ('dark_colors', 'border'),
+            }
+            
+            for api_key, (section, key) in dark_mappings.items():
+                if data.get(api_key):
+                    config[section][key] = data[api_key]
+            
+            # Options
+            if 'cody_sound_enabled' in data:
+                config['options']['sound_enabled'] = data['cody_sound_enabled']
+            if 'cody_emoji_enabled' in data:
+                config['options']['emoji_enabled'] = data['cody_emoji_enabled']
+            if 'cody_animations_enabled' in data:
+                config['options']['animations_enabled'] = data['cody_animations_enabled']
+            
+            console.print(f"[green]✅ Configuration synchronisée depuis {SITE_URL}[/green]")
+            
+            # Sauvegarder localement pour les prochains démarrages
+            config_path = Path(__file__).parent / "cody_config.json"
+            with open(config_path, 'w', encoding='utf-8') as f:
+                json.dump(config, f, indent=2, ensure_ascii=False)
+            console.print(f"[dim]💾 Config sauvegardée dans cody_config.json[/dim]")
+            
+    except Exception as e:
+        console.print(f"[dim]⚠️ Impossible de synchroniser la config ({e})[/dim]")
 
 THEME_CONFIG = load_theme_config()
 
