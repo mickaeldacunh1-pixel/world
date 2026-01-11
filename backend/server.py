@@ -4979,6 +4979,14 @@ async def get_car_brands():
 async def get_pricing():
     return PRICING_PACKAGES
 
+@api_router.get("/countries/allowed")
+async def get_allowed_countries():
+    """Retourne la liste des pays autorisés pour la vente"""
+    return {
+        "allowed_countries": ALLOWED_COUNTRIES,
+        "note": "La création de comptes acheteurs est ouverte à tous les pays. Cette restriction s'applique uniquement aux vendeurs souhaitant publier des annonces."
+    }
+
 @api_router.post("/payments/checkout")
 async def create_checkout(package_id: str, request: Request, current_user: dict = Depends(get_current_user)):
     if package_id not in PRICING_PACKAGES:
