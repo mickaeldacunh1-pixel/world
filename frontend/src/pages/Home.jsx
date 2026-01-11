@@ -562,7 +562,10 @@ export default function Home() {
               className={`${DESC_SIZE_CLASSES[heroSettings.hero_description_size] || 'text-lg md:text-xl'} mb-10 animate-fade-in-up stagger-3 ${
                 heroSettings.hero_text_align === 'center' ? 'max-w-2xl mx-auto' : 'max-w-xl'
               }`}
-              style={{ color: heroSettings.hero_description_color || 'rgba(255, 255, 255, 0.8)' }}
+              style={{ 
+                color: heroSettings.hero_description_color || 'rgba(255, 255, 255, 0.8)',
+                order: (heroSettings.hero_elements_order || []).indexOf('description') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('description') : 3
+              }}
             >
               {autoTranslate(heroSettings.hero_description) || t('hero.description')}
             </p>
@@ -571,10 +574,11 @@ export default function Home() {
             {heroSettings.hero_show_search !== false && (
               <form 
                 onSubmit={handleSearch} 
-                className={`flex flex-col sm:flex-row gap-3 animate-fade-in-up stagger-4 glass p-2 rounded-2xl ${
+                className={`flex flex-col sm:flex-row gap-3 animate-fade-in-up stagger-4 glass p-2 rounded-2xl w-full ${
                   heroSettings.hero_text_align === 'center' ? 'max-w-3xl mx-auto' : ''
                 }`}
                 data-testid="search-form"
+                style={{ order: (heroSettings.hero_elements_order || []).indexOf('search') >= 0 ? (heroSettings.hero_elements_order || []).indexOf('search') : 4 }}
               >
                 <div className="relative flex-1">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
