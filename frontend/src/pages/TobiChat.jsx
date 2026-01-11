@@ -105,7 +105,7 @@ export default function TobiChat() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-            <span className="text-white font-bold text-lg">K</span>
+            <span className="text-white font-bold text-lg">T</span>
           </div>
           <div>
             <div className="text-white font-bold">Tobi</div>
@@ -136,7 +136,7 @@ export default function TobiChat() {
           /* Welcome Screen */
           <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
             <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center mb-6 animate-bounce">
-              <span className="text-5xl font-black text-white">K</span>
+              <span className="text-5xl font-black text-white">T</span>
             </div>
             <h1 className="text-3xl font-bold text-white mb-2">Bienvenue sur Tobi</h1>
             <p className="text-slate-400 mb-8 max-w-md">
@@ -168,7 +168,7 @@ export default function TobiChat() {
                     : 'bg-slate-700'
                 }`}>
                   {msg.role === 'assistant' ? (
-                    <span className="text-white font-bold">K</span>
+                    <span className="text-white font-bold">T</span>
                   ) : (
                     <span className="text-slate-300">👤</span>
                   )}
@@ -189,7 +189,7 @@ export default function TobiChat() {
             {isTyping && (
               <div className="flex gap-3">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                  <span className="text-white font-bold">K</span>
+                  <span className="text-white font-bold">T</span>
                 </div>
                 <div className="bg-slate-800 rounded-2xl px-4 py-3">
                   <div className="flex gap-1">
