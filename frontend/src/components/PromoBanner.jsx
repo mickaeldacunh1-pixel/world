@@ -58,12 +58,19 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
         const response = await axios.get(`${API}/settings/hero`);
         if (response.data) {
           const data = response.data;
+          // Récupérer les 3 avantages depuis les settings ou utiliser les défauts
+          const benefits = [
+            { icon: "percent", text: data.promo_benefit_1 || DEFAULT_PROMO.benefits[0].text },
+            { icon: "crown", text: data.promo_benefit_2 || DEFAULT_PROMO.benefits[1].text },
+            { icon: "shield", text: data.promo_benefit_3 || DEFAULT_PROMO.benefits[2].text },
+          ];
+          
           setPromoConfig({
             enabled: data.promo_banner_enabled !== false,
             title: data.promo_banner_title || DEFAULT_PROMO.title,
             subtitle: data.promo_banner_subtitle || DEFAULT_PROMO.subtitle,
             highlight: data.promo_banner_highlight || DEFAULT_PROMO.highlight,
-            benefits: DEFAULT_PROMO.benefits,
+            benefits: benefits,
             cta_text: data.promo_banner_cta || DEFAULT_PROMO.cta_text,
             cta_link: data.promo_banner_link || DEFAULT_PROMO.cta_link,
             badge_text: data.promo_banner_badge || DEFAULT_PROMO.badge_text,

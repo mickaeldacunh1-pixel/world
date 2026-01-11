@@ -2795,6 +2795,36 @@ export default function AdminSettings() {
                     </div>
                   </div>
 
+                  {/* 3 avantages Premium */}
+                  <div className="space-y-3 p-4 bg-secondary/30 rounded-lg">
+                    <Label className="text-sm font-semibold">✨ Les 3 avantages affichés</Label>
+                    <p className="text-xs text-muted-foreground mb-2">Ces 3 lignes s'affichent dans le popup du bouton Premium</p>
+                    <div className="space-y-2">
+                      <Label>Avantage 1 (icône: percent)</Label>
+                      <Input
+                        value={settings.promo_benefit_1 || '10% de réduction sur tous les frais'}
+                        onChange={(e) => setSettings({...settings, promo_benefit_1: e.target.value})}
+                        placeholder="10% de réduction sur tous les frais"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Avantage 2 (icône: crown)</Label>
+                      <Input
+                        value={settings.promo_benefit_2 || 'Visibilité prioritaire'}
+                        onChange={(e) => setSettings({...settings, promo_benefit_2: e.target.value})}
+                        placeholder="Visibilité prioritaire"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Avantage 3 (icône: shield)</Label>
+                      <Input
+                        value={settings.promo_benefit_3 || "Jusqu'à 50 photos par annonce"}
+                        onChange={(e) => setSettings({...settings, promo_benefit_3: e.target.value})}
+                        placeholder="Jusqu'à 50 photos par annonce"
+                      />
+                    </div>
+                  </div>
+
                   {/* Couleurs */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
