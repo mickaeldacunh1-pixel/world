@@ -87,6 +87,12 @@ Plateforme de vente de pièces automobiles avec assistant IA "Tobi", fonctionnal
 
 ## Session du 2026-01-11 - Boutons Premium Hero Editor & Personnalisation Cody & Éditeur Pages
 
+### Corrections et améliorations rapides (2026-01-11)
+- ✅ **Boutons Premium activés** : CTA3 et CTA4 activés dans la base de données
+- ✅ **Aperçu live amélioré** : Affichage des boutons CTA1-4 dans l'aperçu admin avec couleurs personnalisées
+- ✅ **Message d'aperçu amélioré** : Nouvelle bannière avec explication claire (🔴 Aperçu en temps réel)
+- ✅ **Page Nouveautés mise à jour** : Ajout v4.5.0, v4.6.0, v4.7.0 avec toutes les nouvelles fonctionnalités
+
 ### Hero Editor - Boutons Premium (P0) ✅
 - ✅ **CTA3 (Bouton Premium 1)** : Nouveau bouton entièrement configurable
   - Icône, texte, lien, style (plein/contour/transparent)
