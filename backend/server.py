@@ -523,6 +523,17 @@ class UserCreate(BaseModel):
     postal_code: Optional[str] = None
     country: str = "France"  # Pays obligatoire
     referral_code: Optional[str] = None  # Code de parrainage
+    promo_code: Optional[str] = None  # Code promo (ex: LANCEMENT)
+
+# ================== SYSTÈME PROMO LANCEMENT ==================
+PROMO_CODES = {
+    "LANCEMENT": {
+        "free_ads": 100,  # Annonces gratuites par utilisateur
+        "total_limit": 1000,  # Limite globale d'annonces gratuites
+        "active": True,
+        "description": "Offre de lancement - 1000 premières annonces gratuites"
+    }
+}
 
 # Pays autorisés pour l'inscription
 ALLOWED_COUNTRIES = [
