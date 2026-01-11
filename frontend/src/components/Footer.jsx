@@ -104,44 +104,74 @@ export default function Footer() {
             </p>
 
             {/* Newsletter Form */}
-            <div className="bg-primary-foreground/10 rounded-lg p-4">
-              <h4 className="font-heading font-bold text-sm mb-2 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-accent" />
-                {t('footer.newsletter')}
-              </h4>
-              {subscribed ? (
-                <div className="flex items-center gap-2 text-sm text-green-400">
-                  <CheckCircle className="w-4 h-4" />
-                  {t('common.success')}!
-                </div>
-              ) : (
-                <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
-                  <Input
-                    type="email"
-                    placeholder={t('footer.subscribe_placeholder')}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm h-9"
-                    required
-                  />
-                  <Button 
-                    type="submit" 
-                    size="sm"
-                    className="bg-accent hover:bg-accent/90 h-9 px-3"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Send className="w-4 h-4" />
-                    )}
-                  </Button>
-                </form>
-              )}
-            </div>
+            {s.footer_show_newsletter !== false && (
+              <div className="bg-primary-foreground/10 rounded-lg p-4">
+                <h4 className="font-heading font-bold text-sm mb-2 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-accent" />
+                  {s.footer_newsletter_title || t('footer.newsletter')}
+                </h4>
+                {subscribed ? (
+                  <div className="flex items-center gap-2 text-sm text-green-400">
+                    <CheckCircle className="w-4 h-4" />
+                    {t('common.success')}!
+                  </div>
+                ) : (
+                  <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+                    <Input
+                      type="email"
+                      placeholder={t('footer.subscribe_placeholder')}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm h-9"
+                      required
+                    />
+                    <Button 
+                      type="submit" 
+                      size="sm"
+                      className="bg-accent hover:bg-accent/90 h-9 px-3"
+                      disabled={loading}
+                      style={{ backgroundColor: s.footer_accent_color || undefined }}
+                    >
+                      {loading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Send className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </form>
+                )}
+              </div>
+            )}
+
+            {/* Social Media Links */}
+            {s.footer_show_social !== false && (s.footer_facebook || s.footer_instagram || s.footer_twitter || s.footer_linkedin) && (
+              <div className="flex gap-3 mt-4">
+                {s.footer_facebook && (
+                  <a href={s.footer_facebook} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                    <Facebook className="w-5 h-5" />
+                  </a>
+                )}
+                {s.footer_instagram && (
+                  <a href={s.footer_instagram} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                    <Instagram className="w-5 h-5" />
+                  </a>
+                )}
+                {s.footer_twitter && (
+                  <a href={s.footer_twitter} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                    <Twitter className="w-5 h-5" />
+                  </a>
+                )}
+                {s.footer_linkedin && (
+                  <a href={s.footer_linkedin} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-accent transition-colors">
+                    <Linkedin className="w-5 h-5" />
+                  </a>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Catégories */}
+          {s.footer_show_categories !== false && (
           <div>
             <h3 className="font-heading font-bold text-lg mb-4 flex items-center gap-2">
               <Car className="w-5 h-5 text-accent" />
