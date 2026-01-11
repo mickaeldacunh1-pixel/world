@@ -982,6 +982,7 @@ export default function Home() {
                   <img
                     src={brand.logo}
                     alt={brand.name}
+                    loading="lazy"
                     className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
                     onError={(e) => {
                       e.target.style.display = 'none';
