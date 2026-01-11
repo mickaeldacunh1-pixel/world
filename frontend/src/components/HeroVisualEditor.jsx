@@ -44,19 +44,20 @@ function SortableHeroElement({ id, element, settings, isSelected, onSelect, onTo
       ref={setNodeRef}
       style={style}
       className={`
-        relative group rounded-lg border-2 transition-all cursor-pointer
-        ${isSelected ? 'border-orange-500 ring-2 ring-orange-500/30' : 'border-transparent hover:border-gray-300'}
-        ${isDragging ? 'z-50 shadow-2xl' : ''}
-        ${!isVisible ? 'opacity-50' : ''}
+        relative group rounded-lg border-2 transition-all cursor-pointer p-1
+        ${isSelected ? 'border-orange-500 ring-2 ring-orange-500/30 bg-orange-500/10' : 'border-transparent hover:border-white/50 hover:bg-white/5'}
+        ${isDragging ? 'z-50 shadow-2xl scale-105' : ''}
+        ${!isVisible ? 'opacity-40 grayscale' : ''}
       `}
       onClick={() => onSelect(id)}
     >
-      {/* Barre de contrôle */}
+      {/* Barre de contrôle - toujours visible en haut */}
       <div className={`
-        absolute -top-3 left-1/2 -translate-x-1/2 
-        flex items-center gap-1 px-2 py-1 rounded-full 
-        bg-gray-900 text-white text-xs
-        opacity-0 group-hover:opacity-100 transition-opacity z-10
+        absolute -top-4 left-1/2 -translate-x-1/2 
+        flex items-center gap-1 px-3 py-1.5 rounded-full 
+        bg-gray-900/95 text-white text-xs shadow-lg
+        opacity-0 group-hover:opacity-100 transition-all z-20
+        border border-white/20
       `}>
         <button
           {...attributes}
@@ -64,15 +65,15 @@ function SortableHeroElement({ id, element, settings, isSelected, onSelect, onTo
           className="cursor-grab active:cursor-grabbing p-1 hover:bg-white/20 rounded"
           title="Déplacer"
         >
-          <GripVertical className="w-3 h-3" />
+          <GripVertical className="w-4 h-4" />
         </button>
-        <span className="px-1 font-medium">{element.label}</span>
+        <span className="px-2 font-semibold">{element.label}</span>
         <button
           onClick={(e) => { e.stopPropagation(); onToggleVisibility(element.key); }}
           className="p-1 hover:bg-white/20 rounded"
           title={isVisible ? "Masquer" : "Afficher"}
         >
-          {isVisible ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+          {isVisible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4 text-red-400" />}
         </button>
       </div>
 
