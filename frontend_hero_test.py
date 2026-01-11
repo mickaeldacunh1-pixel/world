@@ -16,7 +16,7 @@ import sys
 
 class HeroCustomizationFrontendTester:
     def __init__(self):
-        self.base_url = "https://tobi-site-editor.preview.emergentagent.com"
+        self.base_url = "https://tobi-dashboard.preview.emergentagent.com"
         self.api_url = f"{self.base_url}/api"
         self.driver = None
         self.tests_run = 0
