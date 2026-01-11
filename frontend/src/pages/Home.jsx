@@ -1254,6 +1254,7 @@ export default function Home() {
                       <img
                         src={listing.images?.[0] || 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=300&fit=crop'}
                         alt={listing.title}
+                        loading="lazy"
                         className="w-full h-full object-cover img-zoom"
                       />
                       {/* Overlay gradient */}
