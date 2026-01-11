@@ -908,6 +908,7 @@ export default function Home() {
                     <img
                       src={categoryImage}
                       alt={cat.name}
+                      loading="lazy"
                       className="absolute inset-0 w-full h-full object-cover img-zoom"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
