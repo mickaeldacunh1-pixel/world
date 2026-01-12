@@ -1182,7 +1182,65 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
     
     async def _process_actions(self, response: str) -> str:
         """Traiter les actions dans la réponse"""
-        # Pattern 1: Format complet ```action {"tool": "...", "params": {...}} ```
+        
+        # Pattern PRINCIPAL: {"tool": "...", "params": {...}} - LE PLUS IMPORTANT
+        tool_pattern = r'\{"tool":\s*"(\w+)",\s*"params":\s*(\{[^}]*\})\}'
+        for match in re.finditer(tool_pattern, response):
+            tool_name = match.group(1)
+            params_str = match.group(2)
+            original_text = match.group(0)
+            
+            try:
+                params = json.loads(params_str) if params_str != '{}' else {}
+            except:
+                params = {}
+            
+            result = None
+            try:
+                if tool_name == 'read_file':
+                    result = tools.read_file(params.get('path', ''))
+                elif tool_name == 'write_file':
+                    result = tools.write_file(params.get('path', ''), params.get('content', ''))
+                elif tool_name == 'execute_command':
+                    result = tools.execute_command(params.get('command', ''))
+                elif tool_name == 'vps_command':
+                    result = tools.vps_command(params.get('command', ''))
+                elif tool_name == 'check_worldauto':
+                    result = tools.check_worldauto()
+                elif tool_name == 'list_files':
+                    result = tools.list_files(params.get('pattern', '**/*'))
+                elif tool_name == 'search_in_files':
+                    result = tools.search_in_files(params.get('query', ''), params.get('file_pattern', '**/*'))
+                elif tool_name == 'get_project_structure':
+                    result = tools.get_project_structure()
+                elif tool_name == 'scan_project':
+                    result = tools.scan_project()
+                elif tool_name == 'get_env_value':
+                    result = tools.get_env_value(params.get('key', ''))
+                elif tool_name == 'set_env_value':
+                    result = tools.set_env_value(params.get('key', ''), params.get('value', ''))
+                elif tool_name == 'add_note':
+                    result = tools.add_note(params.get('note', ''))
+                elif tool_name == 'get_knowledge':
+                    result = tools.get_knowledge()
+                elif tool_name == 'screenshot':
+                    result = tools.screenshot(params.get('url', 'https://worldautofrance.com'))
+                elif tool_name == 'test_api':
+                    result = tools.test_api(params.get('method', 'GET'), params.get('endpoint', '/api/pricing'), params.get('data'))
+                elif tool_name == 'deploy':
+                    result = tools.deploy()
+                elif tool_name == 'backup_db':
+                    result = tools.backup_db()
+                elif tool_name == 'check_services':
+                    result = tools.check_services()
+            except Exception as e:
+                result = {"success": False, "error": str(e)}
+            
+            if result:
+                result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
+                response = response.replace(original_text, result_str, 1)
+        
+        # Pattern 2: Format avec balises ```action {"tool": "...", "params": {...}} ```
         action_pattern = r'```action\s*\n?({.*?})\s*\n?```'
         matches = re.findall(action_pattern, response, re.DOTALL)
         
