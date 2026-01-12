@@ -1223,6 +1223,16 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                     result = tools.add_note(params.get('note', ''))
                 elif tool_name == 'get_knowledge':
                     result = tools.get_knowledge()
+                elif tool_name == 'screenshot':
+                    result = tools.screenshot(params.get('url', 'https://worldautofrance.com'))
+                elif tool_name == 'test_api':
+                    result = tools.test_api(params.get('method', 'GET'), params.get('endpoint', '/api/pricing'), params.get('data'))
+                elif tool_name == 'deploy':
+                    result = tools.deploy()
+                elif tool_name == 'backup_db':
+                    result = tools.backup_db()
+                elif tool_name == 'check_services':
+                    result = tools.check_services()
                 
                 if result:
                     result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
