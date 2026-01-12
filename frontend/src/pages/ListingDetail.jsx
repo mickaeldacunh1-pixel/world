@@ -10,7 +10,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
 import { Skeleton } from '../components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2, Heart, ShoppingCart, CreditCard, Shield, ShieldCheck, Loader2, Flag, AlertTriangle, Video, Award, Tag, TrendingDown, TrendingUp, Scale, History } from 'lucide-react';
+import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2, Heart, ShoppingCart, CreditCard, Shield, ShieldCheck, Loader2, Flag, AlertTriangle, Video, Award, Tag, TrendingDown, TrendingUp, Scale, History, Calculator, Package } from 'lucide-react';
 import SEO, { createProductSchema, createBreadcrumbSchema } from '../components/SEO';
 import ShareButtons from '../components/ShareButtons';
 import { VerificationBadge, WarrantyBadge, PartOriginBadge } from '../components/TrustBadge';
@@ -18,6 +18,7 @@ import MakeOfferButton from '../components/MakeOfferButton';
 import QuestionsAnswers from '../components/QuestionsAnswers';
 import { WarrantySelector } from '../components/WarrantySelector';
 import { CompareButton } from '../components/CompareWidget';
+import ShippingCalculator from '../components/ShippingCalculator';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
