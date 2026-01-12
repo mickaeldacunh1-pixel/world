@@ -43,7 +43,7 @@ def get_version():
     return "1.0.0"
 
 VERSION = get_version()
-UPDATE_URL = "https://mechanic-toolkit-6.preview.emergentagent.com/downloads/code-agent"
+UPDATE_URL = "https://auto-parts-app-2.preview.emergentagent.com/downloads/code-agent"
 VERSION_URL = f"{UPDATE_URL}/version.txt"
 ZIP_URL = f"{UPDATE_URL}.zip"
 
