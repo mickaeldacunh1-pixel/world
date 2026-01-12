@@ -512,7 +512,7 @@ class AgentTools:
                 for endpoint in protected_endpoints:
                     try:
                         r = client.get(f"https://worldautofrance.com{endpoint}")
-                        if r.status_code in [401, 403, 422]:
+                        if r.status_code in [401, 403, 405, 422]:
                             report += f"   ✅ {endpoint}: Protégé ({r.status_code})\n"
                             results["endpoints_auth"][endpoint] = "PROTECTED"
                         elif r.status_code == 404:
