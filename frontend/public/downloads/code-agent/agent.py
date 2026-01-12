@@ -937,21 +937,21 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
         
         # Pattern 2: Format simplifié {"path": "..."} ou {"command": "..."} (sans balises)
         simple_patterns = [
-            (r'\{"path":\s*"([^"]+)"\}', 'read_file', 'path'),
-            (r'\{"command":\s*"([^"]+)"\}', 'execute_command', 'command'),
-            (r'\{"pattern":\s*"([^"]+)"\}', 'list_files', 'pattern'),
-            (r'\{"query":\s*"([^"]+)"', 'search_in_files', 'query'),
-            (r'\{"key":\s*"([^"]+)"\}', 'get_env_value', 'key'),
-            (r'\{"note":\s*"([^"]+)"\}', 'add_note', 'note'),
+            (r'\{"path":\s*"([^"]+)"\s*\}', 'read_file', 'path'),
+            (r'\{"command":\s*"([^"]+)"\s*\}', 'execute_command', 'command'),
+            (r'\{"pattern":\s*"([^"]+)"\s*\}', 'list_files', 'pattern'),
+            (r'\{"query":\s*"([^"]+)"[^}]*\}', 'search_in_files', 'query'),
+            (r'\{"key":\s*"([^"]+)"\s*\}', 'get_env_value', 'key'),
+            (r'\{"note":\s*"([^"]+)"\s*\}', 'add_note', 'note'),
         ]
         
         # Traiter le format simplifié d'abord
         for pattern, tool_name, param_name in simple_patterns:
-            simple_matches = re.findall(pattern, response)
-            for match_value in simple_matches:
-                result = None
-                original_match = f'{{"{param_name}": "{match_value}"}}'
+            for match in re.finditer(pattern, response):
+                match_value = match.group(1)
+                original_text = match.group(0)  # Le texte exact trouvé
                 
+                result = None
                 if tool_name == 'read_file':
                     result = tools.read_file(match_value)
                 elif tool_name == 'execute_command':
@@ -966,9 +966,8 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                     result = tools.add_note(match_value)
                 
                 if result:
-                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
-                    # Remplacer toutes les variantes possibles
-                    response = re.sub(re.escape(original_match), result_str, response, count=1)
+                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
+                    response = response.replace(original_text, result_str, 1)
         
         # Traiter le format complet avec balises ```action```
         for match in matches:
