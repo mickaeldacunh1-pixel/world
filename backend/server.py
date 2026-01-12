@@ -24,6 +24,7 @@ from bordereau_generator import BordereauGenerator
 # from emergentintegrations.llm.chat import LlmChat, UserMessage
 LlmChat = None
 UserMessage = None
+ImageContent = None
 from pywebpush import webpush, WebPushException
 import json
 
