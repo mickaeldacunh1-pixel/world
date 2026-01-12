@@ -327,7 +327,11 @@ export default function CreateListing() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (user.credits <= 0) {
+    // Vérifier si l'utilisateur a des crédits OU des annonces gratuites
+    const hasCredits = (user?.credits || 0) > 0;
+    const hasFreeAds = (user?.free_ads_remaining || 0) > 0;
+    
+    if (!hasCredits && !hasFreeAds) {
       toast.error('Vous n\'avez pas de crédits. Achetez un pack d\'annonces.');
       navigate('/tarifs');
       return;
@@ -360,15 +364,20 @@ export default function CreateListing() {
         compatible_models,
         images: imageUrls,
         video_url: videoUrl || null,
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
 
       await refreshUser();
       toast.success('Annonce publiée avec succès !');
       navigate(`/annonce/${response.data.id}`);
     } catch (error) {
+      console.error('Erreur création annonce:', error);
       if (error.response?.status === 402) {
         toast.error('Crédits insuffisants. Achetez un pack d\'annonces.');
         navigate('/tarifs');
+      } else if (error.response?.status === 403) {
+        toast.error(error.response?.data?.detail || 'Action non autorisée');
       } else {
         toast.error(error.response?.data?.detail || 'Erreur lors de la publication');
       }
