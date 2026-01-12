@@ -6549,7 +6549,9 @@ async def recognize_part(file: UploadFile = File(...)):
             raise HTTPException(status_code=500, detail="Clé API non configurée")
         
         # Create chat with vision capability
-        from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+        # from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+        # LLM désactivé pour déploiement VPS
+        raise HTTPException(status_code=503, detail="Service de reconnaissance d'images temporairement indisponible")
         
         chat = LlmChat(
             api_key=api_key,
