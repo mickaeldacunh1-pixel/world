@@ -1297,6 +1297,10 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                     result = tools.backup_db()
                 elif tool_name == 'check_services':
                     result = tools.check_services()
+                elif tool_name == 'vps_command':
+                    result = tools.vps_command(params.get('command', ''))
+                elif tool_name == 'check_worldauto':
+                    result = tools.check_worldauto()
                 
                 if result:
                     result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
