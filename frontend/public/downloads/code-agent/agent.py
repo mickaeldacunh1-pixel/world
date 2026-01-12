@@ -1580,10 +1580,18 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                     result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
                 response = response.replace(original_text, result_str, 1)
                 
-                # Supprimer les phrases "Je vais analyser..." qui restent après l'outil
-                response = re.sub(r'Je vais maintenant analyser.*?📊', '', response)
-                response = re.sub(r'Laisse-moi analyser.*?\.', '', response)
-                response = re.sub(r'Analysons ces résultats.*?\.', '', response)
+                # Supprimer les phrases inutiles qui restent après l'outil
+                cleanup_patterns = [
+                    r'Je vais maintenant analyser.*?📊',
+                    r'Laisse-moi analyser.*?\.',
+                    r'Analysons ces résultats.*?\.',
+                    r'Je te présenterai les résultats.*?📊',
+                    r'Voici les résultats dès que.*?\.',
+                    r'Cela nous permettra d\'identifier.*?\.',
+                    r'dès que le diagnostic sera terminé.*?📊',
+                ]
+                for pattern in cleanup_patterns:
+                    response = re.sub(pattern, '', response, flags=re.IGNORECASE)
         
         # Pattern 2: Format avec balises ```action {"tool": "...", "params": {...}} ```
         action_pattern = r'```action\s*\n?({.*?})\s*\n?```'
