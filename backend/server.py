@@ -9272,7 +9272,7 @@ async def update_warehouse_section(
     current_user: dict = Depends(get_current_user)
 ):
     """Modifier une section d'entrepôt"""
-    existing = db.warehouse_sections.find_one({
+    existing = await db.warehouse_sections.find_one({
         "id": section_id,
         "user_id": current_user["id"]
     })
@@ -9288,7 +9288,7 @@ async def update_warehouse_section(
         "description": section.description,
     }
     
-    db.warehouse_sections.update_one(
+    await db.warehouse_sections.update_one(
         {"id": section_id, "user_id": current_user["id"]},
         {"$set": update_data}
     )
@@ -9301,7 +9301,7 @@ async def delete_warehouse_section(
     current_user: dict = Depends(get_current_user)
 ):
     """Supprimer une section (et tous ses articles)"""
-    existing = db.warehouse_sections.find_one({
+    existing = await db.warehouse_sections.find_one({
         "id": section_id,
         "user_id": current_user["id"]
     })
@@ -9310,13 +9310,13 @@ async def delete_warehouse_section(
         raise HTTPException(status_code=404, detail="Section non trouvée")
     
     # Supprimer les articles de la section
-    db.warehouse_items.delete_many({
+    await db.warehouse_items.delete_many({
         "user_id": current_user["id"],
         "section_id": section_id
     })
     
     # Supprimer la section
-    db.warehouse_sections.delete_one({
+    await db.warehouse_sections.delete_one({
         "id": section_id,
         "user_id": current_user["id"]
     })
