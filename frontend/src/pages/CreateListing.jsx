@@ -636,6 +636,21 @@ export default function CreateListing() {
                     />
                   </div>
                 </div>
+
+                {/* Calculateur de frais Boxtal */}
+                {formData.shipping_methods.includes('boxtal') && formData.postal_code && (
+                  <div className="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                    <ShippingCalculator 
+                      fromPostalCode={formData.postal_code}
+                      fromCountry="FR"
+                      compact={true}
+                      onSelectQuote={(quote) => {
+                        handleChange('shipping_cost', quote.price_ttc.toFixed(2));
+                        toast.success(`Tarif ${quote.carrier_name} sélectionné: ${quote.price_ttc.toFixed(2)}€`);
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Vehicle-specific fields */}
