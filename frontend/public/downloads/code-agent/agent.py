@@ -776,13 +776,13 @@ NE JAMAIS répondre avec des informations génériques sur ta date de formation 
         else:
             response = "❌ Aucune clé API configurée. Configure EMERGENT_API_KEY, OPENAI_API_KEY ou ANTHROPIC_API_KEY dans le fichier .env"
         
-        # Ajouter la réponse à l'historique persistant
-        session_manager.add_message("assistant", response, self.session_id)
+        # Process any actions in the response FIRST
+        processed_response = await self._process_actions(response)
         
-        # Process any actions in the response
-        response = await self._process_actions(response)
+        # Ajouter la réponse TRAITÉE à l'historique persistant (avec les résultats des outils)
+        session_manager.add_message("assistant", processed_response, self.session_id)
         
-        return response
+        return processed_response
     
     async def _call_emergent(self, model: str) -> str:
         """Appeler l'API Emergent via emergentintegrations"""
