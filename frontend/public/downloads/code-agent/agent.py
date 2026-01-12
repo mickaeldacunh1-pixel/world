@@ -281,7 +281,7 @@ class AgentTools:
     
     @staticmethod
     def execute_command(command: str, timeout: int = 60) -> Dict:
-        """Exécuter une commande shell"""
+        """Exécuter une commande shell localement"""
         try:
             result = subprocess.run(
                 command,
@@ -291,16 +291,114 @@ class AgentTools:
                 timeout=timeout,
                 cwd=config.PROJECT_PATH
             )
+            output = result.stdout if result.stdout else result.stderr
             return {
                 "success": result.returncode == 0,
-                "stdout": result.stdout,
-                "stderr": result.stderr,
+                "output": output.strip() if output else "(aucune sortie)",
                 "exit_code": result.returncode
             }
         except subprocess.TimeoutExpired:
-            return {"success": False, "error": f"Timeout après {timeout}s"}
+            return {"success": False, "error": f"⏱️ Timeout après {timeout}s"}
         except Exception as e:
             return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def vps_command(command: str, timeout: int = 120) -> Dict:
+        """Exécuter une commande sur le VPS WorldAuto via SSH"""
+        try:
+            # Configuration VPS
+            vps_host = "148.230.115.118"
+            vps_user = "root"
+            
+            ssh_cmd = f'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 {vps_user}@{vps_host} "{command}"'
+            
+            result = subprocess.run(
+                ssh_cmd,
+                shell=True,
+                capture_output=True,
+                text=True,
+                timeout=timeout
+            )
+            
+            output = result.stdout if result.stdout else result.stderr
+            return {
+                "success": result.returncode == 0,
+                "output": output.strip() if output else "(aucune sortie)",
+                "exit_code": result.returncode,
+                "location": "VPS WorldAuto"
+            }
+        except subprocess.TimeoutExpired:
+            return {"success": False, "error": f"⏱️ Timeout après {timeout}s"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def check_worldauto() -> Dict:
+        """Vérification complète de WorldAuto (services, API, site)"""
+        results = {
+            "services": {},
+            "api": {},
+            "site": {}
+        }
+        
+        # 1. Vérifier les services Docker via SSH
+        try:
+            ssh_cmd = 'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@148.230.115.118 "docker ps --format \\"{{.Names}}: {{.Status}}\\""'
+            result = subprocess.run(ssh_cmd, shell=True, capture_output=True, text=True, timeout=30)
+            if result.returncode == 0:
+                services = {}
+                for line in result.stdout.strip().split('\n'):
+                    if ': ' in line:
+                        name, status = line.split(': ', 1)
+                        services[name] = "✅ " + status if "Up" in status else "❌ " + status
+                results["services"] = {"success": True, "details": services}
+            else:
+                results["services"] = {"success": False, "error": "Impossible de se connecter au VPS"}
+        except Exception as e:
+            results["services"] = {"success": False, "error": str(e)}
+        
+        # 2. Tester l'API
+        try:
+            import httpx
+            with httpx.Client(timeout=10) as client:
+                # Test pricing
+                r = client.get("https://worldautofrance.com/api/pricing")
+                results["api"]["pricing"] = "✅ OK" if r.status_code == 200 else f"❌ {r.status_code}"
+                
+                # Test promo status
+                r = client.get("https://worldautofrance.com/api/promo/status")
+                results["api"]["promo"] = "✅ OK" if r.status_code == 200 else f"❌ {r.status_code}"
+                
+                # Test countries
+                r = client.get("https://worldautofrance.com/api/countries/allowed")
+                results["api"]["countries"] = "✅ OK" if r.status_code == 200 else f"❌ {r.status_code}"
+                
+            results["api"]["success"] = True
+        except Exception as e:
+            results["api"] = {"success": False, "error": str(e)}
+        
+        # 3. Vérifier le site
+        try:
+            import httpx
+            with httpx.Client(timeout=10, follow_redirects=True) as client:
+                r = client.get("https://worldautofrance.com")
+                results["site"]["home"] = "✅ OK" if r.status_code == 200 else f"❌ {r.status_code}"
+                results["site"]["success"] = True
+        except Exception as e:
+            results["site"] = {"success": False, "error": str(e)}
+        
+        # Résumé
+        all_ok = (
+            results["services"].get("success", False) and 
+            results["api"].get("success", False) and 
+            results["site"].get("success", False)
+        )
+        
+        return {
+            "success": all_ok,
+            "summary": "✅ Tout fonctionne!" if all_ok else "⚠️ Problèmes détectés",
+            "details": results
+        }
     
     @staticmethod
     def list_files(pattern: str = "**/*", max_depth: int = 3) -> Dict:
