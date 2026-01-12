@@ -9096,8 +9096,6 @@ async def get_my_stories(current_user: dict = Depends(get_current_user)):
 async def root():
     return {"message": "World Auto Marketplace API", "version": "1.0.0"}
 
-app.include_router(api_router)
-
 # Custom middleware to add no-cache headers to all API responses
 from starlette.middleware.base import BaseHTTPMiddleware
 
