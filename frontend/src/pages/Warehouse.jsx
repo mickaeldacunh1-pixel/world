@@ -649,12 +649,12 @@ export default function WarehousePage() {
                         </div>
                         <div>
                           <Label className="text-xs">Marque</Label>
-                          <Select value={filters.brand} onValueChange={(v) => setFilters({...filters, brand: v})}>
+                          <Select value={filters.brand || "all"} onValueChange={(v) => setFilters({...filters, brand: v === "all" ? "" : v})}>
                             <SelectTrigger data-testid="filter-brand">
                               <SelectValue placeholder="Toutes" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="">Toutes</SelectItem>
+                              <SelectItem value="all">Toutes</SelectItem>
                               {uniqueBrands.map(brand => (
                                 <SelectItem key={brand} value={brand}>{brand}</SelectItem>
                               ))}
