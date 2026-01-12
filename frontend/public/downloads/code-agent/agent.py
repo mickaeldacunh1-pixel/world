@@ -947,12 +947,12 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
         
         # Pattern 3: Format avec nom d'outil sur ligne séparée (ex: "read_file\n{"path": "..."}")
         tool_line_patterns = [
-            (r'read_file\s*\n\s*\{"path":\s*"([^"]+)"\s*\}', 'read_file'),
-            (r'execute_command\s*\n\s*\{"command":\s*"([^"]+)"\s*\}', 'execute_command'),
-            (r'list_files\s*\n\s*\{"pattern":\s*"([^"]+)"\s*\}', 'list_files'),
-            (r'get_project_structure\s*', 'get_project_structure'),
-            (r'scan_project\s*', 'scan_project'),
-            (r'get_knowledge\s*', 'get_knowledge'),
+            (r'read_file[\s\n]*\{"path":\s*"([^"]+)"\s*\}', 'read_file'),
+            (r'execute_command[\s\n]*\{"command":\s*"([^"]+)"\s*\}', 'execute_command'),
+            (r'list_files[\s\n]*\{"pattern":\s*"([^"]+)"\s*\}', 'list_files'),
+            (r'get_project_structure[\s\n]*(\{\s*\})?', 'get_project_structure'),
+            (r'scan_project[\s\n]*(\{\s*\})?', 'scan_project'),
+            (r'get_knowledge[\s\n]*(\{\s*\})?', 'get_knowledge'),
         ]
         
         # Traiter le format avec nom d'outil sur ligne séparée
@@ -962,18 +962,21 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                 match_value = match.group(1) if match.lastindex and match.lastindex >= 1 else None
                 
                 result = None
-                if tool_name == 'read_file' and match_value:
-                    result = tools.read_file(match_value)
-                elif tool_name == 'execute_command' and match_value:
-                    result = tools.execute_command(match_value)
-                elif tool_name == 'list_files' and match_value:
-                    result = tools.list_files(match_value)
-                elif tool_name == 'get_project_structure':
-                    result = tools.get_project_structure()
-                elif tool_name == 'scan_project':
-                    result = tools.scan_project()
-                elif tool_name == 'get_knowledge':
-                    result = tools.get_knowledge()
+                try:
+                    if tool_name == 'read_file' and match_value:
+                        result = tools.read_file(match_value)
+                    elif tool_name == 'execute_command' and match_value:
+                        result = tools.execute_command(match_value)
+                    elif tool_name == 'list_files' and match_value:
+                        result = tools.list_files(match_value)
+                    elif tool_name == 'get_project_structure':
+                        result = tools.get_project_structure()
+                    elif tool_name == 'scan_project':
+                        result = tools.scan_project()
+                    elif tool_name == 'get_knowledge':
+                        result = tools.get_knowledge()
+                except Exception as e:
+                    result = {"error": str(e)}
                 
                 if result:
                     result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
