@@ -9518,10 +9518,10 @@ async def adjust_warehouse_stock(
         "reason": reason,
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
-    db.warehouse_movements.insert_one(movement)
+    await db.warehouse_movements.insert_one(movement)
     
     # Mettre à jour le stock
-    db.warehouse_items.update_one(
+    await db.warehouse_items.update_one(
         {"id": item_id},
         {
             "$set": {
@@ -9543,7 +9543,7 @@ async def publish_warehouse_item_as_listing(
     current_user: dict = Depends(get_current_user)
 ):
     """Publier un article du stock en tant qu'annonce"""
-    item = db.warehouse_items.find_one({
+    item = await db.warehouse_items.find_one({
         "id": item_id,
         "user_id": current_user["id"]
     })
@@ -9558,14 +9558,14 @@ async def publish_warehouse_item_as_listing(
         raise HTTPException(status_code=400, detail="Stock insuffisant pour publier")
     
     # Vérifier les crédits
-    user = db.users.find_one({"id": current_user["id"]})
+    user = await db.users.find_one({"id": current_user["id"]})
     credits = user.get("credits", 0) + user.get("free_ads_remaining", 0)
     
     if credits <= 0:
         raise HTTPException(status_code=402, detail="Crédits insuffisants")
     
     # Déterminer la catégorie depuis la section
-    section = db.warehouse_sections.find_one({"id": item["section_id"]})
+    section = await db.warehouse_sections.find_one({"id": item["section_id"]})
     category = section.get("category", "pieces") if section else "pieces"
     
     # Créer l'annonce
@@ -9600,19 +9600,19 @@ async def publish_warehouse_item_as_listing(
         "warehouse_item_id": item_id,  # Lien vers l'article stock
     }
     
-    db.listings.insert_one(listing_doc)
+    await db.listings.insert_one(listing_doc)
     
     # Mettre à jour l'article avec l'ID de l'annonce
-    db.warehouse_items.update_one(
+    await db.warehouse_items.update_one(
         {"id": item_id},
         {"$set": {"listing_id": listing_id, "updated_at": now}}
     )
     
     # Déduire le crédit
     if user.get("free_ads_remaining", 0) > 0:
-        db.users.update_one({"id": current_user["id"]}, {"$inc": {"free_ads_remaining": -1}})
+        await db.users.update_one({"id": current_user["id"]}, {"$inc": {"free_ads_remaining": -1}})
     else:
-        db.users.update_one({"id": current_user["id"]}, {"$inc": {"credits": -1}})
+        await db.users.update_one({"id": current_user["id"]}, {"$inc": {"credits": -1}})
     
     return {
         "success": True,
