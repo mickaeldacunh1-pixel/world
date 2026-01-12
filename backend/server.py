@@ -9428,7 +9428,7 @@ async def create_warehouse_item(
         "updated_at": now,
     }
     
-    db.warehouse_items.insert_one(item_doc)
+    await db.warehouse_items.insert_one(item_doc)
     del item_doc["_id"]
     item_doc["section_name"] = section.get("name", "Inconnu")
     item_doc["is_low_stock"] = item_doc["quantity"] <= item_doc["alert_threshold"]
@@ -9442,7 +9442,7 @@ async def update_warehouse_item(
     current_user: dict = Depends(get_current_user)
 ):
     """Mettre à jour un article"""
-    existing = db.warehouse_items.find_one({
+    existing = await db.warehouse_items.find_one({
         "id": item_id,
         "user_id": current_user["id"]
     })
@@ -9453,14 +9453,14 @@ async def update_warehouse_item(
     update_data = {k: v for k, v in item.dict().items() if v is not None}
     update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
-    db.warehouse_items.update_one(
+    await db.warehouse_items.update_one(
         {"id": item_id, "user_id": current_user["id"]},
         {"$set": update_data}
     )
     
     # Retourner l'article mis à jour
-    updated = db.warehouse_items.find_one({"id": item_id}, {"_id": 0})
-    section = db.warehouse_sections.find_one({"id": updated["section_id"]}, {"_id": 0})
+    updated = await db.warehouse_items.find_one({"id": item_id}, {"_id": 0})
+    section = await db.warehouse_sections.find_one({"id": updated["section_id"]}, {"_id": 0})
     updated["section_name"] = section.get("name", "Inconnu") if section else "Inconnu"
     updated["is_low_stock"] = updated["quantity"] <= updated.get("alert_threshold", 1)
     
@@ -9472,7 +9472,7 @@ async def delete_warehouse_item(
     current_user: dict = Depends(get_current_user)
 ):
     """Supprimer un article du stock"""
-    existing = db.warehouse_items.find_one({
+    existing = await db.warehouse_items.find_one({
         "id": item_id,
         "user_id": current_user["id"]
     })
@@ -9480,7 +9480,7 @@ async def delete_warehouse_item(
     if not existing:
         raise HTTPException(status_code=404, detail="Article non trouvé")
     
-    db.warehouse_items.delete_one({
+    await db.warehouse_items.delete_one({
         "id": item_id,
         "user_id": current_user["id"]
     })
@@ -9495,7 +9495,7 @@ async def adjust_warehouse_stock(
     current_user: dict = Depends(get_current_user)
 ):
     """Ajuster le stock d'un article (entrée/sortie)"""
-    existing = db.warehouse_items.find_one({
+    existing = await db.warehouse_items.find_one({
         "id": item_id,
         "user_id": current_user["id"]
     })
