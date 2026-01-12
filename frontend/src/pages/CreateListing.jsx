@@ -69,6 +69,7 @@ export default function CreateListing() {
     region: '',
     shipping_cost: '',
     shipping_info: '',
+    shipping_methods: [], // Modes de livraison sélectionnés
     // Compatibilité
     compatible_brands: [],
     compatible_models: '',
