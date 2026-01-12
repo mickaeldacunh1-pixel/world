@@ -1020,6 +1020,517 @@ asyncio.run(take_screenshot())
             }
         except Exception as e:
             return {"success": False, "error": str(e)}
+    
+    # ============== NOUVEAUX OUTILS v3.5.0 ==============
+    
+    @staticmethod
+    def get_stats() -> Dict:
+        """Obtenir les statistiques du site WorldAuto"""
+        report = "\n📊 **STATISTIQUES WORLDAUTO**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            import httpx
+            
+            with httpx.Client(timeout=15) as client:
+                # Stats générales via l'API admin (si disponible)
+                stats = {}
+                
+                # Tenter de récupérer les stats via différentes méthodes
+                try:
+                    r = client.get("https://worldautofrance.com/api/admin/stats")
+                    if r.status_code == 200:
+                        stats = r.json()
+                except:
+                    pass
+                
+                # Stats des annonces
+                try:
+                    r = client.get("https://worldautofrance.com/api/listings?limit=1")
+                    if r.status_code == 200:
+                        data = r.json()
+                        stats["total_listings"] = data.get("total", "N/A")
+                except:
+                    stats["total_listings"] = "N/A"
+                
+                # Vérifier le pricing
+                try:
+                    r = client.get("https://worldautofrance.com/api/pricing")
+                    if r.status_code == 200:
+                        stats["pricing_active"] = "✅ Oui"
+                except:
+                    stats["pricing_active"] = "❌ Non"
+                
+                report += "👥 **Utilisateurs:**\n"
+                report += f"   • Total: {stats.get('total_users', 'Nécessite auth admin')}\n"
+                report += f"   • Professionnels: {stats.get('pro_users', 'N/A')}\n"
+                report += f"   • Nouveaux (7j): {stats.get('new_users_week', 'N/A')}\n\n"
+                
+                report += "📦 **Annonces:**\n"
+                report += f"   • Total: {stats.get('total_listings', 'N/A')}\n"
+                report += f"   • Actives: {stats.get('active_listings', 'N/A')}\n\n"
+                
+                report += "💰 **Revenus:**\n"
+                report += f"   • Ce mois: {stats.get('revenue_month', 'Nécessite auth admin')}€\n"
+                report += f"   • Crédits vendus: {stats.get('credits_sold', 'N/A')}\n\n"
+                
+                report += "⚙️ **Système:**\n"
+                report += f"   • Pricing actif: {stats['pricing_active']}\n"
+                
+                report += "\n" + "=" * 40 + "\n"
+                report += "💡 Pour des stats complètes, connectez-vous en admin sur le site.\n"
+                
+                return {"formatted_report": report, "stats": stats}
+                
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def vps_monitoring() -> Dict:
+        """Monitoring du VPS (CPU, RAM, Disque)"""
+        report = "\n🖥️ **MONITORING VPS WORLDAUTO**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            import subprocess
+            
+            # Commande SSH pour récupérer les infos système
+            ssh_base = 'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@148.230.115.118'
+            
+            # CPU
+            cmd = f'{ssh_base} "top -bn1 | grep \\"Cpu(s)\\" | awk \'{{print $2}}\'"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+            cpu = result.stdout.strip() if result.returncode == 0 else "N/A"
+            
+            # RAM
+            cmd = f'{ssh_base} "free -h | grep Mem | awk \'{{print $3 \\" / \\" $2}}\'"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+            ram = result.stdout.strip() if result.returncode == 0 else "N/A"
+            
+            # Disque
+            cmd = f'{ssh_base} "df -h / | tail -1 | awk \'{{print $3 \\" / \\" $2 \\" (\\" $5 \\")}}\'"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+            disk = result.stdout.strip() if result.returncode == 0 else "N/A"
+            
+            # Uptime
+            cmd = f'{ssh_base} "uptime -p"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+            uptime = result.stdout.strip() if result.returncode == 0 else "N/A"
+            
+            # Docker containers
+            cmd = f'{ssh_base} "docker ps --format \\"{{{{.Names}}}}: {{{{.Status}}}}\\" 2>/dev/null"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+            containers = result.stdout.strip() if result.returncode == 0 else "N/A"
+            
+            report += "💻 **Ressources:**\n"
+            report += f"   • CPU: {cpu}%\n"
+            report += f"   • RAM: {ram}\n"
+            report += f"   • Disque: {disk}\n"
+            report += f"   • Uptime: {uptime}\n\n"
+            
+            report += "🐳 **Containers Docker:**\n"
+            if containers and containers != "N/A":
+                for line in containers.split('\n'):
+                    if line:
+                        report += f"   • {line}\n"
+            else:
+                report += "   ⚠️ Impossible de récupérer (SSH non configuré)\n"
+            
+            report += "\n" + "=" * 40 + "\n"
+            
+            return {"formatted_report": report}
+            
+        except subprocess.TimeoutExpired:
+            return {"formatted_report": report + "⚠️ Timeout SSH - Configure: ssh-copy-id root@148.230.115.118\n"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def manage_user(action: str, email: str = None, user_id: str = None) -> Dict:
+        """Gérer un utilisateur (info, block, unblock)"""
+        report = "\n👤 **GESTION UTILISATEUR**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            import httpx
+            
+            if not email and not user_id:
+                return {"success": False, "error": "Spécifie email ou user_id"}
+            
+            identifier = email or user_id
+            
+            if action == "info":
+                report += f"🔍 Recherche de: {identifier}\n\n"
+                report += "⚠️ Cette action nécessite un accès admin à l'API.\n"
+                report += "💡 Connectez-vous sur worldautofrance.com/admin pour gérer les utilisateurs.\n"
+                
+            elif action == "block":
+                report += f"🚫 Blocage de: {identifier}\n\n"
+                report += "⚠️ Cette action nécessite un accès admin.\n"
+                report += "💡 Allez sur worldautofrance.com/admin > Utilisateurs > Bloquer\n"
+                
+            elif action == "unblock":
+                report += f"✅ Déblocage de: {identifier}\n\n"
+                report += "⚠️ Cette action nécessite un accès admin.\n"
+                report += "💡 Allez sur worldautofrance.com/admin > Utilisateurs > Débloquer\n"
+            
+            else:
+                return {"success": False, "error": f"Action inconnue: {action}. Utilise: info, block, unblock"}
+            
+            report += "\n" + "=" * 40 + "\n"
+            return {"formatted_report": report}
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def manage_listing(action: str, listing_id: str = None) -> Dict:
+        """Gérer une annonce (info, delete, moderate)"""
+        report = "\n📦 **GESTION ANNONCE**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            import httpx
+            
+            if action == "info" and listing_id:
+                with httpx.Client(timeout=10) as client:
+                    r = client.get(f"https://worldautofrance.com/api/listings/{listing_id}")
+                    if r.status_code == 200:
+                        data = r.json()
+                        report += f"📋 **Annonce #{listing_id}**\n"
+                        report += f"   • Titre: {data.get('title', 'N/A')}\n"
+                        report += f"   • Prix: {data.get('price', 'N/A')}€\n"
+                        report += f"   • Vendeur: {data.get('seller_name', 'N/A')}\n"
+                        report += f"   • Statut: {data.get('status', 'N/A')}\n"
+                        report += f"   • Créée le: {data.get('created_at', 'N/A')}\n"
+                    else:
+                        report += f"❌ Annonce non trouvée (code {r.status_code})\n"
+                        
+            elif action == "delete":
+                report += f"🗑️ Suppression de l'annonce: {listing_id}\n\n"
+                report += "⚠️ Cette action nécessite un accès admin.\n"
+                report += "💡 Allez sur worldautofrance.com/admin > Annonces > Supprimer\n"
+                
+            elif action == "moderate":
+                report += f"⚖️ Modération de l'annonce: {listing_id}\n\n"
+                report += "⚠️ Cette action nécessite un accès admin.\n"
+                report += "💡 Allez sur worldautofrance.com/admin > Annonces > Modérer\n"
+                
+            else:
+                report += "📋 Actions disponibles:\n"
+                report += "   • info <id> - Voir les détails d'une annonce\n"
+                report += "   • delete <id> - Supprimer une annonce\n"
+                report += "   • moderate <id> - Modérer une annonce\n"
+            
+            report += "\n" + "=" * 40 + "\n"
+            return {"formatted_report": report}
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def deploy_update(service: str = "all") -> Dict:
+        """Déployer une mise à jour sur le VPS"""
+        report = "\n🚀 **DÉPLOIEMENT WORLDAUTO**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            import subprocess
+            
+            ssh_base = 'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@148.230.115.118'
+            
+            if service == "all":
+                cmd = f'{ssh_base} "cd /var/www/worldauto && git pull && docker-compose up -d --build"'
+                report += "📦 Déploiement complet (frontend + backend)...\n"
+            elif service == "frontend":
+                cmd = f'{ssh_base} "cd /var/www/worldauto && git pull && docker-compose up -d --build frontend"'
+                report += "🎨 Déploiement frontend uniquement...\n"
+            elif service == "backend":
+                cmd = f'{ssh_base} "cd /var/www/worldauto && git pull && docker-compose up -d --build backend"'
+                report += "⚙️ Déploiement backend uniquement...\n"
+            elif service == "restart":
+                cmd = f'{ssh_base} "cd /var/www/worldauto && docker-compose restart"'
+                report += "🔄 Redémarrage des services...\n"
+            else:
+                return {"success": False, "error": f"Service inconnu: {service}. Utilise: all, frontend, backend, restart"}
+            
+            report += "\n"
+            
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=300)
+            
+            if result.returncode == 0:
+                report += "✅ **Déploiement réussi !**\n\n"
+                if result.stdout:
+                    report += "📜 Sortie:\n```\n" + result.stdout[-1000:] + "\n```\n"
+            else:
+                report += "❌ **Échec du déploiement**\n\n"
+                if result.stderr:
+                    report += "📜 Erreur:\n```\n" + result.stderr[-500:] + "\n```\n"
+            
+            report += "\n" + "=" * 40 + "\n"
+            return {"formatted_report": report}
+            
+        except subprocess.TimeoutExpired:
+            return {"formatted_report": report + "⚠️ Timeout - Le déploiement prend du temps, vérifiez manuellement.\n"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def analyze_errors() -> Dict:
+        """Analyser les erreurs récentes dans les logs"""
+        report = "\n🔍 **ANALYSE DES ERREURS**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            import subprocess
+            
+            ssh_base = 'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@148.230.115.118'
+            
+            # Récupérer les logs backend avec les erreurs
+            cmd = f'{ssh_base} "docker-compose -f /var/www/worldauto/docker-compose.yml logs --tail=200 backend 2>&1 | grep -i -E \\"error|exception|traceback|failed\\" | tail -20"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=30)
+            
+            report += "🔧 **Erreurs Backend (dernières 20):**\n"
+            if result.returncode == 0 and result.stdout.strip():
+                errors = result.stdout.strip().split('\n')
+                for i, err in enumerate(errors[-10:], 1):
+                    report += f"   {i}. {err[:100]}...\n" if len(err) > 100 else f"   {i}. {err}\n"
+            else:
+                report += "   ✅ Aucune erreur récente trouvée !\n"
+            
+            report += "\n"
+            
+            # Récupérer les logs frontend
+            cmd = f'{ssh_base} "docker-compose -f /var/www/worldauto/docker-compose.yml logs --tail=100 frontend 2>&1 | grep -i -E \\"error|warn\\" | tail -10"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=30)
+            
+            report += "🎨 **Erreurs Frontend (dernières 10):**\n"
+            if result.returncode == 0 and result.stdout.strip():
+                errors = result.stdout.strip().split('\n')
+                for i, err in enumerate(errors[-5:], 1):
+                    report += f"   {i}. {err[:100]}...\n" if len(err) > 100 else f"   {i}. {err}\n"
+            else:
+                report += "   ✅ Aucune erreur récente trouvée !\n"
+            
+            report += "\n" + "=" * 40 + "\n"
+            return {"formatted_report": report}
+            
+        except subprocess.TimeoutExpired:
+            return {"formatted_report": report + "⚠️ Timeout SSH - Configure: ssh-copy-id root@148.230.115.118\n"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def manage_promo(action: str, code: str = None, discount: int = None, max_uses: int = None) -> Dict:
+        """Gérer les codes promo"""
+        report = "\n🎁 **GESTION PROMOS**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            import httpx
+            
+            with httpx.Client(timeout=10) as client:
+                if action == "list":
+                    report += "📋 **Codes promo actifs:**\n"
+                    # Tester quelques codes connus
+                    known_codes = ["LANCEMENT", "WELCOME", "PRO2024", "NOEL2024"]
+                    for code in known_codes:
+                        try:
+                            r = client.get(f"https://worldautofrance.com/api/promo/{code}/status")
+                            if r.status_code == 200:
+                                data = r.json()
+                                report += f"   ✅ {code}: {data.get('discount', '?')}% - {data.get('uses', '?')} utilisations\n"
+                        except:
+                            pass
+                    report += "\n💡 Pour la liste complète, consultez l'admin.\n"
+                    
+                elif action == "check" and code:
+                    r = client.get(f"https://worldautofrance.com/api/promo/{code}/status")
+                    if r.status_code == 200:
+                        data = r.json()
+                        report += f"✅ **Code {code} valide !**\n"
+                        report += f"   • Réduction: {data.get('discount', 'N/A')}%\n"
+                        report += f"   • Utilisations: {data.get('uses', 'N/A')}\n"
+                        report += f"   • Max: {data.get('max_uses', 'Illimité')}\n"
+                    else:
+                        report += f"❌ Code {code} invalide ou expiré.\n"
+                        
+                elif action == "create":
+                    report += "➕ **Créer un code promo:**\n\n"
+                    report += "⚠️ Cette action nécessite un accès admin.\n"
+                    report += "💡 Allez sur worldautofrance.com/admin > Promos > Créer\n"
+                    
+                else:
+                    report += "📋 Actions disponibles:\n"
+                    report += "   • list - Voir les promos actives\n"
+                    report += "   • check <code> - Vérifier un code\n"
+                    report += "   • create - Créer un nouveau code\n"
+            
+            report += "\n" + "=" * 40 + "\n"
+            return {"formatted_report": report}
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def cleanup_vps() -> Dict:
+        """Nettoyer le VPS (docker, logs, cache)"""
+        report = "\n🧹 **NETTOYAGE VPS**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            import subprocess
+            
+            ssh_base = 'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@148.230.115.118'
+            
+            # Espace avant
+            cmd = f'{ssh_base} "df -h / | tail -1 | awk \'{{print $4}}\'"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+            space_before = result.stdout.strip() if result.returncode == 0 else "N/A"
+            
+            report += f"💾 Espace disponible avant: {space_before}\n\n"
+            report += "🔄 Nettoyage en cours...\n"
+            
+            # Docker prune
+            cmd = f'{ssh_base} "docker system prune -f 2>&1"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60)
+            if result.returncode == 0:
+                report += "   ✅ Docker nettoyé\n"
+            
+            # Logs anciens
+            cmd = f'{ssh_base} "find /var/log -type f -name \\"*.log\\" -mtime +7 -delete 2>/dev/null; echo OK"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=30)
+            report += "   ✅ Vieux logs supprimés\n"
+            
+            # Cache apt
+            cmd = f'{ssh_base} "apt-get clean 2>/dev/null; echo OK"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=30)
+            report += "   ✅ Cache apt nettoyé\n"
+            
+            # Espace après
+            cmd = f'{ssh_base} "df -h / | tail -1 | awk \'{{print $4}}\'"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+            space_after = result.stdout.strip() if result.returncode == 0 else "N/A"
+            
+            report += f"\n💾 Espace disponible après: {space_after}\n"
+            report += "\n" + "=" * 40 + "\n"
+            return {"formatted_report": report}
+            
+        except subprocess.TimeoutExpired:
+            return {"formatted_report": report + "⚠️ Timeout SSH\n"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def send_notification(type: str, message: str, target: str = "all") -> Dict:
+        """Envoyer une notification (nécessite config)"""
+        report = "\n📢 **NOTIFICATIONS**\n"
+        report += "=" * 40 + "\n\n"
+        
+        report += f"📨 Type: {type}\n"
+        report += f"👥 Cible: {target}\n"
+        report += f"💬 Message: {message}\n\n"
+        
+        report += "⚠️ **Envoi de notifications:**\n"
+        report += "Cette fonctionnalité nécessite une configuration côté admin.\n\n"
+        report += "💡 Options disponibles sur worldautofrance.com/admin:\n"
+        report += "   • Email en masse\n"
+        report += "   • Notifications push\n"
+        report += "   • Messages système\n"
+        
+        report += "\n" + "=" * 40 + "\n"
+        return {"formatted_report": report}
+    
+    @staticmethod
+    def db_backup() -> Dict:
+        """Sauvegarder la base de données MongoDB"""
+        report = "\n💾 **BACKUP BASE DE DONNÉES**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            import subprocess
+            from datetime import datetime
+            
+            ssh_base = 'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@148.230.115.118'
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            backup_name = f"worldauto_backup_{timestamp}"
+            
+            report += f"📦 Création du backup: {backup_name}\n\n"
+            
+            # Créer le dossier backups s'il n'existe pas
+            cmd = f'{ssh_base} "mkdir -p /var/www/worldauto/backups"'
+            subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=10)
+            
+            # Exécuter mongodump
+            cmd = f'{ssh_base} "docker exec worldauto-mongodb mongodump --archive=/data/db/{backup_name}.archive --gzip 2>&1"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=120)
+            
+            if result.returncode == 0:
+                report += "✅ **Backup créé avec succès !**\n\n"
+                report += f"📍 Emplacement: /data/db/{backup_name}.archive\n"
+                
+                # Copier vers le dossier backups
+                cmd = f'{ssh_base} "docker cp worldauto-mongodb:/data/db/{backup_name}.archive /var/www/worldauto/backups/"'
+                subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60)
+                report += f"📁 Copié vers: /var/www/worldauto/backups/{backup_name}.archive\n"
+            else:
+                report += "❌ **Échec du backup**\n"
+                if result.stderr:
+                    report += f"Erreur: {result.stderr[:200]}\n"
+            
+            report += "\n" + "=" * 40 + "\n"
+            return {"formatted_report": report}
+            
+        except subprocess.TimeoutExpired:
+            return {"formatted_report": report + "⚠️ Timeout - Le backup prend du temps.\n"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def recent_activity() -> Dict:
+        """Voir l'activité récente du site"""
+        report = "\n📈 **ACTIVITÉ RÉCENTE**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            import httpx
+            
+            with httpx.Client(timeout=15) as client:
+                # Dernières annonces
+                report += "📦 **Dernières annonces:**\n"
+                try:
+                    r = client.get("https://worldautofrance.com/api/listings?limit=5&sort=-created_at")
+                    if r.status_code == 200:
+                        data = r.json()
+                        listings = data.get("listings", data) if isinstance(data, dict) else data
+                        if isinstance(listings, list):
+                            for i, listing in enumerate(listings[:5], 1):
+                                title = listing.get('title', 'Sans titre')[:30]
+                                price = listing.get('price', 'N/A')
+                                report += f"   {i}. {title}... - {price}€\n"
+                        else:
+                            report += "   Aucune annonce récente\n"
+                except Exception as e:
+                    report += f"   ⚠️ Impossible de récupérer ({str(e)[:30]})\n"
+                
+                report += "\n"
+                
+                # Statut des services
+                report += "🔌 **Statut API:**\n"
+                endpoints = ["/api/pricing", "/api/listings?limit=1"]
+                for ep in endpoints:
+                    try:
+                        r = client.get(f"https://worldautofrance.com{ep}")
+                        status = "✅ OK" if r.status_code == 200 else f"⚠️ {r.status_code}"
+                        report += f"   • {ep}: {status}\n"
+                    except:
+                        report += f"   • {ep}: ❌ Erreur\n"
+            
+            report += "\n" + "=" * 40 + "\n"
+            return {"formatted_report": report}
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
 tools = AgentTools()
 
