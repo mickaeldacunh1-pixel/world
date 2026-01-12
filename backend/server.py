@@ -9258,7 +9258,7 @@ async def create_warehouse_section(
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
     
-    db.warehouse_sections.insert_one(section_doc)
+    await db.warehouse_sections.insert_one(section_doc)
     del section_doc["_id"]
     section_doc["items_count"] = 0
     section_doc["low_stock_count"] = 0
