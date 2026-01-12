@@ -27,4 +27,3 @@ apscheduler==3.10.4
 weasyprint==62.3
 zeep==4.3.2
 lxml==6.0.2
-emergentintegrations
