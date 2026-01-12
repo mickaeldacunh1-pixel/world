@@ -2033,12 +2033,39 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                     result = tools.backup_db()
                 elif tool_name == 'check_services':
                     result = tools.check_services()
+                # Nouveaux outils v3.5.0
+                elif tool_name == 'get_stats':
+                    result = tools.get_stats()
+                elif tool_name == 'vps_monitoring':
+                    result = tools.vps_monitoring()
+                elif tool_name == 'manage_user':
+                    result = tools.manage_user(params.get('action', 'info'), params.get('email'), params.get('user_id'))
+                elif tool_name == 'manage_listing':
+                    result = tools.manage_listing(params.get('action', 'info'), params.get('listing_id'))
+                elif tool_name == 'deploy_update':
+                    result = tools.deploy_update(params.get('service', 'all'))
+                elif tool_name == 'analyze_errors':
+                    result = tools.analyze_errors()
+                elif tool_name == 'manage_promo':
+                    result = tools.manage_promo(params.get('action', 'list'), params.get('code'), params.get('discount'), params.get('max_uses'))
+                elif tool_name == 'cleanup_vps':
+                    result = tools.cleanup_vps()
+                elif tool_name == 'send_notification':
+                    result = tools.send_notification(params.get('type', 'email'), params.get('message', ''), params.get('target', 'all'))
+                elif tool_name == 'db_backup':
+                    result = tools.db_backup()
+                elif tool_name == 'recent_activity':
+                    result = tools.recent_activity()
             except Exception as e:
                 result = {"success": False, "error": str(e)}
             
             if result:
-                # Affichage spécial pour les outils de diagnostic (rapport formaté + conclusion auto)
-                if tool_name in ['check_worldauto', 'security_scan', 'performance_test', 'full_diagnostic'] and 'formatted_report' in result:
+                # Affichage spécial pour les outils avec rapport formaté
+                tools_with_report = ['check_worldauto', 'security_scan', 'performance_test', 'full_diagnostic', 
+                                    'get_stats', 'vps_monitoring', 'manage_user', 'manage_listing', 
+                                    'deploy_update', 'analyze_errors', 'manage_promo', 'cleanup_vps',
+                                    'send_notification', 'db_backup', 'recent_activity']
+                if tool_name in tools_with_report and 'formatted_report' in result:
                     result_str = result['formatted_report']
                     # Ajouter une conclusion automatique basée sur le résultat
                     if tool_name == 'check_worldauto':
