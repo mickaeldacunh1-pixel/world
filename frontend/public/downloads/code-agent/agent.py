@@ -945,11 +945,45 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
             (r'\{"note":\s*"([^"]+)"\s*\}', 'add_note', 'note'),
         ]
         
-        # Traiter le format simplifié d'abord
+        # Pattern 3: Format avec nom d'outil sur ligne séparée (ex: "read_file\n{"path": "..."}")
+        tool_line_patterns = [
+            (r'read_file\s*\n\s*\{"path":\s*"([^"]+)"\s*\}', 'read_file'),
+            (r'execute_command\s*\n\s*\{"command":\s*"([^"]+)"\s*\}', 'execute_command'),
+            (r'list_files\s*\n\s*\{"pattern":\s*"([^"]+)"\s*\}', 'list_files'),
+            (r'get_project_structure\s*', 'get_project_structure'),
+            (r'scan_project\s*', 'scan_project'),
+            (r'get_knowledge\s*', 'get_knowledge'),
+        ]
+        
+        # Traiter le format avec nom d'outil sur ligne séparée
+        for pattern, tool_name in tool_line_patterns:
+            for match in re.finditer(pattern, response):
+                original_text = match.group(0)
+                match_value = match.group(1) if match.lastindex and match.lastindex >= 1 else None
+                
+                result = None
+                if tool_name == 'read_file' and match_value:
+                    result = tools.read_file(match_value)
+                elif tool_name == 'execute_command' and match_value:
+                    result = tools.execute_command(match_value)
+                elif tool_name == 'list_files' and match_value:
+                    result = tools.list_files(match_value)
+                elif tool_name == 'get_project_structure':
+                    result = tools.get_project_structure()
+                elif tool_name == 'scan_project':
+                    result = tools.scan_project()
+                elif tool_name == 'get_knowledge':
+                    result = tools.get_knowledge()
+                
+                if result:
+                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
+                    response = response.replace(original_text, result_str, 1)
+        
+        # Traiter le format simplifié
         for pattern, tool_name, param_name in simple_patterns:
             for match in re.finditer(pattern, response):
                 match_value = match.group(1)
-                original_text = match.group(0)  # Le texte exact trouvé
+                original_text = match.group(0)
                 
                 result = None
                 if tool_name == 'read_file':
