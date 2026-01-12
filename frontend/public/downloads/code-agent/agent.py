@@ -1517,6 +1517,16 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                     result = tools.vps_command(params.get('command', ''))
                 elif tool_name == 'check_worldauto':
                     result = tools.check_worldauto()
+                elif tool_name == 'security_scan':
+                    result = tools.security_scan()
+                elif tool_name == 'performance_test':
+                    result = tools.performance_test()
+                elif tool_name == 'check_logs':
+                    result = tools.check_logs()
+                elif tool_name == 'modify_hero':
+                    result = tools.modify_hero(params.get('title'), params.get('subtitle'), params.get('button_text'))
+                elif tool_name == 'full_diagnostic':
+                    result = tools.full_diagnostic()
                 elif tool_name == 'list_files':
                     result = tools.list_files(params.get('pattern', '**/*'))
                 elif tool_name == 'search_in_files':
@@ -1673,6 +1683,16 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                     result = tools.vps_command(params.get('command', ''))
                 elif tool_name == 'check_worldauto':
                     result = tools.check_worldauto()
+                elif tool_name == 'security_scan':
+                    result = tools.security_scan()
+                elif tool_name == 'performance_test':
+                    result = tools.performance_test()
+                elif tool_name == 'check_logs':
+                    result = tools.check_logs()
+                elif tool_name == 'modify_hero':
+                    result = tools.modify_hero(params.get('title'), params.get('subtitle'), params.get('button_text'))
+                elif tool_name == 'full_diagnostic':
+                    result = tools.full_diagnostic()
                 
                 if result:
                     result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
