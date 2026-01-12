@@ -1835,6 +1835,31 @@ const DEFAULT_SETTINGS = {
   show_brands_section: true,
   show_categories_section: true,
   show_regions_section: true,
+  
+  // ============== AGENT CODY SETTINGS ==============
+  cody_agent_name: "Cody",
+  cody_theme_mode: "light",
+  
+  // Couleurs mode clair
+  cody_accent_color: "#f97316",
+  cody_accent_hover: "#ea580c",
+  cody_bg_main: "#ffffff",
+  cody_bg_sidebar: "#f9fafb",
+  cody_text_primary: "#111827",
+  cody_text_secondary: "#6b7280",
+  cody_border_color: "#e5e7eb",
+  cody_success_color: "#10b981",
+  
+  // Couleurs mode sombre
+  cody_dark_bg_main: "#1f2937",
+  cody_dark_bg_sidebar: "#111827",
+  cody_dark_text_primary: "#f9fafb",
+  cody_dark_text_secondary: "#9ca3af",
+  cody_dark_border: "#374151",
+  
+  // Paramètres Agent
+  cody_welcome_message: "Salut ! Je suis Cody, ton assistant de développement.\n\nJe me souviens de nos conversations précédentes et je connais ton projet.\nQue veux-tu faire aujourd'hui ? 🚀",
+  cody_max_memory_messages: 50,
 };
 
 // Options de taille de titre
