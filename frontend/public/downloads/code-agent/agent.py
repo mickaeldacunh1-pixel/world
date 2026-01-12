@@ -387,16 +387,57 @@ class AgentTools:
         except Exception as e:
             results["site"] = {"success": False, "error": str(e)}
         
-        # Résumé
-        all_ok = (
-            results["services"].get("success", False) and 
-            results["api"].get("success", False) and 
-            results["site"].get("success", False)
-        )
+        # Résumé FORMATÉ pour affichage direct
+        api_ok = results["api"].get("success", False)
+        site_ok = results["site"].get("success", False)
+        services_ok = results["services"].get("success", False)
+        
+        # Construire un rapport lisible
+        report = "\n📊 **DIAGNOSTIC WORLDAUTO**\n"
+        report += "=" * 40 + "\n\n"
+        
+        # Services Docker
+        report += "🐳 **Services Docker:**\n"
+        if services_ok:
+            for name, status in results["services"].get("details", {}).items():
+                report += f"   • {name}: {status}\n"
+        else:
+            report += f"   ⚠️ {results['services'].get('error', 'Impossible de vérifier')}\n"
+            report += "   💡 Configure SSH: ssh-copy-id root@148.230.115.118\n"
+        
+        report += "\n"
+        
+        # API
+        report += "🔌 **API:**\n"
+        if api_ok:
+            report += f"   • /api/pricing: {results['api'].get('pricing', '?')}\n"
+            report += f"   • /api/promo: {results['api'].get('promo', '?')}\n"
+            report += f"   • /api/countries: {results['api'].get('countries', '?')}\n"
+        else:
+            report += f"   ❌ Erreur: {results['api'].get('error', 'Inconnue')}\n"
+        
+        report += "\n"
+        
+        # Site
+        report += "🌐 **Site Web:**\n"
+        if site_ok:
+            report += f"   • Homepage: {results['site'].get('home', '?')}\n"
+        else:
+            report += f"   ❌ Erreur: {results['site'].get('error', 'Inconnue')}\n"
+        
+        report += "\n" + "=" * 40 + "\n"
+        
+        # Conclusion
+        if api_ok and site_ok:
+            report += "✅ **CONCLUSION: Le site fonctionne correctement!**\n"
+            if not services_ok:
+                report += "⚠️ (Vérification Docker impossible sans SSH configuré)\n"
+        else:
+            report += "❌ **CONCLUSION: Des problèmes ont été détectés!**\n"
         
         return {
-            "success": all_ok,
-            "summary": "✅ Tout fonctionne!" if all_ok else "⚠️ Problèmes détectés",
+            "formatted_report": report,
+            "all_ok": api_ok and site_ok,
             "details": results
         }
     
