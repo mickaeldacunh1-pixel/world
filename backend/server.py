@@ -6641,7 +6641,9 @@ async def scan_plate(file: UploadFile = File(...)):
         if not api_key:
             return {"plate": None, "message": "OCR non disponible"}
         
-        from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+        # from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+        # LLM désactivé pour déploiement VPS
+        return {"plate": None, "message": "OCR temporairement indisponible"}
         
         chat = LlmChat(
             api_key=api_key,
