@@ -9192,6 +9192,545 @@ async def process_abandoned_cart_reminders():
         except Exception as e:
             logger.error(f"Erreur dans le scheduler de relance panier: {e}")
 
+# ================== WAREHOUSE / ENTREPÔT PRO ==================
+
+@api_router.get("/warehouse/categories")
+async def get_warehouse_categories():
+    """Récupérer les catégories prédéfinies de l'entrepôt"""
+    return WAREHOUSE_CATEGORIES
+
+@api_router.get("/warehouse/sections")
+async def get_warehouse_sections(current_user: dict = Depends(get_current_user)):
+    """Récupérer les sections de l'entrepôt de l'utilisateur"""
+    sections = list(db.warehouse_sections.find(
+        {"user_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("name", 1))
+    
+    # Ajouter le compte d'articles par section
+    for section in sections:
+        count = db.warehouse_items.count_documents({
+            "user_id": current_user["id"],
+            "section_id": section["id"]
+        })
+        section["items_count"] = count
+        
+        # Compter les alertes stock bas
+        low_stock = db.warehouse_items.count_documents({
+            "user_id": current_user["id"],
+            "section_id": section["id"],
+            "$expr": {"$lte": ["$quantity", "$alert_threshold"]}
+        })
+        section["low_stock_count"] = low_stock
+    
+    return sections
+
+@api_router.post("/warehouse/sections")
+async def create_warehouse_section(
+    section: WarehouseSectionCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Créer une nouvelle section d'entrepôt"""
+    # Vérifier si PRO
+    if not current_user.get("is_professional"):
+        raise HTTPException(status_code=403, detail="Fonctionnalité réservée aux professionnels")
+    
+    section_id = str(uuid.uuid4())
+    section_doc = {
+        "id": section_id,
+        "user_id": current_user["id"],
+        "name": section.name,
+        "category": section.category,
+        "icon": section.icon or WAREHOUSE_CATEGORIES.get(section.category, {}).get("icon", "📦"),
+        "color": section.color or WAREHOUSE_CATEGORIES.get(section.category, {}).get("color", "#6b7280"),
+        "description": section.description,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    
+    db.warehouse_sections.insert_one(section_doc)
+    del section_doc["_id"]
+    section_doc["items_count"] = 0
+    section_doc["low_stock_count"] = 0
+    
+    return section_doc
+
+@api_router.put("/warehouse/sections/{section_id}")
+async def update_warehouse_section(
+    section_id: str,
+    section: WarehouseSectionCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Modifier une section d'entrepôt"""
+    existing = db.warehouse_sections.find_one({
+        "id": section_id,
+        "user_id": current_user["id"]
+    })
+    
+    if not existing:
+        raise HTTPException(status_code=404, detail="Section non trouvée")
+    
+    update_data = {
+        "name": section.name,
+        "category": section.category,
+        "icon": section.icon,
+        "color": section.color,
+        "description": section.description,
+    }
+    
+    db.warehouse_sections.update_one(
+        {"id": section_id, "user_id": current_user["id"]},
+        {"$set": update_data}
+    )
+    
+    return {"success": True, "message": "Section mise à jour"}
+
+@api_router.delete("/warehouse/sections/{section_id}")
+async def delete_warehouse_section(
+    section_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Supprimer une section (et tous ses articles)"""
+    existing = db.warehouse_sections.find_one({
+        "id": section_id,
+        "user_id": current_user["id"]
+    })
+    
+    if not existing:
+        raise HTTPException(status_code=404, detail="Section non trouvée")
+    
+    # Supprimer les articles de la section
+    db.warehouse_items.delete_many({
+        "user_id": current_user["id"],
+        "section_id": section_id
+    })
+    
+    # Supprimer la section
+    db.warehouse_sections.delete_one({
+        "id": section_id,
+        "user_id": current_user["id"]
+    })
+    
+    return {"success": True, "message": "Section supprimée"}
+
+@api_router.get("/warehouse/items")
+async def get_warehouse_items(
+    section_id: Optional[str] = None,
+    search: Optional[str] = None,
+    low_stock_only: bool = False,
+    current_user: dict = Depends(get_current_user)
+):
+    """Récupérer les articles de l'entrepôt"""
+    query = {"user_id": current_user["id"]}
+    
+    if section_id:
+        query["section_id"] = section_id
+    
+    if search:
+        search_regex = {"$regex": search, "$options": "i"}
+        query["$or"] = [
+            {"name": search_regex},
+            {"reference_oem": search_regex},
+            {"reference_custom": search_regex},
+            {"brand": search_regex},
+            {"location": search_regex},
+            {"compatible_vehicles": search_regex},
+        ]
+    
+    items = list(db.warehouse_items.find(query, {"_id": 0}).sort("name", 1))
+    
+    # Enrichir avec les infos de section et calculer is_low_stock
+    sections_cache = {}
+    for item in items:
+        if item["section_id"] not in sections_cache:
+            section = db.warehouse_sections.find_one({"id": item["section_id"]}, {"_id": 0})
+            sections_cache[item["section_id"]] = section.get("name", "Inconnu") if section else "Inconnu"
+        
+        item["section_name"] = sections_cache[item["section_id"]]
+        item["is_low_stock"] = item["quantity"] <= item.get("alert_threshold", 1)
+    
+    if low_stock_only:
+        items = [i for i in items if i["is_low_stock"]]
+    
+    return items
+
+@api_router.get("/warehouse/items/{item_id}")
+async def get_warehouse_item(
+    item_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Récupérer un article spécifique"""
+    item = db.warehouse_items.find_one({
+        "id": item_id,
+        "user_id": current_user["id"]
+    }, {"_id": 0})
+    
+    if not item:
+        raise HTTPException(status_code=404, detail="Article non trouvé")
+    
+    # Ajouter nom de section
+    section = db.warehouse_sections.find_one({"id": item["section_id"]}, {"_id": 0})
+    item["section_name"] = section.get("name", "Inconnu") if section else "Inconnu"
+    item["is_low_stock"] = item["quantity"] <= item.get("alert_threshold", 1)
+    
+    return item
+
+@api_router.post("/warehouse/items")
+async def create_warehouse_item(
+    item: WarehouseItemCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Ajouter un article au stock"""
+    if not current_user.get("is_professional"):
+        raise HTTPException(status_code=403, detail="Fonctionnalité réservée aux professionnels")
+    
+    # Vérifier que la section existe
+    section = db.warehouse_sections.find_one({
+        "id": item.section_id,
+        "user_id": current_user["id"]
+    })
+    
+    if not section:
+        raise HTTPException(status_code=404, detail="Section non trouvée")
+    
+    item_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+    
+    item_doc = {
+        "id": item_id,
+        "user_id": current_user["id"],
+        "name": item.name,
+        "section_id": item.section_id,
+        "quantity": item.quantity,
+        "location": item.location,
+        "reference_oem": item.reference_oem,
+        "reference_custom": item.reference_custom,
+        "brand": item.brand,
+        "compatible_vehicles": item.compatible_vehicles,
+        "purchase_price": item.purchase_price,
+        "selling_price": item.selling_price,
+        "condition": item.condition,
+        "notes": item.notes,
+        "images": item.images,
+        "alert_threshold": item.alert_threshold,
+        "listing_id": None,  # Pas encore publié
+        "created_at": now,
+        "updated_at": now,
+    }
+    
+    db.warehouse_items.insert_one(item_doc)
+    del item_doc["_id"]
+    item_doc["section_name"] = section.get("name", "Inconnu")
+    item_doc["is_low_stock"] = item_doc["quantity"] <= item_doc["alert_threshold"]
+    
+    return item_doc
+
+@api_router.put("/warehouse/items/{item_id}")
+async def update_warehouse_item(
+    item_id: str,
+    item: WarehouseItemUpdate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Mettre à jour un article"""
+    existing = db.warehouse_items.find_one({
+        "id": item_id,
+        "user_id": current_user["id"]
+    })
+    
+    if not existing:
+        raise HTTPException(status_code=404, detail="Article non trouvé")
+    
+    update_data = {k: v for k, v in item.dict().items() if v is not None}
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    db.warehouse_items.update_one(
+        {"id": item_id, "user_id": current_user["id"]},
+        {"$set": update_data}
+    )
+    
+    # Retourner l'article mis à jour
+    updated = db.warehouse_items.find_one({"id": item_id}, {"_id": 0})
+    section = db.warehouse_sections.find_one({"id": updated["section_id"]}, {"_id": 0})
+    updated["section_name"] = section.get("name", "Inconnu") if section else "Inconnu"
+    updated["is_low_stock"] = updated["quantity"] <= updated.get("alert_threshold", 1)
+    
+    return updated
+
+@api_router.delete("/warehouse/items/{item_id}")
+async def delete_warehouse_item(
+    item_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Supprimer un article du stock"""
+    existing = db.warehouse_items.find_one({
+        "id": item_id,
+        "user_id": current_user["id"]
+    })
+    
+    if not existing:
+        raise HTTPException(status_code=404, detail="Article non trouvé")
+    
+    db.warehouse_items.delete_one({
+        "id": item_id,
+        "user_id": current_user["id"]
+    })
+    
+    return {"success": True, "message": "Article supprimé"}
+
+@api_router.post("/warehouse/items/{item_id}/adjust-stock")
+async def adjust_warehouse_stock(
+    item_id: str,
+    adjustment: int,  # Positif = entrée, négatif = sortie
+    reason: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Ajuster le stock d'un article (entrée/sortie)"""
+    existing = db.warehouse_items.find_one({
+        "id": item_id,
+        "user_id": current_user["id"]
+    })
+    
+    if not existing:
+        raise HTTPException(status_code=404, detail="Article non trouvé")
+    
+    new_quantity = existing["quantity"] + adjustment
+    if new_quantity < 0:
+        raise HTTPException(status_code=400, detail="Stock insuffisant")
+    
+    # Enregistrer le mouvement
+    movement = {
+        "id": str(uuid.uuid4()),
+        "item_id": item_id,
+        "user_id": current_user["id"],
+        "adjustment": adjustment,
+        "quantity_before": existing["quantity"],
+        "quantity_after": new_quantity,
+        "reason": reason,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    db.warehouse_movements.insert_one(movement)
+    
+    # Mettre à jour le stock
+    db.warehouse_items.update_one(
+        {"id": item_id},
+        {
+            "$set": {
+                "quantity": new_quantity,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    return {
+        "success": True,
+        "new_quantity": new_quantity,
+        "is_low_stock": new_quantity <= existing.get("alert_threshold", 1)
+    }
+
+@api_router.post("/warehouse/items/{item_id}/publish")
+async def publish_warehouse_item_as_listing(
+    item_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Publier un article du stock en tant qu'annonce"""
+    item = db.warehouse_items.find_one({
+        "id": item_id,
+        "user_id": current_user["id"]
+    })
+    
+    if not item:
+        raise HTTPException(status_code=404, detail="Article non trouvé")
+    
+    if item.get("listing_id"):
+        raise HTTPException(status_code=400, detail="Cet article est déjà publié en annonce")
+    
+    if item["quantity"] <= 0:
+        raise HTTPException(status_code=400, detail="Stock insuffisant pour publier")
+    
+    # Vérifier les crédits
+    user = db.users.find_one({"id": current_user["id"]})
+    credits = user.get("credits", 0) + user.get("free_ads_remaining", 0)
+    
+    if credits <= 0:
+        raise HTTPException(status_code=402, detail="Crédits insuffisants")
+    
+    # Déterminer la catégorie depuis la section
+    section = db.warehouse_sections.find_one({"id": item["section_id"]})
+    category = section.get("category", "pieces") if section else "pieces"
+    
+    # Créer l'annonce
+    listing_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+    
+    listing_doc = {
+        "id": listing_id,
+        "title": item["name"],
+        "description": f"{item.get('notes', '')}\n\nRéférence OEM: {item.get('reference_oem', 'N/A')}\nCompatible: {item.get('compatible_vehicles', 'N/A')}".strip(),
+        "price": item.get("selling_price", 0),
+        "category": "pieces",
+        "subcategory": category,
+        "brand": item.get("brand"),
+        "condition": item.get("condition", "occasion"),
+        "images": item.get("images", []),
+        "location": user.get("city", ""),
+        "postal_code": user.get("postal_code", ""),
+        "region": user.get("region", ""),
+        "shipping_cost": None,
+        "shipping_info": "",
+        "shipping_methods": ["hand_delivery"],
+        "seller_id": current_user["id"],
+        "seller_name": user.get("name", ""),
+        "seller_is_pro": user.get("is_professional", False),
+        "oem_reference": item.get("reference_oem"),
+        "compatible_models": [v.strip() for v in (item.get("compatible_vehicles") or "").split(",") if v.strip()],
+        "created_at": now,
+        "updated_at": now,
+        "status": "active",
+        "views": 0,
+        "warehouse_item_id": item_id,  # Lien vers l'article stock
+    }
+    
+    db.listings.insert_one(listing_doc)
+    
+    # Mettre à jour l'article avec l'ID de l'annonce
+    db.warehouse_items.update_one(
+        {"id": item_id},
+        {"$set": {"listing_id": listing_id, "updated_at": now}}
+    )
+    
+    # Déduire le crédit
+    if user.get("free_ads_remaining", 0) > 0:
+        db.users.update_one({"id": current_user["id"]}, {"$inc": {"free_ads_remaining": -1}})
+    else:
+        db.users.update_one({"id": current_user["id"]}, {"$inc": {"credits": -1}})
+    
+    return {
+        "success": True,
+        "listing_id": listing_id,
+        "message": "Annonce publiée avec succès"
+    }
+
+@api_router.get("/warehouse/stats")
+async def get_warehouse_stats(current_user: dict = Depends(get_current_user)):
+    """Statistiques de l'entrepôt"""
+    user_id = current_user["id"]
+    
+    total_items = db.warehouse_items.count_documents({"user_id": user_id})
+    total_sections = db.warehouse_sections.count_documents({"user_id": user_id})
+    
+    # Stock total (somme des quantités)
+    pipeline = [
+        {"$match": {"user_id": user_id}},
+        {"$group": {"_id": None, "total": {"$sum": "$quantity"}}}
+    ]
+    result = list(db.warehouse_items.aggregate(pipeline))
+    total_stock = result[0]["total"] if result else 0
+    
+    # Articles en alerte stock bas
+    low_stock_items = list(db.warehouse_items.find({
+        "user_id": user_id,
+        "$expr": {"$lte": ["$quantity", "$alert_threshold"]}
+    }, {"_id": 0, "name": 1, "quantity": 1, "location": 1}))
+    
+    # Valeur totale du stock (prix d'achat)
+    pipeline_value = [
+        {"$match": {"user_id": user_id, "purchase_price": {"$ne": None}}},
+        {"$group": {"_id": None, "total": {"$sum": {"$multiply": ["$quantity", "$purchase_price"]}}}}
+    ]
+    result_value = list(db.warehouse_items.aggregate(pipeline_value))
+    stock_value = result_value[0]["total"] if result_value else 0
+    
+    # Articles publiés en annonce
+    published_count = db.warehouse_items.count_documents({
+        "user_id": user_id,
+        "listing_id": {"$ne": None}
+    })
+    
+    return {
+        "total_items": total_items,
+        "total_sections": total_sections,
+        "total_stock": total_stock,
+        "stock_value": round(stock_value, 2),
+        "low_stock_count": len(low_stock_items),
+        "low_stock_items": low_stock_items[:10],  # Top 10
+        "published_count": published_count,
+    }
+
+@api_router.post("/warehouse/import-csv")
+async def import_warehouse_csv(
+    file: UploadFile = File(...),
+    section_id: str = Form(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """Importer des articles depuis un fichier CSV"""
+    import csv
+    import io
+    
+    if not current_user.get("is_professional"):
+        raise HTTPException(status_code=403, detail="Fonctionnalité réservée aux professionnels")
+    
+    # Vérifier la section
+    section = db.warehouse_sections.find_one({
+        "id": section_id,
+        "user_id": current_user["id"]
+    })
+    
+    if not section:
+        raise HTTPException(status_code=404, detail="Section non trouvée")
+    
+    content = await file.read()
+    try:
+        decoded = content.decode('utf-8-sig')
+    except:
+        decoded = content.decode('latin-1')
+    
+    reader = csv.DictReader(io.StringIO(decoded), delimiter=';')
+    
+    imported = 0
+    errors = []
+    now = datetime.now(timezone.utc).isoformat()
+    
+    for row_num, row in enumerate(reader, start=2):
+        try:
+            # Colonnes attendues: nom, quantite, emplacement, ref_oem, marque, vehicules_compatibles, prix_achat, prix_vente, etat
+            item_doc = {
+                "id": str(uuid.uuid4()),
+                "user_id": current_user["id"],
+                "section_id": section_id,
+                "name": row.get("nom", row.get("name", "")).strip(),
+                "quantity": int(row.get("quantite", row.get("quantity", 1))),
+                "location": row.get("emplacement", row.get("location", "")).strip() or None,
+                "reference_oem": row.get("ref_oem", row.get("reference_oem", "")).strip() or None,
+                "reference_custom": row.get("ref_interne", "").strip() or None,
+                "brand": row.get("marque", row.get("brand", "")).strip() or None,
+                "compatible_vehicles": row.get("vehicules_compatibles", row.get("compatible_vehicles", "")).strip() or None,
+                "purchase_price": float(row.get("prix_achat", row.get("purchase_price", 0)) or 0) or None,
+                "selling_price": float(row.get("prix_vente", row.get("selling_price", 0)) or 0) or None,
+                "condition": row.get("etat", row.get("condition", "occasion")).strip() or "occasion",
+                "notes": row.get("notes", "").strip() or None,
+                "images": [],
+                "alert_threshold": int(row.get("seuil_alerte", row.get("alert_threshold", 1))),
+                "listing_id": None,
+                "created_at": now,
+                "updated_at": now,
+            }
+            
+            if not item_doc["name"]:
+                errors.append(f"Ligne {row_num}: nom manquant")
+                continue
+            
+            db.warehouse_items.insert_one(item_doc)
+            imported += 1
+            
+        except Exception as e:
+            errors.append(f"Ligne {row_num}: {str(e)}")
+    
+    return {
+        "success": True,
+        "imported": imported,
+        "errors": errors[:20],  # Max 20 erreurs affichées
+        "total_errors": len(errors)
+    }
+
 # ================== BOXTAL SHIPPING API ==================
 
 # Boxtal Config
