@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Auto Pro - Offre Professionnels</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .flyer {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #0a0a0a 0%, #111 50%, #0a0a0a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Effets de fond */
+        .bg-glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+        }
+        .bg-glow-1 { width: 300px; height: 300px; background: #f97316; top: -50px; right: -50px; opacity: 0.15; }
+        .bg-glow-2 { width: 250px; height: 250px; background: #22c55e; bottom: 100px; left: -80px; opacity: 0.1; }
+        
+        /* Header */
+        .header {
+            position: relative;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo svg { width: 45px; height: 45px; }
+        
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 24px;
+        }
+        
+        .logo-text .pro {
+            background: linear-gradient(90deg, #f97316, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header-badge {
+            background: linear-gradient(90deg, #f97316, #ea580c);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Hero PRO */
+        .hero {
+            position: relative;
+            padding: 25px 30px 20px;
+            text-align: center;
+        }
+        
+        .hero-eyebrow {
+            font-size: 11px;
+            color: #f97316;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        
+        .hero h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+        
+        .hero h1 .highlight {
+            background: linear-gradient(90deg, #f97316, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-sub {
+            font-size: 13px;
+            color: #a1a1aa;
+            max-width: 450px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .hero-sub strong { color: #fff; }
+        
+        /* Offre PRO */
+        .pro-offer {
+            margin: 15px 30px;
+            background: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(234,88,12,0.1));
+            border: 1px solid rgba(249,115,22,0.3);
+            border-radius: 16px;
+            padding: 15px 20px;
+            text-align: center;
+        }
+        
+        .pro-offer-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        
+        .pro-offer-grid {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+        
+        .pro-offer-item {
+            text-align: center;
+        }
+        
+        .pro-offer-item .value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 26px;
+            font-weight: 900;
+            color: #f97316;
+        }
+        
+        .pro-offer-item .label {
+            font-size: 9px;
+            color: #a1a1aa;
+            text-transform: uppercase;
+        }
+        
+        /* Killer Features */
+        .killer {
+            padding: 15px 20px;
+        }
+        
+        .killer-title {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            color: #22c55e;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        
+        .killer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        
+        .killer-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 8px 6px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .killer-card:hover {
+            border-color: rgba(249,115,22,0.4);
+            background: rgba(249,115,22,0.05);
+        }
+        
+        .killer-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .killer-card h3 {
+            font-size: 8px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .killer-card p {
+            font-size: 7px;
+            color: #71717a;
+            line-height: 1.25;
+        }
+        
+        .killer-tag {
+            display: inline-block;
+            font-size: 6px;
+            font-weight: 700;
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-top: 3px;
+            text-transform: uppercase;
+        }
+        
+        .killer-tag.ia { background: rgba(249,115,22,0.2); color: #f97316; }
+        .killer-tag.new { background: rgba(34,197,94,0.2); color: #22c55e; }
+        .killer-tag.hot { background: rgba(239,68,68,0.2); color: #ef4444; }
+        .killer-tag.pro { background: rgba(139,92,246,0.2); color: #a78bfa; }
+        .killer-tag.exclu { background: rgba(59,130,246,0.2); color: #60a5fa; }
+        
+        /* Comparatif */
+        .compare {
+            margin: 12px 25px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .compare-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            background: rgba(249,115,22,0.1);
+            padding: 8px 12px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .compare-header span:not(:first-child) { text-align: center; }
+        .compare-header .them { color: #71717a; }
+        .compare-header .us { color: #f97316; }
+        
+        .compare-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            padding: 6px 12px;
+            font-size: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            align-items: center;
+        }
+        
+        .compare-row:last-child { border-bottom: none; }
+        .compare-row span:not(:first-child) { text-align: center; }
+        .compare-row .yes { color: #22c55e; font-weight: 700; }
+        .compare-row .no { color: #ef4444; }
+        .compare-row .meh { color: #71717a; }
+        
+        /* Témoignages */
+        .testimonials {
+            padding: 12px 25px;
+        }
+        
+        .testimonials-title {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .testimonial {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 10px;
+        }
+        
+        .testimonial-stars {
+            color: #fbbf24;
+            font-size: 10px;
+            margin-bottom: 4px;
+        }
+        
+        .testimonial-text {
+            font-size: 8px;
+            color: #a1a1aa;
+            line-height: 1.4;
+            font-style: italic;
+            margin-bottom: 6px;
+        }
+        
+        .testimonial-author {
+            font-size: 7px;
+            color: #f97316;
+            font-weight: 600;
+        }
+        
+        /* Stats impressionnantes */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 30px;
+            background: linear-gradient(90deg, rgba(249,115,22,0.05), rgba(249,115,22,0.1), rgba(249,115,22,0.05));
+            border-top: 1px solid rgba(249,115,22,0.15);
+            border-bottom: 1px solid rgba(249,115,22,0.15);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #f97316;
+        }
+        
+        .stat-label {
+            font-size: 8px;
+            color: #71717a;
+            text-transform: uppercase;
+        }
+        
+        /* CTA Final */
+        .cta {
+            padding: 15px 30px;
+            text-align: center;
+        }
+        
+        .cta-box {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(249,115,22,0.25);
+        }
+        
+        .cta h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+        
+        .cta-sub {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .cta-bonus {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,0.2);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .cta-url {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            color: #0a0a0a;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        
+        .qr-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .qr-code {
+            width: 55px;
+            height: 55px;
+            background: #fff;
+            border-radius: 8px;
+            padding: 3px;
+        }
+        
+        .qr-code img { width: 100%; height: 100%; }
+        
+        .qr-text {
+            font-size: 9px;
+            text-align: left;
+            line-height: 1.4;
+        }
+        
+        .qr-text strong { font-size: 10px; }
+        
+        /* Pays */
+        .countries {
+            padding: 10px 30px;
+            text-align: center;
+        }
+        
+        .countries-title {
+            font-size: 9px;
+            color: #71717a;
+            margin-bottom: 8px;
+        }
+        
+        .flags {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            font-size: 18px;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 10px 30px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .footer p {
+            font-size: 8px;
+            color: #52525b;
+        }
+        
+        /* Urgence */
+        .urgency {
+            background: linear-gradient(90deg, #dc2626, #b91c1c);
+            padding: 8px 20px;
+            text-align: center;
+        }
+        
+        .urgency p {
+            font-size: 11px;
+            font-weight: 700;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @media print {
+            body { background: #0a0a0a; }
+            .flyer { page-break-after: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="flyer">
+        <div class="bg-glow bg-glow-1"></div>
+        <div class="bg-glow bg-glow-2"></div>
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg viewBox="0 0 48 48" fill="none">
+                    <defs>
+                        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fff"/>
+                            <stop offset="100%" stop-color="#f0f0f0"/>
+                        </linearGradient>
+                        <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#1E3A5F"/>
+                            <stop offset="100%" stop-color="#0F2744"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="24" cy="24" r="23" fill="url(#g2)"/>
+                    <ellipse cx="24" cy="24" rx="18" ry="18" stroke="#60A5FA" stroke-width="1" fill="none"/>
+                    <ellipse cx="24" cy="24" rx="18" ry="10" stroke="#60A5FA" stroke-width="1" fill="none"/>
+                    <path d="M12 16L16 32L24 22L32 32L36 16" stroke="url(#g1)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <circle cx="24" cy="40" r="2" fill="#F97316"/>
+                </svg>
+                <span class="logo-text">World Auto <span class="pro">Pro</span></span>
+            </div>
+            <span class="header-badge">🔥 Offre Professionnels</span>
+        </header>
+        
+        <!-- Urgence -->
+        <div class="urgency">
+            <p>⏰ OFFRE DE LANCEMENT : 20 ANNONCES GRATUITES + ESSAI PRO 14 JOURS</p>
+        </div>
+        
+        <!-- Hero -->
+        <section class="hero">
+            <p class="hero-eyebrow">✨ La plateforme qui fait vendre</p>
+            <h1>
+                Vous êtes pro de l'auto ?<br>
+                <span class="highlight">Multipliez vos ventes par 5.</span>
+            </h1>
+            <p class="hero-sub">
+                Rejoignez <strong>+500 professionnels</strong> qui utilisent notre IA exclusive <strong>Tobi</strong> 
+                pour vendre plus vite et toucher des acheteurs qualifiés dans <strong>9 pays européens</strong>.
+            </p>
+        </section>
+        
+        <!-- Offre PRO -->
+        <div class="pro-offer">
+            <p class="pro-offer-title">🎁 VOTRE PACK BIENVENUE PROFESSIONNEL</p>
+            <div class="pro-offer-grid">
+                <div class="pro-offer-item">
+                    <div class="value">10</div>
+                    <div class="label">Crédits offerts</div>
+                </div>
+                <div class="pro-offer-item">
+                    <div class="value">14j</div>
+                    <div class="label">Essai PRO gratuit</div>
+                </div>
+                <div class="pro-offer-item">
+                    <div class="value">20</div>
+                    <div class="label">Annonces gratuites*</div>
+                </div>
+                <div class="pro-offer-item">
+                    <div class="value">50</div>
+                    <div class="label">Points fidélité</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Killer Features -->
+        <section class="killer">
+            <h2 class="killer-title">🚀 16 FONCTIONNALITÉS QUI ÉCRASENT LA CONCURRENCE</h2>
+            <div class="killer-grid">
+                <div class="killer-card">
+                    <div class="killer-icon">🤖</div>
+                    <h3>Assistant Tobi</h3>
+                    <p>IA qui trouve vos pièces</p>
+                    <span class="killer-tag ia">IA EXCLU</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">💰</div>
+                    <h3>Estimation IA</h3>
+                    <p>Prix optimal en 1 clic</p>
+                    <span class="killer-tag ia">IA EXCLU</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">🎬</div>
+                    <h3>Vidéo 360°</h3>
+                    <p>Montrez en vidéo</p>
+                    <span class="killer-tag new">NOUVEAU</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">⚡</div>
+                    <h3>Enchères Live</h3>
+                    <p>Vendez au plus offrant</p>
+                    <span class="killer-tag hot">HOT</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">🎤</div>
+                    <h3>Voix → Texte</h3>
+                    <p>Dictez vos annonces</p>
+                    <span class="killer-tag pro">PRO</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">📊</div>
+                    <h3>Dashboard</h3>
+                    <p>Stats en temps réel</p>
+                    <span class="killer-tag pro">PRO</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">🔔</div>
+                    <h3>Alertes Push</h3>
+                    <p>Clients notifiés 24/7</p>
+                    <span class="killer-tag exclu">EXCLU</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">📱</div>
+                    <h3>App PWA</h3>
+                    <p>Sans téléchargement</p>
+                    <span class="killer-tag new">NOUVEAU</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">🎁</div>
+                    <h3>Parrainage</h3>
+                    <p>Gagnez 100pts/filleul</p>
+                    <span class="killer-tag hot">€€€</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">📻</div>
+                    <h3>Radio Live</h3>
+                    <p>Musique intégrée</p>
+                    <span class="killer-tag new">FUN</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">🌙</div>
+                    <h3>Mode Sombre</h3>
+                    <p>Confort visuel</p>
+                    <span class="killer-tag exclu">UX</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">🛡️</div>
+                    <h3>Paiement Stripe</h3>
+                    <p>100% sécurisé</p>
+                    <span class="killer-tag pro">SÉCU</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">📦</div>
+                    <h3>Multi-Livraison</h3>
+                    <p>Colissimo, Mondial...</p>
+                    <span class="killer-tag exclu">FLEX</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">🌍</div>
+                    <h3>9 Pays</h3>
+                    <p>Vendez partout</p>
+                    <span class="killer-tag hot">EUROPE</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">⭐</div>
+                    <h3>Avis Vérifiés</h3>
+                    <p>Confiance acheteurs</p>
+                    <span class="killer-tag pro">TRUST</span>
+                </div>
+                <div class="killer-card">
+                    <div class="killer-icon">🔥</div>
+                    <h3>Stories</h3>
+                    <p>Comme Instagram</p>
+                    <span class="killer-tag new">VIRAL</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Comparatif -->
+        <div class="compare">
+            <div class="compare-header">
+                <span>Fonctionnalité</span>
+                <span class="them">LeBonCoin</span>
+                <span class="us">World Auto Pro</span>
+            </div>
+            <div class="compare-row">
+                <span>Assistant IA diagnostic</span>
+                <span class="no">✗</span>
+                <span class="yes">✓ Tobi</span>
+            </div>
+            <div class="compare-row">
+                <span>Estimation prix par IA</span>
+                <span class="no">✗</span>
+                <span class="yes">✓</span>
+            </div>
+            <div class="compare-row">
+                <span>Annonces vidéo</span>
+                <span class="no">✗</span>
+                <span class="yes">✓</span>
+            </div>
+            <div class="compare-row">
+                <span>Enchères en temps réel</span>
+                <span class="no">✗</span>
+                <span class="yes">✓</span>
+            </div>
+            <div class="compare-row">
+                <span>Vente dans 9 pays</span>
+                <span class="meh">France seule</span>
+                <span class="yes">✓ Europe</span>
+            </div>
+            <div class="compare-row">
+                <span>Prix par annonce</span>
+                <span class="meh">~5€</span>
+                <span class="yes">2€</span>
+            </div>
+        </div>
+        
+        <!-- Témoignages -->
+        <section class="testimonials">
+            <h2 class="testimonials-title">💬 Ce que disent nos pros</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"J'ai vendu 3x plus qu'avant. L'IA Tobi m'a fait gagner un temps fou."</p>
+                    <span class="testimonial-author">— Garage Martin, Lyon</span>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Les vidéos ont boosté mes ventes. Les clients font confiance direct."</p>
+                    <span class="testimonial-author">— Auto Pièces 33, Bordeaux</span>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Enfin une plateforme moderne. Le dashboard est top pour suivre."</p>
+                    <span class="testimonial-author">— Casse Auto Pro, Lille</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value">500+</div>
+                <div class="stat-label">Pros inscrits</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">15K+</div>
+                <div class="stat-label">Pièces en ligne</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">9</div>
+                <div class="stat-label">Pays couverts</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">IA disponible</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">2€</div>
+                <div class="stat-label">Par annonce</div>
+            </div>
+        </div>
+        
+        <!-- CTA -->
+        <section class="cta">
+            <div class="cta-box">
+                <h2>🚀 Lancez-vous maintenant !</h2>
+                <p class="cta-sub">Inscription en 30 secondes • Pas de carte bancaire requise</p>
+                <div class="cta-bonus">
+                    🎁 Code LANCEMENT = 20 annonces gratuites
+                </div>
+                <a href="https://worldautofrance.com" class="cta-url">
+                    🌐 worldautofrance.com
+                </a>
+                <div class="qr-section">
+                    <div class="qr-code">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://worldautofrance.com?ref=flyer-pro" alt="QR">
+                    </div>
+                    <div class="qr-text">
+                        <strong>📱 Scannez pour démarrer</strong><br>
+                        Ou appelez le 01 XX XX XX XX
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Pays -->
+        <section class="countries">
+            <p class="countries-title">🌍 Vendez dans 9 pays européens</p>
+            <div class="flags">
+                <span>🇫🇷</span><span>🇧🇪</span><span>🇨🇭</span><span>🇩🇪</span><span>🇳🇱</span><span>🇮🇹</span><span>🇪🇸</span><span>🇵🇹</span><span>🇸🇪</span>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2026 World Auto Pro • *Avec code LANCEMENT • SIRET requis pour compte PRO</p>
+        </footer>
+    </div>
+</body>
+</html>
