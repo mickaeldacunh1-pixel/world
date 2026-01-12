@@ -20,7 +20,10 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import httpx
 from bordereau_generator import BordereauGenerator
-from emergentintegrations.llm.chat import LlmChat, UserMessage
+# Emergent LLM - désactivé pour déploiement VPS
+# from emergentintegrations.llm.chat import LlmChat, UserMessage
+LlmChat = None
+UserMessage = None
 from pywebpush import webpush, WebPushException
 import json
 
