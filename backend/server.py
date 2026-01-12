@@ -9729,7 +9729,7 @@ async def import_warehouse_csv(
                 errors.append(f"Ligne {row_num}: nom manquant")
                 continue
             
-            db.warehouse_items.insert_one(item_doc)
+            await db.warehouse_items.insert_one(item_doc)
             imported += 1
             
         except Exception as e:
