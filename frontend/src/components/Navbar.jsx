@@ -287,7 +287,16 @@ export default function Navbar() {
                   <LanguageSelector />
                 )}
 
-                {/* Messages - à droite du sélecteur de langue */}
+                {/* Favoris - à côté du sélecteur de langue */}
+                {navbarSettings.navbar_show_favorites !== false && (
+                  <Link to="/favoris" className="hidden sm:flex" title="Mes favoris">
+                    <Button variant="ghost" size="icon" className="relative">
+                      <Heart className="w-5 h-5" />
+                    </Button>
+                  </Link>
+                )}
+
+                {/* Messages - à droite des favoris */}
                 {navbarSettings.navbar_show_messages !== false && (
                   <Link to="/messages" className="hidden sm:flex" title="Messages">
                     <Button variant="ghost" size="icon" className="relative">
