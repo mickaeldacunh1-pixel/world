@@ -442,6 +442,275 @@ class AgentTools:
         }
     
     @staticmethod
+    def security_scan() -> Dict:
+        """Scanner de sécurité basique pour WorldAuto"""
+        results = {
+            "headers": {},
+            "ssl": {},
+            "endpoints_auth": {},
+            "recommendations": []
+        }
+        report = "\n🔒 **SCAN DE SÉCURITÉ WORLDAUTO**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            import httpx
+            
+            # 1. Vérifier les headers de sécurité
+            report += "📋 **Headers de sécurité:**\n"
+            with httpx.Client(timeout=10, follow_redirects=True) as client:
+                r = client.get("https://worldautofrance.com")
+                headers = r.headers
+                
+                security_headers = {
+                    "X-Content-Type-Options": "nosniff",
+                    "X-Frame-Options": "DENY ou SAMEORIGIN",
+                    "X-XSS-Protection": "1; mode=block",
+                    "Strict-Transport-Security": "HSTS",
+                    "Content-Security-Policy": "CSP"
+                }
+                
+                for header, desc in security_headers.items():
+                    if header.lower() in [h.lower() for h in headers.keys()]:
+                        report += f"   ✅ {header}: Présent\n"
+                        results["headers"][header] = "OK"
+                    else:
+                        report += f"   ⚠️ {header}: Manquant ({desc})\n"
+                        results["headers"][header] = "MISSING"
+                        results["recommendations"].append(f"Ajouter le header {header}")
+            
+            report += "\n"
+            
+            # 2. Vérifier SSL
+            report += "🔐 **Certificat SSL:**\n"
+            try:
+                import ssl
+                import socket
+                context = ssl.create_default_context()
+                with socket.create_connection(("worldautofrance.com", 443), timeout=10) as sock:
+                    with context.wrap_socket(sock, server_hostname="worldautofrance.com") as ssock:
+                        cert = ssock.getpeercert()
+                        expiry = cert.get('notAfter', 'Inconnu')
+                        report += f"   ✅ SSL valide, expire: {expiry}\n"
+                        results["ssl"] = {"valid": True, "expiry": expiry}
+            except Exception as e:
+                report += f"   ❌ Erreur SSL: {str(e)}\n"
+                results["ssl"] = {"valid": False, "error": str(e)}
+            
+            report += "\n"
+            
+            # 3. Tester les endpoints sans auth (doivent échouer)
+            report += "🚫 **Endpoints protégés (doivent bloquer sans auth):**\n"
+            protected_endpoints = [
+                "/api/users/me",
+                "/api/admin/users",
+                "/api/listings/create",
+                "/api/messages"
+            ]
+            
+            with httpx.Client(timeout=10) as client:
+                for endpoint in protected_endpoints:
+                    try:
+                        r = client.get(f"https://worldautofrance.com{endpoint}")
+                        if r.status_code in [401, 403, 422]:
+                            report += f"   ✅ {endpoint}: Protégé ({r.status_code})\n"
+                            results["endpoints_auth"][endpoint] = "PROTECTED"
+                        elif r.status_code == 404:
+                            report += f"   ⚪ {endpoint}: Non trouvé\n"
+                            results["endpoints_auth"][endpoint] = "NOT_FOUND"
+                        else:
+                            report += f"   ❌ {endpoint}: ACCESSIBLE! ({r.status_code})\n"
+                            results["endpoints_auth"][endpoint] = "EXPOSED"
+                            results["recommendations"].append(f"Protéger {endpoint}")
+                    except:
+                        report += f"   ⚪ {endpoint}: Erreur\n"
+            
+            report += "\n"
+            
+            # 4. Recommandations
+            report += "💡 **Recommandations:**\n"
+            if results["recommendations"]:
+                for rec in results["recommendations"]:
+                    report += f"   • {rec}\n"
+            else:
+                report += "   ✅ Aucune recommandation critique\n"
+            
+            report += "\n" + "=" * 40 + "\n"
+            
+            # Score
+            total_checks = len(results["headers"]) + 1 + len(results["endpoints_auth"])
+            passed = sum(1 for v in results["headers"].values() if v == "OK")
+            passed += 1 if results["ssl"].get("valid") else 0
+            passed += sum(1 for v in results["endpoints_auth"].values() if v in ["PROTECTED", "NOT_FOUND"])
+            
+            score = int((passed / total_checks) * 100) if total_checks > 0 else 0
+            report += f"📊 **Score de sécurité: {score}%**\n"
+            
+            return {"formatted_report": report, "score": score, "details": results}
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def performance_test() -> Dict:
+        """Test de performance basique des API"""
+        report = "\n⚡ **TEST DE PERFORMANCE WORLDAUTO**\n"
+        report += "=" * 40 + "\n\n"
+        results = {}
+        
+        try:
+            import httpx
+            import time
+            
+            endpoints = [
+                ("GET", "/api/pricing", "Tarifs"),
+                ("GET", "/api/countries/allowed", "Pays"),
+                ("GET", "/", "Homepage"),
+                ("GET", "/api/listings?limit=10", "Annonces"),
+            ]
+            
+            report += "📊 **Temps de réponse:**\n"
+            
+            with httpx.Client(timeout=30, follow_redirects=True) as client:
+                for method, endpoint, name in endpoints:
+                    try:
+                        url = f"https://worldautofrance.com{endpoint}"
+                        start = time.time()
+                        if method == "GET":
+                            r = client.get(url)
+                        elapsed = (time.time() - start) * 1000  # en ms
+                        
+                        if elapsed < 500:
+                            status = "✅"
+                            perf = "Rapide"
+                        elif elapsed < 1500:
+                            status = "⚠️"
+                            perf = "Moyen"
+                        else:
+                            status = "❌"
+                            perf = "Lent"
+                        
+                        report += f"   {status} {name}: {elapsed:.0f}ms ({perf})\n"
+                        results[endpoint] = {"time_ms": elapsed, "status": r.status_code}
+                    except Exception as e:
+                        report += f"   ❌ {name}: Erreur - {str(e)[:30]}\n"
+            
+            report += "\n" + "=" * 40 + "\n"
+            
+            # Moyenne
+            times = [r["time_ms"] for r in results.values() if "time_ms" in r]
+            if times:
+                avg = sum(times) / len(times)
+                report += f"📈 **Moyenne: {avg:.0f}ms**\n"
+            
+            return {"formatted_report": report, "details": results}
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def check_logs() -> Dict:
+        """Vérifier les logs Docker du VPS (nécessite SSH)"""
+        report = "\n📜 **LOGS WORLDAUTO (50 dernières lignes)**\n"
+        report += "=" * 40 + "\n\n"
+        
+        try:
+            # Backend logs
+            ssh_cmd = 'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@148.230.115.118 "docker-compose -f /var/www/worldauto/docker-compose.yml logs --tail=50 backend 2>&1"'
+            result = subprocess.run(ssh_cmd, shell=True, capture_output=True, text=True, timeout=30)
+            
+            if result.returncode == 0:
+                report += "🔧 **Backend:**\n```\n"
+                report += result.stdout[-2000:] if len(result.stdout) > 2000 else result.stdout
+                report += "\n```\n"
+            else:
+                report += f"⚠️ Impossible de récupérer les logs backend\n"
+                report += f"💡 Configure SSH: ssh-copy-id root@148.230.115.118\n"
+            
+            return {"formatted_report": report}
+            
+        except subprocess.TimeoutExpired:
+            return {"formatted_report": report + "⚠️ Timeout SSH - Configure: ssh-copy-id root@148.230.115.118\n"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def modify_hero(title: str = None, subtitle: str = None, button_text: str = None) -> Dict:
+        """Modifier le Hero de la page d'accueil"""
+        try:
+            # Lire le fichier Home.jsx
+            home_path = Path(config.PROJECT_PATH) / "frontend" / "src" / "pages" / "Home.jsx"
+            
+            if not home_path.exists():
+                # Essayer un autre chemin
+                home_path = Path("/var/www/worldauto/frontend/src/pages/Home.jsx")
+            
+            if not home_path.exists():
+                return {"success": False, "error": "Fichier Home.jsx non trouvé"}
+            
+            content = home_path.read_text()
+            changes = []
+            
+            # Modifications (basiques - pour des changements simples)
+            if title:
+                changes.append(f"Titre changé en: {title}")
+            if subtitle:
+                changes.append(f"Sous-titre changé en: {subtitle}")
+            if button_text:
+                changes.append(f"Bouton changé en: {button_text}")
+            
+            if not changes:
+                return {"success": False, "error": "Aucune modification demandée. Utilise: title, subtitle, ou button_text"}
+            
+            return {
+                "success": True,
+                "message": "⚠️ Modification du Hero nécessite une intervention manuelle ou via E1",
+                "requested_changes": changes,
+                "file": str(home_path),
+                "tip": "Demande à E1 (Emergent) de faire cette modification pour toi"
+            }
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def full_diagnostic() -> Dict:
+        """Diagnostic COMPLET : santé + sécurité + performance"""
+        report = "\n"
+        report += "╔" + "═" * 50 + "╗\n"
+        report += "║" + " 🏥 DIAGNOSTIC COMPLET WORLDAUTO ".center(50) + "║\n"
+        report += "╚" + "═" * 50 + "╝\n\n"
+        
+        # 1. Santé
+        health = AgentTools.check_worldauto()
+        report += health.get("formatted_report", "Erreur santé\n")
+        report += "\n"
+        
+        # 2. Sécurité
+        security = AgentTools.security_scan()
+        report += security.get("formatted_report", "Erreur sécurité\n")
+        report += "\n"
+        
+        # 3. Performance
+        perf = AgentTools.performance_test()
+        report += perf.get("formatted_report", "Erreur performance\n")
+        
+        # Résumé final
+        report += "\n"
+        report += "╔" + "═" * 50 + "╗\n"
+        report += "║" + " 📋 RÉSUMÉ ".center(50) + "║\n"
+        report += "╠" + "═" * 50 + "╣\n"
+        
+        health_ok = health.get("all_ok", False)
+        security_score = security.get("score", 0)
+        
+        report += f"║  • Santé du site: {'✅ OK' if health_ok else '❌ Problèmes'}".ljust(51) + "║\n"
+        report += f"║  • Score sécurité: {security_score}%".ljust(51) + "║\n"
+        report += "╚" + "═" * 50 + "╝\n"
+        
+        return {"formatted_report": report}
+    
+    @staticmethod
     def list_files(pattern: str = "**/*", max_depth: int = 3) -> Dict:
         """Lister les fichiers du projet"""
         try:
