@@ -31,6 +31,15 @@ const conditions = [
   { value: 'reconditionne', label: 'Reconditionné' },
 ];
 
+const shippingOptions = [
+  { value: 'hand_delivery', label: 'Remise en main propre', icon: '🤝', description: 'L\'acheteur vient chercher' },
+  { value: 'colissimo', label: 'Colissimo', icon: '📦', description: 'La Poste - 2-3 jours' },
+  { value: 'mondial_relay', label: 'Mondial Relay', icon: '🏪', description: 'Point relais - Économique' },
+  { value: 'chronopost', label: 'Chronopost', icon: '⚡', description: 'Express 24h' },
+  { value: 'boxtal', label: 'Boxtal Multi-Transporteurs', icon: '🚚', description: 'Comparez les prix' },
+  { value: 'custom', label: 'Autre transporteur', icon: '📋', description: 'À préciser' },
+];
+
 export default function CreateListing() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
