@@ -708,6 +708,7 @@ class ListingCreate(BaseModel):
     region: Optional[str] = None  # Région française
     shipping_cost: Optional[float] = None  # Frais de port (None = à définir, 0 = gratuit)
     shipping_info: Optional[str] = None  # Infos livraison supplémentaires
+    shipping_methods: List[str] = []  # Modes de livraison: hand_delivery, colissimo, mondial_relay, chronopost, boxtal, custom
     # Compatibilité véhicule
     compatible_brands: List[str] = []  # Marques compatibles
     compatible_models: List[str] = []  # Modèles compatibles
