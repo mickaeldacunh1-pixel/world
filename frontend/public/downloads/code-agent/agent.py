@@ -448,6 +448,170 @@ class AgentTools:
     def get_knowledge() -> Dict:
         """Obtenir le résumé des connaissances du projet"""
         return {"success": True, "summary": project_knowledge.get_summary(), "knowledge": project_knowledge._knowledge}
+    
+    @staticmethod
+    def screenshot(url: str) -> Dict:
+        """Prendre une capture d'écran d'une URL"""
+        try:
+            import subprocess
+            import base64
+            from datetime import datetime
+            
+            # Créer le dossier screenshots s'il n'existe pas
+            screenshots_dir = Path(__file__).parent / "screenshots"
+            screenshots_dir.mkdir(exist_ok=True)
+            
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"screenshot_{timestamp}.png"
+            filepath = screenshots_dir / filename
+            
+            # Utiliser playwright pour la capture
+            script = f'''
+import asyncio
+from playwright.async_api import async_playwright
+
+async def take_screenshot():
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        page = await browser.new_page()
+        await page.set_viewport_size({{"width": 1920, "height": 1080}})
+        await page.goto("{url}", wait_until="networkidle")
+        await page.screenshot(path="{filepath}")
+        await browser.close()
+
+asyncio.run(take_screenshot())
+'''
+            result = subprocess.run(['python3', '-c', script], capture_output=True, text=True, timeout=60)
+            
+            if filepath.exists():
+                return {
+                    "success": True, 
+                    "message": f"📸 Capture d'écran sauvegardée: {filepath}",
+                    "path": str(filepath)
+                }
+            else:
+                return {"success": False, "error": f"Échec de la capture: {result.stderr}"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def test_api(method: str, endpoint: str, data: dict = None) -> Dict:
+        """Tester un endpoint API WorldAuto"""
+        try:
+            import httpx
+            base_url = "https://worldautofrance.com"
+            url = f"{base_url}{endpoint}"
+            
+            with httpx.Client(timeout=30) as client:
+                if method.upper() == "GET":
+                    response = client.get(url)
+                elif method.upper() == "POST":
+                    response = client.post(url, json=data or {})
+                elif method.upper() == "PUT":
+                    response = client.put(url, json=data or {})
+                elif method.upper() == "DELETE":
+                    response = client.delete(url)
+                else:
+                    return {"success": False, "error": f"Méthode inconnue: {method}"}
+                
+                return {
+                    "success": True,
+                    "status_code": response.status_code,
+                    "response": response.json() if response.headers.get("content-type", "").startswith("application/json") else response.text[:500]
+                }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def deploy() -> Dict:
+        """Déployer les changements sur le VPS WorldAuto"""
+        try:
+            import subprocess
+            
+            # Commande de déploiement complète
+            commands = [
+                "cd /var/www/worldauto",
+                "git pull origin code-agent-v",
+                "docker-compose build --no-cache",
+                "docker-compose up -d"
+            ]
+            
+            results = []
+            for cmd in commands:
+                result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=300)
+                results.append({
+                    "command": cmd,
+                    "stdout": result.stdout[:500] if result.stdout else "",
+                    "stderr": result.stderr[:500] if result.stderr else "",
+                    "returncode": result.returncode
+                })
+                if result.returncode != 0:
+                    return {
+                        "success": False,
+                        "error": f"Échec à l'étape: {cmd}",
+                        "details": results
+                    }
+            
+            return {
+                "success": True,
+                "message": "🚀 Déploiement terminé avec succès!",
+                "details": results
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def backup_db() -> Dict:
+        """Sauvegarder la base de données MongoDB"""
+        try:
+            import subprocess
+            from datetime import datetime
+            
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            backup_path = f"/var/www/worldauto/backups/backup_{timestamp}"
+            
+            cmd = f"docker exec worldauto-mongodb mongodump --out {backup_path}"
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=120)
+            
+            if result.returncode == 0:
+                return {
+                    "success": True,
+                    "message": f"💾 Backup créé: {backup_path}",
+                    "path": backup_path
+                }
+            else:
+                return {"success": False, "error": result.stderr}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def check_services() -> Dict:
+        """Vérifier l'état des services Docker"""
+        try:
+            import subprocess
+            
+            result = subprocess.run("docker ps --format '{{.Names}}: {{.Status}}'", 
+                                   shell=True, capture_output=True, text=True, timeout=30)
+            
+            services = {}
+            for line in result.stdout.strip().split('\n'):
+                if line:
+                    parts = line.split(': ')
+                    if len(parts) == 2:
+                        services[parts[0]] = parts[1]
+            
+            # Vérifier si tous les services critiques tournent
+            critical = ['worldauto-frontend', 'worldauto-backend', 'worldauto-mongodb']
+            all_running = all(any(s in name for name in services.keys()) for s in ['frontend', 'backend', 'mongodb'])
+            
+            return {
+                "success": True,
+                "all_running": all_running,
+                "services": services,
+                "message": "✅ Tous les services sont OK" if all_running else "⚠️ Certains services ne tournent pas"
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
 tools = AgentTools()
 
