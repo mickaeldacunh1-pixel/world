@@ -1,224 +1,160 @@
 <analysis>**original_problem_statement:**
-L'utilisateur a initialement demandé un site de type Opisto pour la vente de pièces automobiles. Le projet a évolué pour devenir une plateforme de référence complète.
+L'utilisateur a initialement demandé un site de type Opisto pour la vente de pièces automobiles. Le projet a évolué pour se concentrer sur la création d'un agent de développement de bureau IA nommé Cody, avec pour objectif de le rendre aussi performant que l'agent principal (E1) pour la maintenance et l'évolution du site.
 
-Au cours de cette session, l'utilisateur a exprimé une grande frustration face à l'échec du déploiement d'une application externe (KIM Agent) et a demandé une solution alternative. La demande principale a ensuite évolué vers la création d'un **clone de l'agent IA actuel**, une application de bureau capable de lire/modifier le code du projet, que l'utilisateur peut exécuter localement sur son PC. L'utilisateur a également demandé des améliorations significatives de l'interface utilisateur, notamment une personnalisation approfondie du Hero et de la Navbar depuis le panneau d'administration.
-
-PRODUCT REQUIREMENTS:
-- Un assistant IA nommé Tobi.
-- Un **agent de développement local** (Code Agent) capable d'interagir avec le code du projet.
-- Fonctionnalités avancées : Mode Sombre, PWA, Vidéos, Gamification, Reconnaissance IA de pièce, Estimation de prix IA.
-- Niveau 1 d'innovations : Scan de plaque, Recherche Vocale, Diagnostic IA, Enchères, Appel Vidéo.
-- Niveau 2 de fidélisation : Programme de fidélité, Système de parrainage.
-- Un éditeur complet pour l'ensemble du site (Hero, Footer, Navbar, etc.), avec des options de planification et de personnalisation mobile.
-- Vidéo de fond pour le Hero.
-- Monétisation et commissions.
-- Correction de bugs et améliorations de l'expérience utilisateur.
+Récemment, l'utilisateur a demandé de :
+1.  Terminer la refonte de la page des tarifs (P0).
+2.  Restreindre la création de comptes vendeurs à certains pays, tout en autorisant les acheteurs du monde entier.
+3.  Mettre à jour la FAQ avec ces nouvelles informations.
+4.  Activer automatiquement l'essai gratuit pour les nouveaux utilisateurs professionnels.
+5.  **Débugger et améliorer massivement l'agent Cody** qui ne fonctionnait pas comme attendu, causant une grande frustration.
+6.  Modifier la barre de navigation pour réorganiser les boutons Messages et Favoris et ajouter un bouton Nouveautés.
 
 **User's preferred language**: français
 
 **what currently exists?**
 L'application est une plateforme full-stack (React + FastAPI + MongoDB).
-Le travail de cette session a été très productif et a radicalement changé la direction du projet :
-- **KIM Agent Intégré**: Le problème du déploiement sur VPS a été résolu en intégrant KIM Agent directement dans l'application React principale. Il est désormais accessible à , fonctionne comme un composant React () et est connecté à un véritable backend IA ( utilisant GPT-4o).
-- **Code Agent Local**: Un agent de développement complet a été créé sous forme d'application Python/Flask que l'utilisateur peut télécharger et exécuter sur son PC Linux. Cet agent dispose d'une interface web locale (), peut lire/écrire des fichiers, exécuter des commandes shell, et interagir avec des LLMs (GPT-4o, Claude) via la clé Emergent. Il a été doté de fonctionnalités de mise à jour automatique et de commandes vocales (Speech-to-Text et Text-to-Speech).
-- **Personnalisation Poussée du Frontend**:
-    - **Hero Editor**: L'éditeur d'administration a été massivement amélioré avec de nouveaux onglets pour gérer les Raccourcis (Vidéos, Stories, etc.), les options Mobiles, la Planification (mode nuit/weekend/événements), et l'ajout de Vidéos de fond.
-    - **Navbar Editor**: L'éditeur d'administration permet désormais d'activer ou de désactiver individuellement presque tous les boutons de la barre de navigation (Messages, Favoris, Fidélité, Langue, Panier, etc.).
-- **Débogage VPS**: L'agent a aidé l'utilisateur à diagnostiquer et résoudre un conflit de port sur son VPS, où Nginx bloquait le port 80, empêchant le conteneur Docker du frontend de démarrer.
+-   **Page des tarifs** : La page a été réparée et affiche désormais les nouveaux packs de crédits, les abonnements Pro et l'essai gratuit.
+-   **Restriction géographique** : Le backend a été modifié pour que seuls les utilisateurs des pays autorisés puissent créer des annonces. Un endpoint  a été ajouté. L'inscription reste ouverte à tous.
+-   **Bonus & Avantages** : L'essai PRO (10 crédits, 14 jours) est maintenant activé automatiquement pour tout nouvel utilisateur professionnel vérifié par SIRET. Les différents bonus à l'inscription (points de fidélité, offre de lancement) ont été clarifiés et confirmés par des tests.
+-   **Contenu** : Les pages FAQ et Nouveautés ont été mises à jour avec les dernières informations concernant les restrictions de pays et l'essai PRO automatique.
+-   **UI Navbar** : Le bouton Messages a été dédoublé, l'icône Favoris a été déplacée, et une icône Nouveautés a été ajoutée.
+-   **Agent Cody** : Un agent Python local qui tourne sur le PC de l'utilisateur. Il a subi de multiples cycles de débogage et d'amélioration (de v2.3.1 à v3.4.0), mais reste une source majeure de problèmes et de frustration pour l'utilisateur. La dernière version inclut des outils pour interagir avec le VPS via SSH, prendre des captures d'écran, et effectuer des diagnostics.
 
 **Last working item**:
-L'agent s'apprêtait à implémenter les dernières demandes de l'utilisateur concernant l'amélioration de l'éditeur du Hero.
+L'agent était en train de finaliser une mise à jour majeure de l'agent Cody (v3.4.0) pour le transformer en un Expert WorldAuto.
 
-- Last item agent was working: Ajouter les fonctionnalités suivantes à l'éditeur du Hero :
-    1.  Glisser-déposer pour réorganiser les éléments.
-    2.  Ajouter des champs manquants pour l'édition des boutons premium.
-    3.  Investiguer pourquoi le raccourci KIM n'est pas visible pour l'utilisateur.
-- Status: NOT STARTED
+- Last item agent was working: Intégration d'une suite complète de nouveaux outils à Cody (, , , ) et amélioration de son prompt système pour qu'il soit plus performant et spécialisé dans la maintenance du site WorldAuto.
+- Status: IN PROGRESS
 - Agent Testing Done: N
-- Which testing method agent to use? frontend testing agent (pour le drag-and-drop) et screenshot tool (pour les changements dans l'admin).
+- Which testing method agent to use? manual testing by user
 - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-- **Issue 1**: L'API Boxtal renvoie une erreur 403 Forbidden avec les clés de production (Priority: P1).
-- **Issue 2**: Le Code Agent local a une mémoire de poisson rouge et perd le contexte entre chaque message (Priority: P1).
-- **Issue 3**: Insatisfaction récurrente concernant la confusion de l'aperçu dans le panneau d'administration (Priority: P2).
+-   Issue 1: Débogage et déploiement de l'agent Cody (P0)
+-   Issue 2: Problèmes récurrents de déploiement sur le VPS (P1)
 
 **Issues Detail:**
-- **Issue 1**: L'API Boxtal renvoie une erreur 403 Forbidden.
-  - **Attempted fixes**: Les clés de production ont été ajoutées. L'agent a basculé en mode  pour contourner le blocage.
-  - **Next debug checklist**:
-    1.  Rappeler à l'utilisateur qu'il doit contacter le support Boxtal pour valider son compte et ses clés API.
-    2.  Une fois la confirmation de l'utilisateur obtenue, basculer  à  dans .
-  - **Why fix this issue and what will be achieved with the fix?**: Permettre la génération réelle d'étiquettes d'expédition.
-  - **Status**: BLOCKED (en attente de l'utilisateur)
-  - **Is recurring issue?**: N
-  - **Should Test frontend/backend/both after fix?**: backend
-  - **Blocked on other issue**: Non.
+-   **Issue 1**: Débogage et déploiement de l'agent Cody
+    -   **Attempted fixes**: L'agent a itéré sur plusieurs versions (v2.6.0 à v3.4.0), corrigeant de multiples bugs de parsing (regex) des commandes, ajoutant des outils (screenshot, SSH, tests API), et enrichissant le prompt système. Le problème principal était que Cody ne parvenait pas à exécuter les commandes envoyées par l'utilisateur ou n'affichait pas correctement les résultats. La dernière version (v3.4.0) est prête mais non encore déployée/testée par l'utilisateur.
+    -   **Next debug checklist**:
+        1.  Guider l'utilisateur pour Save to GitHub afin que la v3.4.0 soit dans le repo.
+        2.  Fournir la commande de  ou  correcte pour le VPS afin de servir la nouvelle version.
+        3.  Guider l'utilisateur pour mettre à jour son agent local sur son PC.
+        4.  Tester la nouvelle commande  pour valider que le formatage de sortie est correct.
+        5.  Tester les autres nouveaux outils (, , etc.).
+        6.  Résoudre le timeout SSH en guidant l'utilisateur pour configurer sa clé avec .
+    -   **Why fix this issue and what will be achieved with the fix?**: C'est la demande principale de l'utilisateur qui a consommé une grande partie de la session. Le succès de cette tâche est critique pour la satisfaction de l'utilisateur et la poursuite du projet.
+    -   **Status**: IN PROGRESS
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: backend (l'agent Cody est un client backend)
+    -   **Blocked on other issue**: Non.
 
-- **Issue 2**: Le Code Agent local perd le contexte conversationnel.
-  - **Attempted fixes**: L'agent a identifié le problème (crée une nouvelle session à chaque message) mais n'a pas implémenté de solution, se contentant de suggérer des contournements à l'utilisateur (répéter la commande explicitement).
-  - **Next debug checklist**:
-    1.  Inspecter le fichier  dans le dossier .
-    2.  Implémenter une gestion de session côté serveur (Flask) pour conserver l'historique de la conversation. On pourrait utiliser  ou un simple dictionnaire en mémoire indexé par un ID de session.
-    3.  Le  est déjà passé au constructeur , mais la gestion de l'historique semble inexistante ou défaillante dans le flux de l'application Flask.
-  - **Why fix this issue and what will be achieved with the fix?**: Améliorera drastiquement l'utilisabilité de l'agent local, qui est un livrable clé pour l'utilisateur.
-  - **Status**: NOT STARTED
-  - **Is recurring issue?**: Y
-  - **Should Test frontend/backend/both after fix?**: backend (de l'agent local)
-  - **Blocked on other issue**: Non.
-
-- **Issue 3**: Insatisfaction sur l'aperçu admin.
-  - **Attempted fixes**: Une bannière d'avertissement a été ajoutée dans une session précédente, sans succès.
-  - **Next debug checklist**: Proposer une solution plus visuelle, comme un modal explicatif ou une bordure colorée distincte autour de la zone d'aperçu.
-  - **Why fix this issue and what will be achieved with the fix?**: Améliorer l'expérience utilisateur de l'admin.
-  - **Status**: NOT STARTED
-  - **Is recurring issue?**: Y
-  - **Should Test frontend/backend/both after fix?**: frontend
-  - **Blocked on other issue**: Non.
+-   **Issue 2**: Problèmes récurrents de déploiement sur le VPS.
+    -   **Attempted fixes**: L'agent a fourni plusieurs commandes  différentes pour résoudre des erreurs  et . La solution semble être un nettoyage complet de Docker (, ).
+    -   **Next debug checklist**:
+        1.  Fournir une commande de déploiement unique, robuste et fiable à l'utilisateur.
+        2.  Expliquer à l'utilisateur la différence entre  (rapide, pour les fichiers servis statiquement comme ) et  (lent, nécessaire pour les changements de code frontend).
+    -   **Why fix this issue and what will be achieved with the fix?**: Éliminer une source majeure de friction et de perte de temps pour l'utilisateur, et garantir que les modifications de l'agent sont correctement appliquées.
+    -   **Status**: IN PROGRESS
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: NA
+    -   **Blocked on other issue**: Non.
 
 **In progress Task List**:
-- **Task 1**: Améliorer l'éditeur du Hero (Priority: P0).
-  - **Where to resume**: Modifier le fichier .
-  - **What will be achieved with this?**: Permettre le réagencement par glisser-déposer, l'édition des boutons premium, et assurer la visibilité du raccourci KIM.
-  - **Status**: NOT STARTED
-  - **Should Test frontend/backend/both after fix?**: frontend
-  - **Blocked on something**: Non.
+-   **Task 1**: Améliorer l'agent Cody pour en faire un Expert WorldAuto (P0).
+    -   **Where to resume**: Le code pour la v3.4.0 est écrit et zippé dans . Il faut maintenant guider l'utilisateur pour le déploiement et le test.
+    -   **What will be achieved with this?**: Un agent Cody plus autonome, capable d'effectuer des diagnostics complets, des tests de sécurité basiques, et de modifier des fichiers de manière guidée, se rapprochant (un peu) des attentes de l'utilisateur.
+    -   **Status**: IN PROGRESS
+    -   **Should Test frontend/backend/both after fix?**: backend
+    -   **Blocked on something**: Le processus de déploiement manuel de l'utilisateur.
 
 **Upcoming and Future Tasks**
-- **Upcoming Tasks:**
-    - (P1) **Upload d'images pour vignettes de sous-catégories** : Mettre en place une interface admin pour permettre à l'utilisateur d'uploader des images pour les vignettes des sous-catégories de pièces.
-    - (P1) **Intégration API Colissimo / SIV** : En attente de la décision et des clés API de l'utilisateur.
-- **Future Tasks:**
-    - (P2) **Intégration eBay** : Tâche reportée car l'utilisateur n'a pas de compte développeur.
-    - (P2) **Interface admin pour crédits en attente**: Créer une UI pour gérer les crédits en attente.
-    - (P3) **Système d'avis vendeurs**: Suggestion pour renforcer la confiance.
-    - (P3) **Refactorisation de ** : Le fichier dépasse les 9000 lignes et doit être découpé en modules.
-    - (P3) **Traduire le contenu de la FAQ** : Migrer le contenu statique vers le système i18n.
+-   **Upcoming Tasks:**
+    -   (P1) Traduire la FAQ dans les 8 langues du système. Cela nécessite une refactorisation pour intégrer i18n, car le contenu est actuellement codé en dur en français dans .
+-   **Future Tasks:**
+    -   (P2) Refactoriser  : Ce fichier est gigantesque et difficile à maintenir.
+    -   (P3) Refactoriser  : Fichier très volumineux qui devrait être découpé en composants.
 
 **Completed work in this session**
-- **Résolution du blocage KIM Agent** en l'intégrant directement au site principal () et en le connectant à une API IA ().
-- **Création d'un Code Agent local** pour l'utilisateur : application Python/Flask téléchargeable avec une interface web, des outils d'interaction avec les fichiers, une fonction d'auto-update et des commandes vocales (STT/TTS).
-- **Aide à l'installation du Code Agent** et de ses dépendances (usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
-           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
-           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
-           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
-           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
-           <command> [<args>]
-
-These are common Git commands used in various situations:
-
-start a working area (see also: git help tutorial)
-   clone     Clone a repository into a new directory
-   init      Create an empty Git repository or reinitialize an existing one
-
-work on the current change (see also: git help everyday)
-   add       Add file contents to the index
-   mv        Move or rename a file, a directory, or a symlink
-   restore   Restore working tree files
-   rm        Remove files from the working tree and from the index
-
-examine the history and state (see also: git help revisions)
-   bisect    Use binary search to find the commit that introduced a bug
-   diff      Show changes between commits, commit and working tree, etc
-   grep      Print lines matching a pattern
-   log       Show commit logs
-   show      Show various types of objects
-   status    Show the working tree status
-
-grow, mark and tweak your common history
-   branch    List, create, or delete branches
-   commit    Record changes to the repository
-   merge     Join two or more development histories together
-   rebase    Reapply commits on top of another base tip
-   reset     Reset current HEAD to the specified state
-   switch    Switch branches
-   tag       Create, list, delete or verify a tag object signed with GPG
-
-collaborate (see also: git help workflows)
-   fetch     Download objects and refs from another repository
-   pull      Fetch from and integrate with another repository or a local branch
-   push      Update remote refs along with associated objects
-
-'git help -a' and 'git help -g' list available subcommands and some
-concept guides. See 'git help <command>' or 'git help <concept>'
-to read about a specific subcommand or concept.
-See 'git help git' for an overview of the system., ) sur le PC Linux de l'utilisateur.
-- **Débogage du déploiement VPS de l'utilisateur**, en identifiant et résolvant un conflit de port entre Nginx et Docker.
-- **Améliorations massives de l'éditeur d'administration** :
-    - **Hero Editor**: Ajout d'onglets pour les Raccourcis, le Mobile, la Planification (nuit, weekend, événements) et l'option de vidéo de fond.
-    - **Navbar Editor**: Ajout de switchs pour activer/désactiver tous les boutons principaux de la barre de navigation.
-- **Réorganisation de l'UI de la page d'accueil** : déplacement de boutons, ajout d'une ligne de raccourcis stylisés, et ajout d'une bannière Nouveautés.
+-   **Refonte des Tarifs (P0)**: Correction du fichier corrompu  et finalisation de l'affichage des nouveaux packs et abonnements.
+-   **Restriction Géographique (Vendeurs)**: Implémentation de la logique backend pour limiter la création d'annonces aux pays autorisés et création du endpoint .
+-   **Activation Automatique de l'Essai PRO**: Les nouveaux utilisateurs professionnels reçoivent maintenant 10 crédits et 14 jours d'essai automatiquement à l'inscription.
+-   **Mise à jour du Contenu**: La FAQ () et la page Nouveautés () ont été mises à jour pour refléter les derniers changements.
+-   **Modification de la Navbar**: Les boutons Messages, Favoris et Nouveautés ont été réorganisés comme demandé dans .
+-   **Débogage intensif de Cody (v2.3.1 -> v3.4.0)**: Correction de nombreux bugs de parsing et d'exécution, et ajout de multiples fonctionnalités (, , , diagnostics, etc.) dans .
 
 **Earlier issues found/mentioned but not fixed**
-- **Issue 1**: Le Code Agent local perd le contexte entre les messages.
-    - **Debug checklist**: Implémenter une gestion de session dans  pour conserver l'historique de la conversation.
-    - **Why to solve this issue and what will be achieved with this?**: C'est une faille majeure dans l'utilisabilité de l'agent local, qui est un livrable très important pour l'utilisateur.
-    - **Should Test frontend/backend/both after fix**: backend (de l'agent local)
-    - **Is recurring issue?** N
+-   **Issue 1**: Attentes de l'utilisateur vs capacités de Cody.
+    -   **Debug checklist**: L'agent doit continuer à gérer les attentes de l'utilisateur en expliquant clairement la différence entre un script Python LLM-powered (Cody) et un agent de développement complet (E1), tout en continuant à améliorer Cody pour qu'il soit aussi utile que possible.
+    -   **Why to solve this issue and what will be achieved with this?**: C'est la cause racine de la frustration de l'utilisateur. Mieux gérer cela améliorera la collaboration.
+    -   **Should Test frontend/backend/both after fix**: NA
+    -   **Is recurring issue?**: Y
 
 **Known issue recurrence from previous fork**
-- **Insatisfaction de l'utilisateur concernant la confusion de l'aperçu dans l'admin**. La solution précédente (bannière) n'a pas été suffisante. Le problème persiste mais est de faible priorité.
+-   **Issue recurrence in previous fork**: Problèmes de déploiement et de branches Git. Confusion sur la synchronisation et le fonctionnement des outils.
+-   **Recurrence count**: Très élevé.
+-   **Status**: IN PROGRESS. L'agent a passé une grande partie de la session à guider l'utilisateur à travers des déploiements Docker et des mises à jour de l'agent local, avec de nombreux échecs.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Local Agent Application (Python/Flask)**: Création d'une application autonome avec une interface web, des outils d'exécution de code/commande, et une logique de mise à jour automatique.
-- **Speech-to-Text & Text-to-Speech**: Intégration d'APIs vocales (OpenAI via ) dans une application web.
-- **Dynamic UI Configuration**: Utilisation intensive de settings stockés en DB pour rendre des composants React (Hero, Navbar) entièrement configurables depuis un panneau d'administration.
-- **Component-based Architecture**: Remplacement d'une PWA statique par un composant React () pour une meilleure intégration.
-- **VPS / Docker Debugging**: Diagnostic d'un conflit de port 80 entre Nginx et un conteneur Docker.
+-   **Backend**: Modification de la logique d'inscription et de création d'annonce dans FastAPI.
+-   **Frontend**: Correction d'un fichier JSX corrompu (React), modification de la structure de la Navbar.
+-   **Agent Local (Python)**:
+    -   Débogage intensif de parsing de commandes avec .
+    -   Implémentation de nouveaux outils :  pour les commandes locales et ,  pour les API,  pour les captures d'écran.
+    -   Prompt Engineering : Création de prompts système très détaillés pour guider le comportement du LLM de Cody.
+    -   Gestion des déploiements : Création de scripts pour mettre à jour l'agent via  et .
 
 **key DB schema**
-- **settings**: Collection fortement enrichie avec des dizaines de nouvelles clés pour la personnalisation du Hero et de la Navbar (ex: , , ).
-
-**changes in tech stack**
--  a été ajouté comme dépendance pour le Code Agent local.
+Aucun changement de schéma. La logique utilisant la collection  a été modifiée lors de l'inscription pour les essais PRO et les .
 
 **All files of reference**
-- : Fichier principal de l'agent local, source de nombreuses itérations.
-- : Fichier principal pour la personnalisation du Hero.
-- : Contient la logique et l'UI pour les onglets de l'admin.
-- : Modifié pour utiliser les settings de la DB.
-- : Modifié pour afficher le Hero et les raccourcis dynamiquement.
-- : Modifié pour ajouter l'endpoint .
+-   : Fichier principal de l'agent Cody, au cœur du travail de cette session.
+-   : Modifié pour la logique métier.
+-   : Réparé.
+-   : Mis à jour.
+-   : Mis à jour.
+-   : Modifié pour l'UI.
+-   : Créé pour aider l'utilisateur à former Cody.
 
 **Areas that need refactoring**:
-- ****: Toujours critique, sa taille (+9000 lignes) est un risque majeur pour la stabilité.
-- ****: Le code de l'agent local mélange la logique backend (Flask), le templating HTML et le code JavaScript dans une seule longue chaîne de caractères (). Pour de futures évolutions, il serait préférable de séparer ces éléments dans des fichiers distincts (ex: , ).
+-   : Ce fichier est devenu un monolithe de plus de 1300 lignes. Les outils, les prompts, et la logique de l'application Flask devraient être séparés dans des modules distincts pour une meilleure maintenabilité.
 
 **key api endpoints**
--  (POST): Nouvel endpoint pour l'assistant KIM.
+-   : (GET) (Nouveau) Retourne la liste des pays autorisés pour la vente.
+-   : (POST) (Modifié) Active automatiquement l'essai PRO si  est vrai.
+-   : (POST) (Modifié) Vérifie le pays de l'utilisateur avant d'autoriser la création d'annonce.
 
 **Critical Info for New Agent**
-- **L'utilisateur est extrêmement satisfait de la performance de l'agent de cette session.** Il a de hautes attentes et apprécie les solutions directes et efficaces. Le Code Agent local est son fils et il y est très attaché.
-- **Priorité à l'utilisateur**: L'agent a réussi en écoutant attentivement l'utilisateur et en pivotant rapidement (abandon du déploiement VPS pour une intégration directe et la création de l'agent local). Maintenez cette approche centrée sur l'utilisateur.
-- **Problème de mémoire du Code Agent**: Le bug de perte de contexte de l'agent local est le principal point noir technique. Sa résolution serait une victoire majeure.
-- **Déploiement VPS**: L'environnement de l'utilisateur utilise Docker-compose. Nginx est aussi présent et peut causer des conflits sur le port 80. La commande  est la clé pour résoudre les problèmes de déploiement.
+-   **La frustration de l'utilisateur est à son comble.** Il a passé énormément de temps et de crédits à débugger l'agent Cody et se sent floué. Votre priorité absolue est de faire fonctionner Cody v3.4.0 de manière stable et de répondre à ses attentes de manière transparente.
+-   **Le processus de mise à jour de Cody est le principal point de défaillance.** L'utilisateur gère deux environnements (son PC local où tourne Cody, et le VPS où tourne le site). La synchronisation entre les deux est source d'erreurs constantes (versions différentes, chemins d'accès incorrects, alias de commande erronés). Soyez extrêmement précis et patient dans vos instructions de déploiement.
+-   **Ne criez pas victoire trop vite.** L'utilisateur est très sceptique. Ne déclarez pas un problème résolu avant qu'il n'ait été testé et confirmé de manière exhaustive par l'utilisateur lui-même.
+-   **Gérez les attentes.** Clarifiez ce que Cody peut et ne peut pas faire. Présentez-le comme un assistant de maintenance pour WorldAuto, pas comme un agent de développement générique capable de tout créer.
 
 **documents and test reports created in this job**
-- : Le package téléchargeable pour l'agent local de l'utilisateur.
+-   
 
 **Last 10 User Messages and any pending HUMAN messages**
-10. L'utilisateur exprime sa frustration face aux échecs de son Code Agent et demande à l'agent de l'empêcher de tout casser. (Terminé)
-9.  L'agent diagnostique que Nginx bloque le port 80 sur le VPS de l'utilisateur. (Terminé)
-8.  L'agent fournit la commande pour arrêter Nginx, ce qui résout le problème de déploiement. L'utilisateur est ravi. (Terminé)
-7.  L'utilisateur demande si le code sur son PC est à jour. (Terminé)
-6.  L'agent explique comment synchroniser le code local avec  après un Save to Github. (Terminé)
-5.  L'utilisateur confirme que tout est synchronisé et fonctionnel. (Terminé)
-4.  L'utilisateur est très satisfait et exprime son appréciation. (Terminé)
-3.  L'utilisateur demande des améliorations pour l'éditeur du Hero : glisser-déposer, champs manquants pour les boutons premium, et visibilité du raccourci KIM. (En attente)
-2.  L'agent propose de s'en occuper lors de la prochaine session. (En attente)
-1.  **L'utilisateur demande à l'agent de commencer immédiatement (go stp).** (En attente - C'est le point de départ de la nouvelle session)
+1.  **User**: Veut savoir si Cody peut modifier le héros, gérer la sécurité et réparer les erreurs.
+2.  **User**: Demande à l'agent d'ajouter toutes les optimisations possibles à Cody en une seule fois.
+3.  **User**: Se plaint des erreurs de déploiement Docker et du temps passé.
+4.  **User**: Confirme que la nouvelle version (3.3.0) de Cody est installée et demande quoi faire.
+5.  **User**: S'étonne des erreurs trouvées par Cody (promo 404, SSH timeout).
+6.  **User**: N'est pas satisfait de la sortie JSON brute de Cody et du fait qu'il ne l'interprète pas.
+7.  **User**: A mis à jour Cody vers 3.2.0 et teste.
+8.  **User**: Exprime sa frustration sur le coût et le temps passé sur la mise à jour de l'agent.
+9.  **User**: Est confus sur les numéros de version (2.11 vs 3.1).
+10. **User**: A modifié la navbar et demande si on peut tester Cody maintenant.
 
 **Project Health Check:**
-- **Broken**: Rien.
-- **Mocked**: L'intégration Boxtal reste en mode .
-- **In Progress**: Les améliorations du Hero Editor (drag & drop, etc.) sont en attente. Le Code Agent local a un bug de mémoire connu.
+-   **Broken**: L'expérience utilisateur avec l'agent Cody est cassée. La confiance est très faible. Le processus de déploiement/mise à jour est fragile et source d'erreurs.
+-   **Mocked**: Aucune.
 
 **3rd Party Integrations**
-- 
-- 
+-   
+-   
 -----
 
 WeasyPrint could not import some external libraries. Please carefully follow the installation steps before reporting an issue:
@@ -226,23 +162,27 @@ https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#installation
 https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#troubleshooting 
 
 -----
-- 
--  & 
-- Cloudinary
-- Stripe
-- Mondial Relay
-- Boxtal
-- ** (Nouveau, pour le Code Agent local)**
+-   
+-    & 
+-   Cloudinary
+-   Stripe
+-   Mondial Relay
+-   Boxtal
+-   SMTP Hostinger
+-   
+-   PostHog (analytics)
+-   Google Fonts
+-    (Nouveau, pour l'agent Cody)
 
 **Testing status**
-- Testing agent used after significant changes: NO
-- Troubleshoot agent used after agent stuck in loop: NO
-- Test files created: []
-- Known regressions: Le Code Agent a eu plusieurs régressions (boutons cassés, API cassée, boucle de mise à jour) qui ont été corrigées de manière itérative.
+-   Testing agent used after significant changes: NO
+-   Troubleshoot agent used after agent stuck in loop: YES, pour diagnostiquer le problème de l'historique de Cody.
+-   Test files created: []
+-   Known regressions: Le processus de déploiement Docker sur le VPS de l'utilisateur semble instable et échoue souvent avec des erreurs .
 
 **Credentials to test flow:**
-- **Compte Admin**:  / 
-- **Emergent LLM Key (pour le Code Agent)**: 
+-   **Compte Admin**:  / 
+-   **VPS SSH**: L'utilisateur se connecte en . Une clé SSH doit être configurée depuis le PC de l'utilisateur pour que les commandes  de Cody fonctionnent.
 
 **What agent forgot to execute**
-- L'agent a identifié le problème de mémoire de poisson rouge (perte de contexte) du Code Agent local mais n'a pas tenté de le corriger. Il a seulement suggéré une solution de contournement à l'utilisateur, ce qui est une occasion manquée de rendre le produit livré beaucoup plus robuste.</analysis>
+-   L'agent a créé la version  de Cody, mais la session s'est terminée avant de pouvoir guider l'utilisateur à travers le processus complet de  ->  ->  -> . Cette boucle est l'étape la plus critique et la plus sujette aux erreurs.</analysis>
