@@ -202,32 +202,56 @@ const faqs = [
     icon: Truck,
     questions: [
       {
-        q: "Comment fonctionne la livraison ?",
-        a: "La livraison est organisée entre l'acheteur et le vendeur. Vous pouvez convenir d'une remise en main propre ou d'un envoi par transporteur. World Auto Pro est intégré avec Boxtal, qui vous donne accès à Colissimo, Mondial Relay, Chronopost, DPD et plus encore, directement depuis la plateforme."
+        q: "Comment fonctionne la livraison sur World Auto Pro ?",
+        a: "La livraison est gérée directement par le vendeur. Lors de la création d'une annonce, le vendeur choisit les modes de livraison qu'il accepte (remise en main propre, Colissimo, Mondial Relay, Chronopost, Boxtal, etc.). L'acheteur sélectionne ensuite son mode préféré lors de l'achat. World Auto Pro facilite la mise en relation mais n'expédie pas les colis."
       },
       {
-        q: "Quels transporteurs sont disponibles ?",
-        a: "Grâce à notre partenaire Boxtal, vous avez accès à : Colissimo (La Poste), Mondial Relay, Chronopost, DPD, et d'autres transporteurs. Les tarifs sont calculés automatiquement selon le poids et les dimensions du colis."
+        q: "Quels modes de livraison puis-je proposer en tant que vendeur ?",
+        a: "Vous pouvez proposer : 🤝 Remise en main propre (l'acheteur vient chercher), 📦 Colissimo (La Poste, 2-4 jours), 🏪 Mondial Relay (points relais, économique), ⚡ Chronopost (express 24h), 🚚 Boxtal (comparateur multi-transporteurs), 📋 Autre transporteur de votre choix. Vous pouvez en sélectionner plusieurs pour plus de flexibilité."
       },
       {
-        q: "Comment obtenir un devis de livraison ?",
-        a: "Lors de l'achat, les frais de port sont calculés automatiquement en fonction du poids, des dimensions et de l'adresse de livraison. Vous pouvez choisir le transporteur qui vous convient parmi les options proposées."
+        q: "Qu'est-ce que Boxtal et comment ça marche ?",
+        a: "Boxtal est un comparateur de transporteurs intégré à World Auto Pro. Il vous permet de comparer les tarifs de Colissimo, Mondial Relay, Chronopost, DPD, FedEx, etc. en temps réel. Vous n'avez PAS besoin d'abonnement - vous payez uniquement à l'envoi. Le vendeur crée son compte Boxtal gratuitement, génère son étiquette et expédie. World Auto Pro ne prend aucune commission sur Boxtal."
+      },
+      {
+        q: "Comment utiliser le calculateur de frais de port ?",
+        a: "Le calculateur est disponible sur chaque annonce proposant Boxtal. Cliquez sur \"Calculer les frais de livraison vers chez moi\", entrez votre code postal et le poids estimé du colis. Vous verrez instantanément les tarifs de tous les transporteurs disponibles avec leurs délais de livraison."
       },
       {
         q: "Qui paie les frais de livraison ?",
-        a: "Les frais de livraison sont généralement à la charge de l'acheteur, sauf accord contraire avec le vendeur. Le vendeur peut aussi proposer la livraison gratuite en l'incluant dans son prix."
+        a: "Par défaut, les frais de livraison sont à la charge de l'acheteur. Le vendeur peut cependant : 1) Proposer la livraison gratuite (incluse dans le prix), 2) Offrir la livraison à partir d'un certain montant, 3) Négocier les frais avec l'acheteur via la messagerie. Les frais sont clairement affichés avant l'achat."
       },
       {
         q: "Comment sont calculés les frais de port ?",
-        a: "Les frais de port sont calculés en temps réel via notre partenaire Boxtal, en fonction du poids, des dimensions et de la destination. Une petite commission de service est incluse dans les frais affichés pour couvrir les coûts de gestion de la plateforme (emballage, support, etc.)."
+        a: "Les frais dépendent de : 1) Le poids du colis, 2) Les dimensions (longueur x largeur x hauteur), 3) La distance (code postal départ → arrivée), 4) Le transporteur choisi (Mondial Relay est moins cher que Chronopost par exemple). Une petite marge de service est incluse pour couvrir les frais de plateforme."
       },
       {
-        q: "Comment suivre ma commande ?",
-        a: "Une fois l'article expédié, vous recevez un numéro de suivi par email et dans votre espace Commandes. Vous pouvez suivre votre colis en temps réel sur le site du transporteur ou directement sur World Auto Pro."
+        q: "Puis-je proposer uniquement la remise en main propre ?",
+        a: "Oui, c'est tout à fait possible ! Si vous ne souhaitez pas expédier, sélectionnez uniquement \"Remise en main propre\" lors de la création de l'annonce. L'acheteur devra alors se déplacer pour récupérer l'article. C'est idéal pour les pièces volumineuses ou fragiles."
       },
       {
         q: "Comment générer une étiquette d'expédition ?",
-        a: "Après une vente, rendez-vous dans votre tableau de bord > Commandes. Cliquez sur la commande puis \"Générer étiquette\". Sélectionnez le transporteur et téléchargez l'étiquette à coller sur votre colis."
+        a: "Après une vente : 1) Allez dans votre Tableau de bord > Commandes, 2) Cliquez sur la commande concernée, 3) Sélectionnez \"Générer étiquette\", 4) Choisissez le transporteur et entrez les dimensions du colis, 5) Payez et téléchargez l'étiquette PDF, 6) Collez-la sur votre colis et déposez-le au point de collecte."
+      },
+      {
+        q: "Comment suivre mon colis ?",
+        a: "Une fois le colis expédié, vous recevez automatiquement un email avec le numéro de suivi. Vous pouvez également le retrouver dans votre espace Commandes. Cliquez sur le numéro pour être redirigé vers le site du transporteur et suivre votre colis en temps réel."
+      },
+      {
+        q: "Que faire si mon colis est perdu ou endommagé ?",
+        a: "1) Contactez d'abord le transporteur avec votre numéro de suivi pour ouvrir une réclamation. 2) Prévenez le vendeur via la messagerie. 3) Si vous avez utilisé le paiement sécurisé, n'acceptez PAS la réception tant que le litige n'est pas résolu. 4) Contactez notre support à contact@worldautofrance.com avec les preuves (photos, échanges). Nous vous accompagnerons dans la résolution."
+      },
+      {
+        q: "Quels sont les délais de livraison ?",
+        a: "Les délais varient selon le transporteur : 🏪 Mondial Relay : 3-5 jours ouvrés, 📦 Colissimo : 2-4 jours ouvrés, ⚡ Chronopost : 24h (express), 🚚 DPD : 2-3 jours ouvrés. Pour l'international, comptez 5-10 jours selon la destination. Ces délais sont indicatifs et peuvent varier."
+      },
+      {
+        q: "Puis-je expédier à l'international ?",
+        a: "Oui ! Grâce à Boxtal, vous pouvez expédier dans toute l'Europe : France, Belgique, Suisse, Allemagne, Espagne, Italie, Pays-Bas, Portugal, Royaume-Uni, et plus. Les tarifs internationaux sont calculés automatiquement. Attention : certains transporteurs ne livrent pas certaines zones (îles, DOM-TOM)."
+      },
+      {
+        q: "Comment bien emballer ma pièce auto ?",
+        a: "Pour les pièces auto, un bon emballage est crucial : 1) Nettoyez la pièce et videz les fluides (huile, liquide de frein), 2) Protégez avec du papier bulle ou du carton ondulé, 3) Utilisez un carton solide adapté au poids, 4) Comblez les vides avec du papier froissé, 5) Fermez solidement avec du ruban adhésif, 6) Indiquez \"FRAGILE\" si nécessaire. Un colis bien emballé = moins de litiges !"
       }
     ]
   },
