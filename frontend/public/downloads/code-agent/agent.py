@@ -1557,12 +1557,33 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                 result = {"success": False, "error": str(e)}
             
             if result:
-                # Affichage spécial pour check_worldauto (rapport formaté)
-                if tool_name == 'check_worldauto' and 'formatted_report' in result:
+                # Affichage spécial pour les outils de diagnostic (rapport formaté + conclusion auto)
+                if tool_name in ['check_worldauto', 'security_scan', 'performance_test', 'full_diagnostic'] and 'formatted_report' in result:
                     result_str = result['formatted_report']
+                    # Ajouter une conclusion automatique basée sur le résultat
+                    if tool_name == 'check_worldauto':
+                        if result.get('all_ok'):
+                            result_str += "\n\n🎉 **Conclusion** : WorldAuto fonctionne parfaitement ! Tous les services API répondent correctement et le site est accessible. ✅"
+                        else:
+                            result_str += "\n\n⚠️ **Conclusion** : Des problèmes ont été détectés. Vérifie les points marqués ❌ ci-dessus."
+                    elif tool_name == 'security_scan':
+                        score = result.get('score', 0)
+                        if score >= 80:
+                            result_str += f"\n\n🎉 **Conclusion** : Sécurité correcte avec un score de {score}%. ✅"
+                        else:
+                            result_str += f"\n\n⚠️ **Conclusion** : Score de sécurité de {score}%. Des améliorations sont recommandées."
+                    elif tool_name == 'performance_test':
+                        result_str += "\n\n✅ **Test de performance terminé !**"
+                    elif tool_name == 'full_diagnostic':
+                        result_str += "\n\n✅ **Diagnostic complet terminé !**"
                 else:
                     result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
                 response = response.replace(original_text, result_str, 1)
+                
+                # Supprimer les phrases "Je vais analyser..." qui restent après l'outil
+                response = re.sub(r'Je vais maintenant analyser.*?📊', '', response)
+                response = re.sub(r'Laisse-moi analyser.*?\.', '', response)
+                response = re.sub(r'Analysons ces résultats.*?\.', '', response)
         
         # Pattern 2: Format avec balises ```action {"tool": "...", "params": {...}} ```
         action_pattern = r'```action\s*\n?({.*?})\s*\n?```'
