@@ -67,6 +67,57 @@
     h1, h2, h3, h4, h5, h6 {
         font-family: 'Chivo', sans-serif;
     }
+    
+    /* Mode sombre mobile - corrections de texte invisible */
+    .dark p, .dark span, .dark div, .dark label {
+        color: inherit;
+    }
+    
+    .dark .text-gray-900 {
+        color: hsl(var(--foreground)) !important;
+    }
+    
+    .dark .text-gray-800 {
+        color: hsl(var(--foreground) / 0.9) !important;
+    }
+    
+    .dark .text-gray-700 {
+        color: hsl(var(--foreground) / 0.8) !important;
+    }
+    
+    .dark .text-black {
+        color: hsl(var(--foreground)) !important;
+    }
+    
+    /* Fix placeholder color in dark mode */
+    .dark input::placeholder,
+    .dark textarea::placeholder {
+        color: hsl(var(--muted-foreground)) !important;
+    }
+    
+    /* Fix dropdown/select text in dark mode */
+    .dark [data-radix-select-viewport] {
+        color: hsl(var(--foreground));
+    }
+    
+    /* Fix cards text in dark mode */
+    .dark .bg-white {
+        background-color: hsl(var(--card)) !important;
+        color: hsl(var(--card-foreground)) !important;
+    }
+    
+    /* Mobile menu dark mode fix */
+    @media (max-width: 768px) {
+        .dark .hover\:bg-secondary:hover {
+            background-color: hsl(var(--secondary)) !important;
+        }
+        
+        .dark nav a, 
+        .dark nav button,
+        .dark nav span {
+            color: hsl(var(--foreground));
+        }
+    }
 }
 
 /* ===== MOBILE & TABLET ZOOM FIX ===== */
