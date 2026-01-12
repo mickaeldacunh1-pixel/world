@@ -9347,13 +9347,13 @@ async def get_warehouse_items(
             {"compatible_vehicles": search_regex},
         ]
     
-    items = list(db.warehouse_items.find(query, {"_id": 0}).sort("name", 1))
+    items = await db.warehouse_items.find(query, {"_id": 0}).sort("name", 1).to_list(1000)
     
     # Enrichir avec les infos de section et calculer is_low_stock
     sections_cache = {}
     for item in items:
         if item["section_id"] not in sections_cache:
-            section = db.warehouse_sections.find_one({"id": item["section_id"]}, {"_id": 0})
+            section = await db.warehouse_sections.find_one({"id": item["section_id"]}, {"_id": 0})
             sections_cache[item["section_id"]] = section.get("name", "Inconnu") if section else "Inconnu"
         
         item["section_name"] = sections_cache[item["section_id"]]
@@ -9370,7 +9370,7 @@ async def get_warehouse_item(
     current_user: dict = Depends(get_current_user)
 ):
     """Récupérer un article spécifique"""
-    item = db.warehouse_items.find_one({
+    item = await db.warehouse_items.find_one({
         "id": item_id,
         "user_id": current_user["id"]
     }, {"_id": 0})
@@ -9379,7 +9379,7 @@ async def get_warehouse_item(
         raise HTTPException(status_code=404, detail="Article non trouvé")
     
     # Ajouter nom de section
-    section = db.warehouse_sections.find_one({"id": item["section_id"]}, {"_id": 0})
+    section = await db.warehouse_sections.find_one({"id": item["section_id"]}, {"_id": 0})
     item["section_name"] = section.get("name", "Inconnu") if section else "Inconnu"
     item["is_low_stock"] = item["quantity"] <= item.get("alert_threshold", 1)
     
@@ -9395,7 +9395,7 @@ async def create_warehouse_item(
         raise HTTPException(status_code=403, detail="Fonctionnalité réservée aux professionnels")
     
     # Vérifier que la section existe
-    section = db.warehouse_sections.find_one({
+    section = await db.warehouse_sections.find_one({
         "id": item.section_id,
         "user_id": current_user["id"]
     })
