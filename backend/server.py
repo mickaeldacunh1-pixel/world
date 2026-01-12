@@ -20,11 +20,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import httpx
 from bordereau_generator import BordereauGenerator
-# Emergent LLM - désactivé pour déploiement VPS
-# from emergentintegrations.llm.chat import LlmChat, UserMessage
-LlmChat = None
-UserMessage = None
-ImageContent = None
+# Emergent LLM
+from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
 from pywebpush import webpush, WebPushException
 import json
 
@@ -6550,10 +6547,6 @@ async def recognize_part(file: UploadFile = File(...)):
             raise HTTPException(status_code=500, detail="Clé API non configurée")
         
         # Create chat with vision capability
-        # from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
-        # LLM désactivé pour déploiement VPS
-        raise HTTPException(status_code=503, detail="Service de reconnaissance d'images temporairement indisponible")
-        
         chat = LlmChat(
             api_key=api_key,
             session_id=f"recognize_{uuid.uuid4()}",
@@ -6641,10 +6634,6 @@ async def scan_plate(file: UploadFile = File(...)):
         api_key = os.environ.get('EMERGENT_LLM_KEY')
         if not api_key:
             return {"plate": None, "message": "OCR non disponible"}
-        
-        # from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
-        # LLM désactivé pour déploiement VPS
-        return {"plate": None, "message": "OCR temporairement indisponible"}
         
         chat = LlmChat(
             api_key=api_key,
