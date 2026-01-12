@@ -9625,33 +9625,33 @@ async def get_warehouse_stats(current_user: dict = Depends(get_current_user)):
     """Statistiques de l'entrepôt"""
     user_id = current_user["id"]
     
-    total_items = db.warehouse_items.count_documents({"user_id": user_id})
-    total_sections = db.warehouse_sections.count_documents({"user_id": user_id})
+    total_items = await db.warehouse_items.count_documents({"user_id": user_id})
+    total_sections = await db.warehouse_sections.count_documents({"user_id": user_id})
     
     # Stock total (somme des quantités)
     pipeline = [
         {"$match": {"user_id": user_id}},
         {"$group": {"_id": None, "total": {"$sum": "$quantity"}}}
     ]
-    result = list(db.warehouse_items.aggregate(pipeline))
+    result = await db.warehouse_items.aggregate(pipeline).to_list(1)
     total_stock = result[0]["total"] if result else 0
     
     # Articles en alerte stock bas
-    low_stock_items = list(db.warehouse_items.find({
+    low_stock_items = await db.warehouse_items.find({
         "user_id": user_id,
         "$expr": {"$lte": ["$quantity", "$alert_threshold"]}
-    }, {"_id": 0, "name": 1, "quantity": 1, "location": 1}))
+    }, {"_id": 0, "name": 1, "quantity": 1, "location": 1}).to_list(100)
     
     # Valeur totale du stock (prix d'achat)
     pipeline_value = [
         {"$match": {"user_id": user_id, "purchase_price": {"$ne": None}}},
         {"$group": {"_id": None, "total": {"$sum": {"$multiply": ["$quantity", "$purchase_price"]}}}}
     ]
-    result_value = list(db.warehouse_items.aggregate(pipeline_value))
+    result_value = await db.warehouse_items.aggregate(pipeline_value).to_list(1)
     stock_value = result_value[0]["total"] if result_value else 0
     
     # Articles publiés en annonce
-    published_count = db.warehouse_items.count_documents({
+    published_count = await db.warehouse_items.count_documents({
         "user_id": user_id,
         "listing_id": {"$ne": None}
     })
@@ -9680,7 +9680,7 @@ async def import_warehouse_csv(
         raise HTTPException(status_code=403, detail="Fonctionnalité réservée aux professionnels")
     
     # Vérifier la section
-    section = db.warehouse_sections.find_one({
+    section = await db.warehouse_sections.find_one({
         "id": section_id,
         "user_id": current_user["id"]
     })
