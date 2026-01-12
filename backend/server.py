@@ -9213,21 +9213,21 @@ async def get_warehouse_categories():
 @api_router.get("/warehouse/sections")
 async def get_warehouse_sections(current_user: dict = Depends(get_current_user)):
     """Récupérer les sections de l'entrepôt de l'utilisateur"""
-    sections = list(db.warehouse_sections.find(
+    sections = await db.warehouse_sections.find(
         {"user_id": current_user["id"]},
         {"_id": 0}
-    ).sort("name", 1))
+    ).sort("name", 1).to_list(100)
     
     # Ajouter le compte d'articles par section
     for section in sections:
-        count = db.warehouse_items.count_documents({
+        count = await db.warehouse_items.count_documents({
             "user_id": current_user["id"],
             "section_id": section["id"]
         })
         section["items_count"] = count
         
         # Compter les alertes stock bas
-        low_stock = db.warehouse_items.count_documents({
+        low_stock = await db.warehouse_items.count_documents({
             "user_id": current_user["id"],
             "section_id": section["id"],
             "$expr": {"$lte": ["$quantity", "$alert_threshold"]}
