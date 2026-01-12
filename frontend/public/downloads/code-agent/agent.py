@@ -931,9 +931,46 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
     
     async def _process_actions(self, response: str) -> str:
         """Traiter les actions dans la réponse"""
+        # Pattern 1: Format complet ```action {"tool": "...", "params": {...}} ```
         action_pattern = r'```action\s*\n?({.*?})\s*\n?```'
         matches = re.findall(action_pattern, response, re.DOTALL)
         
+        # Pattern 2: Format simplifié {"path": "..."} ou {"command": "..."} (sans balises)
+        simple_patterns = [
+            (r'\{"path":\s*"([^"]+)"\}', 'read_file', 'path'),
+            (r'\{"command":\s*"([^"]+)"\}', 'execute_command', 'command'),
+            (r'\{"pattern":\s*"([^"]+)"\}', 'list_files', 'pattern'),
+            (r'\{"query":\s*"([^"]+)"', 'search_in_files', 'query'),
+            (r'\{"key":\s*"([^"]+)"\}', 'get_env_value', 'key'),
+            (r'\{"note":\s*"([^"]+)"\}', 'add_note', 'note'),
+        ]
+        
+        # Traiter le format simplifié d'abord
+        for pattern, tool_name, param_name in simple_patterns:
+            simple_matches = re.findall(pattern, response)
+            for match_value in simple_matches:
+                result = None
+                original_match = f'{{"{param_name}": "{match_value}"}}'
+                
+                if tool_name == 'read_file':
+                    result = tools.read_file(match_value)
+                elif tool_name == 'execute_command':
+                    result = tools.execute_command(match_value)
+                elif tool_name == 'list_files':
+                    result = tools.list_files(match_value)
+                elif tool_name == 'search_in_files':
+                    result = tools.search_in_files(match_value, '**/*')
+                elif tool_name == 'get_env_value':
+                    result = tools.get_env_value(match_value)
+                elif tool_name == 'add_note':
+                    result = tools.add_note(match_value)
+                
+                if result:
+                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
+                    # Remplacer toutes les variantes possibles
+                    response = re.sub(re.escape(original_match), result_str, response, count=1)
+        
+        # Traiter le format complet avec balises ```action```
         for match in matches:
             try:
                 action = json.loads(match)
@@ -965,7 +1002,7 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                     result = tools.get_knowledge()
                 
                 if result:
-                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)[:2000]}\n```"
+                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
                     response = response.replace(f'```action\n{match}\n```', result_str)
                     response = response.replace(f'```action{match}```', result_str)
             except json.JSONDecodeError:
