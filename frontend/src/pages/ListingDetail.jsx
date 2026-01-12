@@ -579,6 +579,60 @@ export default function ListingDetail() {
               )}
             </div>
 
+            {/* Shipping methods badges */}
+            {listing.shipping_methods && listing.shipping_methods.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {listing.shipping_methods.includes('hand_delivery') && (
+                  <Badge variant="outline" className="text-xs">🤝 Remise en main propre</Badge>
+                )}
+                {listing.shipping_methods.includes('colissimo') && (
+                  <Badge variant="outline" className="text-xs">📦 Colissimo</Badge>
+                )}
+                {listing.shipping_methods.includes('mondial_relay') && (
+                  <Badge variant="outline" className="text-xs">🏪 Mondial Relay</Badge>
+                )}
+                {listing.shipping_methods.includes('chronopost') && (
+                  <Badge variant="outline" className="text-xs">⚡ Chronopost</Badge>
+                )}
+                {listing.shipping_methods.includes('boxtal') && (
+                  <Badge variant="outline" className="text-xs bg-orange-50 border-orange-200">🚚 Boxtal</Badge>
+                )}
+                {listing.shipping_methods.includes('custom') && (
+                  <Badge variant="outline" className="text-xs">📋 Autre</Badge>
+                )}
+              </div>
+            )}
+
+            {/* Shipping Calculator for buyer */}
+            {listing.shipping_methods?.includes('boxtal') && listing.postal_code && (
+              <Card className="p-4 bg-orange-50 border-orange-200">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full border-orange-300 hover:bg-orange-100">
+                      <Calculator className="w-4 h-4 mr-2" />
+                      Calculer les frais de livraison vers chez moi
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-lg">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <Package className="w-5 h-5 text-orange-500" />
+                        Estimer les frais de port
+                      </DialogTitle>
+                    </DialogHeader>
+                    <ShippingCalculator 
+                      fromPostalCode={listing.postal_code}
+                      fromCountry="FR"
+                      compact={true}
+                    />
+                  </DialogContent>
+                </Dialog>
+                <p className="text-xs text-orange-700 mt-2 text-center">
+                  📍 Expédition depuis {listing.postal_code} • Comparez les transporteurs
+                </p>
+              </Card>
+            )}
+
             <Card className="p-6">
               <h2 className="font-heading font-bold text-lg mb-4">Description</h2>
               <p className="text-muted-foreground whitespace-pre-line" data-testid="listing-description">
