@@ -877,6 +877,10 @@ class ListingResponse(BaseModel):
     images: List[str]
     location: Optional[str] = None
     postal_code: Optional[str] = None
+    region: Optional[str] = None
+    shipping_cost: Optional[float] = None
+    shipping_info: Optional[str] = None
+    shipping_methods: List[str] = []
     seller_id: str
     seller_name: str
     seller_is_pro: bool
