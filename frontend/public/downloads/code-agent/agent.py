@@ -1278,7 +1278,11 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                 result = {"success": False, "error": str(e)}
             
             if result:
-                result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
+                # Affichage spécial pour check_worldauto (rapport formaté)
+                if tool_name == 'check_worldauto' and 'formatted_report' in result:
+                    result_str = result['formatted_report']
+                else:
+                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
                 response = response.replace(original_text, result_str, 1)
         
         # Pattern 2: Format avec balises ```action {"tool": "...", "params": {...}} ```
