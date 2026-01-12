@@ -337,6 +337,11 @@ export default function CreateListing() {
       return;
     }
 
+    if (formData.shipping_methods.length === 0) {
+      toast.error('Veuillez sélectionner au moins un mode de livraison');
+      return;
+    }
+
     setLoading(true);
     try {
       const imageUrls = images.map(img => img.url);
@@ -348,6 +353,7 @@ export default function CreateListing() {
         ...formData,
         price: parseFloat(formData.price),
         shipping_cost: formData.shipping_cost ? parseFloat(formData.shipping_cost) : null,
+        shipping_methods: formData.shipping_methods,
         year: formData.year ? parseInt(formData.year) : null,
         mileage: formData.mileage ? parseInt(formData.mileage) : null,
         compatible_models,
