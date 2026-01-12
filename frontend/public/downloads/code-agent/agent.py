@@ -1097,20 +1097,24 @@ asyncio.run(take_screenshot())
             # Commande SSH pour récupérer les infos système
             ssh_base = 'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@148.230.115.118'
             
-            # CPU
-            cmd = f'{ssh_base} "top -bn1 | grep \\"Cpu(s)\\" | awk \'{{print $2}}\'"'
+            # CPU - utilisation idle puis calcul
+            cmd = f'{ssh_base} "top -bn1 | grep Cpu | head -1 | awk -F\\"id,\\" \'{{print $1}}\' | awk \'{{print $NF}}\'"'
             result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
-            cpu = result.stdout.strip() if result.returncode == 0 else "N/A"
+            try:
+                idle = float(result.stdout.strip())
+                cpu = f"{100 - idle:.1f}"
+            except:
+                cpu = "N/A"
             
             # RAM
-            cmd = f'{ssh_base} "free -h | grep Mem | awk \'{{print $3 \\" / \\" $2}}\'"'
+            cmd = f'{ssh_base} "free -m | grep Mem | awk \'{{printf \\"%.1f GB / %.1f GB (%.0f%%)\\" , $3/1024, $2/1024, $3/$2*100}}\'"'
             result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
-            ram = result.stdout.strip() if result.returncode == 0 else "N/A"
+            ram = result.stdout.strip() if result.returncode == 0 and result.stdout.strip() else "N/A"
             
             # Disque
             cmd = f'{ssh_base} "df -h / | tail -1 | awk \'{{print $3 \\" / \\" $2 \\" (\\" $5 \\")}}\'"'
             result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
-            disk = result.stdout.strip() if result.returncode == 0 else "N/A"
+            disk = result.stdout.strip() if result.returncode == 0 and result.stdout.strip() else "N/A"
             
             # Uptime
             cmd = f'{ssh_base} "uptime -p"'
