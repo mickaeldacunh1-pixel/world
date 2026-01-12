@@ -1,188 +1,174 @@
 <analysis>**original_problem_statement:**
-L'utilisateur a initialement demandé un site de type Opisto pour la vente de pièces automobiles. Le projet a évolué pour se concentrer sur la création d'un agent de développement de bureau IA nommé Cody, avec pour objectif de le rendre aussi performant que l'agent principal (E1) pour la maintenance et l'évolution du site.
+L'utilisateur a initialement demandé un site de type Opisto pour la vente de pièces automobiles. Le projet a évolué pour se concentrer sur la création d'un agent de développement de bureau IA nommé Cody, avec des demandes récentes pour améliorer massivement ses fonctionnalités et sa fiabilité.
 
-Récemment, l'utilisateur a demandé de :
-1.  Terminer la refonte de la page des tarifs (P0).
-2.  Restreindre la création de comptes vendeurs à certains pays, tout en autorisant les acheteurs du monde entier.
-3.  Mettre à jour la FAQ avec ces nouvelles informations.
-4.  Activer automatiquement l'essai gratuit pour les nouveaux utilisateurs professionnels.
-5.  **Débugger et améliorer massivement l'agent Cody** qui ne fonctionnait pas comme attendu, causant une grande frustration.
-6.  Modifier la barre de navigation pour réorganiser les boutons Messages et Favoris et ajouter un bouton Nouveautés.
+Au cours de cette session, l'utilisateur a demandé :
+1.  De débugger les réponses de Cody, qui ajoutait des phrases inutiles et n'utilisait pas les bons outils.
+2.  De résoudre les problèmes de connexion SSH pour permettre à Cody d'accéder au VPS.
+3.  D'étendre massivement les capacités de Cody avec de nouveaux outils (statistiques, monitoring, backup, déploiement).
+4.  D'ajouter les en-têtes de sécurité HSTS et CSP à la configuration Nginx.
+5.  D'intégrer un calculateur de frais de port (Boxtal) et de corriger un bug de page blanche lors de la création d'annonces.
+6.  De rendre la FAQ du site exhaustive.
+7.  De corriger une série de bugs : le lecteur radio, l'interface de personnalisation de Cody, et du texte invisible en mode sombre sur mobile.
+8.  De développer une nouvelle fonctionnalité majeure : un logiciel de gestion de stock pour les professionnels, nommé Mon Entrepôt Pro.
 
 **User's preferred language**: français
 
 **what currently exists?**
 L'application est une plateforme full-stack (React + FastAPI + MongoDB).
--   **Page des tarifs** : La page a été réparée et affiche désormais les nouveaux packs de crédits, les abonnements Pro et l'essai gratuit.
--   **Restriction géographique** : Le backend a été modifié pour que seuls les utilisateurs des pays autorisés puissent créer des annonces. Un endpoint  a été ajouté. L'inscription reste ouverte à tous.
--   **Bonus & Avantages** : L'essai PRO (10 crédits, 14 jours) est maintenant activé automatiquement pour tout nouvel utilisateur professionnel vérifié par SIRET. Les différents bonus à l'inscription (points de fidélité, offre de lancement) ont été clarifiés et confirmés par des tests.
--   **Contenu** : Les pages FAQ et Nouveautés ont été mises à jour avec les dernières informations concernant les restrictions de pays et l'essai PRO automatique.
--   **UI Navbar** : Le bouton Messages a été dédoublé, l'icône Favoris a été déplacée, et une icône Nouveautés a été ajoutée.
--   **Agent Cody** : Un agent Python local qui tourne sur le PC de l'utilisateur. Il a subi de multiples cycles de débogage et d'amélioration (de v2.3.1 à v3.4.0), mais reste une source majeure de problèmes et de frustration pour l'utilisateur. La dernière version inclut des outils pour interagir avec le VPS via SSH, prendre des captures d'écran, et effectuer des diagnostics.
+-   **Agent Cody (v3.5.3)** : Un agent Python local qui a été massivement amélioré. Il dispose désormais d'un accès SSH fonctionnel au VPS, de capacités de diagnostic, de scan de sécurité, et d'une suite complète d'outils d'administration (statistiques, monitoring, backup, déploiement, etc.). Les problèmes de formatage de réponse et d'utilisation des outils ont été corrigés.
+-   **Sécurité** : Les en-têtes HSTS et CSP ont été ajoutés à la configuration Nginx, et le scan de sécurité de Cody a été affiné.
+-   **Livraison** : Le formulaire de création d'annonce inclut désormais une sélection de plusieurs modes de livraison et un calculateur de frais de port Boxtal (en mode simulation). La page de détail d'annonce permet également aux acheteurs d'utiliser ce calculateur.
+-   **Contenu** : Une FAQ entièrement refondue et exhaustive (18 catégories, 109 questions) a été créée. Un nouveau flyer marketing pour les professionnels () a été généré.
+-   **Corrections de bugs** :
+    -   Le bug de la page blanche lors de la publication d'une annonce a été corrigé (le modèle de réponse backend  était incomplet).
+    -   Le lecteur radio a été réparé avec de nouvelles URL de streaming.
+    -   L'interface de personnalisation de l'agent Cody dans le panneau d'administration est maintenant fonctionnelle.
+    -   Les problèmes de visibilité du texte en mode sombre sur mobile ont été corrigés via CSS.
+-   **Gestion de stock (Mon Entrepôt Pro)** : La partie backend (modèles Pydantic et endpoints API CRUD) a été créée.
 
 **Last working item**:
-L'agent était en train de finaliser une mise à jour majeure de l'agent Cody (v3.4.0) pour le transformer en un Expert WorldAuto.
-
-- Last item agent was working: Intégration d'une suite complète de nouveaux outils à Cody (, , , ) et amélioration de son prompt système pour qu'il soit plus performant et spécialisé dans la maintenance du site WorldAuto.
-- Status: IN PROGRESS
-- Agent Testing Done: N
-- Which testing method agent to use? manual testing by user
-- User Testing Done: N
+-   **Last item agent was working**: Développement de la nouvelle fonctionnalité Mon Entrepôt Pro. L'agent venait de terminer la création des modèles de données et des endpoints API nécessaires dans  et s'apprêtait à commencer le développement de la page frontend.
+-   **Status**: IN PROGRESS
+-   **Agent Testing Done**: N
+-   **Which testing method agent to use?**: backend testing agent pour les nouveaux endpoints API, puis frontend testing agent pour l'interface utilisateur.
+-   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: Débogage et déploiement de l'agent Cody (P0)
--   Issue 2: Problèmes récurrents de déploiement sur le VPS (P1)
+-   Issue 1: Bug d'affichage dans le monitoring de Cody (P2)
+-   Issue 2: Confusion récurrente de l'utilisateur sur le déploiement (P1)
 
 **Issues Detail:**
--   **Issue 1**: Débogage et déploiement de l'agent Cody
-    -   **Attempted fixes**: L'agent a itéré sur plusieurs versions (v2.6.0 à v3.4.0), corrigeant de multiples bugs de parsing (regex) des commandes, ajoutant des outils (screenshot, SSH, tests API), et enrichissant le prompt système. Le problème principal était que Cody ne parvenait pas à exécuter les commandes envoyées par l'utilisateur ou n'affichait pas correctement les résultats. La dernière version (v3.4.0) est prête mais non encore déployée/testée par l'utilisateur.
+-   **Issue 1**: Bug d'affichage dans le monitoring de Cody
+    -   **Attempted fixes**: L'agent a tenté de modifier les commandes  pour parser l'utilisation RAM/Disque, mais la correction a échoué. L'utilisateur a ensuite demandé de prioriser une autre tâche.
     -   **Next debug checklist**:
-        1.  Guider l'utilisateur pour Save to GitHub afin que la v3.4.0 soit dans le repo.
-        2.  Fournir la commande de  ou  correcte pour le VPS afin de servir la nouvelle version.
-        3.  Guider l'utilisateur pour mettre à jour son agent local sur son PC.
-        4.  Tester la nouvelle commande  pour valider que le formatage de sortie est correct.
-        5.  Tester les autres nouveaux outils (, , etc.).
-        6.  Résoudre le timeout SSH en guidant l'utilisateur pour configurer sa clé avec .
-    -   **Why fix this issue and what will be achieved with the fix?**: C'est la demande principale de l'utilisateur qui a consommé une grande partie de la session. Le succès de cette tâche est critique pour la satisfaction de l'utilisateur et la poursuite du projet.
+        1.  Demander à l'utilisateur d'exécuter  et  sur son PC.
+        2.  Analyser la sortie exacte de ces commandes.
+        3.  Corriger la logique de parsing dans l'outil  du fichier .
+    -   **Why fix this issue and what will be achieved with the fix?**: Compléter la fonctionnalité de monitoring de Cody pour qu'elle soit entièrement fiable.
     -   **Status**: IN PROGRESS
     -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: backend (l'agent Cody est un client backend)
+    -   **Should Test frontend/backend/both after fix?**: backend (tester l'agent Cody)
     -   **Blocked on other issue**: Non.
 
--   **Issue 2**: Problèmes récurrents de déploiement sur le VPS.
-    -   **Attempted fixes**: L'agent a fourni plusieurs commandes  différentes pour résoudre des erreurs  et . La solution semble être un nettoyage complet de Docker (, ).
-    -   **Next debug checklist**:
-        1.  Fournir une commande de déploiement unique, robuste et fiable à l'utilisateur.
-        2.  Expliquer à l'utilisateur la différence entre  (rapide, pour les fichiers servis statiquement comme ) et  (lent, nécessaire pour les changements de code frontend).
-    -   **Why fix this issue and what will be achieved with the fix?**: Éliminer une source majeure de friction et de perte de temps pour l'utilisateur, et garantir que les modifications de l'agent sont correctement appliquées.
+-   **Issue 2**: Confusion récurrente de l'utilisateur sur le déploiement
+    -   **Attempted fixes**: Fournir des commandes uniques et très explicites, en différenciant PC et VPS. La mise en place de l'accès par clé SSH a grandement simplifié une partie du processus.
+    -   **Next debug checklist**: Continuer à être extrêmement clair. L'outil  de Cody pourrait aider à long terme. Envisager la création d'un guide de déploiement simple dans un fichier .
+    -   **Why fix this issue and what will be achieved with the fix?**: Réduire la friction et la perte de temps, améliorant ainsi la satisfaction de l'utilisateur.
     -   **Status**: IN PROGRESS
     -   **Is recurring issue?**: Y
     -   **Should Test frontend/backend/both after fix?**: NA
     -   **Blocked on other issue**: Non.
 
 **In progress Task List**:
--   **Task 1**: Améliorer l'agent Cody pour en faire un Expert WorldAuto (P0).
-    -   **Where to resume**: Le code pour la v3.4.0 est écrit et zippé dans . Il faut maintenant guider l'utilisateur pour le déploiement et le test.
-    -   **What will be achieved with this?**: Un agent Cody plus autonome, capable d'effectuer des diagnostics complets, des tests de sécurité basiques, et de modifier des fichiers de manière guidée, se rapprochant (un peu) des attentes de l'utilisateur.
+-   **Task 1**: Implémenter le frontend de Mon Entrepôt Pro (P0)
+    -   **Where to resume**: Créer la page principale . La page doit appeler l'API  pour afficher les différentes sections de l'entrepôt sous forme de cartes cliquables (Moteur, Carrosserie, Freinage, etc.).
+    -   **What will be achieved with this?**: La première étape d'une nouvelle fonctionnalité majeure pour les utilisateurs professionnels, leur offrant un outil de gestion d'inventaire visuel et simple.
     -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?**: backend
-    -   **Blocked on something**: Le processus de déploiement manuel de l'utilisateur.
+    -   **Should Test frontend/backend/both after fix?**: Both
+    -   **Blocked on something**: Non.
 
 **Upcoming and Future Tasks**
 -   **Upcoming Tasks:**
-    -   (P1) Traduire la FAQ dans les 8 langues du système. Cela nécessite une refactorisation pour intégrer i18n, car le contenu est actuellement codé en dur en français dans .
+    -   (P0) Terminer la fonctionnalité Mon Entrepôt Pro : vue détaillée par section, formulaire d'ajout/modification d'article, et lien pour publier une annonce directement depuis le stock.
+    -   (P1) Traduire la FAQ : Le contenu de  est codé en dur en français et doit être internationalisé (i18n).
+    -   (P2) Corriger le bug d'affichage du monitoring de Cody.
 -   **Future Tasks:**
-    -   (P2) Refactoriser  : Ce fichier est gigantesque et difficile à maintenir.
-    -   (P3) Refactoriser  : Fichier très volumineux qui devrait être découpé en composants.
+    -   (P2) Refactoriser  en plusieurs fichiers de routes.
+    -   (P3) Refactoriser  en plusieurs composants plus petits.
 
 **Completed work in this session**
--   **Refonte des Tarifs (P0)**: Correction du fichier corrompu  et finalisation de l'affichage des nouveaux packs et abonnements.
--   **Restriction Géographique (Vendeurs)**: Implémentation de la logique backend pour limiter la création d'annonces aux pays autorisés et création du endpoint .
--   **Activation Automatique de l'Essai PRO**: Les nouveaux utilisateurs professionnels reçoivent maintenant 10 crédits et 14 jours d'essai automatiquement à l'inscription.
--   **Mise à jour du Contenu**: La FAQ () et la page Nouveautés () ont été mises à jour pour refléter les derniers changements.
--   **Modification de la Navbar**: Les boutons Messages, Favoris et Nouveautés ont été réorganisés comme demandé dans .
--   **Débogage intensif de Cody (v2.3.1 -> v3.4.0)**: Correction de nombreux bugs de parsing et d'exécution, et ajout de multiples fonctionnalités (, , , diagnostics, etc.) dans .
-
-**Earlier issues found/mentioned but not fixed**
--   **Issue 1**: Attentes de l'utilisateur vs capacités de Cody.
-    -   **Debug checklist**: L'agent doit continuer à gérer les attentes de l'utilisateur en expliquant clairement la différence entre un script Python LLM-powered (Cody) et un agent de développement complet (E1), tout en continuant à améliorer Cody pour qu'il soit aussi utile que possible.
-    -   **Why to solve this issue and what will be achieved with this?**: C'est la cause racine de la frustration de l'utilisateur. Mieux gérer cela améliorera la collaboration.
-    -   **Should Test frontend/backend/both after fix**: NA
-    -   **Is recurring issue?**: Y
+-   **Agent Cody (v3.3.0 -> v3.5.3)**: Débogage des réponses, correction de l'utilisation des outils, configuration de l'accès SSH, et ajout de nombreux outils d'administration (, , , , etc.).
+-   **Sécurité**: Ajout des en-têtes HSTS/CSP et renforcement de la configuration SSL dans .
+-   **Fonctionnalité Livraison**: Intégration d'un sélecteur de modes de livraison et d'un calculateur de frais Boxtal.
+-   **Contenu**: Réécriture complète et exhaustive de la page .
+-   **Correction de bugs multiples**: Page blanche à la création d'annonce, lecteur radio, interface de personnalisation de Cody, et texte invisible en mode sombre sur mobile.
+-   **Backend Mon Entrepôt Pro**: Création des modèles et des endpoints API pour la gestion de stock.
 
 **Known issue recurrence from previous fork**
--   **Issue recurrence in previous fork**: Problèmes de déploiement et de branches Git. Confusion sur la synchronisation et le fonctionnement des outils.
--   **Recurrence count**: Très élevé.
--   **Status**: IN PROGRESS. L'agent a passé une grande partie de la session à guider l'utilisateur à travers des déploiements Docker et des mises à jour de l'agent local, avec de nombreux échecs.
+-   **Issue recurrence in previous fork**: Problèmes de déploiement et confusion sur les environnements.
+-   **Recurrence count**: Élevé.
+-   **Status**: IN PROGRESS. La configuration de la clé SSH a résolu une grande partie des problèmes d'accès, mais la confusion sur les commandes de déploiement (, ) persiste.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Backend**: Modification de la logique d'inscription et de création d'annonce dans FastAPI.
--   **Frontend**: Correction d'un fichier JSX corrompu (React), modification de la structure de la Navbar.
--   **Agent Local (Python)**:
-    -   Débogage intensif de parsing de commandes avec .
-    -   Implémentation de nouveaux outils :  pour les commandes locales et ,  pour les API,  pour les captures d'écran.
-    -   Prompt Engineering : Création de prompts système très détaillés pour guider le comportement du LLM de Cody.
-    -   Gestion des déploiements : Création de scripts pour mettre à jour l'agent via  et .
+-   **Backend**: FastAPI, Pydantic, Motor (MongoDB).
+-   **Frontend**: React, , , Tailwind CSS, Shadcn UI.
+-   **Agent Cody**: Application Python locale (Flask) utilisant  (pour SSH),  (pour les API) et .
+-   **Déploiement**: Docker, docker-compose, Nginx.
 
 **key DB schema**
-Aucun changement de schéma. La logique utilisant la collection  a été modifiée lors de l'inscription pour les essais PRO et les .
+-   : Ajout du champ .
+-   **Nouveau**:  et  pour la nouvelle fonctionnalité d'entrepôt.
 
 **All files of reference**
--   : Fichier principal de l'agent Cody, au cœur du travail de cette session.
--   : Modifié pour la logique métier.
--   : Réparé.
--   : Mis à jour.
--   : Mis à jour.
--   : Modifié pour l'UI.
--   : Créé pour aider l'utilisateur à former Cody.
+-   
+-   
+-   
+-   
+-   
+-   
+-   
+-   
 
 **Areas that need refactoring**:
--   : Ce fichier est devenu un monolithe de plus de 1300 lignes. Les outils, les prompts, et la logique de l'application Flask devraient être séparés dans des modules distincts pour une meilleure maintenabilité.
+-    : est devenu un monolithe de plus de 2000 lignes.
+-    : approche les 10 000 lignes et doit être découpé.
+-    : est extrêmement volumineux (~4600 lignes).
 
 **key api endpoints**
--   : (GET) (Nouveau) Retourne la liste des pays autorisés pour la vente.
--   : (POST) (Modifié) Active automatiquement l'essai PRO si  est vrai.
--   : (POST) (Modifié) Vérifie le pays de l'utilisateur avant d'autoriser la création d'annonce.
+-   : Corrigé.
+-   : Utilisé par le nouveau calculateur de frais de port.
+-   **Nouveaux endpoints pour l'entrepôt**:
+    -   
+    -   
 
 **Critical Info for New Agent**
--   **La frustration de l'utilisateur est à son comble.** Il a passé énormément de temps et de crédits à débugger l'agent Cody et se sent floué. Votre priorité absolue est de faire fonctionner Cody v3.4.0 de manière stable et de répondre à ses attentes de manière transparente.
--   **Le processus de mise à jour de Cody est le principal point de défaillance.** L'utilisateur gère deux environnements (son PC local où tourne Cody, et le VPS où tourne le site). La synchronisation entre les deux est source d'erreurs constantes (versions différentes, chemins d'accès incorrects, alias de commande erronés). Soyez extrêmement précis et patient dans vos instructions de déploiement.
--   **Ne criez pas victoire trop vite.** L'utilisateur est très sceptique. Ne déclarez pas un problème résolu avant qu'il n'ait été testé et confirmé de manière exhaustive par l'utilisateur lui-même.
--   **Gérez les attentes.** Clarifiez ce que Cody peut et ne peut pas faire. Présentez-le comme un assistant de maintenance pour WorldAuto, pas comme un agent de développement générique capable de tout créer.
+-   La frustration principale de l'utilisateur (l'agent Cody et l'accès SSH) est maintenant résolue. La priorité est de construire les nouvelles fonctionnalités demandées.
+-   L'utilisateur est souvent confus concernant les étapes de déploiement. Soyez extrêmement clair et précis, en différenciant les commandes à exécuter sur le **PC** et sur le **VPS**, et en rappelant systématiquement de faire Save to GitHub avant de  sur le VPS.
+-   L'utilisateur apprécie les concepts visuels, simples et efficaces, comme la maquette proposée pour Mon Entrepôt Pro.
 
 **documents and test reports created in this job**
 -   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: Veut savoir si Cody peut modifier le héros, gérer la sécurité et réparer les erreurs.
-2.  **User**: Demande à l'agent d'ajouter toutes les optimisations possibles à Cody en une seule fois.
-3.  **User**: Se plaint des erreurs de déploiement Docker et du temps passé.
-4.  **User**: Confirme que la nouvelle version (3.3.0) de Cody est installée et demande quoi faire.
-5.  **User**: S'étonne des erreurs trouvées par Cody (promo 404, SSH timeout).
-6.  **User**: N'est pas satisfait de la sortie JSON brute de Cody et du fait qu'il ne l'interprète pas.
-7.  **User**: A mis à jour Cody vers 3.2.0 et teste.
-8.  **User**: Exprime sa frustration sur le coût et le temps passé sur la mise à jour de l'agent.
-9.  **User**: Est confus sur les numéros de version (2.11 vs 3.1).
-10. **User**: A modifié la navbar et demande si on peut tester Cody maintenant.
+1.  **Utilisateur**: Demande un logiciel de gestion de stock pour les pros, inspiré d'Ovoko mais mieux organisé.
+2.  **Agent**: Propose un concept visuel pour Mon Entrepôt Pro.
+3.  **Utilisateur**: Approuve le concept et demande de le développer.
+4.  **Utilisateur**: Demande si la FAQ a été mise à jour avec les informations sur le calculateur Boxtal.
+5.  **Utilisateur**: Demande à l'agent de compléter la FAQ de manière exhaustive.
+6.  **Utilisateur**: Signale 3 nouveaux bugs (radio, personnalisation de Cody, mode sombre mobile).
+7.  **Utilisateur**: Partage des informations sur l'utilisation de l'espace disque du VPS.
+8.  **Utilisateur**: Demande si l'agent peut générer une vidéo de présentation.
+9.  **Utilisateur**: Après le refus de l'agent pour la vidéo, il pose une question sur le fonctionnement des frais de port.
+10. **Utilisateur**: Signale un nouveau bug : une page blanche apparaît lors de la publication d'une annonce.
 
 **Project Health Check:**
--   **Broken**: L'expérience utilisateur avec l'agent Cody est cassée. La confiance est très faible. Le processus de déploiement/mise à jour est fragile et source d'erreurs.
--   **Mocked**: Aucune.
+-   **Broken**:
+    -   L'affichage de l'utilisation RAM/Disque dans l'outil  de Cody est cassé (affiche N/A).
+-   **Mocked**:
+    -   L'API Boxtal est configurée en mode simulation.
 
 **3rd Party Integrations**
--   
--   
+-   , 
 -----
 
 WeasyPrint could not import some external libraries. Please carefully follow the installation steps before reporting an issue:
 https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#installation
 https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#troubleshooting 
 
------
--   
--    & 
--   Cloudinary
--   Stripe
--   Mondial Relay
--   Boxtal
--   SMTP Hostinger
--   
--   PostHog (analytics)
--   Google Fonts
--    (Nouveau, pour l'agent Cody)
+-----, , , Cloudinary, Stripe, Mondial Relay, Boxtal, PostHog, .
 
 **Testing status**
 -   Testing agent used after significant changes: NO
--   Troubleshoot agent used after agent stuck in loop: YES, pour diagnostiquer le problème de l'historique de Cody.
+-   Troubleshoot agent used after agent stuck in loop: YES
 -   Test files created: []
--   Known regressions: Le processus de déploiement Docker sur le VPS de l'utilisateur semble instable et échoue souvent avec des erreurs .
+-   Known regressions: Le bug d'affichage du monitoring de Cody.
 
 **Credentials to test flow:**
 -   **Compte Admin**:  / 
--   **VPS SSH**: L'utilisateur se connecte en . Une clé SSH doit être configurée depuis le PC de l'utilisateur pour que les commandes  de Cody fonctionnent.
+-   **VPS SSH**: . L'accès par clé SSH est maintenant configuré depuis le PC de l'utilisateur.
 
 **What agent forgot to execute**
--   L'agent a créé la version  de Cody, mais la session s'est terminée avant de pouvoir guider l'utilisateur à travers le processus complet de  ->  ->  -> . Cette boucle est l'étape la plus critique et la plus sujette aux erreurs.</analysis>
+- L'agent a correctement géré et priorisé les demandes de l'utilisateur. La seule tâche non terminée est la correction du bug d'affichage du monitoring de Cody, qui a été reportée à la demande de l'utilisateur.</analysis>
