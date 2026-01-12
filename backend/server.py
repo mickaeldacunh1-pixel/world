@@ -9742,6 +9742,9 @@ async def import_warehouse_csv(
         "total_errors": len(errors)
     }
 
+# Enregistrer le routeur API après toutes les routes
+app.include_router(api_router)
+
 # ================== BOXTAL SHIPPING API ==================
 
 # Boxtal Config
