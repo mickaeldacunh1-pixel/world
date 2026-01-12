@@ -958,6 +958,91 @@ class ConversationResponse(BaseModel):
     last_message_at: str
     unread_count: int
 
+# ================== WAREHOUSE / ENTREPÔT PRO ==================
+
+# Catégories prédéfinies pour l'entrepôt
+WAREHOUSE_CATEGORIES = {
+    "moteur": {"name": "Moteur", "icon": "⚙️", "color": "#ef4444"},
+    "carrosserie": {"name": "Carrosserie", "icon": "🚗", "color": "#3b82f6"},
+    "freinage": {"name": "Freinage", "icon": "🛑", "color": "#f97316"},
+    "electricite": {"name": "Électricité", "icon": "⚡", "color": "#eab308"},
+    "suspension": {"name": "Suspension", "icon": "🔧", "color": "#22c55e"},
+    "transmission": {"name": "Transmission", "icon": "🔄", "color": "#8b5cf6"},
+    "echappement": {"name": "Échappement", "icon": "💨", "color": "#64748b"},
+    "refroidissement": {"name": "Refroidissement", "icon": "❄️", "color": "#06b6d4"},
+    "direction": {"name": "Direction", "icon": "🎯", "color": "#ec4899"},
+    "interieur": {"name": "Intérieur", "icon": "💺", "color": "#a855f7"},
+    "vitrage": {"name": "Vitrage", "icon": "🪟", "color": "#0ea5e9"},
+    "accessoires": {"name": "Accessoires", "icon": "🔩", "color": "#14b8a6"},
+    "autre": {"name": "Autre", "icon": "📦", "color": "#6b7280"},
+}
+
+class WarehouseSectionCreate(BaseModel):
+    """Créer une section d'entrepôt personnalisée"""
+    name: str
+    category: str = "autre"  # Catégorie parente (moteur, carrosserie, etc.)
+    icon: Optional[str] = "📦"
+    color: Optional[str] = "#6b7280"
+    description: Optional[str] = None
+
+class WarehouseItemCreate(BaseModel):
+    """Ajouter un article au stock"""
+    name: str
+    section_id: str  # Section de l'entrepôt
+    quantity: int = 1
+    location: Optional[str] = None  # Ex: "A2-E3-B5" (Allée-Étagère-Bac)
+    reference_oem: Optional[str] = None  # Référence constructeur
+    reference_custom: Optional[str] = None  # Référence interne
+    brand: Optional[str] = None  # Marque de la pièce
+    compatible_vehicles: Optional[str] = None  # Ex: "BMW E46, E39"
+    purchase_price: Optional[float] = None  # Prix d'achat
+    selling_price: Optional[float] = None  # Prix de vente souhaité
+    condition: str = "occasion"  # neuf, occasion, reconditionne
+    notes: Optional[str] = None
+    images: List[str] = []
+    alert_threshold: int = 1  # Alerte si stock <= ce seuil
+
+class WarehouseItemUpdate(BaseModel):
+    """Mettre à jour un article"""
+    name: Optional[str] = None
+    section_id: Optional[str] = None
+    quantity: Optional[int] = None
+    location: Optional[str] = None
+    reference_oem: Optional[str] = None
+    reference_custom: Optional[str] = None
+    brand: Optional[str] = None
+    compatible_vehicles: Optional[str] = None
+    purchase_price: Optional[float] = None
+    selling_price: Optional[float] = None
+    condition: Optional[str] = None
+    notes: Optional[str] = None
+    images: Optional[List[str]] = None
+    alert_threshold: Optional[int] = None
+
+class WarehouseItemResponse(BaseModel):
+    id: str
+    user_id: str
+    name: str
+    section_id: str
+    section_name: str
+    quantity: int
+    location: Optional[str] = None
+    reference_oem: Optional[str] = None
+    reference_custom: Optional[str] = None
+    brand: Optional[str] = None
+    compatible_vehicles: Optional[str] = None
+    purchase_price: Optional[float] = None
+    selling_price: Optional[float] = None
+    condition: str
+    notes: Optional[str] = None
+    images: List[str] = []
+    alert_threshold: int
+    is_low_stock: bool = False
+    listing_id: Optional[str] = None  # Si publié en annonce
+    created_at: str
+    updated_at: str
+
+
 # Pricing packages (Opisto-style)
 PRICING_PACKAGES = {
     # Packs ponctuels (occasionnels)
