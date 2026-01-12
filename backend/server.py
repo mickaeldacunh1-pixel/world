@@ -1841,6 +1841,12 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
         "compatible_years": listing.compatible_years,
         "oem_reference": listing.oem_reference,
         "aftermarket_reference": listing.aftermarket_reference,
+        # Vidéo et garantie
+        "video_url": listing.video_url,
+        "part_origin": listing.part_origin,
+        "vehicle_mileage": listing.vehicle_mileage,
+        "has_warranty": listing.has_warranty,
+        "warranty_duration": listing.warranty_duration,
         # Marquer si c'est une annonce gratuite promo
         "is_promo_free": free_ads > 0
     }
