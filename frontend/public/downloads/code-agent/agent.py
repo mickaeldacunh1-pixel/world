@@ -366,7 +366,7 @@ class AgentTools:
                 results["api"]["pricing"] = "✅ OK" if r.status_code == 200 else f"❌ {r.status_code}"
                 
                 # Test promo status
-                r = client.get("https://worldautofrance.com/api/promo/status")
+                r = client.get("https://worldautofrance.com/api/promo/LANCEMENT/status")
                 results["api"]["promo"] = "✅ OK" if r.status_code == 200 else f"❌ {r.status_code}"
                 
                 # Test countries
