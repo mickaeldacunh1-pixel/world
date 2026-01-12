@@ -874,7 +874,7 @@ class ListingResponse(BaseModel):
     year: Optional[int] = None
     mileage: Optional[int] = None
     condition: str
-    images: List[str]
+    images: List[str] = []
     location: Optional[str] = None
     postal_code: Optional[str] = None
     region: Optional[str] = None
@@ -883,7 +883,7 @@ class ListingResponse(BaseModel):
     shipping_methods: List[str] = []
     seller_id: str
     seller_name: str
-    seller_is_pro: bool
+    seller_is_pro: bool = False
     created_at: str
     status: str
     views: int = 0
@@ -893,6 +893,13 @@ class ListingResponse(BaseModel):
     compatible_years: Optional[str] = None
     oem_reference: Optional[str] = None
     aftermarket_reference: Optional[str] = None
+    # Vidéo et garantie
+    video_url: Optional[str] = None
+    part_origin: Optional[str] = None
+    vehicle_mileage: Optional[int] = None
+    has_warranty: bool = False
+    warranty_duration: Optional[int] = None
+    is_promo_free: bool = False
 
 # Modèles pour les commandes et bordereaux
 class OrderCreate(BaseModel):
