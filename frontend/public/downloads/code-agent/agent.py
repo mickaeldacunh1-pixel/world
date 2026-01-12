@@ -1585,10 +1585,12 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                     r'Je vais maintenant analyser.*?📊',
                     r'Laisse-moi analyser.*?\.',
                     r'Analysons ces résultats.*?\.',
+                    r'Analysons les résultats.*?📊',
                     r'Je te présenterai les résultats.*?📊',
                     r'Voici les résultats dès que.*?\.',
                     r'Cela nous permettra d\'identifier.*?\.',
                     r'dès que le diagnostic sera terminé.*?📊',
+                    r'pour nous assurer que tout fonctionne.*?📊',
                 ]
                 for pattern in cleanup_patterns:
                     response = re.sub(pattern, '', response, flags=re.IGNORECASE)
