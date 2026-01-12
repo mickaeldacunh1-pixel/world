@@ -557,9 +557,53 @@ export default function CreateListing() {
               {/* Shipping / Livraison */}
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-4">
                 <h3 className="font-medium text-blue-900">📦 Livraison</h3>
+                
+                {/* Modes de livraison */}
+                <div className="space-y-2">
+                  <Label>Modes de livraison acceptés</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {shippingOptions.map((option) => {
+                      const isSelected = formData.shipping_methods.includes(option.value);
+                      return (
+                        <div
+                          key={option.value}
+                          onClick={() => {
+                            const methods = formData.shipping_methods.includes(option.value)
+                              ? formData.shipping_methods.filter(m => m !== option.value)
+                              : [...formData.shipping_methods, option.value];
+                            handleChange('shipping_methods', methods);
+                          }}
+                          className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                            isSelected 
+                              ? 'border-blue-500 bg-blue-100' 
+                              : 'border-gray-200 bg-white hover:border-blue-300'
+                          }`}
+                          data-testid={`shipping-option-${option.value}`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">{option.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-sm font-medium ${isSelected ? 'text-blue-900' : 'text-gray-900'}`}>
+                                {option.label}
+                              </p>
+                              <p className="text-xs text-gray-500 truncate">{option.description}</p>
+                            </div>
+                            {isSelected && (
+                              <span className="text-blue-500 text-lg">✓</span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {formData.shipping_methods.length === 0 && (
+                    <p className="text-xs text-amber-600">⚠️ Sélectionnez au moins un mode de livraison</p>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="shipping_cost">Frais de port (€)</Label>
+                    <Label htmlFor="shipping_cost">Frais de port estimés (€)</Label>
                     <Input
                       id="shipping_cost"
                       type="number"
@@ -575,10 +619,10 @@ export default function CreateListing() {
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="shipping_info">Infos livraison</Label>
+                    <Label htmlFor="shipping_info">Infos complémentaires</Label>
                     <Input
                       id="shipping_info"
-                      placeholder="Ex: Colissimo, retrait possible..."
+                      placeholder="Ex: Envoi sous 48h, emballage soigné..."
                       value={formData.shipping_info}
                       onChange={(e) => handleChange('shipping_info', e.target.value)}
                       data-testid="shipping-info-input"
