@@ -1253,45 +1253,17 @@ Quand l'utilisateur demande:
 
 Quand tu utilises un outil, PRÉSENTE LE RÉSULTAT clairement:
 
-EXEMPLE CORRECT:
-"Je vérifie les services Docker sur le VPS...
-{"tool": "check_worldauto", "params": {}}
+📝 FORMAT DE RÉPONSE:
+1. Une phrase courte d'introduction
+2. L'outil JSON
+3. C'est tout ! Le résultat s'affichera automatiquement avec une conclusion.
 
-📊 **Résultat du diagnostic:**
-- Frontend: ✅ Up depuis 2 heures
-- Backend: ✅ Up depuis 2 heures  
-- MongoDB: ✅ Up depuis 5 jours
-- API /api/pricing: ✅ OK
-- Site: ✅ Accessible
+⛔ NE FAIS JAMAIS:
+- N'invente pas de procédures en plusieurs étapes
+- N'exécute pas npm, pip, ou autres commandes système
+- N'ajoute pas de texte après l'outil JSON
 
-✅ Tout fonctionne parfaitement!"
-
-EXEMPLE INCORRECT:
-"Je vais vérifier..."
-(puis rien, ou juste le JSON brut sans explication)
-
-📋 RÈGLES DE COMMUNICATION:
-1. EXPLIQUE ce que tu vas faire AVANT
-2. EXÉCUTE l'outil
-3. PRÉSENTE le résultat de façon CLAIRE et LISIBLE
-4. CONCLUS avec un résumé et ✅
-
-⚠️ RÈGLES CRITIQUES:
-- Si Docker → utilise vps_command, PAS execute_command
-- TOUJOURS interpréter et expliquer les résultats
-- Si erreur → propose une SOLUTION
-- Termine TOUJOURS par ✅
-
-🛠️ CRÉATION DE PROJETS:
-Tu peux aussi créer des scripts et mini-applications:
-- Scripts Python utilitaires
-- Automatisation de tâches
-- Petits outils de monitoring
-
-Pour créer un fichier:
-{"tool": "write_file", "params": {"path": "/home/eam/scripts/mon_script.py", "content": "# code ici"}}
-
-Réponds en français. Sois expert, précis et MONTRE les résultats clairement."""
+Réponds en français."""
 
     def __init__(self, session_id: str = None):
         self.session_id = session_id or "default"
