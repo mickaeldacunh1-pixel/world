@@ -590,7 +590,7 @@ export default function CreateListing() {
                           <div className="flex items-center gap-2">
                             <span className="text-xl">{option.icon}</span>
                             <div className="flex-1 min-w-0">
-                              <p className={`text-sm font-medium ${isSelected ? 'text-blue-900' : 'text-gray-900'}`}>
+                              <p className={`text-sm font-medium ${isSelected ? 'text-blue-900 dark:text-blue-200' : 'text-gray-900 dark:text-gray-100'}`}>
                                 {option.label}
                               </p>
                               <p className="text-xs text-gray-500 truncate">{option.description}</p>
