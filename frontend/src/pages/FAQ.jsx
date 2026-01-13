@@ -410,6 +410,70 @@ const faqs = [
         a: "Pour les pièces de collection, nous vous conseillons d'ajouter un maximum de preuves : photos détaillées, documents d'origine, certificats d'authenticité si disponibles. La vérification d'identité vendeur est fortement recommandée pour ce type de pièces."
       }
     ]
+  },
+  {
+    category: "Mon Entrepôt Pro",
+    icon: Package,
+    questions: [
+      {
+        q: "Qu'est-ce que Mon Entrepôt Pro ?",
+        a: "Mon Entrepôt Pro est un outil de gestion de stock professionnel intégré à World Auto Pro. Il vous permet de gérer votre inventaire de pièces détachées, de suivre les quantités, d'organiser par sections et de publier directement vos articles en annonces."
+      },
+      {
+        q: "Comment accéder à Mon Entrepôt Pro ?",
+        a: "Connectez-vous à votre compte et rendez-vous sur la page /entrepot ou cliquez sur l'icône Entrepôt dans votre tableau de bord. L'outil est disponible pour tous les utilisateurs connectés."
+      },
+      {
+        q: "Comment organiser mon stock ?",
+        a: "Vous pouvez créer des sections personnalisées (ex: Moteur, Carrosserie, Freinage...) pour organiser vos pièces. Chaque article peut être assigné à une section avec une localisation précise (ex: Étagère A3, Bac 12...)."
+      },
+      {
+        q: "Comment ajouter un article à mon entrepôt ?",
+        a: "Cliquez sur 'Nouvel article', remplissez les informations (nom, référence OEM, catégorie, marque, état, quantité, prix d'achat/vente) et ajoutez des photos. L'article sera ajouté à votre inventaire."
+      },
+      {
+        q: "Comment publier un article de mon entrepôt en annonce ?",
+        a: "Depuis la fiche d'un article, cliquez sur 'Publier en annonce'. Les informations seront pré-remplies. Ajustez le prix de vente et validez. Un crédit d'annonce sera utilisé et le stock sera automatiquement décrémenté."
+      },
+      {
+        q: "Comment fonctionne l'alerte de stock bas ?",
+        a: "Définissez un seuil minimum pour chaque article. Quand la quantité passe en dessous de ce seuil, l'article apparaît dans les 'Alertes stock' pour vous rappeler de réapprovisionner."
+      },
+      {
+        q: "Puis-je exporter mon inventaire ?",
+        a: "Oui, cliquez sur le bouton 'Exporter' pour télécharger votre inventaire au format CSV. Vous pourrez l'ouvrir dans Excel ou Google Sheets pour une analyse ou sauvegarde."
+      }
+    ]
+  },
+  {
+    category: "Modes de livraison",
+    icon: Truck,
+    questions: [
+      {
+        q: "Quels modes de livraison puis-je proposer ?",
+        a: "Vous pouvez proposer jusqu'à 6 modes de livraison : Remise en main propre, Colissimo (La Poste), Mondial Relay, Chronopost, Boxtal Multi-Transporteurs, ou un autre transporteur personnalisé."
+      },
+      {
+        q: "Comment sélectionner les modes de livraison pour mon annonce ?",
+        a: "Lors de la création de votre annonce, dans la section 'Livraison', cliquez sur les options que vous souhaitez proposer. Vous pouvez en sélectionner plusieurs. Au moins un mode de livraison est obligatoire."
+      },
+      {
+        q: "Qu'est-ce que Boxtal Multi-Transporteurs ?",
+        a: "Boxtal est notre partenaire qui vous permet de comparer et choisir parmi plusieurs transporteurs (Colissimo, Mondial Relay, Chronopost, DPD...) en un seul endroit. Les tarifs sont calculés automatiquement selon le poids et les dimensions."
+      },
+      {
+        q: "Qu'est-ce que 'Remise en main propre' ?",
+        a: "C'est une option où l'acheteur vient chercher l'article directement chez vous. Idéal pour les pièces volumineuses ou fragiles, ou pour les acheteurs locaux. Aucun frais de port dans ce cas."
+      },
+      {
+        q: "Puis-je proposer uniquement la remise en main propre ?",
+        a: "Oui, si votre pièce est trop volumineuse ou fragile pour être expédiée, vous pouvez ne proposer que la remise en main propre. Précisez votre localisation pour que les acheteurs sachent où venir."
+      },
+      {
+        q: "Comment choisir 'Autre transporteur' ?",
+        a: "Si vous utilisez un transporteur non listé (TNT, GLS, transporteur local...), sélectionnez 'Autre transporteur' et précisez les détails dans le champ 'Infos livraison'."
+      }
+    ]
   }
 ];
 
