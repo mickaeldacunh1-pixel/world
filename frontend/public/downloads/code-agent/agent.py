@@ -43,7 +43,7 @@ def get_version():
     return "1.0.0"
 
 VERSION = get_version()
-UPDATE_URL = "https://parts-emporium-8.preview.emergentagent.com/downloads/code-agent"
+UPDATE_URL = "https://agent-builder-69.preview.emergentagent.com/downloads/code-agent"
 VERSION_URL = f"{UPDATE_URL}/version.txt"
 ZIP_URL = f"{UPDATE_URL}.zip"
 
@@ -3292,40 +3292,23 @@ HTML_TEMPLATE = r'''
 
 def get_themed_html():
     """Génère le HTML avec les couleurs du thème personnalisé"""
-    theme_mode = THEME_CONFIG.get('theme_mode', 'light')
     colors = THEME_CONFIG.get('colors', {})
     dark_colors = THEME_CONFIG.get('dark_colors', {})
     agent_name = THEME_CONFIG.get('agent_name', 'Cody')
-    
-    # Utiliser dark_colors si mode sombre activé
-    if theme_mode == 'dark':
-        # Fusionner les couleurs: dark_colors écrase colors pour bg/text/border
-        active_colors = {
-            'bg_main': dark_colors.get('bg_main', '#0f0f0f'),
-            'bg_sidebar': dark_colors.get('bg_sidebar', '#1a1a1a'),
-            'text_primary': dark_colors.get('text_primary', '#f3f4f6'),
-            'text_secondary': dark_colors.get('text_secondary', '#9ca3af'),
-            'border': dark_colors.get('border', '#2d2d2d'),
-            'accent': colors.get('accent', '#f97316'),
-            'accent_hover': colors.get('accent_hover', '#ea580c'),
-            'success': colors.get('success', '#22c55e'),
-        }
-    else:
-        active_colors = colors
     
     # Remplacer les variables CSS par les couleurs personnalisées
     themed_html = HTML_TEMPLATE
     
     # Variables CSS à remplacer
     css_vars = {
-        '--bg-main: #ffffff': f"--bg-main: {active_colors.get('bg_main', '#ffffff')}",
-        '--bg-sidebar: #f9fafb': f"--bg-sidebar: {active_colors.get('bg_sidebar', '#f9fafb')}",
-        '--text-primary: #1f2937': f"--text-primary: {active_colors.get('text_primary', '#1f2937')}",
-        '--text-secondary: #6b7280': f"--text-secondary: {active_colors.get('text_secondary', '#6b7280')}",
-        '--accent: #f97316': f"--accent: {active_colors.get('accent', '#f97316')}",
-        '--accent-hover: #ea580c': f"--accent-hover: {active_colors.get('accent_hover', '#ea580c')}",
-        '--border: #e5e7eb': f"--border: {active_colors.get('border', '#e5e7eb')}",
-        '--success: #22c55e': f"--success: {active_colors.get('success', '#22c55e')}",
+        '--bg-main: #ffffff': f"--bg-main: {colors.get('bg_main', '#ffffff')}",
+        '--bg-sidebar: #f9fafb': f"--bg-sidebar: {colors.get('bg_sidebar', '#f9fafb')}",
+        '--text-primary: #1f2937': f"--text-primary: {colors.get('text_primary', '#1f2937')}",
+        '--text-secondary: #6b7280': f"--text-secondary: {colors.get('text_secondary', '#6b7280')}",
+        '--accent: #f97316': f"--accent: {colors.get('accent', '#f97316')}",
+        '--accent-hover: #ea580c': f"--accent-hover: {colors.get('accent_hover', '#ea580c')}",
+        '--border: #e5e7eb': f"--border: {colors.get('border', '#e5e7eb')}",
+        '--success: #22c55e': f"--success: {colors.get('success', '#22c55e')}",
     }
     
     for old, new in css_vars.items():

@@ -9,9 +9,8 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { ArrowLeft, Upload, X, ImagePlus, Loader2, Video, Play, Camera, Plus, Sparkles, Shield, Calculator } from 'lucide-react';
+import { ArrowLeft, Upload, X, ImagePlus, Loader2, Video, Play, Camera, Plus, Sparkles, Shield } from 'lucide-react';
 import CommissionSimulator from '../components/CommissionSimulator';
-import ShippingCalculator from '../components/ShippingCalculator';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -30,15 +29,6 @@ const conditions = [
   { value: 'neuf', label: 'Neuf' },
   { value: 'occasion', label: 'Occasion' },
   { value: 'reconditionne', label: 'Reconditionné' },
-];
-
-const shippingOptions = [
-  { value: 'hand_delivery', label: 'Remise en main propre', icon: '🤝', description: 'L\'acheteur vient chercher' },
-  { value: 'colissimo', label: 'Colissimo', icon: '📦', description: 'La Poste - 2-3 jours' },
-  { value: 'mondial_relay', label: 'Mondial Relay', icon: '🏪', description: 'Point relais - Économique' },
-  { value: 'chronopost', label: 'Chronopost', icon: '⚡', description: 'Express 24h' },
-  { value: 'boxtal', label: 'Boxtal Multi-Transporteurs', icon: '🚚', description: 'Comparez les prix' },
-  { value: 'custom', label: 'Autre transporteur', icon: '📋', description: 'À préciser' },
 ];
 
 export default function CreateListing() {
@@ -79,7 +69,6 @@ export default function CreateListing() {
     region: '',
     shipping_cost: '',
     shipping_info: '',
-    shipping_methods: [], // Modes de livraison sélectionnés
     // Compatibilité
     compatible_brands: [],
     compatible_models: '',
@@ -327,11 +316,7 @@ export default function CreateListing() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Vérifier si l'utilisateur a des crédits OU des annonces gratuites
-    const hasCredits = (user?.credits || 0) > 0;
-    const hasFreeAds = (user?.free_ads_remaining || 0) > 0;
-    
-    if (!hasCredits && !hasFreeAds) {
+    if (user.credits <= 0) {
       toast.error('Vous n\'avez pas de crédits. Achetez un pack d\'annonces.');
       navigate('/tarifs');
       return;
@@ -339,11 +324,6 @@ export default function CreateListing() {
 
     if (!formData.title || !formData.description || !formData.price || !formData.category) {
       toast.error('Veuillez remplir tous les champs obligatoires');
-      return;
-    }
-
-    if (formData.shipping_methods.length === 0) {
-      toast.error('Veuillez sélectionner au moins un mode de livraison');
       return;
     }
 
@@ -358,27 +338,20 @@ export default function CreateListing() {
         ...formData,
         price: parseFloat(formData.price),
         shipping_cost: formData.shipping_cost ? parseFloat(formData.shipping_cost) : null,
-        shipping_methods: formData.shipping_methods,
         year: formData.year ? parseInt(formData.year) : null,
         mileage: formData.mileage ? parseInt(formData.mileage) : null,
-        vehicle_mileage: formData.vehicle_mileage ? parseInt(formData.vehicle_mileage) : null,
         compatible_models,
         images: imageUrls,
         video_url: videoUrl || null,
-      }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
 
       await refreshUser();
       toast.success('Annonce publiée avec succès !');
       navigate(`/annonce/${response.data.id}`);
     } catch (error) {
-      console.error('Erreur création annonce:', error);
       if (error.response?.status === 402) {
         toast.error('Crédits insuffisants. Achetez un pack d\'annonces.');
         navigate('/tarifs');
-      } else if (error.response?.status === 403) {
-        toast.error(error.response?.data?.detail || 'Action non autorisée');
       } else {
         toast.error(error.response?.data?.detail || 'Erreur lors de la publication');
       }
@@ -402,11 +375,7 @@ export default function CreateListing() {
             <CardTitle className="font-heading text-2xl flex items-center justify-between">
               Déposer une annonce
               <span className="text-sm font-normal text-muted-foreground">
-                {(user?.free_ads_remaining || 0) > 0 ? (
-                  <span>Annonces gratuites: <span className="font-bold text-green-600">{user.free_ads_remaining}</span></span>
-                ) : (
-                  <span>Crédits: <span className="font-bold text-accent">{user?.credits || 0}</span></span>
-                )}
+                Crédits disponibles: <span className="font-bold text-accent">{user?.credits || 0}</span>
               </span>
             </CardTitle>
           </CardHeader>
@@ -578,53 +547,9 @@ export default function CreateListing() {
               {/* Shipping / Livraison */}
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-4">
                 <h3 className="font-medium text-blue-900">📦 Livraison</h3>
-                
-                {/* Modes de livraison */}
-                <div className="space-y-2">
-                  <Label>Modes de livraison acceptés</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {shippingOptions.map((option) => {
-                      const isSelected = formData.shipping_methods.includes(option.value);
-                      return (
-                        <div
-                          key={option.value}
-                          onClick={() => {
-                            const methods = formData.shipping_methods.includes(option.value)
-                              ? formData.shipping_methods.filter(m => m !== option.value)
-                              : [...formData.shipping_methods, option.value];
-                            handleChange('shipping_methods', methods);
-                          }}
-                          className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                            isSelected 
-                              ? 'border-blue-500 bg-blue-100' 
-                              : 'border-gray-200 bg-white hover:border-blue-300'
-                          }`}
-                          data-testid={`shipping-option-${option.value}`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="text-xl">{option.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <p className={`text-sm font-medium ${isSelected ? 'text-blue-900 dark:text-blue-200' : 'text-gray-900 dark:text-gray-100'}`}>
-                                {option.label}
-                              </p>
-                              <p className="text-xs text-gray-500 truncate">{option.description}</p>
-                            </div>
-                            {isSelected && (
-                              <span className="text-blue-500 text-lg">✓</span>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {formData.shipping_methods.length === 0 && (
-                    <p className="text-xs text-amber-600">⚠️ Sélectionnez au moins un mode de livraison</p>
-                  )}
-                </div>
-
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="shipping_cost">Frais de port estimés (€)</Label>
+                    <Label htmlFor="shipping_cost">Frais de port (€)</Label>
                     <Input
                       id="shipping_cost"
                       type="number"
@@ -640,31 +565,16 @@ export default function CreateListing() {
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="shipping_info">Infos complémentaires</Label>
+                    <Label htmlFor="shipping_info">Infos livraison</Label>
                     <Input
                       id="shipping_info"
-                      placeholder="Ex: Envoi sous 48h, emballage soigné..."
+                      placeholder="Ex: Colissimo, retrait possible..."
                       value={formData.shipping_info}
                       onChange={(e) => handleChange('shipping_info', e.target.value)}
                       data-testid="shipping-info-input"
                     />
                   </div>
                 </div>
-
-                {/* Calculateur de frais Boxtal */}
-                {formData.shipping_methods.includes('boxtal') && formData.postal_code && (
-                  <div className="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                    <ShippingCalculator 
-                      fromPostalCode={formData.postal_code}
-                      fromCountry="FR"
-                      compact={true}
-                      onSelectQuote={(quote) => {
-                        handleChange('shipping_cost', quote.price_ttc.toFixed(2));
-                        toast.success(`Tarif ${quote.carrier_name} sélectionné: ${quote.price_ttc.toFixed(2)}€`);
-                      }}
-                    />
-                  </div>
-                )}
               </div>
 
               {/* Vehicle-specific fields */}

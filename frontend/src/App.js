@@ -57,7 +57,6 @@ import Videos from "./pages/Videos";
 import StoriesPage from "./pages/StoriesPage";
 import TobiAgent from "./pages/TobiAgent";
 import TobiChat from "./pages/TobiChat";
-import Warehouse from "./pages/Warehouse";
 import "./App.css";
 
 // Composant pour scroller en haut à chaque changement de page
@@ -178,9 +177,6 @@ function AppContent() {
           <Route path="/stories" element={<StoriesPage />} />
           <Route path="/tobi" element={<TobiAgent />} />
           <Route path="/tobi-chat" element={<TobiChat />} />
-          <Route path="/entrepot" element={
-            <ProtectedRoute><Warehouse /></ProtectedRoute>
-          } />
           {/* Redirects pour anciennes URLs */}
           <Route path="/kim-assistant" element={<TobiAgent />} />
           <Route path="/kim-agent" element={<TobiChat />} />

@@ -10,14 +10,11 @@ import {
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-// Default stations (fallback) - URLs vérifiées et fonctionnelles
+// Default stations (fallback)
 const DEFAULT_STATIONS = [
   { id: 'skyrock', name: 'Skyrock', genre: 'Rap & RnB', logo: '🎤', stream_url: 'https://icecast.skyrock.net/s/natio_mp3_128k', color: '#000000' },
-  { id: 'nrj', name: 'NRJ', genre: 'Hits', logo: '⚡', stream_url: 'https://scdn.nrjaudio.fm/adwz2/fr/30001/mp3_128.mp3', color: '#E31937' },
-  { id: 'funradio', name: 'Fun Radio', genre: 'Dance', logo: '🎧', stream_url: 'https://scdn.nrjaudio.fm/adwz2/fr/30401/mp3_128.mp3', color: '#FF6B00' },
-  { id: 'rtl2', name: 'RTL2', genre: 'Pop Rock', logo: '🎸', stream_url: 'https://streamer-02.rtl.fr/rtl2-1-44-128', color: '#00A0E4' },
-  { id: 'virgin', name: 'Virgin Radio', genre: 'Rock', logo: '🎵', stream_url: 'https://icecast.radiofrance.fr/fip-hifi.aac', color: '#E50914' },
-  { id: 'cherie', name: 'Chérie FM', genre: 'Variété', logo: '💖', stream_url: 'https://scdn.nrjaudio.fm/adwz2/fr/30201/mp3_128.mp3', color: '#FF69B4' },
+  { id: 'funradio', name: 'Fun Radio', genre: 'Dance', logo: '🎧', stream_url: 'https://streaming.radio.funradio.fr/fun-1-44-128', color: '#FF6B00' },
+  { id: 'rtl2', name: 'RTL2', genre: 'Pop Rock', logo: '🎸', stream_url: 'https://streaming.radio.rtl2.fr/rtl2-1-44-128', color: '#00A0E4' },
 ];
 
 export default function RadioPlayer() {
