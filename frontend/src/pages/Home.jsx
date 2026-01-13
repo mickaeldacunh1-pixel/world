@@ -858,6 +858,8 @@ export default function Home() {
                 utilitaires: heroSettings.category_utilitaires_image,
                 engins: heroSettings.category_engins_image,
                 accessoires: heroSettings.category_accessoires_image,
+                recherche: heroSettings.category_recherche_image,
+                rare: heroSettings.category_rare_image,
               };
               const categoryImage = categoryImageMap[cat.slug] || cat.image;
               
