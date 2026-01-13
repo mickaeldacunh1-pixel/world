@@ -136,6 +136,9 @@ function AppContent() {
           <Route path="/statistiques" element={
             <ProtectedRoute><SellerStats /></ProtectedRoute>
           } />
+          <Route path="/entrepot" element={
+            <ProtectedRoute><Warehouse /></ProtectedRoute>
+          } />
           <Route path="/vendeur/:sellerId" element={<SellerProfile />} />
           <Route path="/acheteur/:buyerId" element={<BuyerProfile />} />
           <Route path="/encheres" element={<Auctions />} />
