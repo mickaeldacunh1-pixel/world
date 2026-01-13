@@ -12,6 +12,23 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-23',
+    date: '2026-01-13',
+    version: '5.2.0',
+    title: '📦 Transporteurs & Mon Entrepôt Pro',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '📦 6 modes de livraison : Remise en main propre, Colissimo, Mondial Relay, Chronopost, Boxtal, Autre transporteur' },
+      { type: 'new', text: '🏭 Mon Entrepôt Pro : gérez votre stock de pièces détachées directement sur World Auto' },
+      { type: 'new', text: '📊 Statistiques entrepôt : pièces en stock, valeur totale, alertes stock bas' },
+      { type: 'new', text: '📂 Sections personnalisables : organisez vos pièces par catégories' },
+      { type: 'new', text: '🚀 Publication rapide : publiez vos articles d\'entrepôt en annonces en 1 clic' },
+      { type: 'new', text: '📥 Export CSV : téléchargez votre inventaire pour Excel/Google Sheets' },
+      { type: 'improvement', text: '✅ Sélection obligatoire d\'au moins un mode de livraison' },
+      { type: 'improvement', text: '💳 Affichage amélioré des crédits/annonces gratuites' },
+    ]
+  },
+  {
     id: 'static-new-22',
     date: '2026-01-12',
     version: '5.1.0',
