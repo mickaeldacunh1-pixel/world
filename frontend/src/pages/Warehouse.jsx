@@ -84,14 +84,6 @@ export default function WarehousePage() {
 
   const headers = { Authorization: `Bearer ${token}` };
 
-  // Vérifier si l'utilisateur est professionnel
-  useEffect(() => {
-    if (user && !user.is_professional) {
-      toast.error("Cette fonctionnalité est réservée aux professionnels");
-      navigate('/profil');
-    }
-  }, [user, navigate]);
-
   useEffect(() => {
     fetchData();
   }, []);
