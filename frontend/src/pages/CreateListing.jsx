@@ -69,6 +69,7 @@ export default function CreateListing() {
     region: '',
     shipping_cost: '',
     shipping_info: '',
+    shipping_methods: [], // Modes de livraison sélectionnés
     // Compatibilité
     compatible_brands: [],
     compatible_models: '',
@@ -79,6 +80,16 @@ export default function CreateListing() {
     part_origin: '',
     vehicle_mileage: '',
   });
+
+  // Options de livraison disponibles
+  const shippingOptions = [
+    { value: 'hand_delivery', label: 'Remise en main propre', icon: '🤝', description: "L'acheteur vient chercher" },
+    { value: 'colissimo', label: 'Colissimo', icon: '📦', description: 'La Poste - 2-3 jours' },
+    { value: 'mondial_relay', label: 'Mondial Relay', icon: '🏪', description: 'Point relais - Économique' },
+    { value: 'chronopost', label: 'Chronopost', icon: '⚡', description: 'Express 24h' },
+    { value: 'boxtal', label: 'Boxtal Multi-Transporteurs', icon: '🚚', description: 'Comparez les prix' },
+    { value: 'custom', label: 'Autre transporteur', icon: '📋', description: 'À préciser' },
+  ];
 
   const regions = [
     { value: 'ile-de-france', label: 'Île-de-France' },
