@@ -9,7 +9,7 @@ import { Badge } from '../components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Plus, Eye, MessageSquare, CreditCard, Package, Trash2, Edit, TrendingUp, Rocket, Zap, Star, AlertTriangle, Target, Award, ShoppingBag, DollarSign, Percent, Calendar, ArrowUpRight, ArrowDownRight, Wallet, FileDown, Loader2 } from 'lucide-react';
+import { Plus, Eye, MessageSquare, CreditCard, Package, Trash2, Edit, TrendingUp, Rocket, Zap, Star, AlertTriangle, Target, Award, ShoppingBag, DollarSign, Percent, Calendar, ArrowUpRight, ArrowDownRight, Wallet, FileDown, Loader2, Warehouse } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
