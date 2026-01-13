@@ -602,6 +602,46 @@ export default function CreateListing() {
                     />
                   </div>
                 </div>
+                
+                {/* Shipping Methods Selection */}
+                <div className="mt-4">
+                  <Label className="mb-2 block">Modes de livraison acceptés *</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {shippingOptions.map((option) => {
+                      const isSelected = formData.shipping_methods.includes(option.value);
+                      return (
+                        <div
+                          key={option.value}
+                          onClick={() => {
+                            const newMethods = isSelected
+                              ? formData.shipping_methods.filter(m => m !== option.value)
+                              : [...formData.shipping_methods, option.value];
+                            handleChange('shipping_methods', newMethods);
+                          }}
+                          className={`cursor-pointer p-3 rounded-lg border-2 transition-all ${
+                            isSelected 
+                              ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' 
+                              : 'border-gray-200 hover:border-gray-300 dark:border-gray-700'
+                          }`}
+                          data-testid={`shipping-method-${option.value}`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">{option.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-sm font-medium ${isSelected ? 'text-blue-900 dark:text-blue-200' : 'text-gray-900 dark:text-gray-100'}`}>
+                                {option.label}
+                              </p>
+                              <p className="text-xs text-gray-500 truncate">{option.description}</p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Sélectionnez au moins un mode de livraison
+                  </p>
+                </div>
               </div>
 
               {/* Vehicle-specific fields */}
