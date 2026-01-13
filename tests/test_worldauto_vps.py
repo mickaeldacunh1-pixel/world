@@ -141,8 +141,11 @@ class TestListings:
         response = requests.get(f"{BASE_URL}/api/listings")
         assert response.status_code == 200, f"Listings failed: {response.text}"
         data = response.json()
-        assert isinstance(data, list), "Should return a list"
-        print(f"✅ Listings endpoint working - {len(data)} listings")
+        # API returns paginated response with 'listings' key
+        assert "listings" in data, "Should have 'listings' key"
+        assert isinstance(data["listings"], list), "listings should be a list"
+        assert "total" in data, "Should have 'total' key"
+        print(f"✅ Listings endpoint working - {data['total']} listings")
 
 
 class TestAuthenticatedEndpoints:
