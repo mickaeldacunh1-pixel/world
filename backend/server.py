@@ -9637,6 +9637,270 @@ async def update_boxtal_margin(data: dict, current_user: dict = Depends(get_curr
         "message": f"Marge mise à jour à {BOXTAL_MARGIN_PERCENT}%"
     }
 
+# ================== WAREHOUSE / ENTREPOT ==================
+
+class WarehouseSection(BaseModel):
+    name: str
+    description: Optional[str] = None
+    color: str = "#3B82F6"
+
+class WarehouseItem(BaseModel):
+    name: str
+    reference: Optional[str] = None
+    oem_reference: Optional[str] = None
+    category: str
+    brand: Optional[str] = None
+    compatible_models: Optional[str] = None
+    condition: str = "occasion"
+    quantity: int = 1
+    min_stock: int = 1
+    buy_price: Optional[float] = None
+    sell_price: Optional[float] = None
+    location: Optional[str] = None
+    section_id: Optional[str] = None
+    notes: Optional[str] = None
+    images: List[str] = []
+
+@app.get("/api/warehouse/categories")
+async def get_warehouse_categories(current_user: dict = Depends(get_current_user)):
+    """Get predefined warehouse categories"""
+    return {
+        "moteur": "Moteur",
+        "carrosserie": "Carrosserie", 
+        "freinage": "Freinage",
+        "electricite": "Électricité",
+        "suspension": "Suspension",
+        "transmission": "Transmission",
+        "echappement": "Échappement",
+        "refroidissement": "Refroidissement",
+        "direction": "Direction",
+        "interieur": "Intérieur",
+        "vitrage": "Vitrage",
+        "accessoires": "Accessoires",
+        "autre": "Autre"
+    }
+
+@app.get("/api/warehouse/sections")
+async def get_warehouse_sections(current_user: dict = Depends(get_current_user)):
+    """Get all warehouse sections for current user"""
+    sections = await db.warehouse_sections.find(
+        {"user_id": current_user["id"]},
+        {"_id": 0}
+    ).to_list(100)
+    return sections
+
+@app.post("/api/warehouse/sections")
+async def create_warehouse_section(section: WarehouseSection, current_user: dict = Depends(get_current_user)):
+    """Create a new warehouse section"""
+    section_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "name": section.name,
+        "description": section.description,
+        "color": section.color,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.warehouse_sections.insert_one(section_doc)
+    return {"id": section_doc["id"], **section.dict()}
+
+@app.put("/api/warehouse/sections/{section_id}")
+async def update_warehouse_section(section_id: str, section: WarehouseSection, current_user: dict = Depends(get_current_user)):
+    """Update a warehouse section"""
+    result = await db.warehouse_sections.update_one(
+        {"id": section_id, "user_id": current_user["id"]},
+        {"$set": {"name": section.name, "description": section.description, "color": section.color}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Section not found")
+    return {"success": True}
+
+@app.delete("/api/warehouse/sections/{section_id}")
+async def delete_warehouse_section(section_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a warehouse section"""
+    result = await db.warehouse_sections.delete_one({"id": section_id, "user_id": current_user["id"]})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Section not found")
+    # Update items in this section
+    await db.warehouse_items.update_many(
+        {"section_id": section_id, "user_id": current_user["id"]},
+        {"$set": {"section_id": None}}
+    )
+    return {"success": True}
+
+@app.get("/api/warehouse/items")
+async def get_warehouse_items(
+    search: Optional[str] = None,
+    category: Optional[str] = None,
+    section_id: Optional[str] = None,
+    low_stock_only: bool = False,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get all warehouse items for current user with filters"""
+    query = {"user_id": current_user["id"]}
+    
+    if search:
+        query["$or"] = [
+            {"name": {"$regex": search, "$options": "i"}},
+            {"reference": {"$regex": search, "$options": "i"}},
+            {"oem_reference": {"$regex": search, "$options": "i"}},
+            {"brand": {"$regex": search, "$options": "i"}}
+        ]
+    if category:
+        query["category"] = category
+    if section_id:
+        query["section_id"] = section_id
+    if low_stock_only:
+        query["$expr"] = {"$lte": ["$quantity", "$min_stock"]}
+    
+    items = await db.warehouse_items.find(query, {"_id": 0}).to_list(500)
+    return items
+
+@app.post("/api/warehouse/items")
+async def create_warehouse_item(item: WarehouseItem, current_user: dict = Depends(get_current_user)):
+    """Create a new warehouse item"""
+    item_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        **item.dict(),
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.warehouse_items.insert_one(item_doc)
+    return {"id": item_doc["id"], **item.dict()}
+
+@app.get("/api/warehouse/items/{item_id}")
+async def get_warehouse_item(item_id: str, current_user: dict = Depends(get_current_user)):
+    """Get a specific warehouse item"""
+    item = await db.warehouse_items.find_one(
+        {"id": item_id, "user_id": current_user["id"]},
+        {"_id": 0}
+    )
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return item
+
+@app.put("/api/warehouse/items/{item_id}")
+async def update_warehouse_item(item_id: str, item: WarehouseItem, current_user: dict = Depends(get_current_user)):
+    """Update a warehouse item"""
+    result = await db.warehouse_items.update_one(
+        {"id": item_id, "user_id": current_user["id"]},
+        {"$set": item.dict()}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return {"success": True}
+
+@app.delete("/api/warehouse/items/{item_id}")
+async def delete_warehouse_item(item_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a warehouse item"""
+    result = await db.warehouse_items.delete_one({"id": item_id, "user_id": current_user["id"]})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return {"success": True}
+
+@app.post("/api/warehouse/items/{item_id}/adjust-stock")
+async def adjust_warehouse_stock(item_id: str, data: dict, current_user: dict = Depends(get_current_user)):
+    """Adjust stock quantity for an item"""
+    adjustment = data.get("adjustment", 0)
+    reason = data.get("reason", "Manual adjustment")
+    
+    item = await db.warehouse_items.find_one({"id": item_id, "user_id": current_user["id"]})
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    new_quantity = max(0, item.get("quantity", 0) + adjustment)
+    
+    await db.warehouse_items.update_one(
+        {"id": item_id},
+        {"$set": {"quantity": new_quantity}}
+    )
+    
+    # Log movement
+    await db.warehouse_movements.insert_one({
+        "id": str(uuid.uuid4()),
+        "item_id": item_id,
+        "user_id": current_user["id"],
+        "adjustment": adjustment,
+        "new_quantity": new_quantity,
+        "reason": reason,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    return {"success": True, "new_quantity": new_quantity}
+
+@app.post("/api/warehouse/items/{item_id}/publish")
+async def publish_warehouse_item(item_id: str, data: dict, current_user: dict = Depends(get_current_user)):
+    """Publish a warehouse item as a listing"""
+    item = await db.warehouse_items.find_one({"id": item_id, "user_id": current_user["id"]})
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    # Check credits
+    user = await db.users.find_one({"id": current_user["id"]})
+    if not user or (user.get("credits", 0) <= 0 and user.get("free_ads_remaining", 0) <= 0):
+        raise HTTPException(status_code=402, detail="Insufficient credits")
+    
+    price = data.get("price", item.get("sell_price", 0))
+    
+    listing_doc = {
+        "id": str(uuid.uuid4()),
+        "title": item.get("name"),
+        "description": data.get("description", f"Pièce {item.get('name')} - {item.get('brand', '')}"),
+        "price": float(price),
+        "category": "pieces",
+        "subcategory": item.get("category"),
+        "brand": item.get("brand"),
+        "condition": item.get("condition", "occasion"),
+        "images": item.get("images", []),
+        "location": current_user.get("location"),
+        "postal_code": current_user.get("postal_code"),
+        "region": current_user.get("region"),
+        "oem_reference": item.get("oem_reference"),
+        "seller_id": current_user["id"],
+        "seller_name": current_user["name"],
+        "seller_is_pro": current_user.get("is_professional", False),
+        "status": "active",
+        "views": 0,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "warehouse_item_id": item_id
+    }
+    
+    await db.listings.insert_one(listing_doc)
+    
+    # Deduct credit
+    if user.get("free_ads_remaining", 0) > 0:
+        await db.users.update_one({"id": current_user["id"]}, {"$inc": {"free_ads_remaining": -1}})
+    else:
+        await db.users.update_one({"id": current_user["id"]}, {"$inc": {"credits": -1}})
+    
+    # Reduce stock by 1
+    await db.warehouse_items.update_one(
+        {"id": item_id},
+        {"$inc": {"quantity": -1}}
+    )
+    
+    return {"success": True, "listing_id": listing_doc["id"]}
+
+@app.get("/api/warehouse/stats")
+async def get_warehouse_stats(current_user: dict = Depends(get_current_user)):
+    """Get warehouse statistics"""
+    items = await db.warehouse_items.find({"user_id": current_user["id"]}).to_list(1000)
+    sections = await db.warehouse_sections.count_documents({"user_id": current_user["id"]})
+    
+    total_items = len(items)
+    total_quantity = sum(i.get("quantity", 0) for i in items)
+    total_value = sum((i.get("sell_price", 0) or 0) * i.get("quantity", 0) for i in items)
+    low_stock_count = sum(1 for i in items if i.get("quantity", 0) <= i.get("min_stock", 1))
+    unique_refs = len(set(i.get("reference") for i in items if i.get("reference")))
+    
+    return {
+        "total_items": total_items,
+        "total_quantity": total_quantity,
+        "total_value": round(total_value, 2),
+        "sections_count": sections,
+        "low_stock_count": low_stock_count,
+        "unique_references": unique_refs
+    }
+
 @app.on_event("startup")
 async def startup_event():
     """Démarrer les tâches planifiées au lancement de l'application"""
