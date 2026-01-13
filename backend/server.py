@@ -708,6 +708,7 @@ class ListingCreate(BaseModel):
     region: Optional[str] = None  # Région française
     shipping_cost: Optional[float] = None  # Frais de port (None = à définir, 0 = gratuit)
     shipping_info: Optional[str] = None  # Infos livraison supplémentaires
+    shipping_methods: List[str] = []  # Modes de livraison: hand_delivery, colissimo, mondial_relay, chronopost, boxtal, custom
     # Compatibilité véhicule
     compatible_brands: List[str] = []  # Marques compatibles
     compatible_models: List[str] = []  # Modèles compatibles
@@ -882,12 +883,21 @@ class ListingResponse(BaseModel):
     created_at: str
     status: str
     views: int = 0
+    shipping_cost: Optional[float] = None
+    shipping_info: Optional[str] = None
+    shipping_methods: List[str] = []
     # Compatibilité véhicule
     compatible_brands: List[str] = []
     compatible_models: List[str] = []
     compatible_years: Optional[str] = None
     oem_reference: Optional[str] = None
     aftermarket_reference: Optional[str] = None
+    video_url: Optional[str] = None
+    part_origin: Optional[str] = None
+    vehicle_mileage: Optional[int] = None
+    has_warranty: bool = False
+    warranty_duration: Optional[int] = None
+    is_promo_free: bool = False
 
 # Modèles pour les commandes et bordereaux
 class OrderCreate(BaseModel):
