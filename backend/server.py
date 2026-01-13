@@ -1741,6 +1741,7 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
         "region": listing.region,
         "shipping_cost": listing.shipping_cost,
         "shipping_info": listing.shipping_info,
+        "shipping_methods": listing.shipping_methods,
         "seller_id": current_user["id"],
         "seller_name": current_user["name"],
         "seller_is_pro": current_user.get("is_professional", False),
