@@ -108,7 +108,13 @@ export default function Dashboard() {
             <h1 className="font-heading text-3xl font-bold">Tableau de bord</h1>
             <p className="text-muted-foreground">Bienvenue, {user?.name}</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
+            <Link to="/entrepot">
+              <Button variant="outline" data-testid="warehouse-btn">
+                <Warehouse className="w-4 h-4 mr-2" />
+                Mon Entrepôt
+              </Button>
+            </Link>
             <Link to="/tarifs">
               <Button variant="outline" data-testid="buy-credits-btn">
                 <CreditCard className="w-4 h-4 mr-2" />
