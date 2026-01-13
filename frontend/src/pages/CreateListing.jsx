@@ -402,7 +402,11 @@ export default function CreateListing() {
             <CardTitle className="font-heading text-2xl flex items-center justify-between">
               Déposer une annonce
               <span className="text-sm font-normal text-muted-foreground">
-                Crédits disponibles: <span className="font-bold text-accent">{user?.credits || 0}</span>
+                {(user?.free_ads_remaining || 0) > 0 ? (
+                  <span>Annonces gratuites: <span className="font-bold text-green-600">{user.free_ads_remaining}</span></span>
+                ) : (
+                  <span>Crédits: <span className="font-bold text-accent">{user?.credits || 0}</span></span>
+                )}
               </span>
             </CardTitle>
           </CardHeader>
