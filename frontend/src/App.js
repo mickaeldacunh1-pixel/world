@@ -179,8 +179,9 @@ function AppContent() {
           <Route path="/lot/:id" element={<BundleDetail />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/stories" element={<StoriesPage />} />
-          <Route path="/tobi" element={<TobiAgent />} />
+          <Route path="/tobi" element={<TobiChat />} />
           <Route path="/tobi-chat" element={<TobiChat />} />
+          <Route path="/tobi-info" element={<TobiAgent />} />
           {/* Redirects pour anciennes URLs */}
           <Route path="/kim-assistant" element={<TobiAgent />} />
           <Route path="/kim-agent" element={<TobiChat />} />
