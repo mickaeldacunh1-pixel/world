@@ -446,125 +446,222 @@ export default function Profile() {
                   Recevoir des paiements
                 </CardTitle>
                 <CardDescription>
-                  Connectez votre compte Stripe pour recevoir les paiements de vos ventes en toute sécurité
+                  Choisissez votre méthode pour recevoir l'argent de vos ventes
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Status Card */}
                 <div className={`p-4 rounded-lg border ${
-                  stripeStatus?.charges_enabled 
+                  stripeStatus?.charges_enabled || user?.iban_configured
                     ? 'bg-green-50 border-green-200' 
                     : 'bg-yellow-50 border-yellow-200'
                 }`}>
                   <div className="flex items-start gap-3">
-                    {stripeStatus?.charges_enabled ? (
+                    {stripeStatus?.charges_enabled || user?.iban_configured ? (
                       <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
                     ) : (
                       <AlertCircle className="w-6 h-6 text-yellow-600 flex-shrink-0" />
                     )}
                     <div>
                       <h3 className={`font-semibold ${
-                        stripeStatus?.charges_enabled ? 'text-green-800' : 'text-yellow-800'
+                        stripeStatus?.charges_enabled || user?.iban_configured ? 'text-green-800' : 'text-yellow-800'
                       }`}>
                         {stripeStatus?.charges_enabled 
                           ? 'Compte Stripe connecté !' 
-                          : 'Compte Stripe non configuré'}
+                          : user?.iban_configured
+                          ? 'IBAN configuré !'
+                          : 'Paiement non configuré'}
                       </h3>
                       <p className={`text-sm ${
-                        stripeStatus?.charges_enabled ? 'text-green-700' : 'text-yellow-700'
+                        stripeStatus?.charges_enabled || user?.iban_configured ? 'text-green-700' : 'text-yellow-700'
                       }`}>
                         {stripeStatus?.charges_enabled 
-                          ? 'Vous pouvez recevoir des paiements pour vos ventes.' 
-                          : 'Configurez Stripe pour recevoir l\'argent de vos ventes.'}
+                          ? 'Vous pouvez recevoir des paiements pour vos ventes via Stripe.' 
+                          : user?.iban_configured
+                          ? `IBAN : ${user.iban_display || '****'} - Les paiements seront virés sur ce compte.`
+                          : 'Configurez votre méthode de paiement pour recevoir l\'argent de vos ventes.'}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Benefits */}
-                {!stripeStatus?.charges_enabled && (
-                  <div className="space-y-4">
-                    <h4 className="font-semibold">Pourquoi connecter Stripe ?</h4>
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
-                        <Shield className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-medium text-sm">Paiements sécurisés</p>
-                          <p className="text-xs text-muted-foreground">L&apos;argent est protégé jusqu&apos;à la livraison</p>
+                {/* Two payment options */}
+                {!stripeStatus?.charges_enabled && !user?.iban_configured && (
+                  <div className="space-y-6">
+                    <h4 className="font-semibold text-center">Choisissez votre méthode de paiement</h4>
+                    
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {/* Option 1: IBAN Direct */}
+                      <div className="p-4 border-2 rounded-lg hover:border-accent transition-colors">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Building2 className="w-5 h-5 text-accent" />
+                          <h5 className="font-semibold">Virement bancaire (IBAN)</h5>
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Simple</span>
                         </div>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          Entrez simplement votre IBAN. Les paiements seront virés directement sur votre compte bancaire.
+                        </p>
+                        <ul className="text-xs text-muted-foreground space-y-1 mb-4">
+                          <li>✓ Pas de compte externe à créer</li>
+                          <li>✓ Virement direct sur votre compte</li>
+                          <li>✓ Comme sur eBay</li>
+                        </ul>
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                          onClick={() => setShowIbanForm(true)}
+                        >
+                          <Building2 className="w-4 h-4 mr-2" />
+                          Entrer mon IBAN
+                        </Button>
                       </div>
-                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
-                        <CreditCard className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-medium text-sm">Virements automatiques</p>
-                          <p className="text-xs text-muted-foreground">Recevez l&apos;argent directement sur votre compte</p>
+
+                      {/* Option 2: Stripe Connect */}
+                      <div className="p-4 border-2 rounded-lg hover:border-accent transition-colors">
+                        <div className="flex items-center gap-2 mb-3">
+                          <CreditCard className="w-5 h-5 text-accent" />
+                          <h5 className="font-semibold">Stripe Connect</h5>
+                          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Complet</span>
                         </div>
-                      </div>
-                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
-                        <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-medium text-sm">Badge vendeur vérifié</p>
-                          <p className="text-xs text-muted-foreground">Inspire confiance aux acheteurs</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
-                        <Mail className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-medium text-sm">Notifications</p>
-                          <p className="text-xs text-muted-foreground">Soyez alerté de chaque vente</p>
-                        </div>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          Créez un compte Stripe pour des fonctionnalités avancées et un dashboard complet.
+                        </p>
+                        <ul className="text-xs text-muted-foreground space-y-1 mb-4">
+                          <li>✓ Dashboard détaillé</li>
+                          <li>✓ Historique des transactions</li>
+                          <li>✓ Protection vendeur Stripe</li>
+                        </ul>
+                        <Button 
+                          onClick={handleStripeConnect} 
+                          disabled={stripeLoading}
+                          className="w-full bg-[#635BFF] hover:bg-[#635BFF]/90"
+                        >
+                          {stripeLoading ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <CreditCard className="w-4 h-4 mr-2" />
+                          )}
+                          Connecter Stripe
+                        </Button>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Action Button */}
-                <div className="flex flex-col sm:flex-row gap-3">
-                  {stripeStatus?.charges_enabled ? (
-                    <Button variant="outline" asChild>
-                      <a 
-                        href="https://dashboard.stripe.com" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2"
+                {/* IBAN Form Modal */}
+                {showIbanForm && (
+                  <div className="p-4 border-2 border-accent rounded-lg bg-accent/5">
+                    <h5 className="font-semibold mb-4 flex items-center gap-2">
+                      <Building2 className="w-5 h-5" />
+                      Configurer mon IBAN
+                    </h5>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="iban">IBAN *</Label>
+                        <Input
+                          id="iban"
+                          placeholder="FR76 1234 5678 9012 3456 7890 123"
+                          value={ibanValue}
+                          onChange={(e) => setIbanValue(e.target.value.toUpperCase())}
+                          className="font-mono"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Votre IBAN français commence par FR
+                        </p>
+                      </div>
+                      <div>
+                        <Label htmlFor="bic">BIC (optionnel)</Label>
+                        <Input
+                          id="bic"
+                          placeholder="BNPAFRPP"
+                          value={bicValue}
+                          onChange={(e) => setBicValue(e.target.value.toUpperCase())}
+                          className="font-mono"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="account_holder">Titulaire du compte *</Label>
+                        <Input
+                          id="account_holder"
+                          placeholder="Votre nom complet"
+                          value={accountHolder}
+                          onChange={(e) => setAccountHolder(e.target.value)}
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          onClick={handleSaveIban}
+                          disabled={ibanLoading || !ibanValue || !accountHolder}
+                          className="flex-1 bg-accent hover:bg-accent/90"
+                        >
+                          {ibanLoading ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <CheckCircle className="w-4 h-4 mr-2" />
+                          )}
+                          Enregistrer mon IBAN
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          onClick={() => setShowIbanForm(false)}
+                        >
+                          Annuler
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        🔒 Vos coordonnées bancaires sont chiffrées et sécurisées. Elles ne seront utilisées que pour vous verser vos gains.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Already configured - show options */}
+                {(stripeStatus?.charges_enabled || user?.iban_configured) && (
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    {stripeStatus?.charges_enabled && (
+                      <Button variant="outline" asChild>
+                        <a 
+                          href="https://dashboard.stripe.com" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          Dashboard Stripe
+                        </a>
+                      </Button>
+                    )}
+                    {user?.iban_configured && (
+                      <Button 
+                        variant="outline"
+                        onClick={() => setShowIbanForm(true)}
                       >
-                        <ExternalLink className="w-4 h-4" />
-                        Accéder au Dashboard Stripe
-                      </a>
-                    </Button>
-                  ) : stripeStatus?.connected && !stripeStatus?.charges_enabled ? (
-                    <Button 
-                      onClick={handleRefreshStripeLink} 
-                      disabled={stripeLoading}
-                      className="bg-accent hover:bg-accent/90"
-                    >
-                      {stripeLoading ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      ) : (
-                        <CreditCard className="w-4 h-4 mr-2" />
-                      )}
-                      Finaliser la configuration
-                    </Button>
-                  ) : (
-                    <Button 
-                      onClick={handleStripeConnect} 
-                      disabled={stripeLoading}
-                      className="bg-accent hover:bg-accent/90"
-                    >
-                      {stripeLoading ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      ) : (
-                        <CreditCard className="w-4 h-4 mr-2" />
-                      )}
-                      Connecter mon compte Stripe
-                    </Button>
-                  )}
-                </div>
+                        <Edit className="w-4 h-4 mr-2" />
+                        Modifier mon IBAN
+                      </Button>
+                    )}
+                  </div>
+                )}
+
+                {/* Stripe refresh link if needed */}
+                {stripeStatus?.connected && !stripeStatus?.charges_enabled && (
+                  <Button 
+                    onClick={handleRefreshStripeLink} 
+                    disabled={stripeLoading}
+                    className="bg-accent hover:bg-accent/90"
+                  >
+                    {stripeLoading ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <CreditCard className="w-4 h-4 mr-2" />
+                    )}
+                    Finaliser la configuration Stripe
+                  </Button>
+                )}
 
                 {/* Info */}
                 <p className="text-xs text-muted-foreground">
-                  En connectant Stripe, vous acceptez les <a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">conditions d&apos;utilisation de Stripe</a>. 
-                  Commission : 5% (min 1,50€, max 15€) prélevée sur chaque vente.
+                  Commission : 5% (min 1,50€, max 15€) prélevée sur chaque vente. Les virements sont effectués sous 3-5 jours ouvrés.
                 </p>
               </CardContent>
             </Card>
