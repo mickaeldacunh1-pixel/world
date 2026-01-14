@@ -12,6 +12,22 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-24',
+    date: '2026-01-14',
+    version: '5.3.0',
+    title: '🏦 Paiement IBAN & Photos Mobile',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🏦 Option IBAN : recevez vos paiements par virement bancaire, comme sur eBay !' },
+      { type: 'new', text: '💳 Choix du mode de paiement : IBAN simple ou Stripe Connect complet' },
+      { type: 'new', text: '✅ Validation IBAN intelligente : détection automatique des erreurs de frappe' },
+      { type: 'new', text: '📱 Support photos HEIC/HEIF : prenez vos photos directement depuis iPhone/iPad' },
+      { type: 'improvement', text: '🔄 Correction automatique de l\'orientation des photos' },
+      { type: 'improvement', text: '🔒 Stockage sécurisé des coordonnées bancaires' },
+      { type: 'new', text: '🔍 Nouvelles catégories : "Recherche" et "Rare & Collection" sur la page d\'accueil' },
+    ]
+  },
+  {
     id: 'static-new-23',
     date: '2026-01-13',
     version: '5.2.0',
