@@ -1394,12 +1394,26 @@ async def delete_pending_credits(email: str, current_user: dict = Depends(get_cu
     return {"success": True}
 
 @api_router.post("/auth/login")
-async def login(credentials: UserLogin):
+@limiter.limit("5/minute")  # Max 5 tentatives par minute
+async def login(request: Request, credentials: UserLogin):
+    ip = get_client_ip(request)
+    
+    # Vérifier si l'IP est bloquée
+    if is_ip_blocked(ip):
+        raise HTTPException(status_code=429, detail="Trop de tentatives. Veuillez réessayer plus tard.")
+    
     user = await db.users.find_one({"email": credentials.email})
     if not user or not verify_password(credentials.password, user["password"]):
+        # Enregistrer la tentative échouée
+        record_failed_login(ip)
+        logging.warning(f"⚠️ Tentative de login échouée: {credentials.email} depuis {ip}")
         raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
     
+    # Login réussi - effacer les tentatives échouées
+    clear_failed_attempts(ip)
+    
     token = create_token(user["id"], user["email"])
+    logging.info(f"✅ Login réussi: {user['email']} depuis {ip}")
     
     return {
         "token": token,
