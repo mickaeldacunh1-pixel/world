@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-const SITE_NAME = 'World Auto Pro';
+const SITE_NAME = 'World Auto France';
 const SITE_URL = 'https://worldautofrance.com';
 const DEFAULT_IMAGE = 'https://worldautofrance.com/og-image.jpg';
 
