@@ -4773,6 +4773,75 @@ async def test_email_sending(request: EmailTestRequest, current_user: dict = Dep
             detail=f"Échec de l'envoi. Vérifiez les logs du serveur pour plus de détails."
         )
 
+# ================== SECURITY ADMIN ENDPOINTS ==================
+
+@api_router.get("/admin/security/status")
+async def get_security_status(current_user: dict = Depends(get_current_user)):
+    """Get security status - blocked IPs and suspicious activity (admin only)"""
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    now = datetime.now(timezone.utc)
+    
+    # Nettoyer les IPs expirées
+    expired_ips = [ip for ip, unblock_time in blocked_ips.items() if now >= unblock_time]
+    for ip in expired_ips:
+        del blocked_ips[ip]
+    
+    return {
+        "blocked_ips": {ip: unblock_time.isoformat() for ip, unblock_time in blocked_ips.items()},
+        "blocked_count": len(blocked_ips),
+        "failed_login_attempts": {ip: len(attempts) for ip, attempts in failed_login_attempts.items()},
+        "suspicious_activity": dict(suspicious_activity),
+        "config": {
+            "max_login_attempts": MAX_LOGIN_ATTEMPTS,
+            "block_duration_minutes": LOGIN_BLOCK_DURATION // 60,
+            "suspicious_threshold": SUSPICIOUS_THRESHOLD
+        }
+    }
+
+@api_router.post("/admin/security/unblock/{ip}")
+async def unblock_ip(ip: str, current_user: dict = Depends(get_current_user)):
+    """Unblock a specific IP (admin only)"""
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    unblocked = False
+    if ip in blocked_ips:
+        del blocked_ips[ip]
+        unblocked = True
+    if ip in failed_login_attempts:
+        del failed_login_attempts[ip]
+    if ip in suspicious_activity:
+        del suspicious_activity[ip]
+    
+    logging.info(f"🔓 IP débloquée par admin {current_user['email']}: {ip}")
+    
+    return {
+        "success": True,
+        "message": f"IP {ip} débloquée" if unblocked else f"IP {ip} n'était pas bloquée",
+        "ip": ip
+    }
+
+@api_router.post("/admin/security/block/{ip}")
+async def block_ip_manual(ip: str, hours: int = 24, current_user: dict = Depends(get_current_user)):
+    """Manually block an IP (admin only)"""
+    admin_emails = ['contact@worldautofrance.com', 'admin@worldautofrance.com']
+    if current_user.get('email') not in admin_emails and not current_user.get('is_admin'):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    blocked_ips[ip] = datetime.now(timezone.utc) + timedelta(hours=hours)
+    logging.warning(f"🚫 IP bloquée manuellement par admin {current_user['email']}: {ip} pour {hours}h")
+    
+    return {
+        "success": True,
+        "message": f"IP {ip} bloquée pour {hours} heures",
+        "ip": ip,
+        "unblock_at": blocked_ips[ip].isoformat()
+    }
+
 # ================== EXTRA PHOTOS PURCHASE ==================
 
 @api_router.post("/photos/create-checkout-session")
