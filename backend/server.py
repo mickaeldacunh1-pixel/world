@@ -1525,23 +1525,58 @@ class IbanUpdate(BaseModel):
     bic: Optional[str] = None
     account_holder: str
 
+def validate_iban(iban: str) -> tuple[bool, str]:
+    """Validate IBAN using mod-97 checksum algorithm"""
+    # Remove spaces and convert to uppercase
+    iban = iban.replace(" ", "").upper()
+    
+    # Check length (varies by country, 14-34 chars)
+    if len(iban) < 14 or len(iban) > 34:
+        return False, "L'IBAN doit contenir entre 14 et 34 caractères"
+    
+    # Check format: 2 letters (country) + 2 digits (check) + rest
+    if not iban[:2].isalpha():
+        return False, "L'IBAN doit commencer par le code pays (ex: FR)"
+    if not iban[2:4].isdigit():
+        return False, "Les caractères 3 et 4 doivent être des chiffres de contrôle"
+    
+    # French IBAN specific check
+    if iban.startswith("FR") and len(iban) != 27:
+        return False, "Un IBAN français doit contenir exactement 27 caractères"
+    
+    # Move first 4 chars to end
+    rearranged = iban[4:] + iban[:4]
+    
+    # Convert letters to numbers (A=10, B=11, ..., Z=35)
+    numeric = ""
+    for char in rearranged:
+        if char.isalpha():
+            numeric += str(ord(char) - ord('A') + 10)
+        else:
+            numeric += char
+    
+    # Check mod 97 = 1
+    if int(numeric) % 97 != 1:
+        return False, "IBAN invalide - vérifiez qu'il n'y a pas d'erreur de frappe"
+    
+    return True, "IBAN valide"
+
 @api_router.post("/users/me/iban")
 async def save_iban(iban_data: IbanUpdate, current_user: dict = Depends(get_current_user)):
     """Enregistrer les coordonnées bancaires (IBAN) de l'utilisateur"""
-    import re
     
     # Clean IBAN
     clean_iban = iban_data.iban.replace(" ", "").upper()
     
-    # Basic IBAN validation
-    if not re.match(r'^[A-Z]{2}[0-9]{2}[A-Z0-9]{4,30}$', clean_iban):
-        raise HTTPException(status_code=400, detail="Format IBAN invalide")
+    # Validate IBAN with checksum
+    is_valid, message = validate_iban(clean_iban)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=message)
     
     # Mask IBAN for display (show only last 4 chars)
     iban_display = f"{'*' * (len(clean_iban) - 4)}{clean_iban[-4:]}"
     
-    # Store encrypted (in production, you'd want to encrypt this properly)
-    # For now, we store it with basic obfuscation
+    # Store (in production, you'd want to encrypt the full IBAN)
     update_data = {
         "iban_configured": True,
         "iban_display": iban_display,
