@@ -1805,8 +1805,11 @@ class PasswordResetConfirm(BaseModel):
     new_password: str
 
 @api_router.post("/auth/forgot-password")
-async def forgot_password(request: PasswordResetRequest, background_tasks: BackgroundTasks):
+@limiter.limit("3/minute")  # Max 3 demandes par minute
+async def forgot_password(request_obj: Request, request: PasswordResetRequest, background_tasks: BackgroundTasks):
     """Demander une réinitialisation de mot de passe"""
+    ip = get_client_ip(request_obj)
+    
     user = await db.users.find_one({"email": request.email}, {"_id": 0})
     
     # Always return success to prevent email enumeration
@@ -1829,16 +1832,21 @@ async def forgot_password(request: PasswordResetRequest, background_tasks: Backg
     
     # Send email
     background_tasks.add_task(send_password_reset_email, user["email"], user["name"], reset_token)
+    logging.info(f"🔑 Demande de reset password pour {request.email} depuis {ip}")
     
     return {"message": "Si cette adresse existe, un email a été envoyé."}
 
 @api_router.post("/auth/reset-password")
-async def reset_password(request: PasswordResetConfirm):
+@limiter.limit("5/minute")  # Max 5 tentatives par minute
+async def reset_password(request_obj: Request, request: PasswordResetConfirm):
     """Réinitialiser le mot de passe avec le token"""
+    ip = get_client_ip(request_obj)
+    
     # Find valid token
     reset_doc = await db.password_resets.find_one({"token": request.token}, {"_id": 0})
     
     if not reset_doc:
+        record_suspicious_activity(ip, 2)  # Token invalide = suspect
         raise HTTPException(status_code=400, detail="Lien invalide ou expiré")
     
     # Check expiration
@@ -1855,6 +1863,7 @@ async def reset_password(request: PasswordResetConfirm):
     
     # Delete used token
     await db.password_resets.delete_one({"token": request.token})
+    logging.info(f"✅ Mot de passe réinitialisé depuis {ip}")
     
     return {"message": "Mot de passe modifié avec succès"}
 
