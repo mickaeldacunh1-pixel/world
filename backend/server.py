@@ -566,7 +566,33 @@ def send_search_alert_email(user_email: str, user_name: str, alert: dict, listin
     send_email(user_email, f"Nouvelle annonce : {listing['title']}", html)
 
 app = FastAPI(title="World Auto Marketplace API")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 api_router = APIRouter(prefix="/api")
+
+# Middleware de sécurité pour bloquer les IPs suspectes
+@app.middleware("http")
+async def security_middleware(request: Request, call_next):
+    ip = get_client_ip(request)
+    
+    # Vérifier si l'IP est bloquée
+    if is_ip_blocked(ip):
+        remaining = (blocked_ips.get(ip, datetime.now(timezone.utc)) - datetime.now(timezone.utc)).seconds
+        logging.warning(f"🚫 Requête bloquée de IP: {ip} - Déblocage dans {remaining}s")
+        return JSONResponse(
+            status_code=429,
+            content={"detail": f"Trop de tentatives. Réessayez dans {remaining // 60} minutes."}
+        )
+    
+    # Détecter les patterns suspects (user-agents vides ou bots malveillants)
+    user_agent = request.headers.get("User-Agent", "")
+    if not user_agent or any(bot in user_agent.lower() for bot in ["sqlmap", "nikto", "scanner", "dirbuster"]):
+        record_suspicious_activity(ip, 3)
+        logging.warning(f"⚠️ User-Agent suspect détecté: {ip} - {user_agent[:50]}")
+    
+    response = await call_next(request)
+    return response
 
 # Import and setup radio routes
 from routes.radio import router as radio_router, set_db as set_radio_db
