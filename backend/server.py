@@ -545,6 +545,56 @@ def send_password_reset_email(user_email: str, user_name: str, reset_token: str)
     """
     send_email(user_email, "Réinitialisation de votre mot de passe - World Auto", html)
 
+def send_2fa_email(user_email: str, user_name: str, otp_code: str):
+    """Email avec code de vérification 2FA"""
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #1E3A5F 0%, #2d4a6f 100%); padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">🔐 World Auto</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2 style="color: #1E3A5F;">Code de vérification</h2>
+            <p>Bonjour {user_name},</p>
+            <p>Voici votre code de vérification pour vous connecter :</p>
+            <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 20px; border-radius: 12px; margin: 25px 0; text-align: center;">
+                <span style="font-size: 36px; font-weight: bold; color: white; letter-spacing: 8px; font-family: monospace;">{otp_code}</span>
+            </div>
+            <p style="color: #666; font-size: 14px;">⏱️ Ce code est valable pendant <strong>10 minutes</strong>.</p>
+            <p style="color: #666; font-size: 14px;">Si vous n'avez pas tenté de vous connecter, changez immédiatement votre mot de passe.</p>
+        </div>
+        <div style="padding: 20px; background: #f3f4f6; text-align: center; font-size: 12px; color: #666;">
+            <p>🛡️ La sécurité de votre compte est notre priorité</p>
+            <p>World Auto France - La marketplace auto pour tous</p>
+        </div>
+    </div>
+    """
+    send_email(user_email, "🔐 Votre code de connexion - World Auto", html)
+
+def send_2fa_enabled_email(user_email: str, user_name: str, method: str):
+    """Email de confirmation d'activation 2FA"""
+    method_name = "Google Authenticator" if method == "totp" else "Email"
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">✅ World Auto</h1>
+        </div>
+        <div style="padding: 30px; background: #fff;">
+            <h2 style="color: #10b981;">Double authentification activée !</h2>
+            <p>Bonjour {user_name},</p>
+            <p>La double authentification a été <strong>activée avec succès</strong> sur votre compte.</p>
+            <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0;">
+                <p style="margin: 0;"><strong>Méthode :</strong> {method_name}</p>
+            </div>
+            <p>À chaque connexion, vous devrez entrer un code de vérification en plus de votre mot de passe.</p>
+            <p style="color: #666; font-size: 14px;">Si vous n'avez pas effectué cette action, contactez-nous immédiatement.</p>
+        </div>
+        <div style="padding: 20px; background: #f3f4f6; text-align: center; font-size: 12px; color: #666;">
+            <p>🛡️ Votre compte est maintenant plus sécurisé</p>
+        </div>
+    </div>
+    """
+    send_email(user_email, "✅ Double authentification activée - World Auto", html)
+
 def send_search_alert_email(user_email: str, user_name: str, alert: dict, listing: dict):
     """Email d'alerte pour une nouvelle annonce correspondant à une recherche"""
     html = f"""
