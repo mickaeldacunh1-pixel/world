@@ -690,22 +690,54 @@
         
         <!-- CTA -->
         <section class="cta">
-            <div class="cta-box">
-                <h2>🎉 Rejoignez-nous maintenant !</h2>
-                <p class="cta-subtitle">L'inscription est gratuite et prend 30 secondes</p>
-                <div class="cta-bonus">
-                    🎁 50 points de fidélité offerts à l'inscription !
-                </div>
-                <a href="https://worldautofrance.com" class="cta-url">
-                    🌐 worldautofrance.com
-                </a>
-                <div class="qr-section">
-                    <div class="qr-code">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://worldautofrance.com" alt="QR Code">
+            <div class="cta-box" style="display: flex; gap: 20px; align-items: stretch; text-align: left; padding: 20px;">
+                <!-- QR Code à gauche -->
+                <div style="flex: 0 0 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; border-radius: 12px; padding: 12px;">
+                    <div class="qr-code" style="margin: 0; width: 80px; height: 80px;">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://worldautofrance.com" alt="QR" style="width: 100%; height: 100%;">
                     </div>
-                    <div class="qr-text">
-                        <strong>📱 Scannez pour visiter</strong>
-                        Ou tapez worldautofrance.com<br>dans votre navigateur
+                    <p style="color: #0a0a0a; font-size: 8px; margin-top: 6px; text-align: center; font-weight: 700;">📱 Scannez-moi</p>
+                </div>
+                
+                <!-- Contenu principal -->
+                <div style="flex: 1;">
+                    <!-- Badge Spécial PRO -->
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <span style="background: linear-gradient(90deg, #8b5cf6, #a78bfa); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 0.5px;">👑 SPÉCIAL PRO</span>
+                    </div>
+                    
+                    <!-- Avantages PRO en grille -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                        <div style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.3); padding: 10px; border-radius: 10px;">
+                            <div style="font-size: 18px; margin-bottom: 3px;">🏭</div>
+                            <p style="font-size: 10px; font-weight: 700; margin-bottom: 2px; color: #fff;">Logiciel Entrepôt</p>
+                            <p style="font-size: 8px; opacity: 0.8;">Gérez tout votre stock</p>
+                        </div>
+                        <div style="background: rgba(249, 115, 22, 0.2); border: 1px solid rgba(249, 115, 22, 0.3); padding: 10px; border-radius: 10px;">
+                            <div style="font-size: 18px; margin-bottom: 3px;">📊</div>
+                            <p style="font-size: 10px; font-weight: 700; margin-bottom: 2px; color: #fff;">Dashboard PRO</p>
+                            <p style="font-size: 8px; opacity: 0.8;">Stats temps réel</p>
+                        </div>
+                        <div style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.3); padding: 10px; border-radius: 10px;">
+                            <div style="font-size: 18px; margin-bottom: 3px;">📸</div>
+                            <p style="font-size: 10px; font-weight: 700; margin-bottom: 2px; color: #fff;">50 Photos/Annonce</p>
+                            <p style="font-size: 8px; opacity: 0.8;">Qualité HD</p>
+                        </div>
+                        <div style="background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.3); padding: 10px; border-radius: 10px;">
+                            <div style="font-size: 18px; margin-bottom: 3px;">⚡</div>
+                            <p style="font-size: 10px; font-weight: 700; margin-bottom: 2px; color: #fff;">Visibilité x3</p>
+                            <p style="font-size: 8px; opacity: 0.8;">Annonces prioritaires</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Bonus + URL -->
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <div class="cta-bonus" style="margin: 0; font-size: 9px; padding: 6px 12px; background: linear-gradient(90deg, #f97316, #fb923c); border-radius: 20px;">
+                            🎁 Code LANCEMENT = 20 annonces gratuites
+                        </div>
+                        <a href="https://worldautofrance.com" class="cta-url" style="font-size: 11px; padding: 8px 16px; background: #fff; color: #0f172a; border-radius: 20px; text-decoration: none; font-weight: 700;">
+                            🌐 worldautofrance.com
+                        </a>
                     </div>
                 </div>
             </div>
