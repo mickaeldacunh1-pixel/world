@@ -1556,6 +1556,231 @@ async def login(request: Request, credentials: UserLogin, background_tasks: Back
 async def get_me(current_user: dict = Depends(get_current_user)):
     return current_user
 
+# ================== 2FA ENDPOINTS ==================
+
+@api_router.get("/auth/2fa/status")
+async def get_2fa_status(current_user: dict = Depends(get_current_user)):
+    """Get current 2FA status for user"""
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0, "two_factor": 1})
+    two_factor = user.get("two_factor", {}) if user else {}
+    
+    return {
+        "enabled": two_factor.get("enabled", False),
+        "method": two_factor.get("method", None),
+        "backup_codes_remaining": len(two_factor.get("backup_codes", []))
+    }
+
+@api_router.post("/auth/2fa/setup")
+async def setup_2fa(request: TwoFactorSetupRequest, current_user: dict = Depends(get_current_user)):
+    """Initialize 2FA setup - returns QR code for TOTP or sends email for email method"""
+    if request.method not in ["totp", "email"]:
+        raise HTTPException(status_code=400, detail="Méthode invalide. Utilisez 'totp' ou 'email'.")
+    
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    
+    # Check if already enabled
+    if user.get("two_factor", {}).get("enabled"):
+        raise HTTPException(status_code=400, detail="2FA déjà activé. Désactivez-le d'abord pour changer de méthode.")
+    
+    if request.method == "totp":
+        # Generate TOTP secret
+        secret = pyotp.random_base32()
+        totp = pyotp.TOTP(secret)
+        
+        # Generate QR code
+        provisioning_uri = totp.provisioning_uri(
+            name=current_user["email"],
+            issuer_name="World Auto France"
+        )
+        
+        # Create QR code image
+        qr = qrcode.QRCode(version=1, box_size=10, border=5)
+        qr.add_data(provisioning_uri)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+        
+        # Convert to base64
+        buffer = BytesIO()
+        img.save(buffer, format="PNG")
+        qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+        
+        # Generate backup codes
+        backup_codes = [''.join(random.choices(string.ascii_uppercase + string.digits, k=8)) for _ in range(8)]
+        
+        # Store pending setup (not yet verified)
+        await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$set": {
+                "two_factor.pending_secret": secret,
+                "two_factor.pending_method": "totp",
+                "two_factor.pending_backup_codes": backup_codes
+            }}
+        )
+        
+        return {
+            "method": "totp",
+            "qr_code": f"data:image/png;base64,{qr_base64}",
+            "secret": secret,  # For manual entry
+            "backup_codes": backup_codes,
+            "message": "Scannez le QR code avec Google Authenticator puis entrez le code pour confirmer"
+        }
+    
+    else:  # email method
+        # Generate and send verification code
+        otp_code = ''.join(random.choices(string.digits, k=6))
+        otp_expires = datetime.now(timezone.utc) + timedelta(minutes=10)
+        
+        await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$set": {
+                "two_factor.pending_method": "email",
+                "two_factor.setup_otp": otp_code,
+                "two_factor.setup_otp_expires": otp_expires.isoformat()
+            }}
+        )
+        
+        # Send verification email
+        send_2fa_email(current_user["email"], current_user["name"], otp_code)
+        
+        return {
+            "method": "email",
+            "message": "Un code de vérification a été envoyé à votre adresse email"
+        }
+
+@api_router.post("/auth/2fa/verify")
+async def verify_2fa_setup(request: TwoFactorVerifyRequest, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
+    """Verify 2FA code to complete setup"""
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    two_factor = user.get("two_factor", {})
+    
+    pending_method = two_factor.get("pending_method")
+    if not pending_method:
+        raise HTTPException(status_code=400, detail="Aucune configuration 2FA en cours")
+    
+    if pending_method == "totp":
+        secret = two_factor.get("pending_secret")
+        if not secret:
+            raise HTTPException(status_code=400, detail="Configuration TOTP invalide")
+        
+        totp = pyotp.TOTP(secret)
+        if not totp.verify(request.code, valid_window=1):
+            raise HTTPException(status_code=401, detail="Code invalide. Réessayez.")
+        
+        # Activate 2FA
+        await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$set": {
+                "two_factor.enabled": True,
+                "two_factor.method": "totp",
+                "two_factor.secret": secret,
+                "two_factor.backup_codes": two_factor.get("pending_backup_codes", []),
+                "two_factor.enabled_at": datetime.now(timezone.utc).isoformat()
+            },
+            "$unset": {
+                "two_factor.pending_secret": "",
+                "two_factor.pending_method": "",
+                "two_factor.pending_backup_codes": ""
+            }}
+        )
+        
+        background_tasks.add_task(send_2fa_enabled_email, current_user["email"], current_user["name"], "totp")
+        
+        return {
+            "success": True,
+            "message": "Double authentification TOTP activée avec succès !",
+            "backup_codes": two_factor.get("pending_backup_codes", [])
+        }
+    
+    else:  # email
+        setup_otp = two_factor.get("setup_otp")
+        otp_expires = two_factor.get("setup_otp_expires")
+        
+        if not setup_otp or request.code != setup_otp:
+            raise HTTPException(status_code=401, detail="Code invalide")
+        
+        if otp_expires and datetime.now(timezone.utc) > datetime.fromisoformat(otp_expires.replace('Z', '+00:00')):
+            raise HTTPException(status_code=401, detail="Code expiré. Recommencez la configuration.")
+        
+        # Activate 2FA
+        await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$set": {
+                "two_factor.enabled": True,
+                "two_factor.method": "email",
+                "two_factor.enabled_at": datetime.now(timezone.utc).isoformat()
+            },
+            "$unset": {
+                "two_factor.pending_method": "",
+                "two_factor.setup_otp": "",
+                "two_factor.setup_otp_expires": ""
+            }}
+        )
+        
+        background_tasks.add_task(send_2fa_enabled_email, current_user["email"], current_user["name"], "email")
+        
+        return {
+            "success": True,
+            "message": "Double authentification par email activée avec succès !"
+        }
+
+@api_router.post("/auth/2fa/disable")
+async def disable_2fa(request: TwoFactorDisableRequest, current_user: dict = Depends(get_current_user)):
+    """Disable 2FA - requires password and current 2FA code"""
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    
+    # Verify password
+    if not verify_password(request.password, user["password"]):
+        raise HTTPException(status_code=401, detail="Mot de passe incorrect")
+    
+    two_factor = user.get("two_factor", {})
+    if not two_factor.get("enabled"):
+        raise HTTPException(status_code=400, detail="2FA n'est pas activé")
+    
+    # Verify 2FA code
+    method = two_factor.get("method")
+    if method == "totp":
+        totp = pyotp.TOTP(two_factor.get("secret"))
+        # Check code or backup code
+        if not totp.verify(request.code, valid_window=1):
+            backup_codes = two_factor.get("backup_codes", [])
+            if request.code not in backup_codes:
+                raise HTTPException(status_code=401, detail="Code invalide")
+    
+    # Disable 2FA
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$unset": {"two_factor": ""}}
+    )
+    
+    logging.info(f"🔓 2FA désactivé pour {current_user['email']}")
+    
+    return {
+        "success": True,
+        "message": "Double authentification désactivée"
+    }
+
+@api_router.get("/auth/2fa/backup-codes")
+async def get_new_backup_codes(current_user: dict = Depends(get_current_user)):
+    """Generate new backup codes (only for TOTP method)"""
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    two_factor = user.get("two_factor", {})
+    
+    if not two_factor.get("enabled") or two_factor.get("method") != "totp":
+        raise HTTPException(status_code=400, detail="2FA TOTP non activé")
+    
+    # Generate new backup codes
+    backup_codes = [''.join(random.choices(string.ascii_uppercase + string.digits, k=8)) for _ in range(8)]
+    
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"two_factor.backup_codes": backup_codes}}
+    )
+    
+    return {
+        "backup_codes": backup_codes,
+        "message": "Nouveaux codes de secours générés. Conservez-les en lieu sûr."
+    }
+
 @api_router.get("/users/me/stats")
 async def get_my_stats(current_user: dict = Depends(get_current_user)):
     """Get current user's statistics for dashboard"""
