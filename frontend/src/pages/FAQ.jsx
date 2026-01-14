@@ -254,6 +254,22 @@ const faqs = [
       {
         q: "Mes données personnelles sont-elles protégées ?",
         a: "Oui, nous respectons le RGPD et protégeons vos données personnelles. Les paiements sont gérés par Stripe, vos coordonnées bancaires ne sont jamais stockées chez nous. Consultez nos Mentions Légales pour plus d'informations."
+      },
+      {
+        q: "Qu'est-ce que la double authentification (2FA) ?",
+        a: "La double authentification ajoute une couche de sécurité à votre compte. En plus de votre mot de passe, vous devez entrer un code temporaire généré par une application (Google Authenticator) ou reçu par email. Même si quelqu'un vole votre mot de passe, il ne pourra pas accéder à votre compte sans ce code."
+      },
+      {
+        q: "Comment activer la double authentification ?",
+        a: "Rendez-vous dans votre Profil > onglet 'Mot de passe'. Vous y trouverez la section 'Double Authentification (2FA)'. Choisissez votre méthode préférée : Google Authenticator (recommandé, plus sécurisé) ou Code par Email (plus simple). Suivez les instructions à l'écran pour l'activer."
+      },
+      {
+        q: "Que sont les codes de secours ?",
+        a: "Quand vous activez la 2FA avec Google Authenticator, 8 codes de secours vous sont fournis. Conservez-les précieusement ! Si vous perdez accès à votre application d'authentification (téléphone perdu, changé...), ces codes vous permettront de vous connecter et de désactiver/réactiver la 2FA."
+      },
+      {
+        q: "Pourquoi mon compte est-il bloqué temporairement ?",
+        a: "Pour protéger votre compte, nous bloquons automatiquement les connexions après 5 tentatives échouées. Le blocage dure 15 minutes. Si c'est vous, attendez simplement. Si vous n'avez pas essayé de vous connecter, cela signifie que quelqu'un tente d'accéder à votre compte - pensez à changer votre mot de passe et activer la 2FA."
       }
     ]
   },
