@@ -110,6 +110,50 @@ JWT_ALGORITHM = "HS256"
 # Stripe Config
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
 
+# reCAPTCHA v3 Config
+RECAPTCHA_SITE_KEY = os.environ.get('RECAPTCHA_SITE_KEY', '')
+RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY', '')
+RECAPTCHA_ENABLED = os.environ.get('RECAPTCHA_ENABLED', 'false').lower() == 'true'
+RECAPTCHA_THRESHOLD = 0.5  # Score minimum (0.0 = bot, 1.0 = humain)
+
+async def verify_recaptcha(token: str, action: str = None) -> tuple[bool, float]:
+    """Verify reCAPTCHA v3 token. Returns (success, score)"""
+    if not RECAPTCHA_ENABLED or not RECAPTCHA_SECRET_KEY:
+        return True, 1.0  # Skip if not configured
+    
+    if not token:
+        return False, 0.0
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://www.google.com/recaptcha/api/siteverify",
+                data={
+                    "secret": RECAPTCHA_SECRET_KEY,
+                    "response": token
+                }
+            )
+            result = response.json()
+            
+            success = result.get("success", False)
+            score = result.get("score", 0.0)
+            response_action = result.get("action", "")
+            
+            # Verify action matches if provided
+            if action and response_action != action:
+                logging.warning(f"⚠️ reCAPTCHA action mismatch: expected {action}, got {response_action}")
+                return False, 0.0
+            
+            if success and score >= RECAPTCHA_THRESHOLD:
+                return True, score
+            else:
+                logging.warning(f"⚠️ reCAPTCHA failed: success={success}, score={score}")
+                return False, score
+                
+    except Exception as e:
+        logging.error(f"❌ reCAPTCHA verification error: {e}")
+        return True, 1.0  # Fail open to not block users on error
+
 # Cloudinary Config
 cloudinary.config(
     cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME', 'dmtnmaloe'),
