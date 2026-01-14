@@ -9,7 +9,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '../components/ui/dialog';
-import { User, Lock, Trash2, Save, Building, MapPin, Phone, Mail, Calendar, Shield, CreditCard, CheckCircle, AlertCircle, ExternalLink, Loader2, Palmtree, Bell } from 'lucide-react';
+import { User, Lock, Trash2, Save, Building, MapPin, Phone, Mail, Calendar, Shield, CreditCard, CheckCircle, AlertCircle, ExternalLink, Loader2, Palmtree, Bell, Building2, Edit } from 'lucide-react';
 import SEO from '../components/SEO';
 import VacationMode from '../components/VacationMode';
 import NotificationSettings from '../components/NotificationSettings';
@@ -28,6 +28,13 @@ export default function Profile() {
   // Stripe Connect state
   const [stripeStatus, setStripeStatus] = useState(null);
   const [stripeLoading, setStripeLoading] = useState(false);
+  
+  // IBAN state
+  const [showIbanForm, setShowIbanForm] = useState(false);
+  const [ibanValue, setIbanValue] = useState('');
+  const [bicValue, setBicValue] = useState('');
+  const [accountHolder, setAccountHolder] = useState('');
+  const [ibanLoading, setIbanLoading] = useState(false);
   
   // Profile form
   const [profileData, setProfileData] = useState({
