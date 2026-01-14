@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Auto France - Flyer A6</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    @page {
+      size: 105mm 148mm;
+      margin: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      width: 105mm;
+      height: 148mm;
+      background: #ffffff;
+      color: #1a1a2e;
+      overflow: hidden;
+    }
+    
+    .flyer {
+      width: 100%;
+      height: 100%;
+      padding: 6mm;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 4mm;
+    }
+    
+    .logo {
+      font-size: 16pt;
+      font-weight: 800;
+      color: #1E3A5F;
+      letter-spacing: -0.5px;
+    }
+    
+    .logo span {
+      color: #f97316;
+    }
+    
+    .tagline {
+      font-size: 7pt;
+      color: #64748b;
+      margin-top: 1mm;
+    }
+    
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #1E3A5F 0%, #2d4a6f 100%);
+      border-radius: 4mm;
+      padding: 4mm;
+      text-align: center;
+      margin-bottom: 3mm;
+    }
+    
+    .hero h1 {
+      font-size: 11pt;
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    
+    .hero h1 span {
+      color: #f97316;
+    }
+    
+    .hero-sub {
+      font-size: 7pt;
+      color: #cbd5e1;
+      margin-top: 2mm;
+    }
+    
+    /* Promo Banner */
+    .promo {
+      background: linear-gradient(90deg, #f97316, #ea580c);
+      border-radius: 3mm;
+      padding: 2.5mm 3mm;
+      text-align: center;
+      margin-bottom: 3mm;
+    }
+    
+    .promo-text {
+      font-size: 8pt;
+      color: #fff;
+      font-weight: 700;
+    }
+    
+    /* Features Grid */
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2mm;
+      margin-bottom: 3mm;
+    }
+    
+    .feature {
+      background: #f8fafc;
+      border-radius: 2mm;
+      padding: 2mm;
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5mm;
+    }
+    
+    .feature-icon {
+      font-size: 9pt;
+      flex-shrink: 0;
+    }
+    
+    .feature-text {
+      font-size: 6pt;
+      color: #334155;
+      line-height: 1.3;
+    }
+    
+    .feature-text strong {
+      display: block;
+      font-size: 6.5pt;
+      color: #1E3A5F;
+    }
+    
+    /* PRO Section */
+    .pro-section {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      border-radius: 3mm;
+      padding: 3mm;
+      margin-bottom: 3mm;
+    }
+    
+    .pro-title {
+      font-size: 8pt;
+      color: #fff;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 2mm;
+    }
+    
+    .pro-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5mm;
+      justify-content: center;
+    }
+    
+    .pro-badge {
+      background: rgba(255,255,255,0.2);
+      border-radius: 2mm;
+      padding: 1mm 2mm;
+      font-size: 5.5pt;
+      color: #fff;
+    }
+    
+    /* Tech Section */
+    .tech-section {
+      background: #f1f5f9;
+      border-radius: 2mm;
+      padding: 2mm 3mm;
+      margin-bottom: 3mm;
+    }
+    
+    .tech-title {
+      font-size: 6.5pt;
+      color: #1E3A5F;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1.5mm;
+    }
+    
+    .tech-items {
+      display: flex;
+      justify-content: center;
+      gap: 3mm;
+      flex-wrap: wrap;
+    }
+    
+    .tech-item {
+      font-size: 5.5pt;
+      color: #475569;
+    }
+    
+    /* Footer */
+    .footer {
+      margin-top: auto;
+      text-align: center;
+    }
+    
+    .url {
+      font-size: 10pt;
+      font-weight: 800;
+      color: #1E3A5F;
+      margin-bottom: 1mm;
+    }
+    
+    .url span {
+      color: #f97316;
+    }
+    
+    .footer-text {
+      font-size: 5.5pt;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="flyer">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">World <span>Auto</span> France</div>
+      <div class="tagline">La marketplace automobile nouvelle génération</div>
+    </div>
+    
+    <!-- Hero -->
+    <div class="hero">
+      <h1>Révolutionnez vos <span>recherches auto</span></h1>
+      <p class="hero-sub">Pièces • Véhicules • Accessoires • Équipements</p>
+    </div>
+    
+    <!-- Promo -->
+    <div class="promo">
+      <div class="promo-text">🎁 OFFRE LANCEMENT : 1000 premières annonces GRATUITES</div>
+    </div>
+    
+    <!-- Features -->
+    <div class="features">
+      <div class="feature">
+        <span class="feature-icon">🤖</span>
+        <div class="feature-text">
+          <strong>Assistant IA "Tobi"</strong>
+          Conseils auto, compatibilité pièces, aide 24/7
+        </div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">🔍</span>
+        <div class="feature-text">
+          <strong>Diagnostic IA</strong>
+          Identifiez vos pannes en quelques clics
+        </div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">🎙️</span>
+        <div class="feature-text">
+          <strong>Recherche vocale</strong>
+          Parlez, trouvez - simple et rapide
+        </div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">📦</span>
+        <div class="feature-text">
+          <strong>Multi-transporteurs</strong>
+          Boxtal, Mondial Relay, Colissimo...
+        </div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">🔐</span>
+        <div class="feature-text">
+          <strong>Paiement sécurisé</strong>
+          Protection acheteur garantie
+        </div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">📻</span>
+        <div class="feature-text">
+          <strong>Radio intégrée</strong>
+          Skyrock, RTL, Fun Radio...
+        </div>
+      </div>
+    </div>
+    
+    <!-- PRO Section -->
+    <div class="pro-section">
+      <div class="pro-title">👑 ESPACE PROFESSIONNEL</div>
+      <div class="pro-features">
+        <span class="pro-badge">📊 Entrepôt Pro</span>
+        <span class="pro-badge">📈 Stats avancées</span>
+        <span class="pro-badge">📸 50 photos/annonce</span>
+        <span class="pro-badge">✅ Badge vérifié</span>
+        <span class="pro-badge">🎬 Stories vendeurs</span>
+        <span class="pro-badge">🏷️ Gestion stocks</span>
+      </div>
+    </div>
+    
+    <!-- Tech Section -->
+    <div class="tech-section">
+      <div class="tech-title">🛡️ Sécurité & Technologies</div>
+      <div class="tech-items">
+        <span class="tech-item">✓ 2FA</span>
+        <span class="tech-item">✓ reCAPTCHA</span>
+        <span class="tech-item">✓ SIRET vérifié</span>
+        <span class="tech-item">✓ IBAN validé</span>
+        <span class="tech-item">✓ Stripe Connect</span>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+      <div class="url">www.worldauto<span>france</span>.com</div>
+      <div class="footer-text">Particuliers & Professionnels • 100% Français 🇫🇷</div>
+    </div>
+  </div>
+</body>
+</html>
