@@ -1799,10 +1799,15 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
 async def upload_image(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
     """Upload an image to Cloudinary"""
     try:
-        # Validate file type
-        allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
-        if file.content_type not in allowed_types:
-            raise HTTPException(status_code=400, detail="Type de fichier non supporté. Utilisez JPG, PNG, WebP ou GIF.")
+        # Validate file type - include HEIC/HEIF for mobile devices
+        allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif"]
+        
+        # Some browsers report HEIC as application/octet-stream
+        file_ext = file.filename.lower().split('.')[-1] if file.filename else ''
+        is_heic = file_ext in ['heic', 'heif']
+        
+        if file.content_type not in allowed_types and not is_heic:
+            raise HTTPException(status_code=400, detail="Type de fichier non supporté. Utilisez JPG, PNG, WebP, GIF ou HEIC.")
         
         # Read file content
         contents = await file.read()
@@ -1811,15 +1816,16 @@ async def upload_image(file: UploadFile = File(...), current_user: dict = Depend
         if len(contents) > 10 * 1024 * 1024:
             raise HTTPException(status_code=400, detail="L'image est trop volumineuse. Maximum 10MB.")
         
-        # Upload to Cloudinary
+        # Upload to Cloudinary with auto-orientation fix
         result = cloudinary.uploader.upload(
             contents,
             folder="worldauto",
             resource_type="image",
             transformation=[
+                {"angle": "exif"},  # Auto-fix orientation from EXIF data
                 {"width": 1200, "height": 900, "crop": "limit"},
                 {"quality": "auto:good"},
-                {"fetch_format": "auto"}
+                {"fetch_format": "auto"}  # Auto-convert HEIC to JPG
             ]
         )
         
