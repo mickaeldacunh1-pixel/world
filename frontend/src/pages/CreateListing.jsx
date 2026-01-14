@@ -901,7 +901,7 @@ export default function CreateListing() {
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Ajoutez jusqu'à {maxPhotos} photos (JPG, PNG, WebP - max 10MB chacune)
+                  Ajoutez jusqu'à {maxPhotos} photos (JPG, PNG, WebP, HEIC - max 10MB chacune)
                 </p>
                 
                 {/* Image Preview Grid */}
