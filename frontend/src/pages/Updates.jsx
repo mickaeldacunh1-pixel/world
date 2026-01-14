@@ -12,6 +12,24 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-25',
+    date: '2026-01-14',
+    version: '5.4.0',
+    title: '🔐 Sécurité Renforcée & Double Authentification',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🔐 Double Authentification (2FA) : protégez votre compte avec Google Authenticator ou par email' },
+      { type: 'new', text: '📱 TOTP : scannez un QR code pour activer la vérification en 2 étapes' },
+      { type: 'new', text: '📧 Code par email : recevez un code à chaque connexion si vous préférez' },
+      { type: 'new', text: '🔑 Codes de secours : 8 codes de récupération en cas de perte d\'accès' },
+      { type: 'new', text: '🤖 reCAPTCHA v3 : protection invisible contre les bots et le spam' },
+      { type: 'new', text: '🛡️ Rate Limiting : protection contre les attaques par force brute' },
+      { type: 'improvement', text: '🚫 Blocage automatique des IPs suspectes après 5 tentatives échouées' },
+      { type: 'improvement', text: '📻 Radio corrigée : nouvelles stations (RTL, Europe 1, Fun Radio, RTL2)' },
+      { type: 'improvement', text: '📦 Boxtal passé en mode production' },
+    ]
+  },
+  {
     id: 'static-new-24',
     date: '2026-01-14',
     version: '5.3.0',
