@@ -306,39 +306,86 @@ export default function Auth() {
               {/* Login Form */}
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="login-email"
-                        type="email"
-                        placeholder="votre@email.com"
-                        value={loginEmail}
-                        onChange={(e) => setLoginEmail(e.target.value)}
-                        className="pl-10"
-                        required
-                        data-testid="login-email-input"
-                      />
-                    </div>
-                  </div>
+                  {!twoFactorRequired ? (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="login-email">Email</Label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            id="login-email"
+                            type="email"
+                            placeholder="votre@email.com"
+                            value={loginEmail}
+                            onChange={(e) => setLoginEmail(e.target.value)}
+                            className="pl-10"
+                            required
+                            data-testid="login-email-input"
+                          />
+                        </div>
+                      </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="login-password">Mot de passe</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="login-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={loginPassword}
-                        onChange={(e) => setLoginPassword(e.target.value)}
-                        className="pl-10"
-                        required
-                        data-testid="login-password-input"
-                      />
+                      <div className="space-y-2">
+                        <Label htmlFor="login-password">Mot de passe</Label>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            id="login-password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={loginPassword}
+                            onChange={(e) => setLoginPassword(e.target.value)}
+                            className="pl-10"
+                            required
+                            data-testid="login-password-input"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 text-center">
+                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <Lock className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <h3 className="font-medium text-blue-800 mb-1">Vérification requise</h3>
+                        <p className="text-sm text-blue-600">
+                          {twoFactorMethod === 'totp' 
+                            ? 'Entrez le code de Google Authenticator'
+                            : 'Un code a été envoyé à votre adresse email'}
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="totp-code">Code de vérification</Label>
+                        <Input
+                          id="totp-code"
+                          type="text"
+                          placeholder="000000"
+                          value={twoFactorCode}
+                          onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, '').slice(0, 8))}
+                          className="text-center text-2xl tracking-widest font-mono"
+                          maxLength={8}
+                          autoFocus
+                          required
+                          data-testid="totp-code-input"
+                        />
+                        <p className="text-xs text-muted-foreground text-center">
+                          {twoFactorMethod === 'totp' 
+                            ? 'Code à 6 chiffres ou code de secours à 8 caractères'
+                            : 'Code à 6 chiffres envoyé par email'}
+                        </p>
+                      </div>
+                      
+                      <button
+                        type="button"
+                        onClick={handleCancelTwoFactor}
+                        className="w-full text-sm text-muted-foreground hover:text-foreground"
+                      >
+                        ← Retour à la connexion
+                      </button>
                     </div>
-                  </div>
+                  )}
 
                   <Button 
                     type="submit" 
@@ -346,17 +393,25 @@ export default function Auth() {
                     disabled={loading}
                     data-testid="login-submit-btn"
                   >
-                    {loading ? 'Connexion...' : 'Se connecter'}
+                    {loading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : twoFactorRequired ? (
+                      'Vérifier'
+                    ) : (
+                      'Se connecter'
+                    )}
                   </Button>
 
-                  <div className="text-center">
-                    <Link 
-                      to="/mot-de-passe-oublie" 
-                      className="text-sm text-muted-foreground hover:text-accent"
-                    >
-                      Mot de passe oublié ?
-                    </Link>
-                  </div>
+                  {!twoFactorRequired && (
+                    <div className="text-center">
+                      <Link 
+                        to="/mot-de-passe-oublie" 
+                        className="text-sm text-muted-foreground hover:text-accent"
+                      >
+                        Mot de passe oublié ?
+                      </Link>
+                    </div>
+                  )}
                 </form>
               </TabsContent>
 
