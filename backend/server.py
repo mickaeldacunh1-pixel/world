@@ -1,5 +1,5 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, File, UploadFile, BackgroundTasks, WebSocket, WebSocketDisconnect, Body, Form
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -23,9 +23,74 @@ from bordereau_generator import BordereauGenerator
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 from pywebpush import webpush, WebPushException
 import json
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from collections import defaultdict
+import hashlib
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# ================== SECURITY & RATE LIMITING ==================
+limiter = Limiter(key_func=get_remote_address)
+
+# Stockage en mémoire des IPs suspectes et tentatives échouées
+failed_login_attempts = defaultdict(list)  # IP -> [timestamps]
+blocked_ips = {}  # IP -> unblock_time
+suspicious_activity = defaultdict(int)  # IP -> score
+
+# Configuration sécurité
+MAX_LOGIN_ATTEMPTS = 5  # Tentatives max avant blocage
+LOGIN_BLOCK_DURATION = 15 * 60  # 15 minutes de blocage
+SUSPICIOUS_THRESHOLD = 10  # Score avant blocage automatique
+
+def get_client_ip(request: Request) -> str:
+    """Récupère l'IP réelle du client (gère les proxies)"""
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    real_ip = request.headers.get("X-Real-IP")
+    if real_ip:
+        return real_ip
+    return request.client.host if request.client else "unknown"
+
+def is_ip_blocked(ip: str) -> bool:
+    """Vérifie si une IP est bloquée"""
+    if ip in blocked_ips:
+        if datetime.now(timezone.utc) < blocked_ips[ip]:
+            return True
+        else:
+            del blocked_ips[ip]
+            if ip in failed_login_attempts:
+                del failed_login_attempts[ip]
+    return False
+
+def record_failed_login(ip: str):
+    """Enregistre une tentative de login échouée"""
+    now = datetime.now(timezone.utc)
+    failed_login_attempts[ip].append(now)
+    # Garder seulement les tentatives des 15 dernières minutes
+    cutoff = now - timedelta(seconds=LOGIN_BLOCK_DURATION)
+    failed_login_attempts[ip] = [t for t in failed_login_attempts[ip] if t > cutoff]
+    
+    if len(failed_login_attempts[ip]) >= MAX_LOGIN_ATTEMPTS:
+        blocked_ips[ip] = now + timedelta(seconds=LOGIN_BLOCK_DURATION)
+        logging.warning(f"🚫 IP bloquée pour tentatives de login excessives: {ip}")
+
+def record_suspicious_activity(ip: str, score: int = 1):
+    """Enregistre une activité suspecte"""
+    suspicious_activity[ip] += score
+    if suspicious_activity[ip] >= SUSPICIOUS_THRESHOLD:
+        blocked_ips[ip] = datetime.now(timezone.utc) + timedelta(hours=1)
+        logging.warning(f"🚫 IP bloquée pour activité suspecte: {ip} (score: {suspicious_activity[ip]})")
+
+def clear_failed_attempts(ip: str):
+    """Efface les tentatives échouées après un login réussi"""
+    if ip in failed_login_attempts:
+        del failed_login_attempts[ip]
+    if ip in suspicious_activity:
+        del suspicious_activity[ip]
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
