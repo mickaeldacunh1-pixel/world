@@ -56,7 +56,7 @@ export default function SEO({
 export const createOrganizationSchema = () => ({
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'World Auto Pro',
+  name: 'World Auto France',
   url: SITE_URL,
   logo: `${SITE_URL}/logo.png`,
   description: 'Marketplace de pièces détachées automobiles et véhicules d\'occasion en France',
