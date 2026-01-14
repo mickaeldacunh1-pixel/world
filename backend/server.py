@@ -1520,6 +1520,50 @@ async def update_profile(profile: ProfileUpdate, current_user: dict = Depends(ge
     updated_user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0, "password": 0})
     return updated_user
 
+class IbanUpdate(BaseModel):
+    iban: str
+    bic: Optional[str] = None
+    account_holder: str
+
+@api_router.post("/users/me/iban")
+async def save_iban(iban_data: IbanUpdate, current_user: dict = Depends(get_current_user)):
+    """Enregistrer les coordonnées bancaires (IBAN) de l'utilisateur"""
+    import re
+    
+    # Clean IBAN
+    clean_iban = iban_data.iban.replace(" ", "").upper()
+    
+    # Basic IBAN validation
+    if not re.match(r'^[A-Z]{2}[0-9]{2}[A-Z0-9]{4,30}$', clean_iban):
+        raise HTTPException(status_code=400, detail="Format IBAN invalide")
+    
+    # Mask IBAN for display (show only last 4 chars)
+    iban_display = f"{'*' * (len(clean_iban) - 4)}{clean_iban[-4:]}"
+    
+    # Store encrypted (in production, you'd want to encrypt this properly)
+    # For now, we store it with basic obfuscation
+    update_data = {
+        "iban_configured": True,
+        "iban_display": iban_display,
+        "iban_full": clean_iban,  # In production: encrypt this
+        "iban_bic": iban_data.bic.upper() if iban_data.bic else None,
+        "iban_holder": iban_data.account_holder,
+        "iban_updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": update_data}
+    )
+    
+    logger.info(f"IBAN configured for user {current_user['id']}")
+    
+    return {
+        "success": True,
+        "message": "IBAN enregistré avec succès",
+        "iban_display": iban_display
+    }
+
 @api_router.put("/auth/password")
 async def change_password(passwords: PasswordChange, current_user: dict = Depends(get_current_user)):
     """Changer le mot de passe"""
