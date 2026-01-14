@@ -258,8 +258,21 @@ export default function Auth() {
 
     setLoading(true);
     try {
+      // Get reCAPTCHA token
+      let recaptchaToken = null;
+      if (window.grecaptcha) {
+        try {
+          recaptchaToken = await window.grecaptcha.execute(
+            process.env.REACT_APP_RECAPTCHA_SITE_KEY,
+            { action: 'register' }
+          );
+        } catch (recaptchaError) {
+          console.log('reCAPTCHA non disponible:', recaptchaError);
+        }
+      }
+      
       const { confirmPassword, ...userData } = registerData;
-      await register(userData);
+      await register({ ...userData, recaptcha_token: recaptchaToken });
       toast.success('Inscription réussie !');
       navigate('/tableau-de-bord');
     } catch (error) {
