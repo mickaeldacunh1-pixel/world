@@ -253,6 +253,21 @@ export default function Home() {
         console.error('Error fetching live stats:', error);
       }
 
+      // Fetch promo status for welcome offer countdown
+      try {
+        const response = await axios.get(`${API}/promo/LANCEMENT/status`);
+        if (isMounted && response.data) {
+          setPromoStatus({
+            valid: response.data.valid,
+            remaining: response.data.remaining_global || 0,
+            total: response.data.total_limit || 1000,
+            freeAds: response.data.free_ads_per_user || 20
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching promo status:', error);
+      }
+
       // Fetch category stats
       try {
         const response = await axios.get(`${API}/categories/stats${cacheBuster}`);
