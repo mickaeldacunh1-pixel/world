@@ -715,6 +715,7 @@ class UserCreate(BaseModel):
     country: str = "France"  # Pays obligatoire
     referral_code: Optional[str] = None  # Code de parrainage
     promo_code: Optional[str] = None  # Code promo (ex: LANCEMENT)
+    recaptcha_token: Optional[str] = None  # Token reCAPTCHA v3
 
 # ================== SYSTÈME PROMO LANCEMENT ==================
 PROMO_CODES = {
