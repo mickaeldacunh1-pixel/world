@@ -32,6 +32,9 @@ export default function Auth() {
   // Login state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [twoFactorRequired, setTwoFactorRequired] = useState(false);
+  const [twoFactorMethod, setTwoFactorMethod] = useState(null);
+  const [twoFactorCode, setTwoFactorCode] = useState('');
   
   // Liste des pays autorisés
   const ALLOWED_COUNTRIES = [
