@@ -1421,7 +1421,7 @@ async def delete_pending_credits(email: str, current_user: dict = Depends(get_cu
 
 @api_router.post("/auth/login")
 @limiter.limit("5/minute")  # Max 5 tentatives par minute
-async def login(request: Request, credentials: UserLogin):
+async def login(request: Request, credentials: UserLogin, background_tasks: BackgroundTasks):
     ip = get_client_ip(request)
     
     # Vérifier si l'IP est bloquée
@@ -1434,6 +1434,55 @@ async def login(request: Request, credentials: UserLogin):
         record_failed_login(ip)
         logging.warning(f"⚠️ Tentative de login échouée: {credentials.email} depuis {ip}")
         raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
+    
+    # Vérifier si 2FA est activé
+    two_factor = user.get("two_factor", {})
+    if two_factor.get("enabled"):
+        method = two_factor.get("method", "totp")
+        
+        # Si pas de code 2FA fourni, demander le code
+        if not credentials.totp_code:
+            # Pour la méthode email, envoyer un code OTP
+            if method == "email":
+                otp_code = ''.join(random.choices(string.digits, k=6))
+                otp_expires = datetime.now(timezone.utc) + timedelta(minutes=10)
+                await db.users.update_one(
+                    {"id": user["id"]},
+                    {"$set": {
+                        "two_factor.email_otp": otp_code,
+                        "two_factor.email_otp_expires": otp_expires.isoformat()
+                    }}
+                )
+                # Envoyer l'email avec le code
+                background_tasks.add_task(send_2fa_email, user["email"], user["name"], otp_code)
+                logging.info(f"📧 Code 2FA envoyé par email à {user['email']}")
+            
+            return {
+                "requires_2fa": True,
+                "method": method,
+                "message": "Code de vérification requis" if method == "totp" else "Code envoyé par email"
+            }
+        
+        # Vérifier le code 2FA
+        if method == "totp":
+            totp = pyotp.TOTP(two_factor.get("secret"))
+            if not totp.verify(credentials.totp_code, valid_window=1):
+                record_failed_login(ip)
+                logging.warning(f"⚠️ Code 2FA invalide pour {credentials.email}")
+                raise HTTPException(status_code=401, detail="Code de vérification invalide")
+        elif method == "email":
+            stored_otp = two_factor.get("email_otp")
+            otp_expires = two_factor.get("email_otp_expires")
+            if not stored_otp or credentials.totp_code != stored_otp:
+                record_failed_login(ip)
+                raise HTTPException(status_code=401, detail="Code de vérification invalide")
+            if otp_expires and datetime.now(timezone.utc) > datetime.fromisoformat(otp_expires.replace('Z', '+00:00')):
+                raise HTTPException(status_code=401, detail="Code expiré. Reconnectez-vous pour recevoir un nouveau code.")
+            # Effacer le code utilisé
+            await db.users.update_one(
+                {"id": user["id"]},
+                {"$unset": {"two_factor.email_otp": "", "two_factor.email_otp_expires": ""}}
+            )
     
     # Login réussi - effacer les tentatives échouées
     clear_failed_attempts(ip)
@@ -1448,7 +1497,8 @@ async def login(request: Request, credentials: UserLogin):
             "email": user["email"],
             "name": user["name"],
             "is_professional": user.get("is_professional", False),
-            "credits": user.get("credits", 0)
+            "credits": user.get("credits", 0),
+            "two_factor_enabled": two_factor.get("enabled", False)
         }
     }
 
