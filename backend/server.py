@@ -1257,6 +1257,14 @@ async def register(request: Request, user: UserCreate, background_tasks: Backgro
     if is_ip_blocked(ip):
         raise HTTPException(status_code=429, detail="Trop de tentatives. Veuillez réessayer plus tard.")
     
+    # Vérifier reCAPTCHA si activé
+    if RECAPTCHA_ENABLED:
+        captcha_valid, captcha_score = await verify_recaptcha(user.recaptcha_token, "register")
+        if not captcha_valid:
+            record_suspicious_activity(ip, 5)
+            logging.warning(f"⚠️ reCAPTCHA échoué pour inscription: {user.email} depuis {ip} (score: {captcha_score})")
+            raise HTTPException(status_code=400, detail="Vérification de sécurité échouée. Veuillez réessayer.")
+    
     # Note: Les acheteurs peuvent s'inscrire de n'importe quel pays
     # La restriction des pays s'applique uniquement aux vendeurs (création d'annonces)
     
