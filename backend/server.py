@@ -5181,6 +5181,14 @@ async def test_email_sending(request: EmailTestRequest, current_user: dict = Dep
 
 # ================== SECURITY ADMIN ENDPOINTS ==================
 
+@api_router.get("/security/config")
+async def get_security_config():
+    """Get public security config (reCAPTCHA site key, etc.)"""
+    return {
+        "recaptcha_enabled": RECAPTCHA_ENABLED,
+        "recaptcha_site_key": RECAPTCHA_SITE_KEY if RECAPTCHA_ENABLED else None
+    }
+
 @api_router.get("/admin/security/status")
 async def get_security_status(current_user: dict = Depends(get_current_user)):
     """Get security status - blocked IPs and suspicious activity (admin only)"""
