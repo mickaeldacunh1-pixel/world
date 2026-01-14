@@ -940,7 +940,7 @@ export default function CreateListing() {
                       type="file"
                       ref={fileInputRef}
                       onChange={handleImageUpload}
-                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif,.heic,.heif"
                       multiple
                       className="hidden"
                       id="image-upload"
