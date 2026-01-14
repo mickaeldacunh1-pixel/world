@@ -28,6 +28,12 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from collections import defaultdict
 import hashlib
+import pyotp
+import qrcode
+from io import BytesIO
+import base64
+import random
+import string
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
