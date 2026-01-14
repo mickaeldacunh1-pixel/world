@@ -13,8 +13,11 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Default stations (fallback)
 const DEFAULT_STATIONS = [
   { id: 'skyrock', name: 'Skyrock', genre: 'Rap & RnB', logo: '🎤', stream_url: 'https://icecast.skyrock.net/s/natio_mp3_128k', color: '#000000' },
-  { id: 'funradio', name: 'Fun Radio', genre: 'Dance', logo: '🎧', stream_url: 'https://streaming.radio.funradio.fr/fun-1-44-128', color: '#FF6B00' },
-  { id: 'rtl2', name: 'RTL2', genre: 'Pop Rock', logo: '🎸', stream_url: 'https://streaming.radio.rtl2.fr/rtl2-1-44-128', color: '#00A0E4' },
+  { id: 'nrj', name: 'NRJ', genre: 'Hits', logo: '🎵', stream_url: 'https://scdn.nrjaudio.fm/adwz1/fr/30001/mp3_128.mp3?origine=fluxradios', color: '#E31937' },
+  { id: 'virgin', name: 'Virgin Radio', genre: 'Pop Rock', logo: '🎸', stream_url: 'https://icecast.radiofrance.fr/fip-midfi.mp3', color: '#FF0000' },
+  { id: 'cherie', name: 'Chérie FM', genre: 'Variété', logo: '💕', stream_url: 'https://scdn.nrjaudio.fm/adwz1/fr/30201/mp3_128.mp3?origine=fluxradios', color: '#E91E8C' },
+  { id: 'nostalgie', name: 'Nostalgie', genre: 'Oldies', logo: '📻', stream_url: 'https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3?origine=fluxradios', color: '#FFD700' },
+  { id: 'rire', name: 'Rire & Chansons', genre: 'Humour', logo: '😂', stream_url: 'https://scdn.nrjaudio.fm/adwz1/fr/30401/mp3_128.mp3?origine=fluxradios', color: '#FF6B35' },
 ];
 
 export default function RadioPlayer() {
