@@ -18,12 +18,13 @@ https://worldautofrance.com
 - ✅ Authentification (JWT)
 - ✅ Création/gestion d'annonces
 - ✅ Messagerie entre utilisateurs
-- ✅ Paiement Stripe
+- ✅ Paiement Stripe Connect
+- ✅ **Paiement IBAN direct** (nouveau v5.3)
 - ✅ Upload images Cloudinary
 - ✅ Radio intégrée
-- ✅ Agent Cody (assistant IA)
+- ✅ Agent Tobi (assistant IA)
 
-### Transporteurs (v5.2.0 - 13 Jan 2026)
+### Transporteurs (v5.2.0)
 - ✅ Remise en main propre
 - ✅ Colissimo
 - ✅ Mondial Relay
@@ -31,13 +32,28 @@ https://worldautofrance.com
 - ✅ Boxtal Multi-Transporteurs
 - ✅ Autre transporteur
 
-### Mon Entrepôt Pro (v5.2.0 - 13 Jan 2026)
+### Mon Entrepôt Pro (v5.2.0)
 - ✅ Gestion des sections
 - ✅ Gestion des articles (CRUD)
 - ✅ Statistiques (stock, valeur, alertes)
 - ✅ Publication en 1 clic vers annonces
 - ✅ Export CSV
 - ✅ Réservé aux comptes PRO
+
+### Paiements (v5.3.0)
+- ✅ Option IBAN direct (comme eBay)
+- ✅ Option Stripe Connect (dashboard complet)
+- ✅ Validation IBAN avec checksum mod-97
+- ✅ Stockage sécurisé des coordonnées bancaires
+
+### Photos Mobile (v5.3.0)
+- ✅ Support HEIC/HEIF (iPhone/iPad)
+- ✅ Correction automatique orientation EXIF
+- ✅ Conversion auto en JPG
+
+### Catégories (v5.3.0)
+- ✅ Vignette "Recherche" sur page d'accueil
+- ✅ Vignette "Rare & Collection" sur page d'accueil
 
 ### Système Promo LANCEMENT
 - ✅ Code: LANCEMENT
@@ -66,15 +82,20 @@ France, Belgique, Suisse, Allemagne, Pays-Bas, Italie, Espagne, Portugal, Suède
 - `/var/www/worldauto/backend/server.py`
 - `/var/www/worldauto/frontend/src/pages/CreateListing.jsx`
 - `/var/www/worldauto/frontend/src/pages/Warehouse.jsx`
+- `/var/www/worldauto/frontend/src/pages/Profile.jsx`
 - `/var/www/worldauto/frontend/src/App.js`
-- `/var/www/worldauto/docker-compose.yml`
 
 ## Intégrations 3rd Party
 - Cloudinary (images)
 - Stripe (paiements)
 - Boxtal (expédition)
 - Mondial Relay
-- emergentintegrations (IA)
+- emergentintegrations (IA - Tobi)
+
+## Clés API
+- EMERGENT_LLM_KEY: sk-emergent-aDf9fBa54C9Be5691B
+- Boxtal Access: 5DAZG2L2AVL5JUBMASPXJVBZXJY3Y0O0P09AY416
+- Boxtal Secret: a97a9989-227a-4997-a826-6bd8e0ffe712
 
 ## Procédure de Restauration VPS
 
@@ -103,11 +124,12 @@ EOF
 docker-compose down && docker-compose up -d --build
 ```
 
+## Changelog
+- **14 Jan 2026 (v5.3.0)**: Option paiement IBAN + Support photos HEIC + Catégories Recherche/Rare + FAQ mise à jour
+- **13 Jan 2026 (v5.2.0)**: 6 transporteurs + Mon Entrepôt Pro + Bouton Entrepôt + Tobi assistant IA
+- **12 Jan 2026 (v5.1.0)**: Essai PRO automatique + Restriction vendeurs 9 pays
+
 ## Backlog / Tâches Futures
-- Intégration Boxtal complète (clés: Access `5DAZG2L2AVL5JUBMASPXJVBZXJY3Y0O0P09AY416`, Secret `a97a9989-227a-4997-a826-6bd8e0ffe712`)
+- Intégration Boxtal complète (calcul frais en temps réel)
 - Amélioration du système d'enchères
 - Notifications push
-
-## Changelog
-- **13 Jan 2026 (v5.2.0)**: Ajout 6 transporteurs + Mon Entrepôt Pro + Bouton Entrepôt dans Dashboard + FAQ/Nouveautés mises à jour
-- **12 Jan 2026 (v5.1.0)**: Essai PRO automatique + Restriction vendeurs 9 pays
