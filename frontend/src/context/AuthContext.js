@@ -43,8 +43,18 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token, fetchUser]);
 
-  const login = async (email, password) => {
-    const response = await axios.post(`${API}/auth/login`, { email, password });
+  const login = async (email, password, totpCode = null) => {
+    const payload = { email, password };
+    if (totpCode) {
+      payload.totp_code = totpCode;
+    }
+    const response = await axios.post(`${API}/auth/login`, payload);
+    
+    // Check if 2FA is required
+    if (response.data.requires_2fa) {
+      return response.data; // Return for handling in Auth component
+    }
+    
     const { token: newToken, user: userData } = response.data;
     localStorage.setItem('token', newToken);
     localStorage.setItem('lastUserRefresh', Date.now().toString());
