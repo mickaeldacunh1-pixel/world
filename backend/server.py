@@ -777,6 +777,7 @@ async def moderate_content(text: str, context: str = "general") -> dict:
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+    totp_code: Optional[str] = None  # Code 2FA si activé
 
 class UserResponse(BaseModel):
     id: str
@@ -787,6 +788,18 @@ class UserResponse(BaseModel):
     company_name: Optional[str] = None
     created_at: str
     credits: int = 0
+
+# ================== 2FA MODELS ==================
+
+class TwoFactorSetupRequest(BaseModel):
+    method: str  # "totp" ou "email"
+
+class TwoFactorVerifyRequest(BaseModel):
+    code: str
+
+class TwoFactorDisableRequest(BaseModel):
+    password: str
+    code: str  # Code 2FA pour confirmer
 
 class ListingCreate(BaseModel):
     title: str
