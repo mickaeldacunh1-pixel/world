@@ -474,6 +474,66 @@ const faqs = [
         a: "Si vous utilisez un transporteur non listé (TNT, GLS, transporteur local...), sélectionnez 'Autre transporteur' et précisez les détails dans le champ 'Infos livraison'."
       }
     ]
+  },
+  {
+    category: "Paiements & IBAN",
+    icon: CreditCard,
+    questions: [
+      {
+        q: "Comment recevoir l'argent de mes ventes ?",
+        a: "Vous avez deux options : 1) Entrer votre IBAN directement (simple, comme sur eBay) ou 2) Créer un compte Stripe Connect (dashboard complet). Les deux méthodes sont sécurisées."
+      },
+      {
+        q: "Comment configurer mon IBAN ?",
+        a: "Allez dans Profil > Paiements, puis cliquez sur 'Entrer mon IBAN'. Saisissez votre IBAN (ex: FR76...), le nom du titulaire et validez. C'est tout !"
+      },
+      {
+        q: "L'IBAN est-il vérifié ?",
+        a: "Oui, le système vérifie automatiquement la validité de votre IBAN (checksum mod-97). Si vous faites une erreur de frappe, un message vous préviendra."
+      },
+      {
+        q: "Quelle est la différence entre IBAN et Stripe Connect ?",
+        a: "L'IBAN est plus simple : vous entrez vos coordonnées bancaires et recevez les virements directement. Stripe Connect offre un dashboard complet avec historique des transactions et protection vendeur avancée."
+      },
+      {
+        q: "Quand vais-je recevoir mon argent ?",
+        a: "Les virements sont effectués sous 3 à 5 jours ouvrés après la confirmation de réception par l'acheteur. Une commission de 5% (min 1,50€, max 15€) est prélevée sur chaque vente."
+      },
+      {
+        q: "Mes coordonnées bancaires sont-elles sécurisées ?",
+        a: "Oui, vos coordonnées bancaires sont stockées de manière sécurisée et ne sont jamais affichées en clair. Seuls les 4 derniers caractères de votre IBAN sont visibles dans votre profil."
+      },
+      {
+        q: "Puis-je modifier mon IBAN ?",
+        a: "Oui, vous pouvez modifier votre IBAN à tout moment dans Profil > Paiements en cliquant sur 'Modifier mon IBAN'."
+      }
+    ]
+  },
+  {
+    category: "Photos & Images",
+    icon: Package,
+    questions: [
+      {
+        q: "Quels formats de photos sont acceptés ?",
+        a: "Vous pouvez utiliser les formats JPG, PNG, WebP, GIF et HEIC/HEIF. Le format HEIC est celui utilisé par défaut sur les iPhone et iPad."
+      },
+      {
+        q: "Je peux prendre des photos directement depuis mon téléphone ?",
+        a: "Oui ! Vous pouvez prendre des photos directement avec l'appareil photo de votre smartphone ou tablette lors de la création de l'annonce."
+      },
+      {
+        q: "Mes photos apparaissent à l'envers ou de côté ?",
+        a: "Le système corrige automatiquement l'orientation des photos grâce aux données EXIF. Si une photo apparaît mal orientée, elle sera corrigée lors de l'upload."
+      },
+      {
+        q: "Quelle est la taille maximum des photos ?",
+        a: "Chaque photo peut faire jusqu'à 10 Mo. Les photos sont automatiquement optimisées pour un affichage rapide tout en conservant une bonne qualité."
+      },
+      {
+        q: "Combien de photos puis-je ajouter ?",
+        a: "Les utilisateurs standard peuvent ajouter jusqu'à 10 photos par annonce. Les utilisateurs PRO peuvent en ajouter jusqu'à 50."
+      }
+    ]
   }
 ];
 
