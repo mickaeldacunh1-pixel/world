@@ -446,25 +446,32 @@ export default function Home() {
         structuredData={[createOrganizationSchema(), createWebsiteSchema()]}
       />
 
-      {/* OFFRE DE LANCEMENT BANNER */}
-      <section className="bg-gradient-to-r from-accent via-orange-500 to-amber-500 py-3">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link 
-            to="/auth?mode=register&promo=LANCEMENT" 
-            className="flex items-center justify-center gap-3 group"
-            data-testid="promo-banner"
-          >
-            <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-              <Gift className="w-4 h-4 text-white animate-pulse" />
-              <span className="text-white text-sm font-bold">OFFRE DE LANCEMENT</span>
-            </div>
-            <span className="text-white text-sm md:text-base font-medium group-hover:underline">
-              20 annonces gratuites pour les nouveaux inscrits !
-            </span>
-            <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </section>
+      {/* OFFRE DE LANCEMENT BANNER - Avec décompte */}
+      {promoStatus.valid && promoStatus.remaining > 0 && (
+        <section className="bg-gradient-to-r from-accent via-orange-500 to-amber-500 py-3">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Link 
+              to="/auth?mode=register&promo=LANCEMENT" 
+              className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 group"
+              data-testid="promo-banner"
+            >
+              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                <Gift className="w-4 h-4 text-white animate-pulse" />
+                <span className="text-white text-sm font-bold">OFFRE DE BIENVENUE</span>
+              </div>
+              <span className="text-white text-sm md:text-base font-medium group-hover:underline text-center">
+                Les 1000 premières annonces gratuites !
+              </span>
+              <div className="flex items-center gap-2 bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                <span className="text-white text-xs md:text-sm font-bold">
+                  🔥 Plus que <span className="text-yellow-300">{promoStatus.remaining}</span> / {promoStatus.total}
+                </span>
+              </div>
+              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform hidden sm:block" />
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Hero Section - Full Customization */}
       <section className={`relative ${HERO_HEIGHT_CLASSES[heroSettings.hero_height] || 'min-h-[600px] md:min-h-[700px]'} flex items-center overflow-hidden ${heroSettings.hero_mobile_height === 'small' ? 'md:min-h-[600px] min-h-[300px]' : heroSettings.hero_mobile_height === 'medium' ? 'md:min-h-[600px] min-h-[400px]' : heroSettings.hero_mobile_height === 'large' ? 'md:min-h-[600px] min-h-[500px]' : heroSettings.hero_mobile_height === 'full' ? 'md:min-h-[600px] min-h-screen' : ''}`}>
