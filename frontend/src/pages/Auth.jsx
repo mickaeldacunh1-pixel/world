@@ -182,14 +182,44 @@ export default function Auth() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(loginEmail, loginPassword);
+      const response = await axios.post(`${API}/api/auth/login`, {
+        email: loginEmail,
+        password: loginPassword,
+        totp_code: twoFactorCode || undefined
+      });
+      
+      const data = response.data;
+      
+      // Check if 2FA is required
+      if (data.requires_2fa) {
+        setTwoFactorRequired(true);
+        setTwoFactorMethod(data.method);
+        toast.info(data.message || 'Code de vérification requis');
+        setLoading(false);
+        return;
+      }
+      
+      // Login successful
+      await login(loginEmail, loginPassword, twoFactorCode);
       toast.success('Connexion réussie !');
       navigate('/tableau-de-bord');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur de connexion');
+      const errorMsg = error.response?.data?.detail || 'Erreur de connexion';
+      toast.error(errorMsg);
+      // Reset 2FA code on error
+      if (twoFactorRequired) {
+        setTwoFactorCode('');
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCancelTwoFactor = () => {
+    setTwoFactorRequired(false);
+    setTwoFactorMethod(null);
+    setTwoFactorCode('');
+    setLoginPassword('');
   };
 
   const handleRegister = async (e) => {
