@@ -194,6 +194,7 @@ export default function Home() {
   const [copiedCode, setCopiedCode] = useState(false);
   const [liveStats, setLiveStats] = useState(null);
   const [subcatImages, setSubcatImages] = useState({});
+  const [promoStatus, setPromoStatus] = useState({ valid: false, remaining: 0 });
 
   // Initial data fetch on mount
   useEffect(() => {
