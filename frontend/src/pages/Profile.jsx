@@ -15,6 +15,7 @@ import VacationMode from '../components/VacationMode';
 import NotificationSettings from '../components/NotificationSettings';
 import PushNotificationManager from '../components/PushNotificationManager';
 import IdentityVerification from '../components/IdentityVerification';
+import TwoFactorSettings from '../components/TwoFactorSettings';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
