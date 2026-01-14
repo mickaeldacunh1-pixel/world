@@ -1135,7 +1135,14 @@ async def get_current_user_optional(request: Request) -> Optional[dict]:
 # ================== AUTH ROUTES ==================
 
 @api_router.post("/auth/register")
-async def register(user: UserCreate, background_tasks: BackgroundTasks):
+@limiter.limit("3/minute")  # Max 3 inscriptions par minute par IP
+async def register(request: Request, user: UserCreate, background_tasks: BackgroundTasks):
+    ip = get_client_ip(request)
+    
+    # Vérifier si l'IP est bloquée
+    if is_ip_blocked(ip):
+        raise HTTPException(status_code=429, detail="Trop de tentatives. Veuillez réessayer plus tard.")
+    
     # Note: Les acheteurs peuvent s'inscrire de n'importe quel pays
     # La restriction des pays s'applique uniquement aux vendeurs (création d'annonces)
     
