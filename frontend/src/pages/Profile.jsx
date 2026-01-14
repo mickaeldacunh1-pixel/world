@@ -709,58 +709,63 @@ export default function Profile() {
 
           {/* Password Tab */}
           <TabsContent value="password">
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-heading">Changer le mot de passe</CardTitle>
-                <CardDescription>Assurez-vous d&apos;utiliser un mot de passe fort et unique</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-md">
-                  <div className="space-y-2">
-                    <Label htmlFor="current_password">Mot de passe actuel</Label>
-                    <Input
-                      id="current_password"
-                      name="current_password"
-                      type="password"
-                      value={passwordData.current_password}
-                      onChange={handlePasswordChange}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="new_password">Nouveau mot de passe</Label>
-                    <Input
-                      id="new_password"
-                      name="new_password"
-                      type="password"
-                      value={passwordData.new_password}
-                      onChange={handlePasswordChange}
-                      required
-                      minLength={6}
-                    />
-                    <p className="text-xs text-muted-foreground">Minimum 6 caractères</p>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm_password">Confirmer le nouveau mot de passe</Label>
-                    <Input
-                      id="confirm_password"
-                      name="confirm_password"
-                      type="password"
-                      value={passwordData.confirm_password}
-                      onChange={handlePasswordChange}
-                      required
-                    />
-                  </div>
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="font-heading">Changer le mot de passe</CardTitle>
+                  <CardDescription>Assurez-vous d&apos;utiliser un mot de passe fort et unique</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-md">
+                    <div className="space-y-2">
+                      <Label htmlFor="current_password">Mot de passe actuel</Label>
+                      <Input
+                        id="current_password"
+                        name="current_password"
+                        type="password"
+                        value={passwordData.current_password}
+                        onChange={handlePasswordChange}
+                        required
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="new_password">Nouveau mot de passe</Label>
+                      <Input
+                        id="new_password"
+                        name="new_password"
+                        type="password"
+                        value={passwordData.new_password}
+                        onChange={handlePasswordChange}
+                        required
+                        minLength={6}
+                      />
+                      <p className="text-xs text-muted-foreground">Minimum 6 caractères</p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm_password">Confirmer le nouveau mot de passe</Label>
+                      <Input
+                        id="confirm_password"
+                        name="confirm_password"
+                        type="password"
+                        value={passwordData.confirm_password}
+                        onChange={handlePasswordChange}
+                        required
+                      />
+                    </div>
 
-                  <Button type="submit" disabled={loading}>
-                    <Lock className="w-4 h-4 mr-2" />
-                    {loading ? 'Modification...' : 'Modifier le mot de passe'}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+                    <Button type="submit" disabled={loading}>
+                      <Lock className="w-4 h-4 mr-2" />
+                      {loading ? 'Modification...' : 'Modifier le mot de passe'}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+
+              {/* 2FA Settings */}
+              <TwoFactorSettings />
+            </div>
           </TabsContent>
 
           {/* Danger Zone Tab */}
