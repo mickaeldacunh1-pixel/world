@@ -119,6 +119,38 @@ export default function Profile() {
     }
   };
 
+  // Save IBAN
+  const handleSaveIban = async () => {
+    // Validate IBAN format (basic validation)
+    const cleanIban = ibanValue.replace(/\s/g, '');
+    if (cleanIban.length < 14 || cleanIban.length > 34) {
+      toast.error('IBAN invalide. Vérifiez le format.');
+      return;
+    }
+    if (!accountHolder.trim()) {
+      toast.error('Veuillez entrer le nom du titulaire du compte.');
+      return;
+    }
+
+    setIbanLoading(true);
+    try {
+      await axios.post(`${API}/users/me/iban`, {
+        iban: cleanIban,
+        bic: bicValue.replace(/\s/g, '') || null,
+        account_holder: accountHolder.trim()
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('IBAN enregistré avec succès !');
+      setShowIbanForm(false);
+      await refreshUser();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de l\'enregistrement de l\'IBAN');
+    } finally {
+      setIbanLoading(false);
+    }
+  };
+
   const handleProfileChange = (e) => {
     setProfileData({ ...profileData, [e.target.name]: e.target.value });
   };
