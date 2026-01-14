@@ -133,3 +133,39 @@ docker-compose down && docker-compose up -d --build
 - Intégration Boxtal complète (calcul frais en temps réel)
 - Amélioration du système d'enchères
 - Notifications push
+
+### Sécurité Renforcée (v5.4.0) - 14 Janvier 2026
+
+#### Rate Limiting
+- ✅ Login : Max 5 tentatives/minute, blocage 15 min après 5 échecs
+- ✅ Register : Max 3 inscriptions/minute par IP
+- ✅ Forgot Password : Max 3 demandes/minute
+- ✅ Reset Password : Max 5 tentatives/minute
+- ✅ Blocage automatique des IPs suspectes (score > 10)
+- ✅ Détection des bots malveillants (sqlmap, nikto, etc.)
+
+#### Double Authentification (2FA)
+- ✅ Méthode TOTP (Google Authenticator)
+- ✅ Méthode Email OTP (code par email)
+- ✅ Codes de secours (8 codes pour TOTP)
+- ✅ Activation optionnelle par l'utilisateur
+- ✅ Interface complète dans Profil > Mot de passe
+- ✅ Support au login avec gestion des 2 méthodes
+
+#### reCAPTCHA v3 (Préparé)
+- ✅ Infrastructure backend prête
+- ⏳ Configuration des clés Google à faire
+- Variables d'environnement : RECAPTCHA_SITE_KEY, RECAPTCHA_SECRET_KEY, RECAPTCHA_ENABLED
+
+#### Endpoints Admin Sécurité
+- GET /api/admin/security/status - Voir IPs bloquées et stats
+- POST /api/admin/security/block/{ip} - Bloquer manuellement
+- POST /api/admin/security/unblock/{ip} - Débloquer une IP
+- GET /api/security/config - Config publique (reCAPTCHA)
+
+### Boxtal
+- ✅ Mode Production activé (était en simulation)
+
+### Radio
+- ✅ CSP corrigée (media-src avec https: et http:)
+
