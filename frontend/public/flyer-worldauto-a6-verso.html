@@ -16,51 +16,60 @@
     .flyer { width: 105mm; height: 148mm; padding: 3mm; display: flex; flex-direction: column; background: #fff; }
     
     /* Header */
-    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2mm; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5mm; }
     .title-section { flex: 1; }
-    .main-title { font-size: 11pt; font-weight: 800; color: #1E3A5F; }
+    .main-title { font-size: 10pt; font-weight: 800; color: #1E3A5F; }
     .main-title span { color: #f97316; }
-    .subtitle { font-size: 6pt; color: #64748b; }
+    .subtitle { font-size: 5.5pt; color: #64748b; }
     .qr-section { text-align: center; }
-    .qr-code { width: 18mm; height: 18mm; }
-    .qr-label { font-size: 4.5pt; color: #64748b; margin-top: 0.5mm; }
+    .qr-code { width: 16mm; height: 16mm; }
+    .qr-label { font-size: 4pt; color: #64748b; margin-top: 0.3mm; }
     
     /* Section Title */
-    .section-title { font-size: 7pt; font-weight: 700; color: #fff; background: #1E3A5F; padding: 1mm 2mm; border-radius: 1mm; margin-bottom: 1.5mm; text-align: center; }
+    .section-title { font-size: 6pt; font-weight: 700; color: #fff; background: #1E3A5F; padding: 0.8mm 2mm; border-radius: 1mm; margin-bottom: 1mm; display: flex; align-items: center; gap: 1mm; }
     .section-title.orange { background: linear-gradient(90deg, #f97316, #ea580c); }
     .section-title.purple { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+    .section-title.green { background: linear-gradient(135deg, #22c55e, #16a34a); }
     
     /* Pricing Tables */
-    .pricing-section { margin-bottom: 2mm; }
-    table { width: 100%; border-collapse: collapse; font-size: 5.5pt; }
-    th { background: #f1f5f9; padding: 1mm; text-align: center; font-weight: 700; color: #1E3A5F; border: 0.3mm solid #e2e8f0; }
-    td { padding: 0.8mm; text-align: center; border: 0.3mm solid #e2e8f0; }
+    .pricing-section { margin-bottom: 1.5mm; }
+    table { width: 100%; border-collapse: collapse; font-size: 5pt; }
+    th { background: #f1f5f9; padding: 0.7mm; text-align: center; font-weight: 700; color: #1E3A5F; border: 0.2mm solid #e2e8f0; }
+    td { padding: 0.6mm; text-align: center; border: 0.2mm solid #e2e8f0; }
     .highlight-row { background: #fff7ed; }
     .best-row { background: #f0fdf4; }
     .price { font-weight: 700; color: #1E3A5F; }
-    .old-price { text-decoration: line-through; color: #94a3b8; font-size: 4.5pt; }
-    .badge { display: inline-block; font-size: 4pt; padding: 0.3mm 0.8mm; border-radius: 0.5mm; font-weight: 700; }
+    .old-price { text-decoration: line-through; color: #94a3b8; font-size: 4pt; }
+    .badge { display: inline-block; font-size: 3.5pt; padding: 0.2mm 0.6mm; border-radius: 0.5mm; font-weight: 700; }
     .badge-popular { background: #f97316; color: #fff; }
     .badge-best { background: #22c55e; color: #fff; }
-    .badge-pro { background: #7c3aed; color: #fff; }
     
-    /* Two columns */
-    .two-cols { display: flex; gap: 2mm; margin-bottom: 2mm; }
+    /* Grid layouts */
+    .two-cols { display: flex; gap: 1.5mm; margin-bottom: 1.5mm; }
     .col { flex: 1; }
+    .three-cols { display: flex; gap: 1.5mm; margin-bottom: 1.5mm; }
+    .three-cols .col { flex: 1; }
     
-    /* Footer sections */
-    .footer-section { margin-top: auto; }
-    .info-boxes { display: flex; gap: 1.5mm; margin-bottom: 1.5mm; }
-    .info-box { flex: 1; background: #f8fafc; border-radius: 1.5mm; padding: 1.5mm; text-align: center; }
-    .info-box-title { font-size: 5.5pt; font-weight: 700; color: #1E3A5F; margin-bottom: 0.8mm; }
-    .info-box-content { font-size: 4.5pt; color: #475569; line-height: 1.3; }
-    .info-icon { font-size: 7pt; margin-bottom: 0.5mm; }
+    /* Feature boxes */
+    .feature-box { background: #f8fafc; border-radius: 1.5mm; padding: 1.5mm; height: 100%; }
+    .feature-box-title { font-size: 5.5pt; font-weight: 700; color: #1E3A5F; margin-bottom: 1mm; display: flex; align-items: center; gap: 1mm; }
+    .feature-list { font-size: 4.5pt; color: #475569; line-height: 1.4; }
+    .feature-list div { display: flex; align-items: flex-start; gap: 0.8mm; margin-bottom: 0.3mm; }
+    .check { color: #22c55e; font-weight: bold; }
+    
+    /* Transporters */
+    .transporters { display: flex; flex-wrap: wrap; gap: 1mm; justify-content: center; }
+    .transporter { background: #fff; border: 0.3mm solid #e2e8f0; border-radius: 1mm; padding: 0.8mm 1.5mm; font-size: 4.5pt; font-weight: 600; color: #1E3A5F; }
     
     /* Bottom bar */
-    .bottom-bar { background: linear-gradient(135deg, #1E3A5F, #2d4a6f); border-radius: 1.5mm; padding: 1.5mm; text-align: center; color: #fff; }
-    .bottom-url { font-size: 8pt; font-weight: 800; }
+    .bottom-bar { background: linear-gradient(135deg, #1E3A5F, #2d4a6f); border-radius: 1.5mm; padding: 1.2mm; text-align: center; color: #fff; margin-top: auto; }
+    .bottom-url { font-size: 7pt; font-weight: 800; }
     .bottom-url span { color: #f97316; }
-    .bottom-tagline { font-size: 4.5pt; color: #cbd5e1; margin-top: 0.5mm; }
+    .bottom-tagline { font-size: 4pt; color: #cbd5e1; margin-top: 0.3mm; }
+    
+    /* Promo banner */
+    .promo-banner { background: linear-gradient(90deg, #7c3aed, #6d28d9); border-radius: 1mm; padding: 1mm; text-align: center; color: #fff; margin-bottom: 1.5mm; }
+    .promo-banner span { font-size: 5.5pt; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -68,302 +77,179 @@
     <!-- Header with QR -->
     <div class="header">
       <div class="title-section">
-        <div class="main-title">Nos <span>Tarifs</span></div>
-        <div class="subtitle">Simples, transparents, sans surprise</div>
+        <div class="main-title">Nos <span>Tarifs</span> & Services</div>
+        <div class="subtitle">Tout ce dont vous avez besoin pour vendre</div>
       </div>
       <div class="qr-section">
         <svg class="qr-code" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <!-- QR Code pour worldautofrance.com -->
           <rect width="100" height="100" fill="white"/>
           <g fill="#1E3A5F">
-            <!-- Position markers -->
             <rect x="4" y="4" width="20" height="20"/>
             <rect x="7" y="7" width="14" height="14" fill="white"/>
             <rect x="10" y="10" width="8" height="8"/>
-            
             <rect x="76" y="4" width="20" height="20"/>
             <rect x="79" y="7" width="14" height="14" fill="white"/>
             <rect x="82" y="10" width="8" height="8"/>
-            
             <rect x="4" y="76" width="20" height="20"/>
             <rect x="7" y="79" width="14" height="14" fill="white"/>
             <rect x="10" y="82" width="8" height="8"/>
-            
-            <!-- Data pattern (simplified) -->
-            <rect x="28" y="4" width="4" height="4"/>
-            <rect x="36" y="4" width="4" height="4"/>
-            <rect x="44" y="4" width="4" height="4"/>
-            <rect x="52" y="4" width="4" height="4"/>
-            <rect x="60" y="4" width="4" height="4"/>
-            <rect x="68" y="4" width="4" height="4"/>
-            
-            <rect x="28" y="12" width="4" height="4"/>
-            <rect x="40" y="12" width="4" height="4"/>
-            <rect x="48" y="12" width="4" height="4"/>
-            <rect x="56" y="12" width="4" height="4"/>
-            <rect x="68" y="12" width="4" height="4"/>
-            
-            <rect x="28" y="20" width="4" height="4"/>
-            <rect x="36" y="20" width="4" height="4"/>
-            <rect x="52" y="20" width="4" height="4"/>
-            <rect x="60" y="20" width="4" height="4"/>
-            <rect x="68" y="20" width="4" height="4"/>
-            
-            <rect x="4" y="28" width="4" height="4"/>
-            <rect x="12" y="28" width="4" height="4"/>
-            <rect x="20" y="28" width="4" height="4"/>
-            <rect x="28" y="28" width="4" height="4"/>
-            <rect x="44" y="28" width="4" height="4"/>
-            <rect x="52" y="28" width="4" height="4"/>
-            <rect x="68" y="28" width="4" height="4"/>
-            <rect x="76" y="28" width="4" height="4"/>
-            <rect x="84" y="28" width="4" height="4"/>
-            <rect x="92" y="28" width="4" height="4"/>
-            
-            <rect x="4" y="36" width="4" height="4"/>
-            <rect x="20" y="36" width="4" height="4"/>
-            <rect x="36" y="36" width="4" height="4"/>
-            <rect x="44" y="36" width="4" height="4"/>
-            <rect x="60" y="36" width="4" height="4"/>
-            <rect x="76" y="36" width="4" height="4"/>
-            <rect x="92" y="36" width="4" height="4"/>
-            
-            <rect x="4" y="44" width="4" height="4"/>
-            <rect x="12" y="44" width="4" height="4"/>
-            <rect x="28" y="44" width="4" height="4"/>
-            <rect x="36" y="44" width="4" height="4"/>
-            <rect x="44" y="44" width="4" height="4"/>
-            <rect x="52" y="44" width="4" height="4"/>
-            <rect x="68" y="44" width="4" height="4"/>
-            <rect x="84" y="44" width="4" height="4"/>
-            <rect x="92" y="44" width="4" height="4"/>
-            
-            <rect x="4" y="52" width="4" height="4"/>
-            <rect x="20" y="52" width="4" height="4"/>
-            <rect x="28" y="52" width="4" height="4"/>
-            <rect x="44" y="52" width="4" height="4"/>
-            <rect x="60" y="52" width="4" height="4"/>
-            <rect x="68" y="52" width="4" height="4"/>
-            <rect x="76" y="52" width="4" height="4"/>
-            <rect x="92" y="52" width="4" height="4"/>
-            
-            <rect x="4" y="60" width="4" height="4"/>
-            <rect x="12" y="60" width="4" height="4"/>
-            <rect x="20" y="60" width="4" height="4"/>
-            <rect x="36" y="60" width="4" height="4"/>
-            <rect x="52" y="60" width="4" height="4"/>
-            <rect x="60" y="60" width="4" height="4"/>
-            <rect x="84" y="60" width="4" height="4"/>
-            <rect x="92" y="60" width="4" height="4"/>
-            
-            <rect x="4" y="68" width="4" height="4"/>
-            <rect x="20" y="68" width="4" height="4"/>
-            <rect x="28" y="68" width="4" height="4"/>
-            <rect x="36" y="68" width="4" height="4"/>
-            <rect x="44" y="68" width="4" height="4"/>
-            <rect x="60" y="68" width="4" height="4"/>
-            <rect x="68" y="68" width="4" height="4"/>
-            <rect x="76" y="68" width="4" height="4"/>
-            <rect x="84" y="68" width="4" height="4"/>
-            
-            <rect x="28" y="76" width="4" height="4"/>
-            <rect x="44" y="76" width="4" height="4"/>
-            <rect x="52" y="76" width="4" height="4"/>
-            <rect x="68" y="76" width="4" height="4"/>
-            <rect x="76" y="76" width="4" height="4"/>
-            <rect x="92" y="76" width="4" height="4"/>
-            
-            <rect x="28" y="84" width="4" height="4"/>
-            <rect x="36" y="84" width="4" height="4"/>
-            <rect x="44" y="84" width="4" height="4"/>
-            <rect x="60" y="84" width="4" height="4"/>
-            <rect x="76" y="84" width="4" height="4"/>
-            <rect x="84" y="84" width="4" height="4"/>
-            
-            <rect x="28" y="92" width="4" height="4"/>
-            <rect x="52" y="92" width="4" height="4"/>
-            <rect x="60" y="92" width="4" height="4"/>
-            <rect x="68" y="92" width="4" height="4"/>
-            <rect x="84" y="92" width="4" height="4"/>
-            <rect x="92" y="92" width="4" height="4"/>
+            <rect x="28" y="4" width="4" height="4"/><rect x="36" y="4" width="4" height="4"/><rect x="44" y="4" width="4" height="4"/><rect x="52" y="4" width="4" height="4"/><rect x="60" y="4" width="4" height="4"/><rect x="68" y="4" width="4" height="4"/>
+            <rect x="28" y="12" width="4" height="4"/><rect x="40" y="12" width="4" height="4"/><rect x="48" y="12" width="4" height="4"/><rect x="56" y="12" width="4" height="4"/><rect x="68" y="12" width="4" height="4"/>
+            <rect x="28" y="20" width="4" height="4"/><rect x="36" y="20" width="4" height="4"/><rect x="52" y="20" width="4" height="4"/><rect x="60" y="20" width="4" height="4"/><rect x="68" y="20" width="4" height="4"/>
+            <rect x="4" y="28" width="4" height="4"/><rect x="12" y="28" width="4" height="4"/><rect x="20" y="28" width="4" height="4"/><rect x="28" y="28" width="4" height="4"/><rect x="44" y="28" width="4" height="4"/><rect x="52" y="28" width="4" height="4"/><rect x="68" y="28" width="4" height="4"/><rect x="76" y="28" width="4" height="4"/><rect x="84" y="28" width="4" height="4"/><rect x="92" y="28" width="4" height="4"/>
+            <rect x="4" y="36" width="4" height="4"/><rect x="20" y="36" width="4" height="4"/><rect x="36" y="36" width="4" height="4"/><rect x="44" y="36" width="4" height="4"/><rect x="60" y="36" width="4" height="4"/><rect x="76" y="36" width="4" height="4"/><rect x="92" y="36" width="4" height="4"/>
+            <rect x="4" y="44" width="4" height="4"/><rect x="12" y="44" width="4" height="4"/><rect x="28" y="44" width="4" height="4"/><rect x="36" y="44" width="4" height="4"/><rect x="44" y="44" width="4" height="4"/><rect x="52" y="44" width="4" height="4"/><rect x="68" y="44" width="4" height="4"/><rect x="84" y="44" width="4" height="4"/><rect x="92" y="44" width="4" height="4"/>
+            <rect x="4" y="52" width="4" height="4"/><rect x="20" y="52" width="4" height="4"/><rect x="28" y="52" width="4" height="4"/><rect x="44" y="52" width="4" height="4"/><rect x="60" y="52" width="4" height="4"/><rect x="68" y="52" width="4" height="4"/><rect x="76" y="52" width="4" height="4"/><rect x="92" y="52" width="4" height="4"/>
+            <rect x="28" y="76" width="4" height="4"/><rect x="44" y="76" width="4" height="4"/><rect x="52" y="76" width="4" height="4"/><rect x="68" y="76" width="4" height="4"/><rect x="76" y="76" width="4" height="4"/><rect x="92" y="76" width="4" height="4"/>
+            <rect x="28" y="84" width="4" height="4"/><rect x="36" y="84" width="4" height="4"/><rect x="44" y="84" width="4" height="4"/><rect x="60" y="84" width="4" height="4"/><rect x="76" y="84" width="4" height="4"/><rect x="84" y="84" width="4" height="4"/>
+            <rect x="28" y="92" width="4" height="4"/><rect x="52" y="92" width="4" height="4"/><rect x="60" y="92" width="4" height="4"/><rect x="68" y="92" width="4" height="4"/><rect x="84" y="92" width="4" height="4"/><rect x="92" y="92" width="4" height="4"/>
           </g>
         </svg>
         <div class="qr-label">Scannez-moi !</div>
       </div>
     </div>
     
-    <!-- Packs Crédits -->
+    <!-- Packs Crédits - Compact -->
     <div class="pricing-section">
-      <div class="section-title">📦 PACKS CRÉDITS - Particuliers</div>
+      <div class="section-title">📦 PACKS CRÉDITS</div>
       <table>
         <tr>
-          <th>Pack</th>
-          <th>Prix</th>
-          <th>€/annonce</th>
-          <th>Photos</th>
-          <th>Validité</th>
+          <th>Pack</th><th>Prix</th><th>€/ann.</th><th>Photos</th>
+          <th>Pack</th><th>Prix</th><th>€/ann.</th><th>Photos</th>
         </tr>
         <tr>
-          <td>1 crédit</td>
-          <td class="price">2€</td>
-          <td>2,00€</td>
-          <td>6</td>
-          <td>30j</td>
+          <td>1 crédit</td><td class="price">2€</td><td>2,00€</td><td>6</td>
+          <td>Pack 20</td><td class="price">25€</td><td>1,25€</td><td>15</td>
         </tr>
         <tr>
-          <td>Pack 3</td>
-          <td class="price">5€</td>
-          <td>1,67€</td>
-          <td>8</td>
-          <td>30j</td>
+          <td>Pack 3</td><td class="price">5€</td><td>1,67€</td><td>8</td>
+          <td class="highlight-row">Pack 50 <span class="badge badge-popular">⭐</span></td><td class="price highlight-row">39€</td><td class="highlight-row">0,78€</td><td class="highlight-row">20</td>
         </tr>
         <tr>
-          <td>Pack 5</td>
-          <td class="price">8€</td>
-          <td>1,60€</td>
-          <td>10</td>
-          <td>30j</td>
-        </tr>
-        <tr>
-          <td>Pack 20</td>
-          <td class="price">25€</td>
-          <td>1,25€</td>
-          <td>15</td>
-          <td>30j</td>
-        </tr>
-        <tr class="highlight-row">
-          <td>Pack 50 <span class="badge badge-popular">⭐</span></td>
-          <td class="price">39€</td>
-          <td>0,78€</td>
-          <td>20</td>
-          <td>30j</td>
-        </tr>
-        <tr class="best-row">
-          <td>Pack 100 <span class="badge badge-best">TOP</span></td>
-          <td class="price">69€</td>
-          <td>0,69€</td>
-          <td>25</td>
-          <td>60j</td>
+          <td>Pack 5</td><td class="price">8€</td><td>1,60€</td><td>10</td>
+          <td class="best-row">Pack 100 <span class="badge badge-best">TOP</span></td><td class="price best-row">69€</td><td class="best-row">0,69€</td><td class="best-row">25</td>
         </tr>
       </table>
     </div>
     
-    <!-- Two columns: PRO + Vidéo -->
+    <!-- PRO + Vidéo -->
     <div class="two-cols">
-      <!-- Abonnements PRO -->
       <div class="col">
         <div class="section-title purple">👑 ABONNEMENTS PRO</div>
         <table>
-          <tr>
-            <th>Formule</th>
-            <th>Prix</th>
-            <th>Crédits</th>
-          </tr>
-          <tr>
-            <td>Mensuel</td>
-            <td class="price">29€/mois</td>
-            <td>30/mois</td>
-          </tr>
-          <tr class="highlight-row">
-            <td>Trimestriel <span class="badge badge-popular">⭐</span></td>
-            <td class="price">69€ <span class="old-price">87€</span></td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>Semestriel</td>
-            <td class="price">119€ <span class="old-price">174€</span></td>
-            <td>200</td>
-          </tr>
-          <tr class="best-row">
-            <td>Annuel <span class="badge badge-best">-45%</span></td>
-            <td class="price">199€ <span class="old-price">348€</span></td>
-            <td>500</td>
-          </tr>
+          <tr><th>Formule</th><th>Prix</th><th>Crédits</th></tr>
+          <tr><td>Mensuel</td><td class="price">29€/mois</td><td>30</td></tr>
+          <tr class="highlight-row"><td>Trimestriel <span class="badge badge-popular">⭐</span></td><td class="price">69€</td><td>100</td></tr>
+          <tr><td>Semestriel</td><td class="price">119€</td><td>200</td></tr>
+          <tr class="best-row"><td>Annuel <span class="badge badge-best">-45%</span></td><td class="price">199€</td><td>500</td></tr>
         </table>
-        <div style="font-size: 4.5pt; color: #7c3aed; text-align: center; margin-top: 1mm;">
-          ✓ 50 photos/annonce ✓ Badge PRO ✓ Stats avancées
-        </div>
       </div>
-      
-      <!-- Forfaits Vidéo -->
       <div class="col">
         <div class="section-title orange">🎬 FORFAITS VIDÉO</div>
         <table>
-          <tr>
-            <th>Forfait</th>
-            <th>Prix</th>
-            <th>Durée</th>
-          </tr>
-          <tr>
-            <td>Étendue</td>
-            <td class="price">1€</td>
-            <td>2 min</td>
-          </tr>
-          <tr class="highlight-row">
-            <td>Intermédiaire <span class="badge badge-popular">⭐</span></td>
-            <td class="price">2,99€</td>
-            <td>3 min</td>
-          </tr>
-          <tr class="best-row">
-            <td>PRO <span class="badge badge-pro">PRO</span></td>
-            <td class="price">9,99€</td>
-            <td>10 min</td>
-          </tr>
+          <tr><th>Forfait</th><th>Prix</th><th>Durée</th></tr>
+          <tr><td>Étendue</td><td class="price">1€</td><td>2 min</td></tr>
+          <tr class="highlight-row"><td>Intermédiaire <span class="badge badge-popular">⭐</span></td><td class="price">2,99€</td><td>3 min</td></tr>
+          <tr class="best-row"><td>PRO</td><td class="price">9,99€</td><td>10 min</td></tr>
         </table>
-        <div style="font-size: 5pt; color: #1E3A5F; text-align: center; margin-top: 1.5mm; font-weight: 700;">
-          🔥 Boost Homepage
-        </div>
-        <div style="font-size: 4.5pt; color: #475569; text-align: center;">
-          1h = 0,50€ | 24h = 5€
-        </div>
+        <div style="font-size: 4.5pt; text-align: center; margin-top: 0.8mm; color: #f97316;">🔥 Boost : 1h=0,50€ | 24h=5€</div>
       </div>
     </div>
     
-    <!-- Essai Gratuit -->
-    <div style="background: linear-gradient(90deg, #7c3aed, #6d28d9); border-radius: 1.5mm; padding: 1.5mm; text-align: center; color: #fff; margin-bottom: 2mm;">
-      <span style="font-size: 6.5pt; font-weight: 700;">🎁 ESSAI PRO GRATUIT : 10 crédits + 14 jours PRO - Sans engagement !</span>
+    <!-- Promo banner -->
+    <div class="promo-banner">
+      <span>🎁 ESSAI PRO GRATUIT : 10 crédits + 14 jours - Sans engagement !</span>
     </div>
     
-    <!-- Footer: Livraison + Sécurité -->
-    <div class="footer-section">
-      <div class="info-boxes">
-        <div class="info-box">
-          <div class="info-icon">📦</div>
-          <div class="info-box-title">Livraison</div>
-          <div class="info-box-content">
-            Remise en main propre<br/>
-            Colissimo • Chronopost<br/>
-            Mondial Relay • Boxtal<br/>
-            Autre transporteur
-          </div>
-        </div>
-        <div class="info-box">
-          <div class="info-icon">🔐</div>
-          <div class="info-box-title">Sécurité</div>
-          <div class="info-box-content">
-            Double authentification (2FA)<br/>
-            reCAPTCHA • SIRET vérifié<br/>
-            IBAN validé • Stripe Connect<br/>
-            Protection acheteur
-          </div>
-        </div>
-        <div class="info-box">
-          <div class="info-icon">💳</div>
-          <div class="info-box-title">Paiement</div>
-          <div class="info-box-content">
-            Carte bancaire sécurisée<br/>
-            Virement IBAN direct<br/>
-            Stripe Connect Pro<br/>
-            Sans commission cachée
+    <!-- 3 boxes: Sécurité, Transporteurs, Fonctionnalités -->
+    <div class="three-cols">
+      <!-- Sécurité -->
+      <div class="col">
+        <div class="feature-box">
+          <div class="feature-box-title">🔐 Sécurité</div>
+          <div class="feature-list">
+            <div><span class="check">✓</span> Double auth. (2FA)</div>
+            <div><span class="check">✓</span> reCAPTCHA v3</div>
+            <div><span class="check">✓</span> SIRET vérifié</div>
+            <div><span class="check">✓</span> IBAN validé (mod-97)</div>
+            <div><span class="check">✓</span> Stripe Connect sécurisé</div>
+            <div><span class="check">✓</span> Protection acheteur</div>
+            <div><span class="check">✓</span> Anti-bots / Rate limiting</div>
+            <div><span class="check">✓</span> Blocage IP suspects</div>
+            <div><span class="check">✓</span> Chiffrement SSL/TLS</div>
           </div>
         </div>
       </div>
       
-      <!-- Bottom bar -->
-      <div class="bottom-bar">
-        <div class="bottom-url">www.worldauto<span>france</span>.com</div>
-        <div class="bottom-tagline">🇫🇷 🇧🇪 🇨🇭 🇩🇪 🇳🇱 🇮🇹 🇪🇸 🇵🇹 🇸🇪 • 9 pays européens</div>
+      <!-- Transporteurs -->
+      <div class="col">
+        <div class="feature-box">
+          <div class="feature-box-title">📦 Transporteurs</div>
+          <div class="feature-list">
+            <div><span class="check">✓</span> Remise en main propre</div>
+            <div><span class="check">✓</span> Colissimo</div>
+            <div><span class="check">✓</span> Chronopost Express</div>
+            <div><span class="check">✓</span> Mondial Relay</div>
+            <div><span class="check">✓</span> Boxtal Multi-Transp.</div>
+            <div><span class="check">✓</span> UPS / DHL / FedEx</div>
+            <div><span class="check">✓</span> Autre transporteur</div>
+            <div style="margin-top: 1mm; font-size: 4pt; color: #f97316; font-weight: 600;">
+              🌍 Livraison 9 pays EU
+            </div>
+          </div>
+        </div>
       </div>
+      
+      <!-- Fonctionnalités -->
+      <div class="col">
+        <div class="feature-box">
+          <div class="feature-box-title">⚡ Fonctionnalités</div>
+          <div class="feature-list">
+            <div><span class="check">✓</span> Assistant IA "Tobi"</div>
+            <div><span class="check">✓</span> Diagnostic pannes IA</div>
+            <div><span class="check">✓</span> Enchères LIVE</div>
+            <div><span class="check">✓</span> Annonces vidéos</div>
+            <div><span class="check">✓</span> Recherche vocale</div>
+            <div><span class="check">✓</span> Scan plaque immat.</div>
+            <div><span class="check">✓</span> Radio intégrée</div>
+            <div><span class="check">✓</span> Messagerie instantanée</div>
+            <div><span class="check">✓</span> Notifications push</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- PRO Features -->
+    <div style="background: linear-gradient(135deg, #7c3aed15, #6d28d915); border: 0.3mm solid #7c3aed40; border-radius: 1.5mm; padding: 1.5mm; margin-bottom: 1.5mm;">
+      <div style="font-size: 5.5pt; font-weight: 700; color: #7c3aed; text-align: center; margin-bottom: 1mm;">👑 AVANTAGES PRO</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 1mm; justify-content: center; font-size: 4.5pt;">
+        <span style="background: #7c3aed20; padding: 0.5mm 1.2mm; border-radius: 0.8mm; color: #5b21b6;">📊 Entrepôt Pro</span>
+        <span style="background: #7c3aed20; padding: 0.5mm 1.2mm; border-radius: 0.8mm; color: #5b21b6;">📈 Stats avancées</span>
+        <span style="background: #7c3aed20; padding: 0.5mm 1.2mm; border-radius: 0.8mm; color: #5b21b6;">📸 50 photos/annonce</span>
+        <span style="background: #7c3aed20; padding: 0.5mm 1.2mm; border-radius: 0.8mm; color: #5b21b6;">✅ Badge vérifié</span>
+        <span style="background: #7c3aed20; padding: 0.5mm 1.2mm; border-radius: 0.8mm; color: #5b21b6;">🎬 Stories vendeurs</span>
+        <span style="background: #7c3aed20; padding: 0.5mm 1.2mm; border-radius: 0.8mm; color: #5b21b6;">🏷️ Gestion stocks</span>
+        <span style="background: #7c3aed20; padding: 0.5mm 1.2mm; border-radius: 0.8mm; color: #5b21b6;">📤 Export CSV</span>
+        <span style="background: #7c3aed20; padding: 0.5mm 1.2mm; border-radius: 0.8mm; color: #5b21b6;">🎯 Support VIP</span>
+      </div>
+    </div>
+    
+    <!-- Paiement -->
+    <div style="display: flex; gap: 1.5mm; margin-bottom: 1.5mm;">
+      <div style="flex: 1; background: #f0fdf4; border-radius: 1mm; padding: 1.2mm; text-align: center;">
+        <div style="font-size: 5pt; font-weight: 700; color: #166534;">💳 Paiements acceptés</div>
+        <div style="font-size: 4.5pt; color: #475569; margin-top: 0.5mm;">CB • Visa • Mastercard • Virement IBAN</div>
+      </div>
+      <div style="flex: 1; background: #fef3c7; border-radius: 1mm; padding: 1.2mm; text-align: center;">
+        <div style="font-size: 5pt; font-weight: 700; color: #92400e;">🏆 Offre Lancement</div>
+        <div style="font-size: 4.5pt; color: #475569; margin-top: 0.5mm;">Code LANCEMENT = 20 annonces gratuites !</div>
+      </div>
+    </div>
+    
+    <!-- Bottom bar -->
+    <div class="bottom-bar">
+      <div class="bottom-url">www.worldauto<span>france</span>.com</div>
+      <div class="bottom-tagline">🇫🇷 🇧🇪 🇨🇭 🇩🇪 🇳🇱 🇮🇹 🇪🇸 🇵🇹 🇸🇪 • Particuliers & Professionnels</div>
     </div>
   </div>
 </body>
