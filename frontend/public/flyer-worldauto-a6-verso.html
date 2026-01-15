@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Auto Pro - Flyer A6 Verso</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    @page { size: A6 portrait; margin: 0; }
+    @media print {
+      html, body { width: 105mm !important; height: 148mm !important; margin: 0 !important; }
+      .flyer { width: 105mm !important; height: 148mm !important; page-break-after: avoid; }
+    }
+    html, body { width: 105mm; height: 148mm; margin: 0 auto; background: #fff; }
+    body { font-family: "Segoe UI", Tahoma, sans-serif; color: #1a1a2e; font-size: 6pt; }
+    .flyer { width: 105mm; height: 148mm; padding: 3mm; display: flex; flex-direction: column; background: #fff; }
+    
+    /* Header */
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2mm; }
+    .title-section { flex: 1; }
+    .main-title { font-size: 11pt; font-weight: 800; color: #1E3A5F; }
+    .main-title span { color: #f97316; }
+    .subtitle { font-size: 6pt; color: #64748b; }
+    .qr-section { text-align: center; }
+    .qr-code { width: 18mm; height: 18mm; }
+    .qr-label { font-size: 4.5pt; color: #64748b; margin-top: 0.5mm; }
+    
+    /* Section Title */
+    .section-title { font-size: 7pt; font-weight: 700; color: #fff; background: #1E3A5F; padding: 1mm 2mm; border-radius: 1mm; margin-bottom: 1.5mm; text-align: center; }
+    .section-title.orange { background: linear-gradient(90deg, #f97316, #ea580c); }
+    .section-title.purple { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+    
+    /* Pricing Tables */
+    .pricing-section { margin-bottom: 2mm; }
+    table { width: 100%; border-collapse: collapse; font-size: 5.5pt; }
+    th { background: #f1f5f9; padding: 1mm; text-align: center; font-weight: 700; color: #1E3A5F; border: 0.3mm solid #e2e8f0; }
+    td { padding: 0.8mm; text-align: center; border: 0.3mm solid #e2e8f0; }
+    .highlight-row { background: #fff7ed; }
+    .best-row { background: #f0fdf4; }
+    .price { font-weight: 700; color: #1E3A5F; }
+    .old-price { text-decoration: line-through; color: #94a3b8; font-size: 4.5pt; }
+    .badge { display: inline-block; font-size: 4pt; padding: 0.3mm 0.8mm; border-radius: 0.5mm; font-weight: 700; }
+    .badge-popular { background: #f97316; color: #fff; }
+    .badge-best { background: #22c55e; color: #fff; }
+    .badge-pro { background: #7c3aed; color: #fff; }
+    
+    /* Two columns */
+    .two-cols { display: flex; gap: 2mm; margin-bottom: 2mm; }
+    .col { flex: 1; }
+    
+    /* Footer sections */
+    .footer-section { margin-top: auto; }
+    .info-boxes { display: flex; gap: 1.5mm; margin-bottom: 1.5mm; }
+    .info-box { flex: 1; background: #f8fafc; border-radius: 1.5mm; padding: 1.5mm; text-align: center; }
+    .info-box-title { font-size: 5.5pt; font-weight: 700; color: #1E3A5F; margin-bottom: 0.8mm; }
+    .info-box-content { font-size: 4.5pt; color: #475569; line-height: 1.3; }
+    .info-icon { font-size: 7pt; margin-bottom: 0.5mm; }
+    
+    /* Bottom bar */
+    .bottom-bar { background: linear-gradient(135deg, #1E3A5F, #2d4a6f); border-radius: 1.5mm; padding: 1.5mm; text-align: center; color: #fff; }
+    .bottom-url { font-size: 8pt; font-weight: 800; }
+    .bottom-url span { color: #f97316; }
+    .bottom-tagline { font-size: 4.5pt; color: #cbd5e1; margin-top: 0.5mm; }
+  </style>
+</head>
+<body>
+  <div class="flyer">
+    <!-- Header with QR -->
+    <div class="header">
+      <div class="title-section">
+        <div class="main-title">Nos <span>Tarifs</span></div>
+        <div class="subtitle">Simples, transparents, sans surprise</div>
+      </div>
+      <div class="qr-section">
+        <svg class="qr-code" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- QR Code pour worldautofrance.com -->
+          <rect width="100" height="100" fill="white"/>
+          <g fill="#1E3A5F">
+            <!-- Position markers -->
+            <rect x="4" y="4" width="20" height="20"/>
+            <rect x="7" y="7" width="14" height="14" fill="white"/>
+            <rect x="10" y="10" width="8" height="8"/>
+            
+            <rect x="76" y="4" width="20" height="20"/>
+            <rect x="79" y="7" width="14" height="14" fill="white"/>
+            <rect x="82" y="10" width="8" height="8"/>
+            
+            <rect x="4" y="76" width="20" height="20"/>
+            <rect x="7" y="79" width="14" height="14" fill="white"/>
+            <rect x="10" y="82" width="8" height="8"/>
+            
+            <!-- Data pattern (simplified) -->
+            <rect x="28" y="4" width="4" height="4"/>
+            <rect x="36" y="4" width="4" height="4"/>
+            <rect x="44" y="4" width="4" height="4"/>
+            <rect x="52" y="4" width="4" height="4"/>
+            <rect x="60" y="4" width="4" height="4"/>
+            <rect x="68" y="4" width="4" height="4"/>
+            
+            <rect x="28" y="12" width="4" height="4"/>
+            <rect x="40" y="12" width="4" height="4"/>
+            <rect x="48" y="12" width="4" height="4"/>
+            <rect x="56" y="12" width="4" height="4"/>
+            <rect x="68" y="12" width="4" height="4"/>
+            
+            <rect x="28" y="20" width="4" height="4"/>
+            <rect x="36" y="20" width="4" height="4"/>
+            <rect x="52" y="20" width="4" height="4"/>
+            <rect x="60" y="20" width="4" height="4"/>
+            <rect x="68" y="20" width="4" height="4"/>
+            
+            <rect x="4" y="28" width="4" height="4"/>
+            <rect x="12" y="28" width="4" height="4"/>
+            <rect x="20" y="28" width="4" height="4"/>
+            <rect x="28" y="28" width="4" height="4"/>
+            <rect x="44" y="28" width="4" height="4"/>
+            <rect x="52" y="28" width="4" height="4"/>
+            <rect x="68" y="28" width="4" height="4"/>
+            <rect x="76" y="28" width="4" height="4"/>
+            <rect x="84" y="28" width="4" height="4"/>
+            <rect x="92" y="28" width="4" height="4"/>
+            
+            <rect x="4" y="36" width="4" height="4"/>
+            <rect x="20" y="36" width="4" height="4"/>
+            <rect x="36" y="36" width="4" height="4"/>
+            <rect x="44" y="36" width="4" height="4"/>
+            <rect x="60" y="36" width="4" height="4"/>
+            <rect x="76" y="36" width="4" height="4"/>
+            <rect x="92" y="36" width="4" height="4"/>
+            
+            <rect x="4" y="44" width="4" height="4"/>
+            <rect x="12" y="44" width="4" height="4"/>
+            <rect x="28" y="44" width="4" height="4"/>
+            <rect x="36" y="44" width="4" height="4"/>
+            <rect x="44" y="44" width="4" height="4"/>
+            <rect x="52" y="44" width="4" height="4"/>
+            <rect x="68" y="44" width="4" height="4"/>
+            <rect x="84" y="44" width="4" height="4"/>
+            <rect x="92" y="44" width="4" height="4"/>
+            
+            <rect x="4" y="52" width="4" height="4"/>
+            <rect x="20" y="52" width="4" height="4"/>
+            <rect x="28" y="52" width="4" height="4"/>
+            <rect x="44" y="52" width="4" height="4"/>
+            <rect x="60" y="52" width="4" height="4"/>
+            <rect x="68" y="52" width="4" height="4"/>
+            <rect x="76" y="52" width="4" height="4"/>
+            <rect x="92" y="52" width="4" height="4"/>
+            
+            <rect x="4" y="60" width="4" height="4"/>
+            <rect x="12" y="60" width="4" height="4"/>
+            <rect x="20" y="60" width="4" height="4"/>
+            <rect x="36" y="60" width="4" height="4"/>
+            <rect x="52" y="60" width="4" height="4"/>
+            <rect x="60" y="60" width="4" height="4"/>
+            <rect x="84" y="60" width="4" height="4"/>
+            <rect x="92" y="60" width="4" height="4"/>
+            
+            <rect x="4" y="68" width="4" height="4"/>
+            <rect x="20" y="68" width="4" height="4"/>
+            <rect x="28" y="68" width="4" height="4"/>
+            <rect x="36" y="68" width="4" height="4"/>
+            <rect x="44" y="68" width="4" height="4"/>
+            <rect x="60" y="68" width="4" height="4"/>
+            <rect x="68" y="68" width="4" height="4"/>
+            <rect x="76" y="68" width="4" height="4"/>
+            <rect x="84" y="68" width="4" height="4"/>
+            
+            <rect x="28" y="76" width="4" height="4"/>
+            <rect x="44" y="76" width="4" height="4"/>
+            <rect x="52" y="76" width="4" height="4"/>
+            <rect x="68" y="76" width="4" height="4"/>
+            <rect x="76" y="76" width="4" height="4"/>
+            <rect x="92" y="76" width="4" height="4"/>
+            
+            <rect x="28" y="84" width="4" height="4"/>
+            <rect x="36" y="84" width="4" height="4"/>
+            <rect x="44" y="84" width="4" height="4"/>
+            <rect x="60" y="84" width="4" height="4"/>
+            <rect x="76" y="84" width="4" height="4"/>
+            <rect x="84" y="84" width="4" height="4"/>
+            
+            <rect x="28" y="92" width="4" height="4"/>
+            <rect x="52" y="92" width="4" height="4"/>
+            <rect x="60" y="92" width="4" height="4"/>
+            <rect x="68" y="92" width="4" height="4"/>
+            <rect x="84" y="92" width="4" height="4"/>
+            <rect x="92" y="92" width="4" height="4"/>
+          </g>
+        </svg>
+        <div class="qr-label">Scannez-moi !</div>
+      </div>
+    </div>
+    
+    <!-- Packs Crédits -->
+    <div class="pricing-section">
+      <div class="section-title">📦 PACKS CRÉDITS - Particuliers</div>
+      <table>
+        <tr>
+          <th>Pack</th>
+          <th>Prix</th>
+          <th>€/annonce</th>
+          <th>Photos</th>
+          <th>Validité</th>
+        </tr>
+        <tr>
+          <td>1 crédit</td>
+          <td class="price">2€</td>
+          <td>2,00€</td>
+          <td>6</td>
+          <td>30j</td>
+        </tr>
+        <tr>
+          <td>Pack 3</td>
+          <td class="price">5€</td>
+          <td>1,67€</td>
+          <td>8</td>
+          <td>30j</td>
+        </tr>
+        <tr>
+          <td>Pack 5</td>
+          <td class="price">8€</td>
+          <td>1,60€</td>
+          <td>10</td>
+          <td>30j</td>
+        </tr>
+        <tr>
+          <td>Pack 20</td>
+          <td class="price">25€</td>
+          <td>1,25€</td>
+          <td>15</td>
+          <td>30j</td>
+        </tr>
+        <tr class="highlight-row">
+          <td>Pack 50 <span class="badge badge-popular">⭐</span></td>
+          <td class="price">39€</td>
+          <td>0,78€</td>
+          <td>20</td>
+          <td>30j</td>
+        </tr>
+        <tr class="best-row">
+          <td>Pack 100 <span class="badge badge-best">TOP</span></td>
+          <td class="price">69€</td>
+          <td>0,69€</td>
+          <td>25</td>
+          <td>60j</td>
+        </tr>
+      </table>
+    </div>
+    
+    <!-- Two columns: PRO + Vidéo -->
+    <div class="two-cols">
+      <!-- Abonnements PRO -->
+      <div class="col">
+        <div class="section-title purple">👑 ABONNEMENTS PRO</div>
+        <table>
+          <tr>
+            <th>Formule</th>
+            <th>Prix</th>
+            <th>Crédits</th>
+          </tr>
+          <tr>
+            <td>Mensuel</td>
+            <td class="price">29€/mois</td>
+            <td>30/mois</td>
+          </tr>
+          <tr class="highlight-row">
+            <td>Trimestriel <span class="badge badge-popular">⭐</span></td>
+            <td class="price">69€ <span class="old-price">87€</span></td>
+            <td>100</td>
+          </tr>
+          <tr>
+            <td>Semestriel</td>
+            <td class="price">119€ <span class="old-price">174€</span></td>
+            <td>200</td>
+          </tr>
+          <tr class="best-row">
+            <td>Annuel <span class="badge badge-best">-45%</span></td>
+            <td class="price">199€ <span class="old-price">348€</span></td>
+            <td>500</td>
+          </tr>
+        </table>
+        <div style="font-size: 4.5pt; color: #7c3aed; text-align: center; margin-top: 1mm;">
+          ✓ 50 photos/annonce ✓ Badge PRO ✓ Stats avancées
+        </div>
+      </div>
+      
+      <!-- Forfaits Vidéo -->
+      <div class="col">
+        <div class="section-title orange">🎬 FORFAITS VIDÉO</div>
+        <table>
+          <tr>
+            <th>Forfait</th>
+            <th>Prix</th>
+            <th>Durée</th>
+          </tr>
+          <tr>
+            <td>Étendue</td>
+            <td class="price">1€</td>
+            <td>2 min</td>
+          </tr>
+          <tr class="highlight-row">
+            <td>Intermédiaire <span class="badge badge-popular">⭐</span></td>
+            <td class="price">2,99€</td>
+            <td>3 min</td>
+          </tr>
+          <tr class="best-row">
+            <td>PRO <span class="badge badge-pro">PRO</span></td>
+            <td class="price">9,99€</td>
+            <td>10 min</td>
+          </tr>
+        </table>
+        <div style="font-size: 5pt; color: #1E3A5F; text-align: center; margin-top: 1.5mm; font-weight: 700;">
+          🔥 Boost Homepage
+        </div>
+        <div style="font-size: 4.5pt; color: #475569; text-align: center;">
+          1h = 0,50€ | 24h = 5€
+        </div>
+      </div>
+    </div>
+    
+    <!-- Essai Gratuit -->
+    <div style="background: linear-gradient(90deg, #7c3aed, #6d28d9); border-radius: 1.5mm; padding: 1.5mm; text-align: center; color: #fff; margin-bottom: 2mm;">
+      <span style="font-size: 6.5pt; font-weight: 700;">🎁 ESSAI PRO GRATUIT : 10 crédits + 14 jours PRO - Sans engagement !</span>
+    </div>
+    
+    <!-- Footer: Livraison + Sécurité -->
+    <div class="footer-section">
+      <div class="info-boxes">
+        <div class="info-box">
+          <div class="info-icon">📦</div>
+          <div class="info-box-title">Livraison</div>
+          <div class="info-box-content">
+            Remise en main propre<br/>
+            Colissimo • Chronopost<br/>
+            Mondial Relay • Boxtal<br/>
+            Autre transporteur
+          </div>
+        </div>
+        <div class="info-box">
+          <div class="info-icon">🔐</div>
+          <div class="info-box-title">Sécurité</div>
+          <div class="info-box-content">
+            Double authentification (2FA)<br/>
+            reCAPTCHA • SIRET vérifié<br/>
+            IBAN validé • Stripe Connect<br/>
+            Protection acheteur
+          </div>
+        </div>
+        <div class="info-box">
+          <div class="info-icon">💳</div>
+          <div class="info-box-title">Paiement</div>
+          <div class="info-box-content">
+            Carte bancaire sécurisée<br/>
+            Virement IBAN direct<br/>
+            Stripe Connect Pro<br/>
+            Sans commission cachée
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom bar -->
+      <div class="bottom-bar">
+        <div class="bottom-url">www.worldauto<span>france</span>.com</div>
+        <div class="bottom-tagline">🇫🇷 🇧🇪 🇨🇭 🇩🇪 🇳🇱 🇮🇹 🇪🇸 🇵🇹 🇸🇪 • 9 pays européens</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
