@@ -409,6 +409,21 @@ export default function CreateListing() {
                 )}
               </span>
             </CardTitle>
+            {user?.is_professional && (
+              <div className="mb-6 p-4 bg-accent/10 border border-accent/30 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold text-accent">💼 Espace PRO</h3>
+                    <p className="text-sm text-muted-foreground">Gérez votre stock et publiez depuis votre entrepôt</p>
+                  </div>
+                  <Link to="/entrepot">
+                    <Button variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white">
+                      Mon Entrepôt
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            )}
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">

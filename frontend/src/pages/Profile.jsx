@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { User, Lock, Trash2, Save, Building, MapPin, Phone, Mail, Calendar, Shield, CreditCard, CheckCircle, AlertCircle, ExternalLink, Loader2, Palmtree } from 'lucide-react';
 import SEO from '../components/SEO';
 import VacationMode from '../components/VacationMode';
+import TwoFactorSettings from '../components/TwoFactorSettings';
+import IdentityVerification from '../components/IdentityVerification';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -21,6 +23,9 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
+
+  // IBAN state
+  const [ibanData, setIbanData] = useState({ iban: "", bic: "", account_holder: "" });
   
   // Stripe Connect state
   const [stripeStatus, setStripeStatus] = useState(null);
@@ -59,6 +64,26 @@ export default function Profile() {
     }
   }, [searchParams, lastRefresh]);
 
+
+  // Save IBAN
+  const saveIban = async () => {
+    if (!ibanData.iban || !ibanData.account_holder) {
+      toast.error("Veuillez remplir l IBAN et le titulaire");
+      return;
+    }
+    setLoading(true);
+    try {
+      await axios.post(`${API}/users/me/iban`, ibanData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success("IBAN enregistré avec succès");
+      refreshUser();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Erreur lors de l enregistrement");
+    } finally {
+      setLoading(false);
+    }
+  };
   const checkStripeStatus = async () => {
     if (!token) return;
     
@@ -391,6 +416,11 @@ export default function Profile() {
                 </form>
               </CardContent>
             </Card>
+
+            {/* Identity Verification */}
+            <div className="mt-6">
+              <IdentityVerification />
+            </div>
           </TabsContent>
 
           {/* Stripe Connect Tab */}
@@ -524,6 +554,57 @@ export default function Profile() {
                 </p>
               </CardContent>
             </Card>
+
+            {/* IBAN Section */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="w-5 h-5" />
+                  Paiement par IBAN
+                </CardTitle>
+                <CardDescription>
+                  Alternative à Stripe : recevez vos paiements par virement bancaire
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="iban">IBAN</Label>
+                  <Input
+                    id="iban"
+                    placeholder="FR76 1234 5678 9012 3456 7890 123"
+                    value={ibanData.iban}
+                    onChange={(e) => setIbanData({...ibanData, iban: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="bic">BIC (optionnel)</Label>
+                  <Input
+                    id="bic"
+                    placeholder="BNPAFRPP"
+                    value={ibanData.bic}
+                    onChange={(e) => setIbanData({...ibanData, bic: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="account_holder">Titulaire du compte</Label>
+                  <Input
+                    id="account_holder"
+                    placeholder="Nom du titulaire"
+                    value={ibanData.account_holder}
+                    onChange={(e) => setIbanData({...ibanData, account_holder: e.target.value})}
+                  />
+                </div>
+                <Button onClick={saveIban} disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+                  Enregistrer IBAN
+                </Button>
+                {user?.iban_configured && (
+                  <p className="text-sm text-green-600">
+                    ✅ IBAN configuré : {user.iban_display}
+                  </p>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Password Tab */}
@@ -580,6 +661,11 @@ export default function Profile() {
                 </form>
               </CardContent>
             </Card>
+
+            {/* 2FA Section */}
+            <div className="mt-6">
+              <TwoFactorSettings />
+            </div>
           </TabsContent>
 
           {/* Danger Zone Tab */}

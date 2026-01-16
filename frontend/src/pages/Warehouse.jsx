@@ -74,7 +74,7 @@ export default function WarehousePage() {
   const [savingItem, setSavingItem] = useState(false);
   
   // Forms
-  const [sectionForm, setSectionForm] = useState({ name: '', category: 'autre', description: '' });
+  const [sectionForm, setSectionForm] = useState({ name: '', color: '#3B82F6', description: '' });
   const [itemForm, setItemForm] = useState({
     name: '', section_id: '', quantity: 1, location: '',
     reference_oem: '', reference_custom: '', brand: '',
@@ -227,7 +227,7 @@ export default function WarehousePage() {
       }
       setShowSectionModal(false);
       setEditingSection(null);
-      setSectionForm({ name: '', category: 'autre', description: '' });
+      setSectionForm({ name: '', color: '#3B82F6', description: '' });
       fetchData();
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Erreur lors de la sauvegarde');
@@ -344,7 +344,7 @@ export default function WarehousePage() {
     setEditingSection(section);
     setSectionForm({
       name: section.name,
-      category: section.category,
+      color: section.color || "#3B82F6",
       description: section.description || '',
     });
     setShowSectionModal(true);
@@ -387,7 +387,7 @@ export default function WarehousePage() {
 
   const openNewSection = () => {
     setEditingSection(null);
-    setSectionForm({ name: '', category: 'autre', description: '' });
+    setSectionForm({ name: '', color: '#3B82F6', description: '' });
     setShowSectionModal(true);
   };
 
@@ -959,19 +959,14 @@ export default function WarehousePage() {
                 />
               </div>
               <div>
-                <Label>Catégorie</Label>
-                <Select value={sectionForm.category} onValueChange={(v) => setSectionForm({ ...sectionForm, category: v })}>
-                  <SelectTrigger data-testid="section-category-select">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(categories).map(([key, cat]) => (
-                      <SelectItem key={key} value={key}>
-                        {cat.icon} {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label>Couleur</Label>
+                <Input
+                  type="color"
+                  value={sectionForm.color}
+                  onChange={(e) => setSectionForm({ ...sectionForm, color: e.target.value })}
+                  className="h-10 w-20 cursor-pointer"
+                  data-testid="section-color-input"
+                />
               </div>
               <div>
                 <Label>Description (optionnel)</Label>
