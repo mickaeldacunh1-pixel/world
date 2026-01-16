@@ -55,6 +55,13 @@ export default function CreateListing() {
   const fileInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
+  // États pour la sélection d'article entrepôt
+  const [showWarehouseModal, setShowWarehouseModal] = useState(false);
+  const [warehouseItems, setWarehouseItems] = useState([]);
+  const [loadingWarehouse, setLoadingWarehouse] = useState(false);
+  const [warehouseSearch, setWarehouseSearch] = useState('');
+  const [selectedWarehouseItem, setSelectedWarehouseItem] = useState(null);
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
