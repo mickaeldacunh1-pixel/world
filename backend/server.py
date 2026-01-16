@@ -7632,7 +7632,7 @@ async def get_auction(auction_id: str):
 
 @api_router.post("/auctions/{auction_id}/bid")
 async def place_bid(auction_id: str, bid: BidCreate, current_user: dict = Depends(get_current_user)):
-    """Placer une enchère"""
+    """Placer une enchère avec proxy bidding et anti-snipe"""
     auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
     if not auction:
         raise HTTPException(status_code=404, detail="Enchère non trouvée")
@@ -7643,41 +7643,70 @@ async def place_bid(auction_id: str, bid: BidCreate, current_user: dict = Depend
     if auction["seller_id"] == current_user["id"]:
         raise HTTPException(status_code=400, detail="Vous ne pouvez pas enchérir sur votre propre annonce")
     
-    if bid.amount <= auction["current_price"]:
-        raise HTTPException(status_code=400, detail=f"L'enchère doit être supérieure à {auction['current_price']}€")
-    
     # Check auction not expired
     end_time = datetime.fromisoformat(auction["end_time"].replace('Z', '+00:00'))
-    if datetime.now(timezone.utc) >= end_time:
+    now = datetime.now(timezone.utc)
+    if now >= end_time:
         await end_auction(auction_id)
         raise HTTPException(status_code=400, detail="Cette enchère est terminée")
+    
+    min_bid = auction["current_price"] + 1
+    if bid.amount < min_bid:
+        raise HTTPException(status_code=400, detail=f"L'enchère minimum est de {min_bid}€")
+    
+    # Gestion du proxy bidding
+    auto_bids = auction.get("auto_bids", {})
+    if bid.max_amount and bid.max_amount > bid.amount:
+        auto_bids[current_user["id"]] = bid.max_amount
     
     bid_doc = {
         "id": str(uuid.uuid4()),
         "bidder_id": current_user["id"],
         "bidder_name": current_user["name"],
         "amount": bid.amount,
+        "max_amount": bid.max_amount,
+        "is_auto": False,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
-    await db.auctions.update_one(
-        {"id": auction_id},
-        {
-            "$set": {
-                "current_price": bid.amount,
-                "highest_bidder_id": current_user["id"],
-                "highest_bidder_name": current_user["name"],
-            },
-            "$inc": {"bid_count": 1},
-            "$push": {"bids": bid_doc}
-        }
-    )
+    update_data = {
+        "$set": {
+            "current_price": bid.amount,
+            "highest_bidder_id": current_user["id"],
+            "highest_bidder_name": current_user["name"],
+            "auto_bids": auto_bids
+        },
+        "$inc": {"bid_count": 1},
+        "$push": {"bids": bid_doc}
+    }
     
-    # Notify previous highest bidder
+    # Vérifier prix de réserve
+    if auction.get("reserve_price") and bid.amount >= auction["reserve_price"]:
+        update_data["$set"]["reserve_met"] = True
+    
+    # Anti-snipe : prolonger si enchère dans les 5 dernières minutes
+    time_remaining = (end_time - now).total_seconds()
+    if auction.get("anti_snipe", True) and time_remaining < 300:
+        new_end_time = now + timedelta(minutes=5)
+        update_data["$set"]["end_time"] = new_end_time.isoformat()
+        update_data["$inc"]["snipe_extensions"] = 1
+    
+    await db.auctions.update_one({"id": auction_id}, update_data)
+    
+    # Notifier l'ancien meilleur enchérisseur
     if auction["highest_bidder_id"] and auction["highest_bidder_id"] != current_user["id"]:
-        # Send notification via WebSocket or email
-        pass
+        await db.notifications.insert_one({
+            "id": str(uuid.uuid4()),
+            "user_id": auction["highest_bidder_id"],
+            "type": "outbid",
+            "title": "Vous avez été surenchéri !",
+            "message": f"Quelqu'un a surenchéri sur '{auction['title']}'. Prix actuel : {bid.amount}€",
+            "auction_id": auction_id,
+            "read": False,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
     
+    return {"message": "Enchère placée avec succès", "bid": bid_doc}
     return {"message": "Enchère placée avec succès", "bid": bid_doc}
 
 async def end_auction(auction_id: str):
