@@ -2202,11 +2202,36 @@ export default function AdminSettings() {
 
           {/* Hero Tab */}
           <TabsContent value="hero" className="space-y-6">
-            {/* Éditeur Visuel Drag & Drop */}
-            <HeroVisualEditor 
-              settings={settings} 
-              onChange={setSettings}
-            />
+            {/* Éditeur de Positionnement Libre */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  🎯 Éditeur de Position Libre
+                  <span className="text-xs font-normal text-muted-foreground ml-2">Nouveau</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <HeroFreePositionEditor 
+                  settings={settings} 
+                  onChange={setSettings}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Éditeur Visuel Drag & Drop - Ordre des lignes */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  📝 Ordre des Éléments (vertical)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <HeroVisualEditor 
+                  settings={settings} 
+                  onChange={setSettings}
+                />
+              </CardContent>
+            </Card>
 
             {/* Announcement Bar Card */}
             <Card>
