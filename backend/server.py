@@ -7556,15 +7556,23 @@ async def create_auction(auction: AuctionCreate, current_user: dict = Depends(ge
         "seller_name": current_user["name"],
         "starting_price": auction.starting_price,
         "current_price": auction.starting_price,
+        "reserve_price": auction.reserve_price,
+        "reserve_met": auction.reserve_price is None or auction.starting_price >= auction.reserve_price,
+        "buy_now_price": auction.buy_now_price,
+        "anti_snipe": auction.anti_snipe,
+        "snipe_extensions": 0,
         "bid_count": 0,
         "bids": [],
+        "auto_bids": {},
         "highest_bidder_id": None,
         "highest_bidder_name": None,
-        "status": "active",  # active, ended, cancelled
+        "status": "active",
         "winner_id": None,
         "final_price": None,
+        "watchers": [],
         "start_time": datetime.now(timezone.utc).isoformat(),
         "end_time": end_time.isoformat(),
+        "original_end_time": end_time.isoformat(),
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
