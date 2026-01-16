@@ -163,7 +163,9 @@ export function SellerTrustInfo({ seller }) {
         {seller.member_since && (
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-muted-foreground" />
-            <span>Membre depuis {new Date(seller.member_since).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</span>
+            <span>Membre depuis {new Date(seller.member_since).getFullYear() > 1971 
+              ? new Date(seller.member_since).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+              : 'récemment'}</span>
           </div>
         )}
       </div>
