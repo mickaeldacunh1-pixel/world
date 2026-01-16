@@ -7707,7 +7707,76 @@ async def place_bid(auction_id: str, bid: BidCreate, current_user: dict = Depend
         })
     
     return {"message": "Enchère placée avec succès", "bid": bid_doc}
-    return {"message": "Enchère placée avec succès", "bid": bid_doc}
+
+@api_router.post("/auctions/{auction_id}/buy-now")
+async def buy_now(auction_id: str, current_user: dict = Depends(get_current_user)):
+    """Achat immédiat"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Enchère non trouvée")
+    
+    if auction["status"] != "active":
+        raise HTTPException(status_code=400, detail="Cette enchère est terminée")
+    
+    if not auction.get("buy_now_price"):
+        raise HTTPException(status_code=400, detail="L'achat immédiat n'est pas disponible")
+    
+    if auction["seller_id"] == current_user["id"]:
+        raise HTTPException(status_code=400, detail="Vous ne pouvez pas acheter votre propre article")
+    
+    await db.auctions.update_one(
+        {"id": auction_id},
+        {"$set": {
+            "status": "sold",
+            "winner_id": current_user["id"],
+            "final_price": auction["buy_now_price"],
+            "sold_via": "buy_now",
+            "ended_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    await db.listings.update_one(
+        {"id": auction["listing_id"]},
+        {"$set": {"status": "sold", "is_auction": False}}
+    )
+    
+    return {"message": "Achat effectué !", "price": auction["buy_now_price"]}
+
+@api_router.post("/auctions/{auction_id}/watch")
+async def watch_auction(auction_id: str, current_user: dict = Depends(get_current_user)):
+    """Suivre une enchère"""
+    auction = await db.auctions.find_one({"id": auction_id})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Enchère non trouvée")
+    
+    watchers = auction.get("watchers", [])
+    if current_user["id"] in watchers:
+        watchers.remove(current_user["id"])
+        await db.auctions.update_one({"id": auction_id}, {"$set": {"watchers": watchers}})
+        return {"message": "Vous ne suivez plus cette enchère", "watching": False}
+    else:
+        watchers.append(current_user["id"])
+        await db.auctions.update_one({"id": auction_id}, {"$set": {"watchers": watchers}})
+        return {"message": "Vous suivez cette enchère", "watching": True}
+
+@api_router.get("/auctions/{auction_id}/history")
+async def get_auction_history(auction_id: str):
+    """Historique des enchères"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Enchère non trouvée")
+    
+    bids = sorted(auction.get("bids", []), key=lambda x: x["created_at"], reverse=True)
+    return {"auction_id": auction_id, "bids": bids, "snipe_extensions": auction.get("snipe_extensions", 0)}
+
+@api_router.get("/auctions/watching")
+async def get_watched_auctions(current_user: dict = Depends(get_current_user)):
+    """Enchères suivies"""
+    auctions = await db.auctions.find(
+        {"watchers": current_user["id"], "status": "active"},
+        {"_id": 0}
+    ).sort("end_time", 1).to_list(50)
+    return auctions
 
 async def end_auction(auction_id: str):
     """Terminer une enchère"""
