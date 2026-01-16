@@ -14,7 +14,7 @@ import uuid
 from datetime import datetime
 
 # Get base URL from environment
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://worldauto-build-fix.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://stock-sync-19.preview.emergentagent.com')
 
 # Test credentials
 TEST_USER_EMAIL = "storiestest@test.com"
