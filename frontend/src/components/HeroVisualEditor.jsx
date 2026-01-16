@@ -38,7 +38,8 @@ function SortableHeroElement({ id, element, settings, isSelected, onSelect, onTo
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.7 : 1,
+    zIndex: isDragging ? 100 : 1,
   };
 
   const isVisible = element.getVisibility(settings);
@@ -48,28 +49,29 @@ function SortableHeroElement({ id, element, settings, isSelected, onSelect, onTo
       ref={setNodeRef}
       style={style}
       className={`
-        relative group rounded-lg border-2 transition-all cursor-pointer p-1
-        ${isSelected ? 'border-orange-500 ring-2 ring-orange-500/30 bg-orange-500/10' : 'border-transparent hover:border-white/50 hover:bg-white/5'}
-        ${isDragging ? 'z-50 shadow-2xl scale-105' : ''}
+        relative group rounded-lg border-2 transition-all p-1
+        ${isSelected ? 'border-orange-500 ring-2 ring-orange-500/30 bg-orange-500/10' : 'border-gray-600 hover:border-white/50 hover:bg-white/5'}
+        ${isDragging ? 'shadow-2xl scale-105 cursor-grabbing' : 'cursor-pointer'}
         ${!isVisible ? 'opacity-40 grayscale' : ''}
       `}
       onClick={() => onSelect(id)}
     >
-      {/* Barre de contrôle - toujours visible en haut */}
+      {/* Barre de contrôle - toujours visible */}
       <div className={`
-        absolute -top-4 left-1/2 -translate-x-1/2 
+        absolute -top-5 left-1/2 -translate-x-1/2 
         flex items-center gap-1 px-3 py-1.5 rounded-full 
         bg-gray-900/95 text-white text-xs shadow-lg
-        opacity-0 group-hover:opacity-100 transition-all z-20
+        transition-all z-20
         border border-white/20
+        ${isSelected || isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
       `}>
         <button
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing p-1 hover:bg-white/20 rounded"
-          title="Déplacer"
+          className="cursor-grab active:cursor-grabbing p-1 hover:bg-white/20 rounded bg-orange-500/20"
+          title="Glisser pour déplacer"
         >
-          <GripVertical className="w-4 h-4" />
+          <GripVertical className="w-4 h-4 text-orange-400" />
         </button>
         <span className="px-2 font-semibold">{element.label}</span>
         <button
@@ -81,8 +83,21 @@ function SortableHeroElement({ id, element, settings, isSelected, onSelect, onTo
         </button>
       </div>
 
+      {/* Indicateur de glissement sur le côté */}
+      <div className={`
+        absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2
+        w-4 h-12 rounded flex items-center justify-center
+        transition-all
+        ${isSelected ? 'bg-orange-500' : 'bg-gray-600 group-hover:bg-orange-500/50'}
+      `}
+        {...attributes}
+        {...listeners}
+      >
+        <Move className="w-3 h-3 text-white" />
+      </div>
+
       {/* Contenu de l'élément */}
-      <div className="p-2">
+      <div className="p-2 ml-3">
         {element.render(settings)}
       </div>
 
