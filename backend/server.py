@@ -2354,10 +2354,38 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
         "oem_reference": listing.oem_reference,
         "aftermarket_reference": listing.aftermarket_reference,
         # Marquer si c'est une annonce gratuite promo
-        "is_promo_free": free_ads > 0
+        "is_promo_free": free_ads > 0,
+        # Liaison entrepôt PRO
+        "warehouse_item_id": listing.warehouse_item_id
     }
     
     await db.listings.insert_one(listing_doc)
+    
+    # Si lié à un article entrepôt, mettre à jour le stock et lier l'annonce
+    if listing.warehouse_item_id:
+        warehouse_item = await db.warehouse_items.find_one({
+            "id": listing.warehouse_item_id,
+            "user_id": current_user["id"]
+        })
+        if warehouse_item:
+            # Lier l'annonce à l'article entrepôt
+            await db.warehouse_items.update_one(
+                {"id": listing.warehouse_item_id},
+                {
+                    "$set": {"listing_id": listing_doc["id"]},
+                    "$inc": {"quantity": -1}
+                }
+            )
+            # Enregistrer le mouvement de stock
+            await db.warehouse_movements.insert_one({
+                "id": str(uuid.uuid4()),
+                "item_id": listing.warehouse_item_id,
+                "user_id": current_user["id"],
+                "type": "listing_created",
+                "quantity_change": -1,
+                "notes": f"Annonce créée: {listing_doc['title']}",
+                "created_at": datetime.now(timezone.utc).isoformat()
+            })
     
     # Déduire une annonce gratuite OU un crédit
     if free_ads > 0:
