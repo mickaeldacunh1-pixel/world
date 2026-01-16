@@ -445,6 +445,17 @@ export default function Home() {
                   navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
                 }} />
               )}
+
+              {/* Bouton Tobi Assistant */}
+              <Link to="/tobi">
+                <Button 
+                  className="gap-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg"
+                  data-testid="tobi-home-btn"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Demander à Tobi
+                </Button>
+              </Link>
               
               {/* CTA Button 1 */}
               {heroSettings.hero_cta1_enabled !== false && heroSettings.hero_cta1_text && (
