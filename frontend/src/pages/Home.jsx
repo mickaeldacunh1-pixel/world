@@ -491,6 +491,39 @@ export default function Home() {
                   </Button>
                 </Link>
               )}
+
+              {/* Boutons Premium (CTA3 & CTA4) */}
+              {heroSettings.hero_cta3_enabled && heroSettings.hero_cta3_text && (
+                <Link to={heroSettings.hero_cta3_link || '/tarifs'}>
+                  <Button 
+                    className="gap-2 ring-2 ring-yellow-400/50"
+                    style={{ 
+                      backgroundColor: heroSettings.hero_cta3_bg_color || '#EAB308',
+                      color: heroSettings.hero_cta3_text_color || '#FFFFFF'
+                    }}
+                    data-testid="hero-cta3-btn"
+                  >
+                    {heroSettings.hero_cta3_icon && <span>{heroSettings.hero_cta3_icon}</span>}
+                    {heroSettings.hero_cta3_text}
+                  </Button>
+                </Link>
+              )}
+              
+              {heroSettings.hero_cta4_enabled && heroSettings.hero_cta4_text && (
+                <Link to={heroSettings.hero_cta4_link || '/tarifs'}>
+                  <Button 
+                    className="gap-2 ring-2 ring-purple-400/50"
+                    style={{ 
+                      backgroundColor: heroSettings.hero_cta4_bg_color || '#8B5CF6',
+                      color: heroSettings.hero_cta4_text_color || '#FFFFFF'
+                    }}
+                    data-testid="hero-cta4-btn"
+                  >
+                    {heroSettings.hero_cta4_icon && <span>{heroSettings.hero_cta4_icon}</span>}
+                    {heroSettings.hero_cta4_text}
+                  </Button>
+                </Link>
+              )}
             </div>
 
             {/* Quick stats - Customizable */}
