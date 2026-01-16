@@ -473,7 +473,7 @@ export default function CreateListing() {
             </CardTitle>
             {user?.is_professional && (
               <div className="mb-6 p-4 bg-accent/10 border border-accent/30 rounded-lg">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className="font-semibold text-accent">💼 Espace PRO</h3>
                     <p className="text-sm text-muted-foreground">Gérez votre stock et publiez depuis votre entrepôt</p>
@@ -484,6 +484,50 @@ export default function CreateListing() {
                     </Button>
                   </Link>
                 </div>
+                
+                {/* Sélection d'article entrepôt */}
+                {selectedWarehouseItem ? (
+                  <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg" data-testid="selected-warehouse-item">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-800 flex items-center justify-center">
+                          <Package className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-green-800 dark:text-green-200">{selectedWarehouseItem.name}</p>
+                          <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400">
+                            {selectedWarehouseItem.reference_oem && <span>OEM: {selectedWarehouseItem.reference_oem}</span>}
+                            <span>Stock: {selectedWarehouseItem.quantity}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={clearWarehouseItem}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        data-testid="clear-warehouse-item-btn"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    <p className="text-xs text-green-600 dark:text-green-400 mt-2">
+                      Le stock sera automatiquement décrémenté lors de la publication.
+                    </p>
+                  </div>
+                ) : (
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={openWarehouseModal}
+                    className="w-full border-dashed border-accent/50 text-accent hover:bg-accent/5"
+                    data-testid="select-warehouse-item-btn"
+                  >
+                    <Warehouse className="w-4 h-4 mr-2" />
+                    Sélectionner un article de mon entrepôt
+                  </Button>
+                )}
               </div>
             )}
           </CardHeader>
