@@ -141,6 +141,58 @@ export default function CreateListing() {
     }
   }, [searchParams]);
 
+  // Charger les articles de l'entrepôt
+  const fetchWarehouseItems = async () => {
+    setLoadingWarehouse(true);
+    try {
+      const response = await axios.get(`${API}/warehouse/items`);
+      // Filtrer uniquement les articles avec stock > 0 et non déjà liés à une annonce
+      const availableItems = response.data.filter(item => item.quantity > 0 && !item.listing_id);
+      setWarehouseItems(availableItems);
+    } catch (error) {
+      console.error('Error fetching warehouse items:', error);
+      toast.error('Erreur lors du chargement des articles');
+    } finally {
+      setLoadingWarehouse(false);
+    }
+  };
+
+  // Ouvrir le modal de sélection d'article entrepôt
+  const openWarehouseModal = () => {
+    fetchWarehouseItems();
+    setShowWarehouseModal(true);
+  };
+
+  // Sélectionner un article et pré-remplir le formulaire
+  const handleSelectWarehouseItem = (item) => {
+    setSelectedWarehouseItem(item);
+    setFormData(prev => ({
+      ...prev,
+      title: item.name || '',
+      description: item.notes || '',
+      price: item.selling_price?.toString() || '',
+      condition: item.condition || 'occasion',
+      brand: item.brand || '',
+      oem_reference: item.reference_oem || '',
+      compatible_models: item.compatible_vehicles || '',
+    }));
+    setShowWarehouseModal(false);
+    toast.success(`Article "${item.name}" sélectionné ! Complétez les informations manquantes.`);
+  };
+
+  // Retirer l'article entrepôt sélectionné
+  const clearWarehouseItem = () => {
+    setSelectedWarehouseItem(null);
+    toast.info('Article entrepôt retiré');
+  };
+
+  // Filtrer les articles entrepôt par recherche
+  const filteredWarehouseItems = warehouseItems.filter(item => 
+    item.name?.toLowerCase().includes(warehouseSearch.toLowerCase()) ||
+    item.reference_oem?.toLowerCase().includes(warehouseSearch.toLowerCase()) ||
+    item.brand?.toLowerCase().includes(warehouseSearch.toLowerCase())
+  );
+
   const fetchPhotoLimit = async () => {
     try {
       const response = await axios.get(`${API}/users/me/photo-limit`);
