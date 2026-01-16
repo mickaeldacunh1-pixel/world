@@ -1220,6 +1220,99 @@ export default function CreateListing() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Modal de sélection d'article entrepôt */}
+      <Dialog open={showWarehouseModal} onOpenChange={setShowWarehouseModal}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col" data-testid="warehouse-selection-modal">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Warehouse className="w-5 h-5 text-accent" />
+              Sélectionner un article de l'entrepôt
+            </DialogTitle>
+          </DialogHeader>
+          
+          {/* Barre de recherche */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Input
+              placeholder="Rechercher par nom, référence OEM, marque..."
+              value={warehouseSearch}
+              onChange={(e) => setWarehouseSearch(e.target.value)}
+              className="pl-10"
+              data-testid="warehouse-search-input"
+            />
+          </div>
+
+          {/* Liste des articles */}
+          <div className="flex-1 overflow-y-auto min-h-0 mt-4">
+            {loadingWarehouse ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-accent" />
+              </div>
+            ) : filteredWarehouseItems.length > 0 ? (
+              <div className="space-y-2">
+                {filteredWarehouseItems.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => handleSelectWarehouseItem(item)}
+                    className="p-4 border rounded-lg cursor-pointer hover:border-accent hover:bg-accent/5 transition-all"
+                    data-testid={`warehouse-item-${item.id}`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                          <Package className="w-5 h-5 text-gray-500" />
+                        </div>
+                        <div>
+                          <p className="font-medium">{item.name}</p>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            {item.reference_oem && (
+                              <span className="bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
+                                OEM: {item.reference_oem}
+                              </span>
+                            )}
+                            {item.brand && <Badge variant="outline">{item.brand}</Badge>}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-accent">{item.selling_price ? `${item.selling_price}€` : '-'}</p>
+                        <p className="text-xs text-muted-foreground">Stock: {item.quantity}</p>
+                      </div>
+                    </div>
+                    {item.notes && (
+                      <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{item.notes}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-muted-foreground">
+                  {warehouseSearch 
+                    ? 'Aucun article trouvé pour cette recherche'
+                    : 'Aucun article disponible dans votre entrepôt'}
+                </p>
+                {!warehouseSearch && (
+                  <Link to="/entrepot">
+                    <Button variant="outline" className="mt-4">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Ajouter des articles
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setShowWarehouseModal(false)}>
+              Annuler
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
