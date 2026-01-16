@@ -134,7 +134,9 @@ export default function BuyerProfile() {
                   )}
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    Membre depuis {new Date(buyer.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                    Membre depuis {buyer.created_at && new Date(buyer.created_at).getFullYear() > 1971 
+                      ? new Date(buyer.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+                      : 'récemment'}
                   </span>
                 </div>
               </div>
