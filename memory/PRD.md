@@ -125,14 +125,42 @@ docker-compose down && docker-compose up -d --build
 ```
 
 ## Changelog
+- **16 Jan 2026 (v5.5.0)**: Intégration Stock/Annonces + Notifications Push réparées
 - **14 Jan 2026 (v5.3.0)**: Option paiement IBAN + Support photos HEIC + Catégories Recherche/Rare + FAQ mise à jour
 - **13 Jan 2026 (v5.2.0)**: 6 transporteurs + Mon Entrepôt Pro + Bouton Entrepôt + Tobi assistant IA
 - **12 Jan 2026 (v5.1.0)**: Essai PRO automatique + Restriction vendeurs 9 pays
 
 ## Backlog / Tâches Futures
 - Intégration Boxtal complète (calcul frais en temps réel)
-- Amélioration du système d'enchères
-- Notifications push
+- Solution de pre-rendering pour le SEO
+- Génération de vidéo promotionnelle
+
+### Intégration Stock/Annonces (v5.5.0) - 16 Janvier 2026
+- ✅ Sélection d'article entrepôt lors de la création d'annonce (PRO)
+- ✅ Modal de recherche d'articles disponibles
+- ✅ Pré-remplissage automatique du formulaire d'annonce
+- ✅ Liaison automatique annonce ↔ article entrepôt
+- ✅ Décrémentation automatique du stock lors de la publication
+- ✅ Historique des mouvements de stock (type: listing_created)
+
+### Notifications Push (v5.5.0) - 16 Janvier 2026
+- ✅ Enregistrement du Service Worker au chargement
+- ✅ Interface PushNotificationManager dans Profil > Sécurité
+- ✅ Activation/désactivation des notifications
+- ✅ Configuration des préférences (messages, alertes prix, offres, commandes, promos)
+- ✅ Test de notification depuis le profil
+- ✅ Endpoint /api/push/vapid-key pour la clé publique
+- ✅ Endpoint /api/push/subscribe pour l'abonnement
+- ✅ Endpoint /api/push/status pour le statut
+- ✅ Endpoint /api/push/test pour tester
+
+### Système d'Enchères Avancé (v5.4.5)
+- ✅ Enchère automatique (proxy bidding) avec montant max
+- ✅ Achat immédiat
+- ✅ Prix de réserve
+- ✅ Extension anti-snipe
+- ✅ Liste de favoris (watchlist)
+- ✅ Historique des enchères
 
 ### Sécurité Renforcée (v5.4.0) - 14 Janvier 2026
 
