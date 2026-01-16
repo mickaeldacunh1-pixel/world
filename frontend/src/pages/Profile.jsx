@@ -667,6 +667,11 @@ export default function Profile() {
             <div className="mt-6">
               <TwoFactorSettings />
             </div>
+
+            {/* Push Notifications Section */}
+            <div className="mt-6">
+              <PushNotificationManager token={token} />
+            </div>
           </TabsContent>
 
           {/* Danger Zone Tab */}
