@@ -927,6 +927,8 @@ class ListingCreate(BaseModel):
     vehicle_vin: Optional[str] = None  # VIN du véhicule d'origine (optionnel)
     has_warranty: bool = False  # Garantie World Auto activée
     warranty_duration: Optional[int] = None  # Durée garantie en mois (3, 6, 12)
+    # Liaison avec entrepôt PRO
+    warehouse_item_id: Optional[str] = None  # ID de l'article entrepôt à lier
 
 # Options de garantie World Auto
 WARRANTY_OPTIONS = {
