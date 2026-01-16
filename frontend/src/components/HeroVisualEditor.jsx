@@ -358,7 +358,7 @@ export default function HeroVisualEditor({ settings, onChange }) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 3, // Réduit pour une meilleure réactivité
       },
     }),
     useSensor(KeyboardSensor, {
