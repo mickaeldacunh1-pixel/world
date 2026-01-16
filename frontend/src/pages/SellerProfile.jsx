@@ -132,7 +132,9 @@ export default function SellerProfile() {
                   )}
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    Membre depuis {new Date(seller.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                    Membre depuis {seller.created_at && new Date(seller.created_at).getFullYear() > 1971 
+                      ? new Date(seller.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+                      : 'récemment'}
                   </span>
                   {seller.website && (
                     <a 
