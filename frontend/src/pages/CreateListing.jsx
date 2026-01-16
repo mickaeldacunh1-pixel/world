@@ -426,6 +426,7 @@ export default function CreateListing() {
         compatible_models,
         images: imageUrls,
         video_url: videoUrl || null,
+        warehouse_item_id: selectedWarehouseItem?.id || null,
       }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
