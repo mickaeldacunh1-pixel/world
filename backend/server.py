@@ -7510,10 +7510,14 @@ async def ai_diagnostic(request: DiagnosticRequest, current_user: dict = Depends
 class AuctionCreate(BaseModel):
     listing_id: str
     starting_price: float = Field(..., ge=1)
+    reserve_price: Optional[float] = Field(None, ge=1)  # Prix de réserve
+    buy_now_price: Optional[float] = Field(None, ge=1)  # Achat immédiat
     duration: str = Field(..., pattern="^(24h|48h|7d)$")
+    anti_snipe: bool = True  # Extension automatique
 
 class BidCreate(BaseModel):
     amount: float = Field(..., ge=1)
+    max_amount: Optional[float] = Field(None, ge=1)  # Enchère automatique (proxy bidding)
 
 # Utilise la même fonction calculate_platform_fee définie plus haut
 
