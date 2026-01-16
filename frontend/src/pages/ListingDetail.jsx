@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
@@ -10,14 +9,11 @@ import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
 import { Skeleton } from '../components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2, Heart, ShoppingCart, CreditCard, Shield, ShieldCheck, Loader2, Flag, AlertTriangle, Video, Award, Tag, TrendingDown, TrendingUp, Scale, History } from 'lucide-react';
+import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2, Heart, ShoppingCart, CreditCard, Shield, ShieldCheck, Loader2, Flag, AlertTriangle, Video, Award } from 'lucide-react';
 import SEO, { createProductSchema, createBreadcrumbSchema } from '../components/SEO';
 import ShareButtons from '../components/ShareButtons';
 import { VerificationBadge, WarrantyBadge, PartOriginBadge } from '../components/TrustBadge';
-import MakeOfferButton from '../components/MakeOfferButton';
 import QuestionsAnswers from '../components/QuestionsAnswers';
-import { WarrantySelector } from '../components/WarrantySelector';
-import { CompareButton } from '../components/CompareWidget';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -39,7 +35,6 @@ export default function ListingDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, token } = useAuth();
-  const { t } = useTranslation();
   
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -56,8 +51,6 @@ export default function ListingDetail() {
   const [reportDescription, setReportDescription] = useState('');
   const [reportLoading, setReportLoading] = useState(false);
   const [videoCallLoading, setVideoCallLoading] = useState(false);
-  const [priceHistory, setPriceHistory] = useState(null);
-  const [showPriceHistory, setShowPriceHistory] = useState(false);
 
   const REPORT_REASONS = [
     { value: 'spam', label: 'Spam ou publicité' },
@@ -68,16 +61,6 @@ export default function ListingDetail() {
     { value: 'duplicate', label: 'Annonce en double' },
     { value: 'other', label: 'Autre raison' }
   ];
-
-  // Fetch price history
-  const fetchPriceHistory = useCallback(async () => {
-    try {
-      const response = await axios.get(`${API}/listings/${id}/price-history`);
-      setPriceHistory(response.data);
-    } catch (error) {
-      console.error('Error fetching price history:', error);
-    }
-  }, [id]);
 
   const handleVideoCall = async () => {
     if (!user) {
@@ -104,7 +87,17 @@ export default function ListingDetail() {
     }
   };
 
-  const fetchListing = useCallback(async () => {
+  useEffect(() => {
+    fetchListing();
+  }, [id]);
+
+  useEffect(() => {
+    if (user && listing) {
+      checkFavorite();
+    }
+  }, [user, listing]);
+
+  const fetchListing = async () => {
     try {
       const response = await axios.get(`${API}/listings/${id}`);
       setListing(response.data);
@@ -119,31 +112,7 @@ export default function ListingDetail() {
     } finally {
       setLoading(false);
     }
-  }, [id, navigate]);
-
-  const checkFavorite = useCallback(async () => {
-    if (!token || !listing) return;
-    try {
-      const response = await axios.get(`${API}/favorites`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const favorites = response.data.favorites || [];
-      setIsFavorite(favorites.some(f => f.id === listing.id));
-    } catch (error) {
-      console.error('Error checking favorite:', error);
-    }
-  }, [token, listing]);
-
-  useEffect(() => {
-    fetchListing();
-    fetchPriceHistory();
-  }, [fetchListing, fetchPriceHistory]);
-
-  useEffect(() => {
-    if (user && listing) {
-      checkFavorite();
-    }
-  }, [user, listing, checkFavorite]);
+  };
 
   const handleBuyNow = async () => {
     if (!user) {
@@ -169,6 +138,15 @@ export default function ListingDetail() {
       toast.error(message);
     } finally {
       setBuyLoading(false);
+    }
+  };
+
+  const checkFavorite = async () => {
+    try {
+      const response = await axios.get(`${API}/favorites/check/${id}`);
+      setIsFavorite(response.data.is_favorite);
+    } catch (error) {
+      console.error('Error checking favorite:', error);
     }
   };
 
@@ -494,75 +472,6 @@ export default function ListingDetail() {
               {listing.price?.toLocaleString('fr-FR')} €
             </div>
 
-            {/* Price History & Compare */}
-            <div className="flex flex-wrap items-center gap-3">
-              {/* Price History Badge */}
-              {priceHistory && priceHistory.total_changes > 0 && (
-                <button 
-                  onClick={() => setShowPriceHistory(!showPriceHistory)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                    priceHistory.current_price < priceHistory.initial_price 
-                      ? 'bg-green-100 text-green-700 hover:bg-green-200' 
-                      : 'bg-red-100 text-red-700 hover:bg-red-200'
-                  }`}
-                >
-                  {priceHistory.current_price < priceHistory.initial_price ? (
-                    <TrendingDown className="w-4 h-4" />
-                  ) : (
-                    <TrendingUp className="w-4 h-4" />
-                  )}
-                  {priceHistory.current_price < priceHistory.initial_price ? 'Prix en baisse' : 'Prix en hausse'}
-                  <History className="w-3 h-3 ml-1" />
-                </button>
-              )}
-              
-              {/* Compare Button */}
-              <CompareButton listing={listing} showLabel size="sm" />
-            </div>
-
-            {/* Price History Timeline */}
-            {showPriceHistory && priceHistory && priceHistory.history.length > 0 && (
-              <Card className="p-4 bg-secondary/30">
-                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
-                  <History className="w-4 h-4" />
-                  Historique des prix
-                </h3>
-                <div className="space-y-2">
-                  {priceHistory.history.map((entry, index) => (
-                    <div key={index} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${entry.type === 'initial' ? 'bg-blue-500' : 'bg-accent'}`} />
-                        <span className="text-muted-foreground">
-                          {new Date(entry.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {entry.type === 'change' && entry.old_price && (
-                          <span className="text-muted-foreground line-through text-xs">
-                            {entry.old_price.toLocaleString('fr-FR')} €
-                          </span>
-                        )}
-                        <span className={`font-semibold ${
-                          entry.type === 'change' && entry.price < entry.old_price 
-                            ? 'text-green-600' 
-                            : entry.type === 'change' 
-                              ? 'text-red-600' 
-                              : ''
-                        }`}>
-                          {entry.price?.toLocaleString('fr-FR')} €
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {priceHistory.current_price < priceHistory.initial_price && (
-                  <div className="mt-3 pt-3 border-t text-sm text-green-600 font-medium">
-                    💰 Économie totale : {(priceHistory.initial_price - priceHistory.current_price).toLocaleString('fr-FR')} €
-                  </div>
-                )}
-              </Card>
-            )}
-
             {/* Shipping info */}
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">📦 Livraison :</span>
@@ -721,7 +630,7 @@ export default function ListingDetail() {
                       <Shield className="w-8 h-8 text-green-500" />
                       <div>
                         <p className="font-medium text-green-700 dark:text-green-400">
-                          Garantie World Auto Pro - {listing.warranty_duration} mois
+                          Garantie World Auto - {listing.warranty_duration} mois
                         </p>
                         <p className="text-sm text-muted-foreground">
                           Expire le {new Date(listing.warranty_expires).toLocaleDateString('fr-FR')}
@@ -758,16 +667,8 @@ export default function ListingDetail() {
               </Link>
             </Card>
 
-            {/* Questions & Réponses */}
+            {/* Questions & Answers */}
             <QuestionsAnswers listingId={listing.id} sellerId={listing.seller_id} />
-
-            {/* Warranty Selector - for sellers without warranty */}
-            {user?.id === listing.seller_id && !listing.has_warranty && (
-              <WarrantySelector 
-                listingId={listing.id} 
-                currentWarranty={listing.has_warranty ? { duration: listing.warranty_duration, expires: listing.warranty_expires } : null}
-              />
-            )}
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
@@ -862,10 +763,6 @@ export default function ListingDetail() {
                   )}
                   Acheter maintenant - {listing.price + (listing.shipping_cost || 0)}€
                 </Button>
-                
-                {/* Bouton Faire une offre */}
-                <MakeOfferButton listing={listing} />
-                
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                   <Shield className="w-4 h-4 text-green-600" />
                   Paiement sécurisé - Argent protégé jusqu&apos;à réception
@@ -891,7 +788,7 @@ export default function ListingDetail() {
                   </DialogHeader>
                   <div className="space-y-4 mt-4">
                     <p className="text-sm text-muted-foreground">
-                      Aidez-nous à garder World Auto Pro Pro sûr. Pourquoi signalez-vous cette annonce ?
+                      Aidez-nous à garder World Auto France sûr. Pourquoi signalez-vous cette annonce ?
                     </p>
                     <div className="space-y-2">
                       {REPORT_REASONS.map((reason) => (

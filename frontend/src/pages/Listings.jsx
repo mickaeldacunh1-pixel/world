@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -8,11 +7,10 @@ import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Skeleton } from '../components/ui/skeleton';
-import { Search, Filter, Grid3X3, List, MapPin, Eye, ChevronLeft, ChevronRight, Car, Zap, Star, Mic, Scale } from 'lucide-react';
+import { Search, Filter, Grid3X3, List, MapPin, Eye, ChevronLeft, ChevronRight, Car, Zap, Star, Mic } from 'lucide-react';
 import SEO, { createBreadcrumbSchema } from '../components/SEO';
 import VoiceSearch from '../components/VoiceSearch';
 import SearchHistory, { useSaveSearch } from '../components/SearchHistory';
-import { CompareButton } from '../components/CompareWidget';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -57,7 +55,6 @@ const categoryNames = {
   voitures: 'Voitures d\'Occasion',
   motos: 'Motos',
   utilitaires: 'Utilitaires',
-  engins: 'Engins',
   accessoires: 'Accessoires',
 };
 
@@ -66,7 +63,6 @@ const categoryDescriptions = {
   voitures: 'Découvrez notre sélection de voitures d\'occasion vérifiées par des particuliers et professionnels.',
   motos: 'Achetez ou vendez des motos d\'occasion. Large choix de marques et modèles.',
   utilitaires: 'Utilitaires, camionnettes et véhicules commerciaux d\'occasion à vendre.',
-  engins: 'Engins agricoles et de chantier. Tracteurs, pelleteuses, chargeuses et plus.',
   accessoires: 'Accessoires automobiles, équipements et tuning pour personnaliser votre véhicule.',
 };
 
@@ -79,8 +75,6 @@ const conditionLabels = {
 export default function Listings() {
   const { category } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const saveSearch = useSaveSearch();
-  const { t } = useTranslation();
   
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -89,6 +83,9 @@ export default function Listings() {
   const [viewMode, setViewMode] = useState('grid');
   const [subcategories, setSubcategories] = useState({});
   const [carBrands, setCarBrands] = useState([]);
+  
+  // Search history hook
+  const saveSearch = useSaveSearch();
   
   // Filters
   const [search, setSearch] = useState(searchParams.get('search') || '');
@@ -124,7 +121,30 @@ export default function Listings() {
     { value: 'corse', label: 'Corse' },
   ];
 
-  const fetchSubcategories = useCallback(async () => {
+  useEffect(() => {
+    if (category === 'pieces' || category === 'accessoires') {
+      fetchSubcategories();
+    }
+    fetchCarBrands();
+  }, [category]);
+
+  useEffect(() => {
+    fetchListings();
+  }, [category, page, sort, subcategory, compatibleBrand, region, oemReference]);
+
+  // Auto-refresh listings when component mounts or tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchListings();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [category, page, sort, subcategory, compatibleBrand, region, oemReference]);
+
+  const fetchSubcategories = async () => {
     try {
       const endpoint = category === 'accessoires' ? 'accessoires' : 'pieces';
       const response = await axios.get(`${API}/subcategories/${endpoint}`);
@@ -132,18 +152,18 @@ export default function Listings() {
     } catch (error) {
       console.error('Error fetching subcategories:', error);
     }
-  }, [category]);
+  };
 
-  const fetchCarBrands = useCallback(async () => {
+  const fetchCarBrands = async () => {
     try {
       const response = await axios.get(`${API}/brands`);
       setCarBrands(response.data);
     } catch (error) {
       console.error('Error fetching car brands:', error);
     }
-  }, []);
+  };
 
-  const fetchListings = useCallback(async (resetPage = false) => {
+  const fetchListings = async (resetPage = false) => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -172,30 +192,7 @@ export default function Listings() {
     } finally {
       setLoading(false);
     }
-  }, [category, subcategory, compatibleBrand, region, oemReference, search, minPrice, maxPrice, condition, sort, page]);
-
-  useEffect(() => {
-    if (category === 'pieces' || category === 'accessoires') {
-      fetchSubcategories();
-    }
-    fetchCarBrands();
-  }, [category, fetchSubcategories, fetchCarBrands]);
-
-  useEffect(() => {
-    fetchListings();
-  }, [fetchListings]);
-
-  // Auto-refresh listings when component mounts or tab becomes visible
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetchListings();
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [fetchListings]);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -221,10 +218,10 @@ export default function Listings() {
     // Save search to history
     saveSearch({
       query: search,
-      category: category,
-      brand: compatibleBrand,
-      model: compatibleModel,
-      region: region,
+      category: category || null,
+      brand: compatibleBrand || null,
+      model: compatibleModel || null,
+      region: region || null,
       min_price: minPrice ? parseFloat(minPrice) : null,
       max_price: maxPrice ? parseFloat(maxPrice) : null
     });
@@ -253,7 +250,7 @@ export default function Listings() {
   const pageTitle = category ? categoryNames[category] : 'Toutes les annonces';
   const pageDescription = category 
     ? categoryDescriptions[category] 
-    : 'Parcourez toutes les annonces de pièces détachées et véhicules d\'occasion sur World Auto Pro Pro.';
+    : 'Parcourez toutes les annonces de pièces détachées et véhicules d\'occasion sur World Auto France.';
   const breadcrumbItems = [
     { name: 'Accueil', url: '/' },
     { name: 'Annonces', url: '/annonces' },
@@ -282,21 +279,21 @@ export default function Listings() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Search History */}
+        <div className="mb-6">
+          <SearchHistory onSelect={(searchItem) => {
+            if (searchItem.query) setSearch(searchItem.query);
+            if (searchItem.brand) setCompatibleBrand(searchItem.brand);
+            if (searchItem.model) setCompatibleModel(searchItem.model);
+            if (searchItem.region) setRegion(searchItem.region);
+            if (searchItem.min_price) setMinPrice(String(searchItem.min_price));
+            if (searchItem.max_price) setMaxPrice(String(searchItem.max_price));
+          }} />
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
           <aside className={`lg:w-64 flex-shrink-0 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-            {/* Search History */}
-            <div className="mb-4">
-              <SearchHistory onSelect={(search) => {
-                if (search.query) setSearch(search.query);
-                if (search.brand) setCompatibleBrand(search.brand);
-                if (search.model) setCompatibleModel(search.model);
-                if (search.region) setRegion(search.region);
-                if (search.min_price) setMinPrice(String(search.min_price));
-                if (search.max_price) setMaxPrice(String(search.max_price));
-              }} />
-            </div>
-            
             <Card className="p-6 sticky top-24">
               <h2 className="font-heading font-bold text-lg mb-6">Filtres</h2>
               
@@ -622,9 +619,8 @@ export default function Listings() {
                           {conditionLabels[listing.condition] || listing.condition}
                         </span>
                         
-                        {/* Quick view + Compare */}
-                        <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                          <CompareButton listing={listing} />
+                        {/* Quick view */}
+                        <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                           <span className="bg-white/95 backdrop-blur-sm text-primary px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
                             Voir →
                           </span>

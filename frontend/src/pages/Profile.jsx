@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -9,13 +9,9 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '../components/ui/dialog';
-import { User, Lock, Trash2, Save, Building, MapPin, Phone, Mail, Calendar, Shield, CreditCard, CheckCircle, AlertCircle, ExternalLink, Loader2, Palmtree, Bell, Building2, Edit } from 'lucide-react';
+import { User, Lock, Trash2, Save, Building, MapPin, Phone, Mail, Calendar, Shield, CreditCard, CheckCircle, AlertCircle, ExternalLink, Loader2, Palmtree } from 'lucide-react';
 import SEO from '../components/SEO';
 import VacationMode from '../components/VacationMode';
-import NotificationSettings from '../components/NotificationSettings';
-import PushNotificationManager from '../components/PushNotificationManager';
-import IdentityVerification from '../components/IdentityVerification';
-import TwoFactorSettings from '../components/TwoFactorSettings';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -30,13 +26,6 @@ export default function Profile() {
   const [stripeStatus, setStripeStatus] = useState(null);
   const [stripeLoading, setStripeLoading] = useState(false);
   
-  // IBAN state
-  const [showIbanForm, setShowIbanForm] = useState(false);
-  const [ibanValue, setIbanValue] = useState('');
-  const [bicValue, setBicValue] = useState('');
-  const [accountHolder, setAccountHolder] = useState('');
-  const [ibanLoading, setIbanLoading] = useState(false);
-  
   // Profile form
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
@@ -46,7 +35,6 @@ export default function Profile() {
     postal_code: user?.postal_code || '',
     company_name: user?.company_name || '',
     siret: user?.siret || '',
-    website: user?.website || '',
   });
   
   // Password form
@@ -57,7 +45,21 @@ export default function Profile() {
   });
 
   // Check Stripe status on mount and after redirect
-  const checkStripeStatus = useCallback(async () => {
+  useEffect(() => {
+    checkStripeStatus();
+    // Refresh user data on mount to ensure fresh data
+    refreshUser();
+    
+    // Handle Stripe redirect
+    if (searchParams.get('stripe_success') === 'true') {
+      toast.success('Compte Stripe configuré avec succès !');
+      checkStripeStatus();
+    } else if (searchParams.get('stripe_refresh') === 'true') {
+      toast.info('Veuillez finaliser la configuration de votre compte Stripe');
+    }
+  }, [searchParams, lastRefresh]);
+
+  const checkStripeStatus = async () => {
     if (!token) return;
     
     try {
@@ -68,20 +70,7 @@ export default function Profile() {
     } catch (error) {
       console.error('Error checking Stripe status:', error);
     }
-  }, [token]);
-
-  useEffect(() => {
-    checkStripeStatus();
-    refreshUser();
-    
-    // Handle Stripe redirect
-    if (searchParams.get('stripe_success') === 'true') {
-      toast.success('Compte Stripe configuré avec succès !');
-      checkStripeStatus();
-    } else if (searchParams.get('stripe_refresh') === 'true') {
-      toast.info('Veuillez finaliser la configuration de votre compte Stripe');
-    }
-  }, [searchParams, lastRefresh, checkStripeStatus, refreshUser]);
+  };
 
   const handleStripeConnect = async () => {
     setStripeLoading(true);
@@ -117,38 +106,6 @@ export default function Profile() {
       toast.error(error.response?.data?.detail || 'Erreur lors de la création du lien');
     } finally {
       setStripeLoading(false);
-    }
-  };
-
-  // Save IBAN
-  const handleSaveIban = async () => {
-    // Validate IBAN format (basic validation)
-    const cleanIban = ibanValue.replace(/\s/g, '');
-    if (cleanIban.length < 14 || cleanIban.length > 34) {
-      toast.error('IBAN invalide. Vérifiez le format.');
-      return;
-    }
-    if (!accountHolder.trim()) {
-      toast.error('Veuillez entrer le nom du titulaire du compte.');
-      return;
-    }
-
-    setIbanLoading(true);
-    try {
-      await axios.post(`${API}/users/me/iban`, {
-        iban: cleanIban,
-        bic: bicValue.replace(/\s/g, '') || null,
-        account_holder: accountHolder.trim()
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast.success('IBAN enregistré avec succès !');
-      setShowIbanForm(false);
-      await refreshUser();
-    } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur lors de l\'enregistrement de l\'IBAN');
-    } finally {
-      setIbanLoading(false);
     }
   };
 
@@ -237,7 +194,7 @@ export default function Profile() {
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
         title="Mon Profil"
-        description="Gérez votre compte World Auto Pro Pro - Modifiez vos informations personnelles et paramètres de sécurité."
+        description="Gérez votre compte World Auto France - Modifiez vos informations personnelles et paramètres de sécurité."
         url="/profil"
         noindex={true}
       />
@@ -288,36 +245,29 @@ export default function Profile() {
           </CardContent>
         </Card>
 
+        {/* Vacation Mode Card */}
+        <div className="mb-8">
+          <VacationMode />
+        </div>
+
         {/* Tabs */}
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="w-4 h-4" />
-              <span className="hidden sm:inline">Informations</span>
-            </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2">
-              <Bell className="w-4 h-4" />
-              <span className="hidden sm:inline">Notifications</span>
-            </TabsTrigger>
-            <TabsTrigger value="vacation" className="flex items-center gap-2">
-              <Palmtree className="w-4 h-4" />
-              <span className="hidden sm:inline">Vacances</span>
-            </TabsTrigger>
-            <TabsTrigger value="identity" className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
-              <span className="hidden sm:inline">Vérification</span>
+              Informations
             </TabsTrigger>
             <TabsTrigger value="stripe" className="flex items-center gap-2">
               <CreditCard className="w-4 h-4" />
-              <span className="hidden sm:inline">Paiements</span>
+              Paiements
             </TabsTrigger>
             <TabsTrigger value="password" className="flex items-center gap-2">
               <Lock className="w-4 h-4" />
-              <span className="hidden sm:inline">Mot de passe</span>
+              Mot de passe
             </TabsTrigger>
             <TabsTrigger value="danger" className="flex items-center gap-2 text-destructive">
               <Trash2 className="w-4 h-4" />
-              <span className="hidden sm:inline">Supprimer</span>
+              Supprimer
             </TabsTrigger>
           </TabsList>
 
@@ -428,24 +378,6 @@ export default function Profile() {
                             />
                           </div>
                         </div>
-                        
-                        <div className="mt-4 space-y-2">
-                          <Label htmlFor="website">Site web</Label>
-                          <div className="relative">
-                            <ExternalLink className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                              id="website"
-                              name="website"
-                              value={profileData.website}
-                              onChange={handleProfileChange}
-                              placeholder="https://monsite.fr"
-                              className="pl-10"
-                            />
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            Votre site web sera affiché sur votre profil vendeur
-                          </p>
-                        </div>
                       </div>
                     </>
                   )}
@@ -461,22 +393,6 @@ export default function Profile() {
             </Card>
           </TabsContent>
 
-          {/* Notifications Tab */}
-          <TabsContent value="notifications" className="space-y-6">
-            <PushNotificationManager token={token} />
-            <NotificationSettings />
-          </TabsContent>
-
-          {/* Vacation Mode Tab */}
-          <TabsContent value="vacation">
-            <VacationMode />
-          </TabsContent>
-
-          {/* Identity Verification Tab */}
-          <TabsContent value="identity">
-            <IdentityVerification user={user} token={token} onVerified={refreshUser} />
-          </TabsContent>
-
           {/* Stripe Connect Tab */}
           <TabsContent value="stripe">
             <Card>
@@ -486,222 +402,125 @@ export default function Profile() {
                   Recevoir des paiements
                 </CardTitle>
                 <CardDescription>
-                  Choisissez votre méthode pour recevoir l'argent de vos ventes
+                  Connectez votre compte Stripe pour recevoir les paiements de vos ventes en toute sécurité
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Status Card */}
                 <div className={`p-4 rounded-lg border ${
-                  stripeStatus?.charges_enabled || user?.iban_configured
+                  stripeStatus?.charges_enabled 
                     ? 'bg-green-50 border-green-200' 
                     : 'bg-yellow-50 border-yellow-200'
                 }`}>
                   <div className="flex items-start gap-3">
-                    {stripeStatus?.charges_enabled || user?.iban_configured ? (
+                    {stripeStatus?.charges_enabled ? (
                       <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
                     ) : (
                       <AlertCircle className="w-6 h-6 text-yellow-600 flex-shrink-0" />
                     )}
                     <div>
                       <h3 className={`font-semibold ${
-                        stripeStatus?.charges_enabled || user?.iban_configured ? 'text-green-800' : 'text-yellow-800'
+                        stripeStatus?.charges_enabled ? 'text-green-800' : 'text-yellow-800'
                       }`}>
                         {stripeStatus?.charges_enabled 
                           ? 'Compte Stripe connecté !' 
-                          : user?.iban_configured
-                          ? 'IBAN configuré !'
-                          : 'Paiement non configuré'}
+                          : 'Compte Stripe non configuré'}
                       </h3>
                       <p className={`text-sm ${
-                        stripeStatus?.charges_enabled || user?.iban_configured ? 'text-green-700' : 'text-yellow-700'
+                        stripeStatus?.charges_enabled ? 'text-green-700' : 'text-yellow-700'
                       }`}>
                         {stripeStatus?.charges_enabled 
-                          ? 'Vous pouvez recevoir des paiements pour vos ventes via Stripe.' 
-                          : user?.iban_configured
-                          ? `IBAN : ${user.iban_display || '****'} - Les paiements seront virés sur ce compte.`
-                          : 'Configurez votre méthode de paiement pour recevoir l\'argent de vos ventes.'}
+                          ? 'Vous pouvez recevoir des paiements pour vos ventes.' 
+                          : 'Configurez Stripe pour recevoir l\'argent de vos ventes.'}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Two payment options */}
-                {!stripeStatus?.charges_enabled && !user?.iban_configured && (
-                  <div className="space-y-6">
-                    <h4 className="font-semibold text-center">Choisissez votre méthode de paiement</h4>
-                    
-                    <div className="grid md:grid-cols-2 gap-4">
-                      {/* Option 1: IBAN Direct */}
-                      <div className="p-4 border-2 rounded-lg hover:border-accent transition-colors">
-                        <div className="flex items-center gap-2 mb-3">
-                          <Building2 className="w-5 h-5 text-accent" />
-                          <h5 className="font-semibold">Virement bancaire (IBAN)</h5>
-                          <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Simple</span>
+                {/* Benefits */}
+                {!stripeStatus?.charges_enabled && (
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Pourquoi connecter Stripe ?</h4>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
+                        <Shield className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-sm">Paiements sécurisés</p>
+                          <p className="text-xs text-muted-foreground">L&apos;argent est protégé jusqu&apos;à la livraison</p>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-4">
-                          Entrez simplement votre IBAN. Les paiements seront virés directement sur votre compte bancaire.
-                        </p>
-                        <ul className="text-xs text-muted-foreground space-y-1 mb-4">
-                          <li>✓ Pas de compte externe à créer</li>
-                          <li>✓ Virement direct sur votre compte</li>
-                          <li>✓ Comme sur eBay</li>
-                        </ul>
-                        <Button 
-                          variant="outline" 
-                          className="w-full"
-                          onClick={() => setShowIbanForm(true)}
-                        >
-                          <Building2 className="w-4 h-4 mr-2" />
-                          Entrer mon IBAN
-                        </Button>
                       </div>
-
-                      {/* Option 2: Stripe Connect */}
-                      <div className="p-4 border-2 rounded-lg hover:border-accent transition-colors">
-                        <div className="flex items-center gap-2 mb-3">
-                          <CreditCard className="w-5 h-5 text-accent" />
-                          <h5 className="font-semibold">Stripe Connect</h5>
-                          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Complet</span>
+                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
+                        <CreditCard className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-sm">Virements automatiques</p>
+                          <p className="text-xs text-muted-foreground">Recevez l&apos;argent directement sur votre compte</p>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-4">
-                          Créez un compte Stripe pour des fonctionnalités avancées et un dashboard complet.
-                        </p>
-                        <ul className="text-xs text-muted-foreground space-y-1 mb-4">
-                          <li>✓ Dashboard détaillé</li>
-                          <li>✓ Historique des transactions</li>
-                          <li>✓ Protection vendeur Stripe</li>
-                        </ul>
-                        <Button 
-                          onClick={handleStripeConnect} 
-                          disabled={stripeLoading}
-                          className="w-full bg-[#635BFF] hover:bg-[#635BFF]/90"
-                        >
-                          {stripeLoading ? (
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          ) : (
-                            <CreditCard className="w-4 h-4 mr-2" />
-                          )}
-                          Connecter Stripe
-                        </Button>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
+                        <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-sm">Badge vendeur vérifié</p>
+                          <p className="text-xs text-muted-foreground">Inspire confiance aux acheteurs</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
+                        <Mail className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-sm">Notifications</p>
+                          <p className="text-xs text-muted-foreground">Soyez alerté de chaque vente</p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* IBAN Form Modal */}
-                {showIbanForm && (
-                  <div className="p-4 border-2 border-accent rounded-lg bg-accent/5">
-                    <h5 className="font-semibold mb-4 flex items-center gap-2">
-                      <Building2 className="w-5 h-5" />
-                      Configurer mon IBAN
-                    </h5>
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="iban">IBAN *</Label>
-                        <Input
-                          id="iban"
-                          placeholder="FR76 1234 5678 9012 3456 7890 123"
-                          value={ibanValue}
-                          onChange={(e) => setIbanValue(e.target.value.toUpperCase())}
-                          className="font-mono"
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Votre IBAN français commence par FR
-                        </p>
-                      </div>
-                      <div>
-                        <Label htmlFor="bic">BIC (optionnel)</Label>
-                        <Input
-                          id="bic"
-                          placeholder="BNPAFRPP"
-                          value={bicValue}
-                          onChange={(e) => setBicValue(e.target.value.toUpperCase())}
-                          className="font-mono"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="account_holder">Titulaire du compte *</Label>
-                        <Input
-                          id="account_holder"
-                          placeholder="Votre nom complet"
-                          value={accountHolder}
-                          onChange={(e) => setAccountHolder(e.target.value)}
-                        />
-                      </div>
-                      <div className="flex gap-2">
-                        <Button 
-                          onClick={handleSaveIban}
-                          disabled={ibanLoading || !ibanValue || !accountHolder}
-                          className="flex-1 bg-accent hover:bg-accent/90"
-                        >
-                          {ibanLoading ? (
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          ) : (
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                          )}
-                          Enregistrer mon IBAN
-                        </Button>
-                        <Button 
-                          variant="outline"
-                          onClick={() => setShowIbanForm(false)}
-                        >
-                          Annuler
-                        </Button>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        🔒 Vos coordonnées bancaires sont chiffrées et sécurisées. Elles ne seront utilisées que pour vous verser vos gains.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Already configured - show options */}
-                {(stripeStatus?.charges_enabled || user?.iban_configured) && (
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    {stripeStatus?.charges_enabled && (
-                      <Button variant="outline" asChild>
-                        <a 
-                          href="https://dashboard.stripe.com" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                          Dashboard Stripe
-                        </a>
-                      </Button>
-                    )}
-                    {user?.iban_configured && (
-                      <Button 
-                        variant="outline"
-                        onClick={() => setShowIbanForm(true)}
+                {/* Action Button */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {stripeStatus?.charges_enabled ? (
+                    <Button variant="outline" asChild>
+                      <a 
+                        href="https://dashboard.stripe.com" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2"
                       >
-                        <Edit className="w-4 h-4 mr-2" />
-                        Modifier mon IBAN
-                      </Button>
-                    )}
-                  </div>
-                )}
-
-                {/* Stripe refresh link if needed */}
-                {stripeStatus?.connected && !stripeStatus?.charges_enabled && (
-                  <Button 
-                    onClick={handleRefreshStripeLink} 
-                    disabled={stripeLoading}
-                    className="bg-accent hover:bg-accent/90"
-                  >
-                    {stripeLoading ? (
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    ) : (
-                      <CreditCard className="w-4 h-4 mr-2" />
-                    )}
-                    Finaliser la configuration Stripe
-                  </Button>
-                )}
+                        <ExternalLink className="w-4 h-4" />
+                        Accéder au Dashboard Stripe
+                      </a>
+                    </Button>
+                  ) : stripeStatus?.connected && !stripeStatus?.charges_enabled ? (
+                    <Button 
+                      onClick={handleRefreshStripeLink} 
+                      disabled={stripeLoading}
+                      className="bg-accent hover:bg-accent/90"
+                    >
+                      {stripeLoading ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <CreditCard className="w-4 h-4 mr-2" />
+                      )}
+                      Finaliser la configuration
+                    </Button>
+                  ) : (
+                    <Button 
+                      onClick={handleStripeConnect} 
+                      disabled={stripeLoading}
+                      className="bg-accent hover:bg-accent/90"
+                    >
+                      {stripeLoading ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <CreditCard className="w-4 h-4 mr-2" />
+                      )}
+                      Connecter mon compte Stripe
+                    </Button>
+                  )}
+                </div>
 
                 {/* Info */}
                 <p className="text-xs text-muted-foreground">
-                  Commission : 5% (min 1,50€, max 15€) prélevée sur chaque vente. Les virements sont effectués sous 3-5 jours ouvrés.
+                  En connectant Stripe, vous acceptez les <a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">conditions d&apos;utilisation de Stripe</a>. 
+                  Une commission de 5% est prélevée sur chaque vente.
                 </p>
               </CardContent>
             </Card>
@@ -709,63 +528,58 @@ export default function Profile() {
 
           {/* Password Tab */}
           <TabsContent value="password">
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-heading">Changer le mot de passe</CardTitle>
-                  <CardDescription>Assurez-vous d&apos;utiliser un mot de passe fort et unique</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-md">
-                    <div className="space-y-2">
-                      <Label htmlFor="current_password">Mot de passe actuel</Label>
-                      <Input
-                        id="current_password"
-                        name="current_password"
-                        type="password"
-                        value={passwordData.current_password}
-                        onChange={handlePasswordChange}
-                        required
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="new_password">Nouveau mot de passe</Label>
-                      <Input
-                        id="new_password"
-                        name="new_password"
-                        type="password"
-                        value={passwordData.new_password}
-                        onChange={handlePasswordChange}
-                        required
-                        minLength={6}
-                      />
-                      <p className="text-xs text-muted-foreground">Minimum 6 caractères</p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="confirm_password">Confirmer le nouveau mot de passe</Label>
-                      <Input
-                        id="confirm_password"
-                        name="confirm_password"
-                        type="password"
-                        value={passwordData.confirm_password}
-                        onChange={handlePasswordChange}
-                        required
-                      />
-                    </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-heading">Changer le mot de passe</CardTitle>
+                <CardDescription>Assurez-vous d&apos;utiliser un mot de passe fort et unique</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-md">
+                  <div className="space-y-2">
+                    <Label htmlFor="current_password">Mot de passe actuel</Label>
+                    <Input
+                      id="current_password"
+                      name="current_password"
+                      type="password"
+                      value={passwordData.current_password}
+                      onChange={handlePasswordChange}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="new_password">Nouveau mot de passe</Label>
+                    <Input
+                      id="new_password"
+                      name="new_password"
+                      type="password"
+                      value={passwordData.new_password}
+                      onChange={handlePasswordChange}
+                      required
+                      minLength={6}
+                    />
+                    <p className="text-xs text-muted-foreground">Minimum 6 caractères</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm_password">Confirmer le nouveau mot de passe</Label>
+                    <Input
+                      id="confirm_password"
+                      name="confirm_password"
+                      type="password"
+                      value={passwordData.confirm_password}
+                      onChange={handlePasswordChange}
+                      required
+                    />
+                  </div>
 
-                    <Button type="submit" disabled={loading}>
-                      <Lock className="w-4 h-4 mr-2" />
-                      {loading ? 'Modification...' : 'Modifier le mot de passe'}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-
-              {/* 2FA Settings */}
-              <TwoFactorSettings />
-            </div>
+                  <Button type="submit" disabled={loading}>
+                    <Lock className="w-4 h-4 mr-2" />
+                    {loading ? 'Modification...' : 'Modifier le mot de passe'}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Danger Zone Tab */}

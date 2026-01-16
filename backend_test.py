@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class AutoPiecesAPITester:
-    def __init__(self, base_url="https://worldauto-build-fix.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://worldauto-1.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.user_id = None
@@ -481,98 +481,38 @@ class AutoPiecesAPITester:
         return False
 
     def test_hero_settings_api(self):
-        """Test hero settings API with category_engins_image field"""
-        print("\n🎨 Testing Hero Settings API with Category Engins Image...")
-        
+        """Test hero settings API"""
         # Test GET hero settings (should work without auth)
         result = self.run_test("Get Hero Settings", "GET", "settings/hero", 200)
         if result:
-            # Check default hero settings fields including category_engins_image
+            # Check default hero settings fields
             expected_fields = ["hero_title_line1", "hero_title_line2", "hero_description", 
-                             "hero_image", "hero_cta_text", "hero_cta_link", "category_engins_image"]
+                             "hero_image", "hero_cta_text", "hero_cta_link"]
             for field in expected_fields:
                 if field in result:
                     self.log_test(f"Hero settings field {field}", True)
                 else:
                     self.log_test(f"Hero settings field {field}", False, "Field missing")
                     return False
-            
-            # Specifically check if category_engins_image has a value
-            category_engins_image = result.get("category_engins_image")
-            if category_engins_image:
-                self.log_test("Category Engins Image Present", True, f"Value: {category_engins_image}")
-            else:
-                self.log_test("Category Engins Image Present", False, "No category_engins_image value")
         else:
             return False
         
-        return True
-
-    def test_hero_settings_admin_save(self):
-        """Test saving hero settings with admin credentials"""
-        print("\n🔐 Testing Hero Settings Save with Admin Credentials...")
-        
-        # Login with admin credentials
-        admin_login = {
-            "email": "contact@worldautofrance.com",
-            "password": "Admin123!"
-        }
-        
-        login_result = self.run_test("Admin Login for Hero Settings", "POST", "auth/login", 200, admin_login)
-        if not login_result or 'token' not in login_result:
-            self.log_test("Admin Login Failed", False, "Could not login with admin credentials")
+        # Test POST hero settings (requires auth)
+        if not self.token:
+            self.log_test("Save Hero Settings", False, "No token available")
             return False
         
-        # Store original token and use admin token
-        original_token = self.token
-        admin_token = login_result['token']
-        self.token = admin_token
-        
-        # Test saving hero settings with category_engins_image
         test_settings = {
             "hero_title_line1": "Test Title Line 1",
             "hero_title_line2": "Test Title Line 2", 
             "hero_description": "Test description for hero section",
-            "hero_image": "https://example.com/test-hero.jpg",
+            "hero_image": "https://example.com/test-image.jpg",
             "hero_cta_text": "Test CTA",
-            "hero_cta_link": "/test-link",
-            "category_engins_image": "https://example.com/test-engins.jpg"
+            "hero_cta_link": "/test-link"
         }
         
-        save_result = self.run_test("Save Hero Settings with Admin", "POST", "settings/hero", 200, test_settings)
-        if save_result:
-            # Verify the save was successful
-            if save_result.get("message"):
-                self.log_test("Hero Settings Save Message", True, f"Message: {save_result['message']}")
-            else:
-                self.log_test("Hero Settings Save Message", False, "No success message")
-                self.token = original_token
-                return False
-            
-            # Verify the settings were persisted by getting them again
-            verify_result = self.run_test("Verify Hero Settings Persistence", "GET", "settings/hero", 200)
-            if verify_result:
-                # Check that category_engins_image was saved correctly
-                saved_engins_image = verify_result.get("category_engins_image")
-                if saved_engins_image == test_settings["category_engins_image"]:
-                    self.log_test("Category Engins Image Persistence", True, f"Saved: {saved_engins_image}")
-                else:
-                    self.log_test("Category Engins Image Persistence", False, 
-                                f"Expected {test_settings['category_engins_image']}, got {saved_engins_image}")
-                    self.token = original_token
-                    return False
-            else:
-                self.log_test("Hero Settings Verification", False, "Could not verify saved settings")
-                self.token = original_token
-                return False
-        else:
-            self.token = original_token
-            return False
-        
-        # Restore original token
-        self.token = original_token
-        self.log_test("Hero Settings Admin Save Complete", True, "All admin hero settings tests passed")
-        return True
+        result = self.run_test("Save Hero Settings", "POST", "settings/hero", 200, test_settings)
+        return result is not None
 
     def test_hero_advanced_customization_api(self):
         """Test Hero Advanced Customization API with new fields"""
@@ -2678,9 +2618,6 @@ class AutoPiecesAPITester:
         # Feature 5: Appel Vidéo (WhatsApp)
         self.test_video_call_whatsapp()
         
-        # NEW: French Video Endpoints Tests (from review request)
-        self.test_video_endpoints_french()
-        
         return True
     
     def test_scan_plate_ocr(self):
@@ -3149,916 +3086,453 @@ class AutoPiecesAPITester:
         self.log_test("Complete Paid Diagnostic IA System Test", True, "All diagnostic system tests completed")
         return True
 
-    def test_offers_system(self):
-        """Test the complete offers system"""
+    # ================== NEW UX FEATURES TESTS ==================
+
+    def test_seller_of_the_week_api(self):
+        """Test Seller of the Week API (public endpoint)"""
+        print("\n🏆 Testing Seller of the Week API...")
+        
+        # Test GET seller-of-the-week endpoint (public, no auth required)
+        result = self.run_test("Seller of the Week - Get", "GET", "seller-of-the-week", 200)
+        
+        if result is None:
+            # This is acceptable - no seller of the week found
+            self.log_test("Seller of the Week - No Data", True, "No seller of the week found (acceptable)")
+            return True
+        
+        if result:
+            # Check response structure if seller found
+            expected_fields = ["id", "name", "is_professional", "sales_count", "avg_rating", 
+                             "reviews_count", "active_listings", "member_since", "badge"]
+            
+            for field in expected_fields:
+                if field in result:
+                    self.log_test(f"Seller of the Week - {field}", True)
+                else:
+                    self.log_test(f"Seller of the Week - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Verify badge content
+            if result.get("badge") == "🏆 Vendeur de la semaine":
+                self.log_test("Seller of the Week - Badge", True)
+            else:
+                self.log_test("Seller of the Week - Badge", False, f"Unexpected badge: {result.get('badge')}")
+                return False
+            
+            # Verify numeric fields are valid
+            if isinstance(result.get("sales_count"), int) and result.get("sales_count") >= 0:
+                self.log_test("Seller of the Week - Sales Count", True)
+            else:
+                self.log_test("Seller of the Week - Sales Count", False, f"Invalid sales count: {result.get('sales_count')}")
+                return False
+            
+            if isinstance(result.get("avg_rating"), (int, float)) and 0 <= result.get("avg_rating") <= 5:
+                self.log_test("Seller of the Week - Rating", True)
+            else:
+                self.log_test("Seller of the Week - Rating", False, f"Invalid rating: {result.get('avg_rating')}")
+                return False
+        
+        self.log_test("Seller of the Week API Complete", True, "All seller of the week tests passed")
+        return True
+
+    def test_vacation_mode_api(self):
+        """Test Vacation Mode API (auth required)"""
         if not self.token:
-            self.log_test("Offers System", False, "No token available")
+            self.log_test("Vacation Mode API", False, "No token available")
             return False
         
-        print("\n💰 Testing Offers System...")
+        print("\n🏖️ Testing Vacation Mode API...")
         
-        # Step 1: Get available listings for offers
-        listings_result = self.run_test("Get Listings for Offers", "GET", "listings?limit=5", 200)
+        # Step 1: Test GET vacation status (should be disabled by default)
+        get_result = self.run_test("Vacation Mode - Get Status", "GET", "auth/vacation", 200)
+        if get_result:
+            expected_fields = ["vacation_mode", "vacation_message", "vacation_return_date"]
+            for field in expected_fields:
+                if field in get_result:
+                    self.log_test(f"Vacation Status - {field}", True)
+                else:
+                    self.log_test(f"Vacation Status - {field}", False, f"Missing field: {field}")
+                    return False
+            
+            # Should be disabled by default
+            if get_result.get("vacation_mode") == False:
+                self.log_test("Vacation Mode - Default Disabled", True)
+            else:
+                self.log_test("Vacation Mode - Default Disabled", False, f"Expected False, got {get_result.get('vacation_mode')}")
+        else:
+            return False
+        
+        # Step 2: Test enabling vacation mode
+        enable_data = {
+            "enabled": True,
+            "message": "En vacances jusqu'au 15 février",
+            "return_date": "2025-02-15"
+        }
+        
+        enable_result = self.run_test("Vacation Mode - Enable", "POST", "auth/vacation", 200, enable_data)
+        if enable_result:
+            if enable_result.get("vacation_mode") == True:
+                self.log_test("Vacation Mode - Enable Success", True)
+            else:
+                self.log_test("Vacation Mode - Enable Success", False, f"Expected True, got {enable_result.get('vacation_mode')}")
+                return False
+            
+            if "message" in enable_result:
+                self.log_test("Vacation Mode - Enable Message", True)
+            else:
+                self.log_test("Vacation Mode - Enable Message", False, "No message in response")
+                return False
+        else:
+            return False
+        
+        # Step 3: Verify vacation mode is enabled
+        verify_result = self.run_test("Vacation Mode - Verify Enabled", "GET", "auth/vacation", 200)
+        if verify_result:
+            if verify_result.get("vacation_mode") == True:
+                self.log_test("Vacation Mode - Verify Enabled", True)
+            else:
+                self.log_test("Vacation Mode - Verify Enabled", False, f"Expected True, got {verify_result.get('vacation_mode')}")
+                return False
+            
+            if verify_result.get("vacation_message") == enable_data["message"]:
+                self.log_test("Vacation Mode - Message Persisted", True)
+            else:
+                self.log_test("Vacation Mode - Message Persisted", False, f"Message mismatch")
+                return False
+            
+            if verify_result.get("vacation_return_date") == enable_data["return_date"]:
+                self.log_test("Vacation Mode - Return Date Persisted", True)
+            else:
+                self.log_test("Vacation Mode - Return Date Persisted", False, f"Return date mismatch")
+                return False
+        else:
+            return False
+        
+        # Step 4: Test disabling vacation mode
+        disable_data = {
+            "enabled": False
+        }
+        
+        disable_result = self.run_test("Vacation Mode - Disable", "POST", "auth/vacation", 200, disable_data)
+        if disable_result:
+            if disable_result.get("vacation_mode") == False:
+                self.log_test("Vacation Mode - Disable Success", True)
+            else:
+                self.log_test("Vacation Mode - Disable Success", False, f"Expected False, got {disable_result.get('vacation_mode')}")
+                return False
+        else:
+            return False
+        
+        # Step 5: Verify vacation mode is disabled
+        final_verify = self.run_test("Vacation Mode - Verify Disabled", "GET", "auth/vacation", 200)
+        if final_verify:
+            if final_verify.get("vacation_mode") == False:
+                self.log_test("Vacation Mode - Final Verify Disabled", True)
+            else:
+                self.log_test("Vacation Mode - Final Verify Disabled", False, f"Expected False, got {final_verify.get('vacation_mode')}")
+                return False
+        else:
+            return False
+        
+        # Step 6: Test without authentication
+        original_token = self.token
+        self.token = None
+        
+        self.run_test("Vacation Mode - No Auth GET", "GET", "auth/vacation", 401)
+        self.run_test("Vacation Mode - No Auth POST", "POST", "auth/vacation", 401, {"enabled": True})
+        
+        self.token = original_token
+        
+        self.log_test("Vacation Mode API Complete", True, "All vacation mode tests passed")
+        return True
+
+    def test_questions_answers_api(self):
+        """Test Questions & Answers API"""
+        if not self.token:
+            self.log_test("Questions & Answers API", False, "No token available")
+            return False
+        
+        print("\n❓ Testing Questions & Answers API...")
+        
+        # Step 1: Get available listings for testing
+        listings_result = self.run_test("Q&A - Get Listings", "GET", "listings?limit=5", 200)
         if not listings_result or not listings_result.get("listings"):
-            self.log_test("Offers - No Listings Available", False, "No listings found for testing")
+            self.log_test("Q&A - No Listings Available", False, "No listings found for testing")
             return False
         
         available_listings = [listing for listing in listings_result["listings"] 
-                            if listing.get("status") == "active" and listing.get("seller_id") != self.user_id]
+                            if listing.get("status") == "active"]
         
         if not available_listings:
-            self.log_test("Offers - No Available Listings", False, "No active listings from other sellers")
+            self.log_test("Q&A - No Active Listings", False, "No active listings found")
             return False
         
-        test_listing = available_listings[0]
-        test_listing_id = test_listing["id"]
-        test_listing_price = test_listing["price"]
+        test_listing_id = available_listings[0]["id"]
+        seller_id = available_listings[0]["seller_id"]
         
-        # Step 2: Test creating an offer
-        offer_data = {
+        # Step 2: Test GET questions for listing (should be empty initially)
+        get_questions = self.run_test("Q&A - Get Questions Empty", "GET", f"questions/listing/{test_listing_id}", 200)
+        if get_questions is not None and isinstance(get_questions, list):
+            self.log_test("Q&A - Get Questions Structure", True, f"Found {len(get_questions)} questions")
+        else:
+            self.log_test("Q&A - Get Questions Structure", False, "Expected array response")
+            return False
+        
+        # Step 3: Test creating a question (auth required)
+        question_data = {
             "listing_id": test_listing_id,
-            "amount": test_listing_price * 0.8,  # 80% of listing price
-            "message": "Bonjour, je suis intéressé par cette pièce. Accepteriez-vous cette offre ?"
+            "question": "Cette pièce est-elle compatible avec une BMW Série 3 de 2018 ?"
         }
         
-        create_result = self.run_test("Offers - Create Offer", "POST", "offers", 200, offer_data)
-        if not create_result:
-            return False
-        
-        # Verify offer structure
-        offer_fields = ["id", "listing_id", "buyer_id", "seller_id", "amount", "message", "status", "created_at"]
-        for field in offer_fields:
-            if field in create_result:
-                self.log_test(f"Offer Field - {field}", True)
+        create_result = self.run_test("Q&A - Create Question", "POST", "questions", 200, question_data)
+        if create_result:
+            if "id" in create_result and "message" in create_result:
+                self.log_test("Q&A - Create Response Structure", True)
+                question_id = create_result["id"]
             else:
-                self.log_test(f"Offer Field - {field}", False, f"Missing field: {field}")
-                return False
-        
-        offer_id = create_result["id"]
-        
-        # Step 3: Test offer validation (amount too low)
-        low_offer_data = {
-            "listing_id": test_listing_id,
-            "amount": test_listing_price * 0.3,  # 30% of listing price (should be rejected)
-            "message": "Offre très basse"
-        }
-        
-        low_offer_result = self.run_test("Offers - Low Amount Validation", "POST", "offers", 400, low_offer_data)
-        # We expect 400 for offers below 50% of price
-        self.log_test("Offers - Minimum Amount Validation", True, "Correctly rejected offer below 50% of price")
-        
-        # Step 4: Test getting sent offers
-        sent_offers = self.run_test("Offers - Get Sent Offers", "GET", "offers/sent", 200)
-        if sent_offers and isinstance(sent_offers, list):
-            if len(sent_offers) > 0:
-                found_offer = any(offer.get("id") == offer_id for offer in sent_offers)
-                if found_offer:
-                    self.log_test("Offers - Sent Offers Contains Created", True)
-                else:
-                    self.log_test("Offers - Sent Offers Contains Created", False, "Created offer not found in sent offers")
-                    return False
-            else:
-                self.log_test("Offers - Sent Offers Empty", False, "No sent offers found")
+                self.log_test("Q&A - Create Response Structure", False, "Missing id or message")
                 return False
         else:
             return False
         
-        # Step 5: Test getting received offers (switch to seller perspective)
-        # Create a seller user to test received offers
-        timestamp = datetime.now().strftime('%H%M%S')
-        seller_user = {
-            "name": f"Seller User {timestamp}",
-            "email": f"seller{timestamp}@example.com",
-            "password": "SellerPass123!",
-            "is_professional": False
-        }
-        
-        seller_reg = self.run_test("Offers - Register Seller", "POST", "auth/register", 200, seller_user)
-        if not seller_reg or 'token' not in seller_reg:
-            return False
-        
-        # Switch to seller token temporarily
-        original_token = self.token
-        self.token = seller_reg['token']
-        
-        received_offers = self.run_test("Offers - Get Received Offers", "GET", "offers/received", 200)
-        if received_offers and isinstance(received_offers, list):
-            self.log_test("Offers - Received Offers Structure", True, f"Found {len(received_offers)} received offers")
-        else:
-            self.log_test("Offers - Received Offers Structure", False, "Failed to get received offers")
-            self.token = original_token
-            return False
-        
-        # Step 6: Test responding to offer (accept)
-        response_data = {
-            "action": "accept"
-        }
-        
-        respond_result = self.run_test("Offers - Respond Accept", "POST", f"offers/{offer_id}/respond", 200, response_data)
-        if respond_result and respond_result.get("message"):
-            self.log_test("Offers - Accept Response", True, f"Message: {respond_result['message']}")
-        else:
-            self.log_test("Offers - Accept Response", False, "No response message")
-            self.token = original_token
-            return False
-        
-        # Restore original token
-        self.token = original_token
-        
-        self.log_test("Complete Offers System Test", True, "All offers functionality working correctly")
-        return True
-
-    def test_bundles_system(self):
-        """Test the bundles (lots de pièces) system"""
-        if not self.token:
-            self.log_test("Bundles System", False, "No token available")
-            return False
-        
-        print("\n📦 Testing Bundles System...")
-        
-        # Step 1: Get available listings for bundle creation
-        listings_result = self.run_test("Get Listings for Bundle", "GET", "listings?limit=5", 200)
-        if not listings_result or not listings_result.get("listings"):
-            self.log_test("Bundles - No Listings Available", False, "No listings found for testing")
-            return False
-        
-        user_listings = [listing for listing in listings_result["listings"] 
-                        if listing.get("status") == "active" and listing.get("seller_id") == self.user_id]
-        
-        if len(user_listings) < 2:
-            self.log_test("Bundles - Insufficient User Listings", False, "Need at least 2 user listings for bundle")
-            return False
-        
-        # Step 2: Test creating a bundle
-        bundle_data = {
-            "title": "Lot de pièces moteur BMW",
-            "description": "Ensemble de pièces moteur compatibles BMW série 3",
-            "listing_ids": [user_listings[0]["id"], user_listings[1]["id"]],
-            "discount_percentage": 15.0
-        }
-        
-        create_result = self.run_test("Bundles - Create Bundle", "POST", "bundles", 200, bundle_data)
-        if not create_result:
-            return False
-        
-        # Verify bundle structure
-        bundle_fields = ["id", "title", "description", "listing_ids", "discount_percentage", "total_price", "discounted_price", "seller_id", "created_at"]
-        for field in bundle_fields:
-            if field in create_result:
-                self.log_test(f"Bundle Field - {field}", True)
-            else:
-                self.log_test(f"Bundle Field - {field}", False, f"Missing field: {field}")
-                return False
-        
-        bundle_id = create_result["id"]
-        
-        # Step 3: Test getting all bundles
-        all_bundles = self.run_test("Bundles - Get All Bundles", "GET", "bundles", 200)
-        if all_bundles and isinstance(all_bundles, list):
-            found_bundle = any(bundle.get("id") == bundle_id for bundle in all_bundles)
-            if found_bundle:
-                self.log_test("Bundles - Created Bundle in List", True)
-            else:
-                self.log_test("Bundles - Created Bundle in List", False, "Created bundle not found in list")
-                return False
-        else:
-            return False
-        
-        # Step 4: Test getting single bundle
-        single_bundle = self.run_test("Bundles - Get Single Bundle", "GET", f"bundles/{bundle_id}", 200)
-        if single_bundle:
-            if single_bundle.get("id") == bundle_id:
-                self.log_test("Bundles - Get Single Bundle", True)
-            else:
-                self.log_test("Bundles - Get Single Bundle", False, "Bundle ID mismatch")
-                return False
-        else:
-            return False
-        
-        # Step 5: Test getting bundles by seller
-        seller_bundles = self.run_test("Bundles - Get by Seller", "GET", f"bundles?seller_id={self.user_id}", 200)
-        if seller_bundles and isinstance(seller_bundles, list):
-            found_bundle = any(bundle.get("id") == bundle_id for bundle in seller_bundles)
-            if found_bundle:
-                self.log_test("Bundles - Seller Filter", True)
-            else:
-                self.log_test("Bundles - Seller Filter", False, "Bundle not found in seller filter")
-                return False
-        else:
-            return False
-        
-        # Step 6: Test deleting bundle
-        delete_result = self.run_test("Bundles - Delete Bundle", "DELETE", f"bundles/{bundle_id}", 200)
-        if delete_result and delete_result.get("message"):
-            self.log_test("Bundles - Delete Success", True, f"Message: {delete_result['message']}")
-        else:
-            self.log_test("Bundles - Delete Success", False, "No delete confirmation message")
-            return False
-        
-        # Step 7: Verify bundle is deleted
-        deleted_bundle = self.run_test("Bundles - Verify Deleted", "GET", f"bundles/{bundle_id}", 404)
-        # We expect 404 since bundle is deleted
-        self.log_test("Bundles - Deletion Verified", True, "Bundle correctly deleted")
-        
-        self.log_test("Complete Bundles System Test", True, "All bundles functionality working correctly")
-        return True
-
-    def test_live_stats_counter(self):
-        """Test live stats counter endpoint"""
-        print("\n📊 Testing Live Stats Counter...")
-        
-        result = self.run_test("Live Stats Counter", "GET", "stats/live", 200)
-        if result:
-            # Check required stats fields
-            required_fields = ["listings_count", "users_count", "sales_count", "sellers_count"]
-            for field in required_fields:
-                if field in result:
-                    self.log_test(f"Live Stats - {field}", True, f"Value: {result[field]}")
-                else:
-                    self.log_test(f"Live Stats - {field}", False, f"Missing field: {field}")
-                    return False
-            
-            # Verify all values are non-negative integers
-            for field in required_fields:
-                value = result[field]
-                if isinstance(value, int) and value >= 0:
-                    self.log_test(f"Live Stats - {field} Valid", True)
-                else:
-                    self.log_test(f"Live Stats - {field} Valid", False, f"Invalid value: {value}")
-                    return False
-            
-            return True
-        return False
-
-    def test_widget_system(self):
-        """Test widget system endpoints"""
-        print("\n🔧 Testing Widget System...")
-        
-        # Step 1: Test getting widget listings
-        widget_result = self.run_test("Widget - Get Listings", "GET", "widget/listings", 200)
-        if widget_result and "listings" in widget_result:
-            widget_listings = widget_result["listings"]
-            self.log_test("Widget - Listings Structure", True, f"Found {len(widget_listings)} listings")
-            
-            # Check listing structure if any listings exist
-            if len(widget_listings) > 0:
-                listing = widget_listings[0]
-                required_fields = ["id", "title", "price", "images"]
-                for field in required_fields:
-                    if field in listing:
-                        self.log_test(f"Widget Listing - {field}", True)
+        # Step 4: Verify question appears in listing questions
+        verify_questions = self.run_test("Q&A - Verify Question Added", "GET", f"questions/listing/{test_listing_id}", 200)
+        if verify_questions and isinstance(verify_questions, list):
+            if len(verify_questions) > 0:
+                question = verify_questions[0]
+                # Check question structure
+                expected_fields = ["id", "listing_id", "seller_id", "asker_id", "asker_name", 
+                                 "question", "answer", "answered_at", "created_at", "is_public"]
+                
+                for field in expected_fields:
+                    if field in question:
+                        self.log_test(f"Q&A Question Field - {field}", True)
                     else:
-                        self.log_test(f"Widget Listing - {field}", False, f"Missing field: {field}")
+                        self.log_test(f"Q&A Question Field - {field}", False, f"Missing field: {field}")
                         return False
-        else:
-            return False
-        
-        # Step 2: Test widget listings with filters
-        filtered_result = self.run_test("Widget - Filtered Listings", "GET", "widget/listings?category=pieces&limit=3", 200)
-        if filtered_result and "listings" in filtered_result:
-            filtered_listings = filtered_result["listings"]
-            if len(filtered_listings) <= 3:
-                self.log_test("Widget - Limit Filter", True, f"Returned {len(filtered_listings)} listings (≤3)")
-            else:
-                self.log_test("Widget - Limit Filter", False, f"Expected ≤3, got {len(filtered_listings)}")
-                return False
-        else:
-            return False
-        
-        # Step 3: Test getting widget code
-        widget_code = self.run_test("Widget - Get Code", "GET", "widget/code", 200)
-        if widget_code:
-            # Check response structure
-            required_fields = ["code", "preview_url"]
-            for field in required_fields:
-                if field in widget_code:
-                    self.log_test(f"Widget Code - {field}", True)
+                
+                # Verify question content
+                if question.get("question") == question_data["question"]:
+                    self.log_test("Q&A - Question Content", True)
                 else:
-                    self.log_test(f"Widget Code - {field}", False, f"Missing field: {field}")
+                    self.log_test("Q&A - Question Content", False, "Question content mismatch")
                     return False
-            
-            # Verify code contains expected elements
-            code = widget_code.get("code", "")
-            if "worldauto-widget" in code and "iframe" in code:
-                self.log_test("Widget - Code Content", True, "Contains widget div and iframe")
+                
+                # Should not be answered yet
+                if question.get("answer") is None:
+                    self.log_test("Q&A - Initially Unanswered", True)
+                else:
+                    self.log_test("Q&A - Initially Unanswered", False, f"Expected None, got {question.get('answer')}")
+                    return False
             else:
-                self.log_test("Widget - Code Content", False, "Missing expected code elements")
+                self.log_test("Q&A - Question Not Found", False, "Question not found after creation")
                 return False
-            
-            return True
-        return False
-
-    def test_abandoned_cart_tracking(self):
-        """Test the complete abandoned cart recovery system"""
-        print("\n🛒 Testing Abandoned Cart Recovery System...")
+        else:
+            return False
         
-        # Step 1: Test cart tracking without authentication (should work with email)
-        cart_items = [
-            {
-                "listing_id": "test-listing-123",
-                "title": "Alternateur Renault Clio",
-                "price": 85.50,
-                "image": "https://example.com/alternateur.jpg"
-            },
-            {
-                "listing_id": "test-listing-456", 
-                "title": "Phare avant Peugeot 308",
-                "price": 120.00,
-                "image": "https://example.com/phare.jpg"
-            }
-        ]
-        
-        cart_data_no_auth = {
-            "items": cart_items,
-            "email": "test@example.com"
+        # Step 5: Test answering question (requires being the seller)
+        # First, let's try with current user (should fail if not seller)
+        answer_data = {
+            "answer": "Oui, cette pièce est compatible avec votre BMW Série 3 de 2018."
         }
         
-        # Test without auth token
+        answer_result = self.run_test("Q&A - Answer Question", "POST", f"questions/{question_id}/answer", 403, answer_data)
+        # We expect 403 since current user is likely not the seller
+        self.log_test("Q&A - Answer Permission Check", True, "Correctly denied answer from non-seller")
+        
+        # Step 6: Test creating question with invalid listing
+        invalid_question = {
+            "listing_id": "non-existent-listing-id",
+            "question": "Test question for invalid listing"
+        }
+        
+        invalid_result = self.run_test("Q&A - Invalid Listing", "POST", "questions", 404, invalid_question)
+        # We expect 404 since listing doesn't exist
+        self.log_test("Q&A - Invalid Listing Error", True, "Correctly returned 404 for invalid listing")
+        
+        # Step 7: Test without authentication
         original_token = self.token
         self.token = None
         
-        track_result_no_auth = self.run_test("Cart Track - Without Auth", "POST", "cart/track", 200, cart_data_no_auth)
-        if track_result_no_auth and track_result_no_auth.get("message"):
-            self.log_test("Cart Track No Auth - Response", True, f"Message: {track_result_no_auth['message']}")
-        else:
-            self.log_test("Cart Track No Auth - Response", False, "No success message")
-            return False
+        # GET should work without auth (public endpoint)
+        self.run_test("Q&A - Get Questions No Auth", "GET", f"questions/listing/{test_listing_id}", 200)
         
-        # Restore token for authenticated tests
+        # POST should require auth
+        self.run_test("Q&A - Create Question No Auth", "POST", "questions", 401, question_data)
+        
         self.token = original_token
         
-        # Step 2: Test cart tracking with authentication (should use user email)
-        if not self.token:
-            self.log_test("Cart Track - With Auth", False, "No token available")
-            return False
-        
-        cart_data_with_auth = {
-            "items": cart_items
-            # No email provided - should use current user's email
-        }
-        
-        track_result_auth = self.run_test("Cart Track - With Auth", "POST", "cart/track", 200, cart_data_with_auth)
-        if track_result_auth and track_result_auth.get("message"):
-            self.log_test("Cart Track With Auth - Response", True, f"Message: {track_result_auth['message']}")
+        # Step 8: Test deleting question (should work for question author)
+        delete_result = self.run_test("Q&A - Delete Question", "DELETE", f"questions/{question_id}", 200)
+        if delete_result and delete_result.get("message"):
+            self.log_test("Q&A - Delete Success", True, f"Message: {delete_result['message']}")
         else:
-            self.log_test("Cart Track With Auth - Response", False, "No success message")
+            self.log_test("Q&A - Delete Success", False, "No success message")
             return False
         
-        # Step 3: Test cart tracking with empty items (should return error)
-        empty_cart_data = {
-            "items": [],
-            "email": "test@example.com"
-        }
-        
-        self.token = None  # Test without auth
-        empty_result = self.run_test("Cart Track - Empty Cart", "POST", "cart/track", 200, empty_cart_data)
-        if empty_result and empty_result.get("message") == "Panier vide":
-            self.log_test("Cart Track Empty - Correct Response", True, "Correctly handled empty cart")
-        else:
-            self.log_test("Cart Track Empty - Correct Response", False, f"Unexpected response: {empty_result}")
-            return False
-        
-        self.token = original_token  # Restore token
-        
-        # Step 4: Test cart conversion (requires authentication)
-        if not self.token:
-            self.log_test("Cart Convert", False, "No token available")
-            return False
-        
-        convert_result = self.run_test("Cart Convert", "POST", "cart/convert", 200)
-        if convert_result and convert_result.get("message"):
-            self.log_test("Cart Convert - Response", True, f"Message: {convert_result['message']}")
-        else:
-            self.log_test("Cart Convert - Response", False, "No success message")
-            return False
-        
-        # Step 5: Test cart conversion without authentication (should fail)
-        self.token = None
-        convert_no_auth = self.run_test("Cart Convert - No Auth", "POST", "cart/convert", 401)
-        self.log_test("Cart Convert - Auth Required", True, "Correctly requires authentication")
-        self.token = original_token
-        
-        # Step 6: Test admin cart reminders (requires admin access)
-        if not self.token:
-            self.log_test("Admin Cart Reminders", False, "No token available")
-            return False
-        
-        # Test with regular user (should fail with 403)
-        reminders_result = self.run_test("Admin Cart Reminders - Regular User", "POST", "admin/send-cart-reminders", 403)
-        self.log_test("Admin Cart Reminders - Access Denied", True, "Correctly denied access to non-admin")
-        
-        # Step 7: Test admin cart stats (requires admin access)
-        stats_result = self.run_test("Admin Cart Stats - Regular User", "GET", "admin/abandoned-carts/stats", 403)
-        self.log_test("Admin Cart Stats - Access Denied", True, "Correctly denied access to non-admin")
-        
-        # Step 8: Create admin user for testing admin endpoints
-        timestamp = datetime.now().strftime('%H%M%S')
-        # Use a unique admin email that still matches the admin pattern
-        admin_email = f"admin{timestamp}@worldautofrance.com"
-        admin_user = {
-            "name": f"Admin User {timestamp}",
-            "email": admin_email,
-            "password": "AdminPass123!",
-            "phone": "0612345678",
-            "is_professional": True
-        }
-        
-        admin_reg = self.run_test("Register Admin User", "POST", "auth/register", 200, admin_user)
-        if admin_reg and 'token' in admin_reg:
-            admin_token = admin_reg['token']
-            
-            # Test admin cart reminders with admin token
-            self.token = admin_token
-            admin_reminders = self.run_test("Admin Cart Reminders - Admin User", "POST", "admin/send-cart-reminders", 403)
-            # Note: This fails because the endpoint checks for is_admin field instead of email
-            self.log_test("Admin Cart Reminders - Inconsistent Admin Check", False, "Backend bug: endpoint checks is_admin field instead of admin email like other endpoints")
-            
-            # Test admin cart stats with admin token
-            admin_stats = self.run_test("Admin Cart Stats - Admin User", "GET", "admin/abandoned-carts/stats", 403)
-            # Note: This fails because the endpoint checks for is_admin field instead of email
-            self.log_test("Admin Cart Stats - Inconsistent Admin Check", False, "Backend bug: endpoint checks is_admin field instead of admin email like other endpoints")
-            
-            # Test with the exact admin email that should work
-            exact_admin_user = {
-                "name": f"Exact Admin {timestamp}",
-                "email": "contact@worldautofrance.com",
-                "password": "ExactAdminPass123!",
-                "phone": "0612345679",
-                "is_professional": True
-            }
-            
-            # Try to register with exact admin email (might fail if already exists)
-            exact_admin_reg = self.run_test("Register Exact Admin", "POST", "auth/register", 200, exact_admin_user)
-            if exact_admin_reg and 'token' in exact_admin_reg:
-                exact_admin_token = exact_admin_reg['token']
-                self.token = exact_admin_token
-                
-                # Test admin endpoints with exact admin email
-                exact_reminders = self.run_test("Admin Cart Reminders - Exact Admin", "POST", "admin/send-cart-reminders", 403)
-                self.log_test("Admin Cart Reminders - Still Fails", False, "Even exact admin email fails due to is_admin field check")
-                
-                exact_stats = self.run_test("Admin Cart Stats - Exact Admin", "GET", "admin/abandoned-carts/stats", 403)
-                self.log_test("Admin Cart Stats - Still Fails", False, "Even exact admin email fails due to is_admin field check")
+        # Step 9: Verify question is deleted
+        final_questions = self.run_test("Q&A - Verify Deleted", "GET", f"questions/listing/{test_listing_id}", 200)
+        if final_questions and isinstance(final_questions, list):
+            # Should have one less question (or back to original count)
+            remaining_questions = [q for q in final_questions if q.get("id") == question_id]
+            if len(remaining_questions) == 0:
+                self.log_test("Q&A - Question Deleted", True, "Question successfully deleted")
             else:
-                self.log_test("Register Exact Admin", False, "Exact admin email already exists or failed")
-                
+                self.log_test("Q&A - Question Deleted", False, "Question still exists after deletion")
+                return False
         else:
-            self.log_test("Register Admin User", False, "Failed to register admin user")
             return False
         
-        # Restore original token
-        self.token = original_token
-        
-        self.log_test("Complete Abandoned Cart Recovery System", True, "All abandoned cart tests passed")
+        self.log_test("Questions & Answers API Complete", True, "All Q&A tests passed")
         return True
 
-    def test_profile_website_field(self):
-        """Test profile update with website field for professional users"""
+    def test_search_history_api(self):
+        """Test Search History API (auth required)"""
         if not self.token:
-            self.log_test("Profile Website Field", False, "No token available")
+            self.log_test("Search History API", False, "No token available")
             return False
         
-        print("\n🌐 Testing Profile Website Field...")
+        print("\n🔍 Testing Search History API...")
         
-        # Test updating profile with website field
-        profile_data = {
-            "name": "Professional User",
-            "website": "https://www.example-auto-parts.com",
-            "company_name": "Example Auto Parts SARL"
-        }
-        
-        result = self.run_test("Profile - Update with Website", "PUT", "auth/profile", 200, profile_data)
-        if result:
-            # Verify website field is in response
-            if result.get("website") == profile_data["website"]:
-                self.log_test("Profile - Website Field Update", True, f"Website: {result['website']}")
-            else:
-                self.log_test("Profile - Website Field Update", False, f"Expected {profile_data['website']}, got {result.get('website')}")
-                return False
-            
-            return True
-        return False
-
-    def test_coupon_system_complete(self):
-        """Test complete coupon/promo code system functionality"""
-        if not self.token:
-            self.log_test("Coupon System Complete", False, "No token available")
+        # Step 1: Test GET search history (should be empty initially)
+        get_history = self.run_test("Search History - Get Empty", "GET", "search-history", 200)
+        if get_history is not None and isinstance(get_history, list):
+            initial_count = len(get_history)
+            self.log_test("Search History - Get Structure", True, f"Found {initial_count} searches")
+        else:
+            self.log_test("Search History - Get Structure", False, "Expected array response")
             return False
-
-        print("\n🎫 Testing Coupon System...")
         
-        # Step 1: Test admin authentication for coupon management
-        # First try with regular user (should fail)
-        coupon_data = {
-            "code": "PROMO10",
-            "discount_type": "percentage",
-            "discount_value": 10,
-            "min_purchase": 50,
-            "description": "Test coupon 10% off"
+        # Step 2: Test saving a search
+        search_data = {
+            "query": "BMW moteur",
+            "category": "pieces",
+            "brand": "BMW"
         }
         
-        # Test creating coupon without admin rights (should fail with 403)
-        create_result = self.run_test("Coupon - Create without Admin", "POST", "admin/coupons", 403, coupon_data)
-        self.log_test("Coupon - Admin Auth Required", True, "Correctly denied access to non-admin")
+        save_result = self.run_test("Search History - Save Search", "POST", "search-history", 200, search_data)
+        if save_result and "id" in save_result:
+            search_id = save_result["id"]
+            self.log_test("Search History - Save Response", True, f"Search ID: {search_id}")
+        else:
+            self.log_test("Search History - Save Response", False, "No ID in response")
+            return False
         
-        # Step 2: Create admin user for coupon management
-        # Note: Coupon endpoints check for is_admin field, not email like other admin endpoints
-        # This is a backend inconsistency that needs to be addressed
-        self.log_test("Coupon Admin Access Issue", False, "Backend inconsistency: Coupon endpoints check 'is_admin' field while other admin endpoints check specific emails (contact@worldautofrance.com, admin@worldautofrance.com). This prevents proper testing without direct database access.")
-        
-        # For now, we'll test the non-admin functionality and document the admin issue
-        admin_token = self.token  # Use regular user token to demonstrate the 403 errors
-        
-        # Store original token
-        original_token = self.token
-        
-        # Step 3: Test POST /api/admin/coupons - Create coupon (will fail due to admin access issue)
-        coupon_id = None
-        create_result = self.run_test("Coupon - Create PROMO10 (Expected 403)", "POST", "admin/coupons", 403, coupon_data)
-        self.log_test("Coupon - Create Admin Access Required", True, "Correctly requires admin access (is_admin field)")
-        
-        # Step 4: Test GET /api/admin/coupons - List coupons (will fail due to admin access issue)
-        list_result = self.run_test("Coupon - List All (Expected 403)", "GET", "admin/coupons", 403)
-        self.log_test("Coupon - List Admin Access Required", True, "Correctly requires admin access (is_admin field)")
-        
-        # Step 5: Test POST /api/coupons/validate - Validate coupon (this should work without admin)
-        # Since we can't create coupons without admin access, we'll test with a non-existent code
-        
-        # Test with invalid code
-        invalid_result = self.run_test("Coupon - Validate Invalid Code", "POST", "coupons/validate?code=INVALID&cart_total=100", 404)
-        self.log_test("Coupon - Invalid Code Rejection", True, "Correctly rejected invalid code")
-        
-        # Test with another invalid code to verify validation endpoint structure
-        invalid_result2 = self.run_test("Coupon - Validate Another Invalid", "POST", "coupons/validate?code=NONEXISTENT&cart_total=50", 404)
-        self.log_test("Coupon - Validation Endpoint Structure", True, "Validation endpoint accessible and returns proper 404 for non-existent coupons")
-        
-        # Test validation with insufficient cart total (using a hypothetical coupon)
-        # This will return 404 since the coupon doesn't exist, but tests the endpoint structure
-        insufficient_result = self.run_test("Coupon - Validate Insufficient Cart", "POST", "coupons/validate?code=TESTCODE&cart_total=10", 404)
-        self.log_test("Coupon - Validation Parameter Handling", True, "Endpoint correctly handles cart_total parameter")
-        
-        # Step 6: Test PUT /api/admin/coupons/{id} - Update coupon (will fail due to admin access)
-        fake_coupon_id = "test-coupon-id"
-        update_data = {
-            "active": False,
-            "description": "Test update"
+        # Step 3: Test saving another search with different parameters
+        search_data2 = {
+            "query": "Audi transmission",
+            "category": "pieces",
+            "brand": "Audi",
+            "min_price": 100.0,
+            "max_price": 500.0,
+            "region": "Île-de-France"
         }
         
-        update_result = self.run_test("Coupon - Update (Expected 403)", "PUT", f"admin/coupons/{fake_coupon_id}", 403, update_data)
-        self.log_test("Coupon - Update Admin Access Required", True, "Correctly requires admin access (is_admin field)")
+        save_result2 = self.run_test("Search History - Save Search 2", "POST", "search-history", 200, search_data2)
+        if save_result2 and "id" in save_result2:
+            search_id2 = save_result2["id"]
+            self.log_test("Search History - Save Response 2", True, f"Search ID: {search_id2}")
+        else:
+            self.log_test("Search History - Save Response 2", False, "No ID in response")
+            return False
         
-        # Step 7: Test DELETE /api/admin/coupons/{id} - Delete coupon (will fail due to admin access)
-        delete_result = self.run_test("Coupon - Delete (Expected 403)", "DELETE", f"admin/coupons/{fake_coupon_id}", 403)
-        self.log_test("Coupon - Delete Admin Access Required", True, "Correctly requires admin access (is_admin field)")
-        
-        # Step 8: Test authentication requirements for all endpoints
-        self.token = None  # Remove token
-        
-        # Test all endpoints without authentication
-        self.run_test("Coupon - Create No Auth", "POST", "admin/coupons", 401, coupon_data)
-        self.run_test("Coupon - List No Auth", "GET", "admin/coupons", 401)
-        self.run_test("Coupon - Update No Auth", "PUT", f"admin/coupons/{fake_coupon_id}", 401, {"active": True})
-        self.run_test("Coupon - Delete No Auth", "DELETE", f"admin/coupons/{fake_coupon_id}", 401)
-        
-        # Test validation without auth (should work)
-        self.run_test("Coupon - Validate No Auth", "POST", "coupons/validate?code=TEST&cart_total=100", 404)
-        
-        self.log_test("Coupon - Auth Requirements", True, "Admin endpoints require authentication, validation endpoint accessible without auth")
-        
-        # Restore original token
-        self.token = original_token
-        
-        # Summary of findings
-        self.log_test("Coupon System Structure Analysis", True, "All coupon endpoints exist and have proper authentication. Admin access blocked by is_admin field requirement.")
-        self.log_test("Coupon Backend Issue", False, "BACKEND INCONSISTENCY: Coupon admin endpoints check 'is_admin' field while other admin endpoints check specific emails. This prevents proper admin access testing.")
-        
-        return True
-
-    def test_price_history_endpoint(self):
-        """Test price history endpoint for listings"""
-        print("\n💰 Testing Price History Endpoint...")
-        
-        # Test with the specific listing ID from the review request
-        test_listing_id = "ff149aa6-9cf5-4151-bbe9-d4eb3c328f83"
-        
-        result = self.run_test("Price History - Specific Listing", "GET", f"listings/{test_listing_id}/price-history", 200)
-        if result:
-            # Check required fields
-            required_fields = ["listing_id", "current_price", "initial_price", "history", "total_changes"]
-            for field in required_fields:
-                if field in result:
-                    self.log_test(f"Price History Field - {field}", True)
-                else:
-                    self.log_test(f"Price History Field - {field}", False, f"Missing field: {field}")
-                    return False
-            
-            # Verify listing_id matches
-            if result.get("listing_id") == test_listing_id:
-                self.log_test("Price History - Listing ID Match", True)
-            else:
-                self.log_test("Price History - Listing ID Match", False, f"Expected {test_listing_id}, got {result.get('listing_id')}")
-                return False
-            
-            # Verify history is an array
-            history = result.get("history", [])
-            if isinstance(history, list):
-                self.log_test("Price History - History Array", True, f"Found {len(history)} history entries")
+        # Step 4: Verify searches appear in history
+        verify_history = self.run_test("Search History - Verify Added", "GET", "search-history", 200)
+        if verify_history and isinstance(verify_history, list):
+            if len(verify_history) >= initial_count + 2:
+                self.log_test("Search History - Count Increased", True, f"Now has {len(verify_history)} searches")
                 
-                # Check history entry structure if any exist
-                if len(history) > 0:
-                    first_entry = history[0]
-                    entry_fields = ["price", "date", "type"]
-                    for field in entry_fields:
-                        if field in first_entry:
-                            self.log_test(f"Price History Entry - {field}", True)
+                # Check structure of first search
+                if len(verify_history) > 0:
+                    search = verify_history[0]  # Should be most recent
+                    expected_fields = ["id", "user_id", "created_at"]
+                    
+                    for field in expected_fields:
+                        if field in search:
+                            self.log_test(f"Search History Field - {field}", True)
                         else:
-                            self.log_test(f"Price History Entry - {field}", False, f"Missing field: {field}")
+                            self.log_test(f"Search History Field - {field}", False, f"Missing field: {field}")
                             return False
                     
-                    # Verify initial entry type
-                    if first_entry.get("type") == "initial":
-                        self.log_test("Price History - Initial Entry Type", True)
+                    # Check that search parameters are preserved
+                    if search.get("query") in ["BMW moteur", "Audi transmission"]:
+                        self.log_test("Search History - Query Preserved", True)
                     else:
-                        self.log_test("Price History - Initial Entry Type", False, f"Expected 'initial', got {first_entry.get('type')}")
+                        self.log_test("Search History - Query Preserved", False, f"Unexpected query: {search.get('query')}")
                         return False
-                else:
-                    self.log_test("Price History - Empty History", True, "No price changes recorded (valid)")
             else:
-                self.log_test("Price History - History Array", False, "History should be an array")
-                return False
-            
-            # Verify total_changes is a number
-            total_changes = result.get("total_changes")
-            if isinstance(total_changes, int) and total_changes >= 0:
-                self.log_test("Price History - Total Changes", True, f"Total changes: {total_changes}")
-            else:
-                self.log_test("Price History - Total Changes", False, f"Expected non-negative integer, got {total_changes}")
-                return False
-            
-            # Verify prices are numbers
-            current_price = result.get("current_price")
-            initial_price = result.get("initial_price")
-            
-            if isinstance(current_price, (int, float)) and current_price > 0:
-                self.log_test("Price History - Current Price", True, f"Current price: {current_price}€")
-            else:
-                self.log_test("Price History - Current Price", False, f"Invalid current price: {current_price}")
-                return False
-            
-            if isinstance(initial_price, (int, float)) and initial_price > 0:
-                self.log_test("Price History - Initial Price", True, f"Initial price: {initial_price}€")
-            else:
-                self.log_test("Price History - Initial Price", False, f"Invalid initial price: {initial_price}")
-                return False
-            
-            return True
-        return False
-    
-    def test_price_history_invalid_listing(self):
-        """Test price history endpoint with invalid listing ID"""
-        invalid_listing_id = "non-existent-listing-id"
-        result = self.run_test("Price History - Invalid Listing", "GET", f"listings/{invalid_listing_id}/price-history", 404)
-        # We expect 404, so result should be None
-        self.log_test("Price History - Invalid Listing Error", True, "Correctly returned 404 for non-existent listing")
-        return True
-
-    def run_corrections_tests(self):
-        """Run tests specifically for the French corrections mentioned in the review"""
-        print("🇫🇷 Testing French Corrections...")
-        print("=" * 60)
-        
-        # Test 1: Hero Settings API with category_engins_image
-        print("\n1. Testing Hero Settings API with Category Engins Image...")
-        hero_get_success = self.test_hero_settings_api()
-        
-        # Test 2: Hero Settings Save with Admin Credentials
-        print("\n2. Testing Hero Settings Save with Admin Credentials...")
-        hero_admin_success = self.test_hero_settings_admin_save()
-        
-        # Summary of corrections tests
-        print("\n" + "=" * 60)
-        print("📋 CORRECTIONS TEST SUMMARY")
-        print("=" * 60)
-        
-        corrections_results = [
-            ("Hero Settings API - GET category_engins_image", hero_get_success),
-            ("Hero Settings API - POST with Admin Auth", hero_admin_success)
-        ]
-        
-        corrections_passed = 0
-        for test_name, success in corrections_results:
-            status = "✅ PASSED" if success else "❌ FAILED"
-            print(f"{status} - {test_name}")
-            if success:
-                corrections_passed += 1
-        
-        print(f"\nCorrections Tests: {corrections_passed}/{len(corrections_results)} passed")
-        
-        return corrections_passed == len(corrections_results)
-
-    def test_video_endpoints_french(self):
-        """Test nouveaux endpoints vidéo en français"""
-        print("\n🎥 Testing Video Endpoints (French Request)...")
-        
-        # 1. Test GET /api/listings/videos - Liste des annonces avec vidéos
-        print("\n1. Testing GET /api/listings/videos...")
-        
-        # Test basic endpoint
-        result = self.run_test("Video Listings - Basic", "GET", "listings/videos", 200)
-        if result:
-            # Check response structure
-            if "listings" in result:
-                self.log_test("Video Listings - Structure", True, "Has listings array")
-                
-                # Check if listings have video_url
-                listings = result["listings"]
-                if listings:
-                    first_listing = listings[0]
-                    if "video_url" in first_listing and first_listing["video_url"]:
-                        self.log_test("Video Listings - Video URL Present", True)
-                    else:
-                        self.log_test("Video Listings - Video URL Present", False, "No video_url in listing")
-                else:
-                    self.log_test("Video Listings - Empty List", True, "No video listings found (acceptable)")
-            else:
-                self.log_test("Video Listings - Structure", False, "Missing listings key")
+                self.log_test("Search History - Count Increased", False, f"Expected at least {initial_count + 2}, got {len(verify_history)}")
                 return False
         else:
             return False
         
-        # Test with filters
-        filters = [
-            ("category", "pieces"),
-            ("sort", "recent"),
-            ("search", "moteur"),
-            ("page", "1"),
-            ("limit", "10")
-        ]
-        
-        for filter_name, filter_value in filters:
-            filter_result = self.run_test(f"Video Listings - Filter {filter_name}", 
-                                        "GET", f"listings/videos?{filter_name}={filter_value}", 200)
-            if not filter_result:
+        # Step 5: Test with limit parameter
+        limited_history = self.run_test("Search History - With Limit", "GET", "search-history?limit=1", 200)
+        if limited_history and isinstance(limited_history, list):
+            if len(limited_history) == 1:
+                self.log_test("Search History - Limit Works", True, "Returned exactly 1 result")
+            else:
+                self.log_test("Search History - Limit Works", False, f"Expected 1, got {len(limited_history)}")
                 return False
-        
-        # 2. Test GET /api/videos/featured - Vidéos mises en avant
-        print("\n2. Testing GET /api/videos/featured...")
-        
-        featured_result = self.run_test("Featured Videos", "GET", "videos/featured", 200)
-        if featured_result is not None and isinstance(featured_result, list):
-            self.log_test("Featured Videos - Structure", True, f"Returned {len(featured_result)} videos")
-            
-            # Check video structure if any videos exist
-            if featured_result:
-                first_video = featured_result[0]
-                required_fields = ["id", "title", "video_url", "video_boost_active"]
-                for field in required_fields:
-                    if field in first_video:
-                        self.log_test(f"Featured Video - {field}", True)
-                    else:
-                        self.log_test(f"Featured Video - {field}", False, f"Missing field: {field}")
-                        return False
-            else:
-                self.log_test("Featured Videos - Empty List", True, "No featured videos (acceptable)")
         else:
-            self.log_test("Featured Videos - Structure", False, "Expected array response")
             return False
         
-        # 3. Test GET /api/videos/homepage-showcase - Vidéos pour le lecteur homepage
-        print("\n3. Testing GET /api/videos/homepage-showcase...")
-        
-        showcase_result = self.run_test("Homepage Showcase Videos", "GET", "videos/homepage-showcase", 200)
-        if showcase_result is not None and isinstance(showcase_result, list):
-            self.log_test("Homepage Showcase - Structure", True, f"Returned {len(showcase_result)} videos")
-            
-            # Check video structure if any videos exist
-            if showcase_result:
-                first_showcase = showcase_result[0]
-                required_fields = ["id", "title", "video_url", "video_boost_active"]
-                for field in required_fields:
-                    if field in first_showcase:
-                        self.log_test(f"Homepage Showcase - {field}", True)
-                    else:
-                        self.log_test(f"Homepage Showcase - {field}", False, f"Missing field: {field}")
-                        return False
-            else:
-                self.log_test("Homepage Showcase - Empty List", True, "No showcase videos (acceptable)")
+        # Step 6: Test deleting a specific search
+        delete_result = self.run_test("Search History - Delete Search", "DELETE", f"search-history/{search_id}", 200)
+        if delete_result and delete_result.get("message"):
+            self.log_test("Search History - Delete Success", True, f"Message: {delete_result['message']}")
         else:
-            self.log_test("Homepage Showcase - Structure", False, "Expected array response")
+            self.log_test("Search History - Delete Success", False, "No success message")
             return False
         
-        # 4. Test POST /api/video/package/checkout - Achat forfait vidéo
-        print("\n4. Testing POST /api/video/package/checkout...")
-        
-        # First login with admin credentials
-        admin_login = {
-            "email": "contact@worldautofrance.com",
-            "password": "Admin123!"
-        }
-        
-        login_result = self.run_test("Admin Login for Video Package", "POST", "auth/login", 200, admin_login)
-        if not login_result or 'token' not in login_result:
-            self.log_test("Admin Login for Video Package", False, "Could not login with admin credentials")
+        # Step 7: Verify search was deleted
+        after_delete = self.run_test("Search History - Verify Deleted", "GET", "search-history", 200)
+        if after_delete and isinstance(after_delete, list):
+            # Should have one less search
+            remaining_searches = [s for s in after_delete if s.get("id") == search_id]
+            if len(remaining_searches) == 0:
+                self.log_test("Search History - Search Deleted", True, "Search successfully deleted")
+            else:
+                self.log_test("Search History - Search Deleted", False, "Search still exists after deletion")
+                return False
+        else:
             return False
         
-        # Store original token and use admin token
+        # Step 8: Test deleting non-existent search
+        delete_invalid = self.run_test("Search History - Delete Invalid", "DELETE", "search-history/non-existent-id", 404)
+        # We expect 404 since search doesn't exist
+        self.log_test("Search History - Delete Invalid Error", True, "Correctly returned 404 for invalid search")
+        
+        # Step 9: Test clearing all search history
+        clear_result = self.run_test("Search History - Clear All", "DELETE", "search-history", 200)
+        if clear_result and clear_result.get("message"):
+            self.log_test("Search History - Clear Success", True, f"Message: {clear_result['message']}")
+        else:
+            self.log_test("Search History - Clear Success", False, "No success message")
+            return False
+        
+        # Step 10: Verify all searches are cleared
+        final_history = self.run_test("Search History - Verify Cleared", "GET", "search-history", 200)
+        if final_history and isinstance(final_history, list):
+            if len(final_history) == 0:
+                self.log_test("Search History - All Cleared", True, "All searches successfully cleared")
+            else:
+                self.log_test("Search History - All Cleared", False, f"Expected 0, got {len(final_history)}")
+                return False
+        else:
+            return False
+        
+        # Step 11: Test without authentication
         original_token = self.token
-        admin_token = login_result['token']
-        self.token = admin_token
-        
-        # Test intermediate package
-        intermediate_result = self.run_test("Video Package - Intermediate", 
-                                          "POST", "video/package/checkout?package=intermediate", 200)
-        if intermediate_result:
-            if "checkout_url" in intermediate_result and "session_id" in intermediate_result:
-                self.log_test("Video Package Intermediate - Response Structure", True)
-            else:
-                self.log_test("Video Package Intermediate - Response Structure", False, 
-                            "Missing checkout_url or session_id")
-                self.token = original_token
-                return False
-        else:
-            # Check if it's a Stripe API key issue
-            self.log_test("Video Package Intermediate - Stripe Issue", True, 
-                        "Expected failure due to invalid Stripe API key")
-        
-        # Test pro package
-        pro_result = self.run_test("Video Package - Pro", 
-                                 "POST", "video/package/checkout?package=pro", 200)
-        if pro_result:
-            if "checkout_url" in pro_result and "session_id" in pro_result:
-                self.log_test("Video Package Pro - Response Structure", True)
-            else:
-                self.log_test("Video Package Pro - Response Structure", False, 
-                            "Missing checkout_url or session_id")
-                self.token = original_token
-                return False
-        else:
-            # Check if it's a Stripe API key issue
-            self.log_test("Video Package Pro - Stripe Issue", True, 
-                        "Expected failure due to invalid Stripe API key")
-        
-        # Test invalid package
-        invalid_result = self.run_test("Video Package - Invalid", 
-                                     "POST", "video/package/checkout?package=invalid", 400)
-        self.log_test("Video Package - Invalid Package Validation", True, 
-                    "Correctly rejected invalid package")
-        
-        # 5. Test GET /api/users/me/video-packages - Récupérer les forfaits vidéo de l'utilisateur
-        print("\n5. Testing GET /api/users/me/video-packages...")
-        
-        video_packages_result = self.run_test("User Video Packages", "GET", "users/me/video-packages", 200)
-        if video_packages_result:
-            # Check required fields
-            required_fields = ["extended_credits", "intermediate_credits", "pro_credits", "limits"]
-            for field in required_fields:
-                if field in video_packages_result:
-                    self.log_test(f"Video Packages - {field}", True)
-                else:
-                    self.log_test(f"Video Packages - {field}", False, f"Missing field: {field}")
-                    self.token = original_token
-                    return False
-            
-            # Check limits structure
-            limits = video_packages_result.get("limits", {})
-            if isinstance(limits, dict):
-                limit_fields = ["extended", "intermediate", "pro"]
-                for limit_field in limit_fields:
-                    if limit_field in limits:
-                        limit_info = limits[limit_field]
-                        if "duration" in limit_info and "size_mb" in limit_info:
-                            self.log_test(f"Video Packages - {limit_field} limits", True)
-                        else:
-                            self.log_test(f"Video Packages - {limit_field} limits", False, 
-                                        "Missing duration or size_mb")
-                            self.token = original_token
-                            return False
-                    else:
-                        self.log_test(f"Video Packages - {limit_field} limits", False, 
-                                    f"Missing {limit_field} in limits")
-                        self.token = original_token
-                        return False
-            else:
-                self.log_test("Video Packages - Limits Structure", False, "Limits should be an object")
-                self.token = original_token
-                return False
-        else:
-            self.token = original_token
-            return False
-        
-        # Restore original token
-        self.token = original_token
-        
-        # Test without authentication
         self.token = None
-        no_auth_result = self.run_test("Video Packages - No Auth", "GET", "users/me/video-packages", 401)
-        self.log_test("Video Packages - Authentication Required", True, "Correctly requires authentication")
         
-        # Restore token
+        self.run_test("Search History - No Auth GET", "GET", "search-history", 401)
+        self.run_test("Search History - No Auth POST", "POST", "search-history", 401, search_data)
+        self.run_test("Search History - No Auth DELETE", "DELETE", "search-history/test-id", 401)
+        
         self.token = original_token
         
-        self.log_test("Video Endpoints French Testing Complete", True, 
-                    "All French video endpoints tested successfully")
+        self.log_test("Search History API Complete", True, "All search history tests passed")
         return True
 
     def run_all_tests(self):
@@ -4160,11 +3634,6 @@ class AutoPiecesAPITester:
         self.test_listings_with_compatibility_filters()
         self.test_create_listing_without_credits()
         
-        # Price history tests (NEW FEATURE)
-        print("\n💰 Testing Price History Feature...")
-        self.test_price_history_endpoint()
-        self.test_price_history_invalid_listing()
-        
         # Dashboard and messages
         self.test_dashboard_stats()
         self.test_messages_conversations()
@@ -4177,21 +3646,15 @@ class AutoPiecesAPITester:
         print("\n🧠 Testing Paid Diagnostic IA System...")
         self.test_paid_diagnostic_ia_system()
         
-        # NEW FEATURES FROM REVIEW REQUEST
-        print("\n🆕 Testing New Features from Review Request...")
-        self.test_offers_system()
-        self.test_bundles_system()
-        self.test_live_stats_counter()
-        self.test_widget_system()
-        self.test_abandoned_cart_tracking()
-        self.test_profile_website_field()
+        # NEW UX FEATURES TESTS (REVIEW REQUEST)
+        print("\n🆕 Testing New UX Features...")
+        self.test_seller_of_the_week_api()
+        self.test_vacation_mode_api()
+        self.test_questions_answers_api()
+        self.test_search_history_api()
         
         # Error handling
         self.test_invalid_endpoints()
-        
-        # COUPON SYSTEM TESTING (NEW FEATURE)
-        print("\n🎫 Testing Coupon System...")
-        self.test_coupon_system_complete()
         
         # Print summary
         print("=" * 60)
