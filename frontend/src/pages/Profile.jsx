@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
@@ -19,6 +20,7 @@ import PushNotificationManager from '../components/PushNotificationManager';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Profile() {
+  const { t } = useTranslation();
   const { user, token, refreshUser, logout, lastRefresh } = useAuth();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
