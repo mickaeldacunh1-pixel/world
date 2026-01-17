@@ -70,7 +70,9 @@ export default function RadioPlayer() {
   // Écouter l'événement toggleRadio depuis le Hero
   useEffect(() => {
     const handleToggleRadio = () => {
-      setIsOpen(prev => !prev);
+      console.log('toggleRadio event received');
+      setIsOpen(true);
+      setIsExpanded(true);
     };
     
     window.addEventListener('toggleRadio', handleToggleRadio);
