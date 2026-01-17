@@ -413,6 +413,27 @@ export default function HeroFreePosition({ settings, onSearch }) {
         </Link>
       </PositionedElement>
       
+      {/* Bouton Radio */}
+      <PositionedElement 
+        elementId="radio_button" 
+        position={getPos('radio_button')}
+        mobilePosition={getMobilePos('radio_button')}
+        isMobile={isMobile}
+      >
+        <Button 
+          onClick={() => {
+            // Déclencher l'ouverture du lecteur radio global
+            window.dispatchEvent(new CustomEvent('toggleRadio'));
+          }}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4 bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 text-white shadow-lg"
+          data-testid="hero-radio-btn"
+        >
+          <span className="text-base">🎵</span>
+          <span className="hidden sm:inline">Radio Live</span>
+          <span className="sm:hidden">Radio</span>
+        </Button>
+      </PositionedElement>
+      
       {/* Boutons CTA */}
       <PositionedElement 
         elementId="cta_buttons" 
