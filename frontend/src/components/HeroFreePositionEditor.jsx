@@ -265,9 +265,13 @@ function DraggableElement({
 export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
   const containerRef = useRef(null);
   const [selectedElement, setSelectedElement] = useState(null);
-  const [desktopPositions, setDesktopPositions] = useState(() => {
-    // Initialisation directe depuis les settings
-    const savedDesktop = settings.hero_element_positions || {};
+  const [saving, setSaving] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [viewMode, setViewMode] = useState('desktop'); // 'desktop' ou 'mobile'
+  
+  // Fonction d'initialisation des positions desktop
+  const initDesktopPositions = useCallback((savedSettings) => {
+    const savedDesktop = savedSettings?.hero_element_positions || {};
     const init = {};
     Object.keys(DEFAULT_DESKTOP_POSITIONS).forEach(id => {
       init[id] = {
@@ -277,10 +281,11 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
       };
     });
     return init;
-  });
-  const [mobilePositions, setMobilePositions] = useState(() => {
-    // Initialisation directe depuis les settings
-    const savedMobile = settings.hero_element_positions_mobile || {};
+  }, []);
+  
+  // Fonction d'initialisation des positions mobile
+  const initMobilePositions = useCallback((savedSettings) => {
+    const savedMobile = savedSettings?.hero_element_positions_mobile || {};
     const init = {};
     Object.keys(DEFAULT_MOBILE_POSITIONS).forEach(id => {
       init[id] = {
@@ -290,10 +295,21 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
       };
     });
     return init;
-  });
-  const [saving, setSaving] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
-  const [viewMode, setViewMode] = useState('desktop'); // 'desktop' ou 'mobile'
+  }, []);
+  
+  const [desktopPositions, setDesktopPositions] = useState(() => initDesktopPositions(settings));
+  const [mobilePositions, setMobilePositions] = useState(() => initMobilePositions(settings));
+  
+  // Synchroniser les positions quand les settings changent (ex: rechargement depuis l'API)
+  useEffect(() => {
+    // Ne pas écraser si l'utilisateur a fait des modifications non sauvegardées
+    if (!hasChanges) {
+      const newDesktop = initDesktopPositions(settings);
+      const newMobile = initMobilePositions(settings);
+      setDesktopPositions(newDesktop);
+      setMobilePositions(newMobile);
+    }
+  }, [settings, hasChanges, initDesktopPositions, initMobilePositions]);
 
   // Utiliser les bonnes positions selon le mode
   const currentPositions = viewMode === 'mobile' ? mobilePositions : desktopPositions;
