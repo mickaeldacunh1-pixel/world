@@ -151,6 +151,7 @@ const HERO_HEIGHT_CLASSES = {
 };
 
 export default function Home() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [search, setSearch] = useState('');
