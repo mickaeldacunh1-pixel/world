@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
@@ -12,6 +13,7 @@ import SEO from '../components/SEO';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Pricing() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [packages, setPackages] = useState({});
   const [loading, setLoading] = useState({});
@@ -31,7 +33,7 @@ export default function Pricing() {
 
   const handleBuyPackage = async (packageId) => {
     if (!user) {
-      toast.error('Connectez-vous pour acheter un pack');
+      toast.error(t('common.login_required', 'Connectez-vous pour acheter un pack'));
       return;
     }
 
