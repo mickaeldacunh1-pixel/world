@@ -74,6 +74,7 @@ const conditionLabels = {
 };
 
 export default function Listings() {
+  const { t } = useTranslation();
   const { category } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   
