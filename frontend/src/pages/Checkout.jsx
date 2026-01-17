@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
@@ -15,6 +16,7 @@ import MondialRelayPicker from '../components/MondialRelayPicker';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Checkout() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, token } = useAuth();
   const [cartItems, setCartItems] = useState([]);
