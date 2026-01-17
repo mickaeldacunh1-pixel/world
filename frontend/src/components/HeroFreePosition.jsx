@@ -381,8 +381,8 @@ export default function HeroFreePosition({ settings, onSearch }) {
         </PositionedElement>
       )}
       
-      {/* Scanner Plaque - Caché sur mobile */}
-      {settings.hero_show_plate_scanner !== false && !isMobile && (
+      {/* Scanner Plaque - Visible sur mobile aussi */}
+      {settings.hero_show_plate_scanner !== false && (
         <PositionedElement 
           elementId="plate_scanner" 
           position={getPos('plate_scanner')}
@@ -391,7 +391,7 @@ export default function HeroFreePosition({ settings, onSearch }) {
         >
           <PlateScanner onVehicleSelect={(v) => {
             navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
-          }} />
+          }} compact={isMobile} />
         </PositionedElement>
       )}
       
@@ -457,18 +457,19 @@ export default function HeroFreePosition({ settings, onSearch }) {
               </Button>
             </Link>
           )}
-          {settings.hero_cta2_enabled && settings.hero_cta2_text && !isMobile && (
+          {settings.hero_cta2_enabled && settings.hero_cta2_text && (
             <Link to={settings.hero_cta2_link || '/encheres'}>
               <Button 
                 variant="outline"
-                className="text-sm h-10 px-4"
+                className="text-xs sm:text-sm h-8 sm:h-10 px-3 sm:px-4"
                 style={{ 
                   color: settings.hero_cta2_text_color || '#FFFFFF',
                   borderColor: settings.hero_cta2_border_color || 'rgba(255, 255, 255, 0.3)'
                 }}
               >
-                {settings.hero_cta2_icon && <span className="mr-2">{settings.hero_cta2_icon}</span>}
-                {settings.hero_cta2_text}
+                {settings.hero_cta2_icon && <span className="mr-1 sm:mr-2">{settings.hero_cta2_icon}</span>}
+                <span className="hidden sm:inline">{settings.hero_cta2_text}</span>
+                <span className="sm:hidden">Enchères</span>
               </Button>
             </Link>
           )}
