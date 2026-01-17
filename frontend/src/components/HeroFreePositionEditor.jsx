@@ -252,9 +252,15 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [viewMode, setViewMode] = useState('desktop'); // 'desktop' ou 'mobile'
+  const isInitialized = useRef(false);
 
-  // Charger les positions sauvegardées
+  // Charger les positions sauvegardées - seulement au premier rendu
   useEffect(() => {
+    // Ne pas réinitialiser si on a des changements non sauvegardés
+    if (isInitialized.current && hasChanges) {
+      return;
+    }
+    
     const savedDesktop = settings.hero_element_positions || {};
     const savedMobile = settings.hero_element_positions_mobile || {};
     
@@ -279,13 +285,24 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
       };
     });
     setMobilePositions(mobileInit);
+    
+    isInitialized.current = true;
   }, [settings.hero_element_positions, settings.hero_element_positions_mobile]);
 
+  // Utiliser les bonnes positions selon le mode
   const currentPositions = viewMode === 'mobile' ? mobilePositions : desktopPositions;
-  const setCurrentPositions = viewMode === 'mobile' ? setMobilePositions : setDesktopPositions;
+  
+  // Fonction pour mettre à jour les positions selon le mode actuel
+  const updateCurrentPositions = useCallback((updater) => {
+    if (viewMode === 'mobile') {
+      setMobilePositions(updater);
+    } else {
+      setDesktopPositions(updater);
+    }
+  }, [viewMode]);
 
   const handleDrag = (elementId, newPos) => {
-    setCurrentPositions(prev => ({
+    updateCurrentPositions(prev => ({
       ...prev,
       [elementId]: { ...prev[elementId], ...newPos }
     }));
