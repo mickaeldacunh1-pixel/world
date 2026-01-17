@@ -41,7 +41,14 @@
     "reset": "Reset",
     "all": "All",
     "view": "View",
-    "details": "Details"
+    "details": "Details",
+    "sending": "Sending...",
+    "error_delete": "Error during deletion",
+    "login_required_title": "Log in",
+    "go_to_dashboard": "Go to dashboard",
+    "retry": "Retry",
+    "back_home": "Back to home",
+    "remove": "Remove"
   },
   "nav": {
     "home": "Home",
@@ -138,7 +145,10 @@
     "warranty": "Warranty",
     "part_origin": "Part origin",
     "secure_payment": "Secure payment",
-    "money_protected": "Money protected until delivery"
+    "money_protected": "Money protected until delivery",
+    "create": "Create a listing",
+    "no_image": "No image",
+    "sold": "Sold"
   },
   "listings": {
     "title": "Listings",
@@ -161,10 +171,11 @@
     "clear_filters": "Clear filters",
     "results_count": "{{count}} listings found",
     "page": "Page",
-    "of": "of"
+    "of": "of",
+    "view_all": "View listings"
   },
   "auth": {
-    "email": "Email",
+    "email": "Email address",
     "password": "Password",
     "confirmPassword": "Confirm password",
     "name": "Name",
@@ -180,7 +191,15 @@
     "terms_agree": "I agree to the terms and conditions",
     "remember_me": "Remember me",
     "welcome_back": "Welcome back!",
-    "create_account": "Create your free account"
+    "create_account": "Create your free account",
+    "email_sent": "Email sent!",
+    "reset_email_description": "If an account exists with this address, you will receive an email with a link to reset your password.",
+    "check_spam": "Also check your spam folder if you don't see the email.",
+    "back_to_login": "Back to login",
+    "forgot_password": "Forgot password?",
+    "forgot_password_description": "Enter your email address and we will send you a link to reset your password.",
+    "email_placeholder": "your@email.com",
+    "send_reset_link": "Send reset link"
   },
   "cart": {
     "title": "My Cart",
@@ -645,5 +664,45 @@
       "pro_benefits": "What are the PRO benefits?",
       "pro_answer": "Verified badge, priority in results, advanced stats, up to 50 photos and -10% on commissions."
     }
+  },
+  "payment": {
+    "session_not_found": "Payment session not found",
+    "verification_timeout": "Payment verification took too long. Check your email.",
+    "credits_added": "Payment successful! Your credits have been added.",
+    "session_expired": "Payment session has expired.",
+    "verifying": "Verifying payment...",
+    "please_wait": "Please wait while we confirm your payment.",
+    "success": "Payment successful!",
+    "error": "Payment error"
+  },
+  "favorites": {
+    "title": "My favorites",
+    "removed": "Removed from favorites",
+    "login_to_see": "To see your favorites, you must be logged in.",
+    "count": "{{count}} saved listing(s)",
+    "empty": "No favorites",
+    "empty_description": "Browse listings and add your favorites."
+  },
+  "brands": {
+    "title": "All brands",
+    "subtitle": "Select a brand to see corresponding listings",
+    "view_listings": "View {{brand}} listings",
+    "seo_title": "All car brands",
+    "seo_description": "Discover all available car brands."
+  },
+  "countries": {
+    "france": "France",
+    "germany": "Germany",
+    "italy": "Italy",
+    "japan": "Japan",
+    "south_korea": "South Korea",
+    "usa": "United States",
+    "spain": "Spain",
+    "czechia": "Czech Republic",
+    "sweden": "Sweden",
+    "uk": "United Kingdom"
+  },
+  "alerts": {
+    "manage": "Manage my alerts"
   }
 }

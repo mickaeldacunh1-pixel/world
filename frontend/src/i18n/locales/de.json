@@ -41,7 +41,9 @@
     "reset": "Zurücksetzen",
     "all": "Alle",
     "view": "Anzeigen",
-    "details": "Details"
+    "details": "Details",
+    "back_home": "Zurück zur Startseite",
+    "remove": "Entfernen"
   },
   "nav": {
     "home": "Startseite",
@@ -156,7 +158,7 @@
     "of": "von"
   },
   "auth": {
-    "email": "E-Mail",
+    "email": "E-Mail-Adresse",
     "password": "Passwort",
     "confirmPassword": "Passwort bestätigen",
     "name": "Name",
@@ -172,7 +174,11 @@
     "terms_agree": "Ich akzeptiere die AGB",
     "remember_me": "Angemeldet bleiben",
     "welcome_back": "Willkommen zurück!",
-    "create_account": "Erstellen Sie Ihr kostenloses Konto"
+    "create_account": "Erstellen Sie Ihr kostenloses Konto",
+    "email_sent": "E-Mail gesendet!",
+    "back_to_login": "Zurück zur Anmeldung",
+    "forgot_password": "Passwort vergessen?",
+    "send_reset_link": "Link senden"
   },
   "cart": {
     "title": "Mein Warenkorb",
@@ -470,5 +476,29 @@
       "biannual": "PRO Halbjährlich",
       "annual": "PRO Jährlich"
     }
+  },
+  "payment": {
+    "verifying": "Zahlung wird überprüft...",
+    "success": "Zahlung erfolgreich!",
+    "error": "Zahlungsfehler"
+  },
+  "favorites": {
+    "title": "Meine Favoriten",
+    "empty": "Keine Favoriten"
+  },
+  "brands": {
+    "title": "Alle Marken"
+  },
+  "countries": {
+    "france": "Frankreich",
+    "germany": "Deutschland",
+    "italy": "Italien",
+    "japan": "Japan",
+    "south_korea": "Südkorea",
+    "usa": "Vereinigte Staaten",
+    "spain": "Spanien",
+    "czechia": "Tschechien",
+    "sweden": "Schweden",
+    "uk": "Vereinigtes Königreich"
   }
 }

@@ -41,7 +41,14 @@
     "reset": "Réinitialiser",
     "all": "Tous",
     "view": "Voir",
-    "details": "Détails"
+    "details": "Détails",
+    "sending": "Envoi...",
+    "error_delete": "Erreur lors de la suppression",
+    "login_required_title": "Connectez-vous",
+    "go_to_dashboard": "Aller au tableau de bord",
+    "retry": "Réessayer",
+    "back_home": "Retour à l'accueil",
+    "remove": "Retirer"
   },
   "nav": {
     "home": "Accueil",
@@ -139,7 +146,10 @@
     "warranty": "Garantie",
     "part_origin": "Origine de la pièce",
     "secure_payment": "Paiement sécurisé",
-    "money_protected": "Argent protégé jusqu'à réception"
+    "money_protected": "Argent protégé jusqu'à réception",
+    "create": "Créer une annonce",
+    "no_image": "Pas d'image",
+    "sold": "Vendu"
   },
   "listings": {
     "title": "Annonces",
@@ -162,10 +172,11 @@
     "clear_filters": "Effacer les filtres",
     "results_count": "{{count}} annonces trouvées",
     "page": "Page",
-    "of": "sur"
+    "of": "sur",
+    "view_all": "Voir les annonces"
   },
   "auth": {
-    "email": "Email",
+    "email": "Adresse email",
     "password": "Mot de passe",
     "confirmPassword": "Confirmer le mot de passe",
     "name": "Nom",
@@ -181,7 +192,15 @@
     "terms_agree": "J'accepte les conditions générales",
     "remember_me": "Se souvenir de moi",
     "welcome_back": "Content de vous revoir !",
-    "create_account": "Créez votre compte gratuitement"
+    "create_account": "Créez votre compte gratuitement",
+    "email_sent": "Email envoyé !",
+    "reset_email_description": "Si un compte existe avec cette adresse, vous recevrez un email avec un lien pour réinitialiser votre mot de passe.",
+    "check_spam": "Vérifiez aussi vos spams si vous ne voyez pas l'email.",
+    "back_to_login": "Retour à la connexion",
+    "forgot_password": "Mot de passe oublié ?",
+    "forgot_password_description": "Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+    "email_placeholder": "votre@email.com",
+    "send_reset_link": "Envoyer le lien"
   },
   "cart": {
     "title": "Mon Panier",
@@ -627,7 +646,7 @@
     "pro_plans": {
       "monthly": "PRO Mensuel",
       "quarterly": "PRO Trimestriel",
-      "biannual": "PRO Semestriel", 
+      "biannual": "PRO Semestriel",
       "annual": "PRO Annuel"
     },
     "boost": {
@@ -646,5 +665,45 @@
       "pro_benefits": "Quels sont les avantages PRO ?",
       "pro_answer": "Badge vérifié, priorité dans les résultats, statistiques avancées, jusqu'à 50 photos et -10% sur les commissions."
     }
+  },
+  "payment": {
+    "session_not_found": "Session de paiement non trouvée",
+    "verification_timeout": "La vérification du paiement a pris trop de temps. Vérifiez votre email.",
+    "credits_added": "Paiement réussi ! Vos crédits ont été ajoutés.",
+    "session_expired": "La session de paiement a expiré.",
+    "verifying": "Vérification du paiement...",
+    "please_wait": "Veuillez patienter pendant que nous confirmons votre paiement.",
+    "success": "Paiement réussi !",
+    "error": "Erreur de paiement"
+  },
+  "favorites": {
+    "title": "Mes favoris",
+    "removed": "Retiré des favoris",
+    "login_to_see": "Pour voir vos favoris, vous devez être connecté.",
+    "count": "{{count}} annonce(s) sauvegardée(s)",
+    "empty": "Aucun favori",
+    "empty_description": "Parcourez les annonces et ajoutez vos préférées en favoris."
+  },
+  "brands": {
+    "title": "Toutes les marques",
+    "subtitle": "Sélectionnez une marque pour voir les annonces correspondantes",
+    "view_listings": "Voir les annonces {{brand}}",
+    "seo_title": "Toutes les marques automobiles",
+    "seo_description": "Découvrez toutes les marques automobiles disponibles."
+  },
+  "countries": {
+    "france": "France",
+    "germany": "Allemagne",
+    "italy": "Italie",
+    "japan": "Japon",
+    "south_korea": "Corée du Sud",
+    "usa": "États-Unis",
+    "spain": "Espagne",
+    "czechia": "Tchéquie",
+    "sweden": "Suède",
+    "uk": "Royaume-Uni"
+  },
+  "alerts": {
+    "manage": "Gérer mes alertes"
   }
 }
