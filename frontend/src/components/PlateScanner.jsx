@@ -151,9 +151,10 @@ export default function PlateScanner({ onVehicleSelect }) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { setIsOpen(open); if (!open) resetState(); }}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2 border-accent text-accent hover:bg-accent hover:text-white">
-          <ScanLine className="w-5 h-5" />
-          {t('search.scan_plate')}
+        <Button variant="outline" className="gap-1 sm:gap-2 border-accent text-accent hover:bg-accent hover:text-white text-xs sm:text-sm h-9 sm:h-10 px-2 sm:px-4">
+          <ScanLine className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="hidden sm:inline">{t('search.scan_plate')}</span>
+          <span className="sm:hidden">Scan</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md">
