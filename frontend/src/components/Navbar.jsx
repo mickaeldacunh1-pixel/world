@@ -66,6 +66,14 @@ export default function Navbar() {
             promo_text_color: response.data.promo_text_color || '#FFFFFF',
             cart_bg_color: response.data.cart_bg_color || '#1E3A5F',
             cart_text_color: response.data.cart_text_color || '#FFFFFF',
+            navbar_bg_color: response.data.navbar_bg_color || '#FFFFFF',
+            navbar_text_color: response.data.navbar_text_color || '#0F172A',
+            navbar_logo_text: response.data.navbar_logo_text || 'World Auto Pro',
+            promo_banner_enabled: response.data.promo_banner_enabled !== false,
+            promo_banner_title: response.data.promo_banner_title || 'Compte Premium',
+            promo_banner_subtitle: response.data.promo_banner_subtitle || 'Économisez encore plus',
+            promo_banner_badge: response.data.promo_banner_badge || 'NOUVEAU',
+            promo_accent_color: response.data.promo_accent_color || '#F97316',
           }));
         }
       } catch (error) {
