@@ -559,6 +559,71 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
               </CardContent>
             </Card>
           )}
+
+          {/* Édition des textes */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader className="py-3">
+              <CardTitle className="text-white text-sm flex items-center gap-2">
+                ✏️ Textes du Hero
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="py-2 space-y-3 max-h-[400px] overflow-y-auto">
+              <div>
+                <Label className="text-white/70 text-xs">Badge</Label>
+                <Input
+                  value={settings.hero_badge_text || ''}
+                  onChange={(e) => onChange({...settings, hero_badge_text: e.target.value})}
+                  placeholder="La référence automobile"
+                  className="h-8 bg-gray-700 border-gray-600 text-white text-xs"
+                />
+              </div>
+              <div>
+                <Label className="text-white/70 text-xs">Titre Ligne 1</Label>
+                <Input
+                  value={settings.hero_title_line1 || ''}
+                  onChange={(e) => onChange({...settings, hero_title_line1: e.target.value})}
+                  placeholder="Achetez et Vendez"
+                  className="h-8 bg-gray-700 border-gray-600 text-white text-xs"
+                />
+              </div>
+              <div>
+                <Label className="text-white/70 text-xs">Titre Ligne 2</Label>
+                <Input
+                  value={settings.hero_title_line2 || ''}
+                  onChange={(e) => onChange({...settings, hero_title_line2: e.target.value})}
+                  placeholder="Pièces Auto"
+                  className="h-8 bg-gray-700 border-gray-600 text-white text-xs"
+                />
+              </div>
+              <div>
+                <Label className="text-white/70 text-xs">Sous-titre / Description</Label>
+                <Input
+                  value={settings.hero_description || ''}
+                  onChange={(e) => onChange({...settings, hero_description: e.target.value})}
+                  placeholder="Trouvez la pièce qu'il vous faut"
+                  className="h-8 bg-gray-700 border-gray-600 text-white text-xs"
+                />
+              </div>
+              <div>
+                <Label className="text-white/70 text-xs">Placeholder recherche</Label>
+                <Input
+                  value={settings.hero_search_placeholder || ''}
+                  onChange={(e) => onChange({...settings, hero_search_placeholder: e.target.value})}
+                  placeholder="Rechercher une pièce..."
+                  className="h-8 bg-gray-700 border-gray-600 text-white text-xs"
+                />
+              </div>
+              <div>
+                <Label className="text-white/70 text-xs">Texte bouton recherche</Label>
+                <Input
+                  value={settings.hero_search_button_text || ''}
+                  onChange={(e) => onChange({...settings, hero_search_button_text: e.target.value})}
+                  placeholder="Rechercher"
+                  className="h-8 bg-gray-700 border-gray-600 text-white text-xs"
+                />
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
