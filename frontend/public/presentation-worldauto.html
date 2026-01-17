@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Auto France - Présentation Complète</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 20px;
+            background: radial-gradient(ellipse at top, rgba(249, 115, 22, 0.15) 0%, transparent 50%);
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #fff 0%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero .tagline {
+            font-size: 1.5rem;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(249, 115, 22, 0.2);
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: #f97316;
+            margin-bottom: 30px;
+        }
+        
+        /* Sections */
+        section {
+            padding: 100px 20px;
+        }
+        
+        section:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title span {
+            color: #f97316;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(249, 115, 22, 0.5);
+            box-shadow: 0 20px 40px rgba(249, 115, 22, 0.1);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        
+        .feature-card p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+        
+        /* Screenshot Placeholder */
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 2px dashed rgba(249, 115, 22, 0.3);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .screenshot-placeholder p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        .screenshot-placeholder .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Pro Section */
+        .pro-section {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(234, 88, 12, 0.05) 100%);
+        }
+        
+        .pro-badge {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        /* Pricing Cards */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pricing-card.popular {
+            border-color: #f97316;
+            background: rgba(249, 115, 22, 0.1);
+        }
+        
+        .pricing-card.popular::before {
+            content: 'POPULAIRE';
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: #f97316;
+            color: white;
+            padding: 5px 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transform: rotate(45deg);
+        }
+        
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-card .price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #f97316;
+            margin: 20px 0;
+        }
+        
+        .pricing-card .price span {
+            font-size: 1rem;
+            color: #94a3b8;
+        }
+        
+        .pricing-card ul {
+            list-style: none;
+            text-align: left;
+            margin: 30px 0;
+        }
+        
+        .pricing-card ul li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .pricing-card ul li::before {
+            content: '✓';
+            color: #22c55e;
+            font-weight: bold;
+        }
+        
+        /* Countries */
+        .countries-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .country-flag {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .country-flag img {
+            width: 30px;
+            height: 20px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        /* Shipping */
+        .shipping-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .shipping-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .shipping-card .logo {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .shipping-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .shipping-card p {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        
+        /* Security */
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        .security-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 16px;
+        }
+        
+        .security-item .icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        
+        .security-item h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #22c55e;
+        }
+        
+        .security-item p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-item .number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #f97316;
+            display: block;
+        }
+        
+        .stat-item .label {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        footer p {
+            color: #64748b;
+        }
+        
+        /* CTA Button */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4);
+        }
+        
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(234, 88, 12, 0.1) 100%);
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+        
+        .highlight-box h3 {
+            color: #f97316;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Table of Contents */
+        .toc {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px auto;
+            max-width: 600px;
+        }
+        
+        .toc h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #f97316;
+        }
+        
+        .toc ul {
+            list-style: none;
+        }
+        
+        .toc ul li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .toc ul li:last-child {
+            border-bottom: none;
+        }
+        
+        .toc ul li a {
+            color: #94a3b8;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s;
+        }
+        
+        .toc ul li a:hover {
+            color: #f97316;
+        }
+        
+        .toc ul li a .number {
+            background: rgba(249, 115, 22, 0.2);
+            color: #f97316;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="badge">🚗 La référence automobile en France</div>
+            <h1>World Auto France</h1>
+            <p class="tagline">La marketplace automobile nouvelle génération pour particuliers et professionnels</p>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="number">100+</span>
+                    <span class="label">Annonces actives</span>
+                </div>
+                <div class="stat-item">
+                    <span class="number">9</span>
+                    <span class="label">Pays européens</span>
+                </div>
+                <div class="stat-item">
+                    <span class="number">6</span>
+                    <span class="label">Transporteurs</span>
+                </div>
+                <div class="stat-item">
+                    <span class="number">24/7</span>
+                    <span class="label">Assistant IA Tobi</span>
+                </div>
+            </div>
+            
+            <!-- Table des matières -->
+            <div class="toc">
+                <h3>📋 Sommaire</h3>
+                <ul>
+                    <li><a href="#ia"><span class="number">1</span> Technologies & Intelligence Artificielle</a></li>
+                    <li><a href="#pro"><span class="number">2</span> Espace Professionnel</a></li>
+                    <li><a href="#livraison"><span class="number">3</span> Livraison & Pays autorisés</a></li>
+                    <li><a href="#securite"><span class="number">4</span> Sécurité & Confiance</a></li>
+                    <li><a href="#tarifs"><span class="number">5</span> Forfaits & Tarifs</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: Technologies & IA -->
+    <section id="ia">
+        <div class="container">
+            <h2 class="section-title">🤖 Technologies & <span>Intelligence Artificielle</span></h2>
+            <p class="section-subtitle">World Auto intègre les dernières innovations technologiques pour vous offrir une expérience unique et simplifiée</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Tobi - Assistant IA 24/7</h3>
+                    <p>Votre assistant personnel intelligent disponible à tout moment. Posez vos questions sur l'automobile, la mécanique, obtenez des conseils d'achat, des comparatifs et des tutoriels de réparation.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Diagnostic IA</h3>
+                    <p>Décrivez vos symptômes de panne et notre IA analyse le problème pour vous proposer des solutions, identifier les pièces nécessaires et estimer les coûts de réparation.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📷</div>
+                    <h3>Scanner de Plaque</h3>
+                    <p>Scannez simplement votre plaque d'immatriculation pour identifier automatiquement votre véhicule et trouver les pièces compatibles en un clic.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎤</div>
+                    <h3>Recherche Vocale</h3>
+                    <p>Dictez votre recherche à haute voix pour trouver rapidement la pièce qu'il vous faut. Plus besoin de taper sur votre clavier !</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Recherche OEM</h3>
+                    <p>Trouvez instantanément les pièces par leur référence constructeur (OEM). Compatible avec toutes les marques automobiles.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Enchères en Direct</h3>
+                    <p>Système d'enchères intelligent avec enchère automatique, prix de réserve, anti-snipe et notifications en temps réel.</p>
+                </div>
+            </div>
+            
+            <div class="screenshot-placeholder">
+                <div class="icon">📸</div>
+                <p>Capture d'écran : Page Tobi - Assistant IA avec ses options</p>
+                <p style="margin-top: 10px; font-size: 0.8rem;">[Insérer capture de votre site : /tobi]</p>
+            </div>
+            
+            <div class="screenshot-placeholder">
+                <div class="icon">📸</div>
+                <p>Capture d'écran : Page Diagnostic IA</p>
+                <p style="margin-top: 10px; font-size: 0.8rem;">[Insérer capture de votre site : /diagnostic]</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Espace PRO -->
+    <section id="pro" class="pro-section">
+        <div class="container">
+            <div class="pro-badge">👔 ESPACE PROFESSIONNEL</div>
+            <h2 class="section-title">L'outil ultime pour les <span>Professionnels</span></h2>
+            <p class="section-subtitle">Gérez votre activité automobile comme jamais auparavant avec des outils conçus pour les pros</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3>Entrepôt & Gestion de Stock</h3>
+                    <p>Gérez votre inventaire avec des sections personnalisables, suivi en temps réel, alertes de stock bas et liaison automatique avec vos annonces.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎬</div>
+                    <h3>Vidéos de Présentation</h3>
+                    <p>Présentez votre entreprise avec des vidéos professionnelles. Mettez en avant vos locaux, vos spécialités et gagnez la confiance des acheteurs.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Tableau de Bord Avancé</h3>
+                    <p>Statistiques détaillées : vues, clics, conversions, revenus. Analysez vos performances et optimisez vos ventes.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📸</div>
+                    <h3>Jusqu'à 50 Photos</h3>
+                    <p>Les comptes PRO peuvent ajouter jusqu'à 50 photos par annonce pour montrer chaque détail de leurs pièces.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Mise en Avant Prioritaire</h3>
+                    <p>Vos annonces apparaissent en premier dans les résultats de recherche avec un badge "PRO" distinctif.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Frais Réduits de 10%</h3>
+                    <p>Économisez sur chaque vente avec des commissions réduites exclusives pour les professionnels.</p>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>🎁 Essai Gratuit PRO - 14 jours</h3>
+                <p>Testez toutes les fonctionnalités professionnelles gratuitement pendant 14 jours. Sans engagement, sans carte bancaire requise.</p>
+            </div>
+            
+            <div class="screenshot-placeholder">
+                <div class="icon">📸</div>
+                <p>Capture d'écran : Mon Entrepôt - Gestion de stock</p>
+                <p style="margin-top: 10px; font-size: 0.8rem;">[Insérer capture de votre site : /entrepot]</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Livraison & Pays -->
+    <section id="livraison">
+        <div class="container">
+            <h2 class="section-title">🚚 Livraison & <span>Couverture Européenne</span></h2>
+            <p class="section-subtitle">6 transporteurs partenaires pour livrer dans 9 pays européens</p>
+            
+            <div class="shipping-grid">
+                <div class="shipping-card">
+                    <div class="logo">📦</div>
+                    <h4>Colissimo</h4>
+                    <p>La Poste française</p>
+                </div>
+                <div class="shipping-card">
+                    <div class="logo">🔴</div>
+                    <h4>Mondial Relay</h4>
+                    <p>Points relais</p>
+                </div>
+                <div class="shipping-card">
+                    <div class="logo">⚡</div>
+                    <h4>Chronopost</h4>
+                    <p>Express 24h</p>
+                </div>
+                <div class="shipping-card">
+                    <div class="logo">📮</div>
+                    <h4>Boxtal</h4>
+                    <p>Multi-transporteurs</p>
+                </div>
+                <div class="shipping-card">
+                    <div class="logo">🤝</div>
+                    <h4>Remise en Main Propre</h4>
+                    <p>Directement vendeur</p>
+                </div>
+                <div class="shipping-card">
+                    <div class="logo">✏️</div>
+                    <h4>Personnalisé</h4>
+                    <p>Autre transporteur</p>
+                </div>
+            </div>
+            
+            <h3 style="text-align: center; margin-top: 60px; margin-bottom: 20px;">🇪🇺 Pays autorisés à la vente</h3>
+            
+            <div class="countries-grid">
+                <div class="country-flag">🇫🇷 France</div>
+                <div class="country-flag">🇧🇪 Belgique</div>
+                <div class="country-flag">🇨🇭 Suisse</div>
+                <div class="country-flag">🇱🇺 Luxembourg</div>
+                <div class="country-flag">🇩🇪 Allemagne</div>
+                <div class="country-flag">🇮🇹 Italie</div>
+                <div class="country-flag">🇪🇸 Espagne</div>
+                <div class="country-flag">🇳🇱 Pays-Bas</div>
+                <div class="country-flag">🇦🇹 Autriche</div>
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 60px;">
+                <h3>🌍 Pourquoi ces 9 pays ?</h3>
+                <p>Nous avons sélectionné ces pays pour garantir une livraison fiable, des délais raisonnables et une protection optimale des acheteurs et vendeurs selon les réglementations européennes.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Sécurité -->
+    <section id="securite">
+        <div class="container">
+            <h2 class="section-title">🔒 Sécurité & <span>Confiance</span></h2>
+            <p class="section-subtitle">Votre sécurité est notre priorité absolue</p>
+            
+            <div class="security-grid">
+                <div class="security-item">
+                    <div class="icon">🔐</div>
+                    <div>
+                        <h4>Double Authentification (2FA)</h4>
+                        <p>Protégez votre compte avec une seconde couche de sécurité via code SMS ou application.</p>
+                    </div>
+                </div>
+                
+                <div class="security-item">
+                    <div class="icon">✅</div>
+                    <div>
+                        <h4>Vérification d'Identité</h4>
+                        <p>Les vendeurs peuvent faire vérifier leur identité pour gagner la confiance des acheteurs.</p>
+                    </div>
+                </div>
+                
+                <div class="security-item">
+                    <div class="icon">🏦</div>
+                    <div>
+                        <h4>IBAN Vérifié</h4>
+                        <p>Système de vérification bancaire pour des paiements sécurisés.</p>
+                    </div>
+                </div>
+                
+                <div class="security-item">
+                    <div class="icon">💳</div>
+                    <div>
+                        <h4>Paiement Sécurisé Stripe</h4>
+                        <p>Transactions cryptées via Stripe, leader mondial du paiement en ligne.</p>
+                    </div>
+                </div>
+                
+                <div class="security-item">
+                    <div class="icon">🤖</div>
+                    <div>
+                        <h4>reCAPTCHA v3</h4>
+                        <p>Protection contre les bots et les inscriptions frauduleuses.</p>
+                    </div>
+                </div>
+                
+                <div class="security-item">
+                    <div class="icon">🛡️</div>
+                    <div>
+                        <h4>Garantie World Auto</h4>
+                        <p>Options de garantie 3, 6 ou 12 mois sur les pièces vendues.</p>
+                    </div>
+                </div>
+                
+                <div class="security-item">
+                    <div class="icon">⭐</div>
+                    <div>
+                        <h4>Système d'Avis Vérifiés</h4>
+                        <p>Seuls les acheteurs ayant effectué une transaction peuvent laisser un avis.</p>
+                    </div>
+                </div>
+                
+                <div class="security-item">
+                    <div class="icon">📱</div>
+                    <div>
+                        <h4>Notifications Push</h4>
+                        <p>Restez informé en temps réel de toute activité sur votre compte.</p>
+                    </div>
+                </div>
+                
+                <div class="security-item">
+                    <div class="icon">💬</div>
+                    <div>
+                        <h4>Messagerie Intégrée</h4>
+                        <p>Communiquez avec les vendeurs sans partager vos informations personnelles.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="screenshot-placeholder">
+                <div class="icon">📸</div>
+                <p>Capture d'écran : Page Profil - Section Sécurité (2FA, Vérification)</p>
+                <p style="margin-top: 10px; font-size: 0.8rem;">[Insérer capture de votre site : /profil > Sécurité]</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Tarifs -->
+    <section id="tarifs">
+        <div class="container">
+            <h2 class="section-title">💎 Forfaits & <span>Tarifs</span></h2>
+            <p class="section-subtitle">Des formules adaptées à tous les besoins</p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Particulier</h3>
+                    <div class="price">Gratuit</div>
+                    <ul>
+                        <li>5 photos par annonce</li>
+                        <li>Messagerie intégrée</li>
+                        <li>Alertes de recherche</li>
+                        <li>Accès à Tobi IA</li>
+                        <li>Paiement sécurisé</li>
+                    </ul>
+                </div>
+                
+                <div class="pricing-card popular">
+                    <h3>PRO Mensuel</h3>
+                    <div class="price">29€<span>/mois</span></div>
+                    <ul>
+                        <li>50 photos par annonce</li>
+                        <li>Gestion de stock</li>
+                        <li>Badge PRO vérifié</li>
+                        <li>-10% sur les frais</li>
+                        <li>Priorité dans les recherches</li>
+                        <li>Statistiques avancées</li>
+                        <li>Support prioritaire</li>
+                    </ul>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>PRO Annuel</h3>
+                    <div class="price">290€<span>/an</span></div>
+                    <ul>
+                        <li>Tout PRO Mensuel inclus</li>
+                        <li>2 mois offerts</li>
+                        <li>Vidéo de présentation</li>
+                        <li>Formation personnalisée</li>
+                        <li>API d'intégration</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="highlight-box" style="text-align: center; margin-top: 60px;">
+                <h3>🎁 Pack de Crédits</h3>
+                <p style="margin-bottom: 20px;">Achetez des crédits pour publier vos annonces à l'unité</p>
+                <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px 30px; border-radius: 12px;">
+                        <strong style="color: #f97316; font-size: 1.5rem;">5 crédits</strong>
+                        <p style="color: #94a3b8;">4,99€</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px 30px; border-radius: 12px;">
+                        <strong style="color: #f97316; font-size: 1.5rem;">15 crédits</strong>
+                        <p style="color: #94a3b8;">12,99€</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px 30px; border-radius: 12px;">
+                        <strong style="color: #f97316; font-size: 1.5rem;">50 crédits</strong>
+                        <p style="color: #94a3b8;">39,99€</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="screenshot-placeholder">
+                <div class="icon">📸</div>
+                <p>Capture d'écran : Page Tarifs complète</p>
+                <p style="margin-top: 10px; font-size: 0.8rem;">[Insérer capture de votre site : /tarifs]</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <section style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(234, 88, 12, 0.1) 100%); text-align: center;">
+        <div class="container">
+            <h2 class="section-title">Prêt à rejoindre <span>World Auto</span> ?</h2>
+            <p class="section-subtitle">Inscrivez-vous gratuitement et commencez à vendre ou acheter dès aujourd'hui</p>
+            <a href="https://worldautofrance.com/auth" class="cta-button">
+                🚀 Créer mon compte gratuit
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p style="font-size: 1.2rem; margin-bottom: 10px;">🚗 <strong>World Auto France</strong></p>
+            <p>La marketplace automobile de référence en France</p>
+            <p style="margin-top: 20px;">© 2024-2026 World Auto France. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
