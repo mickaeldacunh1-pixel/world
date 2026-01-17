@@ -12,15 +12,15 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 // Default stations (fallback)
 const DEFAULT_STATIONS = [
-  { id: 'skyrock', name: 'Skyrock', genre: 'Rap & RnB', logo: '🎤', stream_url: 'https://icecast.skyrock.net/s/natio_mp3_128k', color: '#000000' },
-  { id: 'rtl', name: 'RTL', genre: 'Généraliste', logo: '📻', stream_url: 'https://streamer-02.rtl.fr/rtl-1-44-128', color: '#E30513' },
-  { id: 'europe1', name: 'Europe 1', genre: 'Info & Talk', logo: '🎙️', stream_url: 'https://europe1.lmn.fm/europe1.mp3', color: '#003DA5' },
-  { id: 'rtl2', name: 'RTL2', genre: 'Pop Rock', logo: '🎸', stream_url: 'https://streamer-02.rtl.fr/rtl2-1-44-128', color: '#FF6600' },
-  { id: 'funradio', name: 'Fun Radio', genre: 'Dance', logo: '🎧', stream_url: 'https://streamer-02.rtl.fr/fun-1-44-128', color: '#8B5CF6' },
   { id: 'nostalgie', name: 'Nostalgie', genre: 'Oldies', logo: '💫', stream_url: 'https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3', color: '#FFD700' },
-  { id: 'radiofunk', name: 'FIP Groove', genre: 'Funk & Soul', logo: '🕺', stream_url: 'https://icecast.radiofrance.fr/fipgroove-midfi.mp3', color: '#FF6B35' },
-  { id: 'reggae', name: 'FIP Reggae', genre: 'Reggae', logo: '🌴', stream_url: 'https://icecast.radiofrance.fr/fipreggae-midfi.mp3', color: '#2ECC71' },
-  { id: 'rock', name: 'FIP Rock', genre: 'Rock', logo: '🤘', stream_url: 'https://icecast.radiofrance.fr/fiprock-midfi.mp3', color: '#E74C3C' },
+  { id: 'fipreggae', name: 'FIP Reggae', genre: 'Reggae', logo: '🌴', stream_url: 'https://icecast.radiofrance.fr/fipreggae-midfi.mp3', color: '#2ECC71' },
+  { id: 'fiprock', name: 'FIP Rock', genre: 'Rock', logo: '🤘', stream_url: 'https://icecast.radiofrance.fr/fiprock-midfi.mp3', color: '#E74C3C' },
+  { id: 'fipgroove', name: 'FIP Groove', genre: 'Funk & Soul', logo: '🕺', stream_url: 'https://icecast.radiofrance.fr/fipgroove-midfi.mp3', color: '#FF6B35' },
+  { id: 'skyrock', name: 'Skyrock', genre: 'Rap & RnB', logo: '🎤', stream_url: 'https://icecast.skyrock.net/s/natio_mp3_128k', color: '#000000' },
+  { id: 'funradio', name: 'Fun Radio', genre: 'Dance', logo: '🎧', stream_url: 'https://streaming.radio.funradio.fr/fun-1-44-128', color: '#FF6B00' },
+  { id: 'rtl2', name: 'RTL2', genre: 'Pop Rock', logo: '🎸', stream_url: 'https://streaming.radio.rtl2.fr/rtl2-1-44-128', color: '#00A0E4' },
+  { id: 'nova', name: 'Radio Nova', genre: 'Éclectique', logo: '🌟', stream_url: 'https://novazz.ice.infomaniak.ch/novazz-128.mp3', color: '#FF5500' },
+  { id: 'fip', name: 'FIP', genre: 'Jazz & Groove', logo: '🎹', stream_url: 'https://icecast.radiofrance.fr/fip-midfi.mp3', color: '#E85D75' },
 ];
 
 export default function RadioPlayer() {
