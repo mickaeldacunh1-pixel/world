@@ -51,7 +51,8 @@ const DEFAULT_MOBILE_POSITIONS = {
   subtitle: { x: 50, y: 36, visible: true },
   search: { x: 50, y: 50, visible: true },
   plate_scanner: { x: 50, y: 62, visible: false }, // Caché par défaut sur mobile
-  tobi_button: { x: 50, y: 68, visible: true },
+  tobi_button: { x: 35, y: 68, visible: true },
+  radio_button: { x: 65, y: 68, visible: true }, // Visible sur mobile
   cta_buttons: { x: 50, y: 78, visible: true },
   premium_buttons: { x: 50, y: 88, visible: false }, // Caché par défaut sur mobile
   stats: { x: 50, y: 94, visible: false }, // Caché par défaut sur mobile
