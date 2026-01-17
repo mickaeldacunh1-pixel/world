@@ -312,7 +312,7 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
   const handleDragEnd = () => {};
 
   const toggleVisibility = (elementId) => {
-    setCurrentPositions(prev => ({
+    updateCurrentPositions(prev => ({
       ...prev,
       [elementId]: { 
         ...prev[elementId], 
