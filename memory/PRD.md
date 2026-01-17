@@ -17,44 +17,54 @@ Plateforme marketplace automobile complète permettant l'achat/vente de véhicul
 6. Programme de fidélité/parrainage
 7. Internationalisation (9 pays)
 8. Personnalisation admin (Hero, Navbar)
+9. Estimation des frais de livraison (Boxtal)
+10. SEO optimisé (sitemap, meta tags)
 
 ## Tech Stack
 - **Frontend**: React + Tailwind CSS + Shadcn/UI
 - **Backend**: FastAPI (Python)
 - **Database**: MongoDB
-- **Integrations**: Stripe, Cloudinary, i18next, @dnd-kit
+- **Integrations**: Stripe, Cloudinary, i18next, @dnd-kit, Boxtal API
 
 ---
 
 ## What's Been Implemented
 
-### Session du 17 Janvier 2026 - Amélioration Mobile Hero + Éditeur Mobile
+### Session du 17 Janvier 2026
 
-#### Phase 1 : Amélioration affichage mobile
-1. **Home.jsx** - Barre de recherche et CTA responsive
-   - Recherche compacte sur mobile (bouton "OK")
-   - Catégorie et vocal sur même ligne
-   - Scanner de plaque caché < 640px
-   - Boutons secondaires cachés sur mobile
-
-2. **HeroFreePosition.jsx** - Refactoring complet
-   - Hook `useIsMobile()` 
-   - Positions par défaut mobile optimisées
-   - Support `hero_element_positions_mobile`
-   - Mode compact automatique sur mobile
-
-3. **Navbar.jsx** - PromoBanner caché < 480px
-
-4. **index.js** - ServiceWorker limité à production
+#### Phase 1 : Amélioration affichage mobile Hero
+- Home.jsx - Barre de recherche et CTA responsive
+- HeroFreePosition.jsx - Support mobile avec hook `useIsMobile()`
+- Navbar.jsx - PromoBanner caché < 480px
 
 #### Phase 2 : Éditeur mobile admin
-5. **HeroFreePositionEditor.jsx** - Nouvel éditeur avec support mobile
-   - Toggle Desktop/Mobile
-   - Canvas 9:16 pour mobile, 16:9 pour desktop
-   - Positions séparées `hero_element_positions` et `hero_element_positions_mobile`
-   - Bouton "Copier Desktop vers Mobile"
-   - Visibilité par défaut différente (scanner, premium masqués sur mobile)
-   - Sauvegarde des deux configurations ensemble
+- HeroFreePositionEditor.jsx - Toggle Desktop/Mobile, positions séparées
+
+#### Phase 3 : Intégration Boxtal (frais de livraison)
+- **ShippingEstimator.jsx** : Composant d'estimation des frais
+  - Entrée code postal destination
+  - Affiche Colissimo, Chronopost, Mondial Relay, DPD, GLS
+  - Tri par prix, badge "MOINS CHER"
+  - Sauvegarde du code postal en localStorage
+- **Endpoint `/api/shipping/estimate`** :
+  - Récupère les dimensions de l'annonce
+  - Appelle l'API Boxtal en production
+  - Applique la marge configurée (15%)
+  - Fallback automatique si erreur API
+- **Intégré dans ListingDetail.jsx**
+
+#### Phase 4 : SEO Pre-rendering
+- **Sitemap dynamique** (`/sitemap.xml`) :
+  - Pages statiques avec priorités
+  - Catégories (hourly)
+  - Annonces actives (1000 max, triées par date)
+- **Robots.txt** (`/robots.txt`) :
+  - Bloque admin, profil, panier, paiement
+  - Autorise annonces, vendeur, pages publiques
+- **Meta tags enrichis** dans index.html :
+  - OpenGraph complets (og:image, og:locale)
+  - Twitter Card (summary_large_image)
+  - Keywords SEO
 
 ### Fonctionnalités déjà complétées (sessions précédentes)
 - ✅ Intégration Stock/Annonces
@@ -63,7 +73,6 @@ Plateforme marketplace automobile complète permettant l'achat/vente de véhicul
 - ✅ Éditeur de Hero à positionnement libre
 - ✅ Personnalisation Navbar admin
 - ✅ Début internationalisation (i18next configuré)
-- ✅ Page de présentation commerciale
 
 ---
 
@@ -71,38 +80,38 @@ Plateforme marketplace automobile complète permettant l'achat/vente de véhicul
 
 ### P0 - Critique
 - [ ] Résoudre problème de traduction i18n sur VPS utilisateur
-  - Vérifier que les commits sont bien déployés
-  - Tester les pages modifiées localement
 
 ### P1 - Important  
-- [ ] Tester éditeur Hero position libre mobile en production
+- [ ] Tester l'estimation Boxtal avec une vraie annonce en production
+- [ ] Valider éditeur Hero mobile en production
 - [ ] Traduire pages principales (Home, Pricing, FAQ)
 
 ### P2 - Normal
-- [ ] Résoudre erreurs Docker récurrentes lors des déploiements
-- [ ] Intégration complète Boxtal (frais livraison temps réel)
+- [ ] Résoudre erreurs Docker récurrentes
+- [ ] Améliorer performance sitemap pour gros volumes
 
 ### P3 - Futur
-- [ ] Solution pre-rendering SEO
 - [ ] Refactoring backend server.py (> 10k lignes)
 
 ---
 
 ## Key API Endpoints
-- `POST/GET /api/settings/hero` - Paramètres Hero (inclut `hero_element_positions` et `hero_element_positions_mobile`)
-- `POST/GET /api/settings/navbar` - Paramètres Navbar
-- `GET /api/categories/stats` - Stats par catégorie
-- `GET /api/listings` - Liste des annonces
 
-## Known Issues
-1. **Traduction i18n** - Perçue comme non fonctionnelle car beaucoup de pages restent en texte dur
-2. **Déploiement Docker** - Erreurs récurrentes sur VPS utilisateur
+### Nouveaux endpoints
+- `POST /api/shipping/estimate` - Estimation frais de livraison
+- `GET /sitemap.xml` - Sitemap dynamique SEO
+- `GET /robots.txt` - Robots.txt SEO
+
+### Endpoints existants
+- `POST/GET /api/settings/hero` - Paramètres Hero
+- `POST/GET /api/settings/navbar` - Paramètres Navbar
+- `GET /api/boxtal/status` - Statut configuration Boxtal
+- `POST /api/boxtal/quotes` - Devis complets Boxtal
 
 ## Files of Reference
+- `/app/frontend/src/components/ShippingEstimator.jsx` (NOUVEAU)
+- `/app/frontend/src/pages/ListingDetail.jsx` (MODIFIÉ)
 - `/app/frontend/src/pages/Home.jsx`
-- `/app/frontend/src/components/HeroFreePosition.jsx`
-- `/app/frontend/src/components/HeroFreePositionEditor.jsx` (MISE À JOUR)
-- `/app/frontend/src/components/Navbar.jsx`
-- `/app/frontend/src/pages/AdminSettings.jsx`
-- `/app/frontend/src/i18n/` (configuration traduction)
-- `/app/frontend/tailwind.config.js`
+- `/app/frontend/src/components/HeroFreePositionEditor.jsx`
+- `/app/frontend/public/index.html` (META TAGS AMÉLIORÉS)
+- `/app/backend/server.py` (ENDPOINTS SEO + SHIPPING)
