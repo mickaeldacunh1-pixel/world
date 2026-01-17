@@ -622,6 +622,22 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
                   className="h-8 bg-gray-700 border-gray-600 text-white text-xs"
                 />
               </div>
+              
+              {/* Toggle recherche compacte */}
+              <div className="pt-3 border-t border-gray-700">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/90 text-xs font-medium">🔍 Mode Compact</p>
+                    <p className="text-white/50 text-[10px]">Bouton avec popup au lieu de la barre</p>
+                  </div>
+                  <button
+                    onClick={() => onChange({...settings, hero_search_compact: !settings.hero_search_compact})}
+                    className={`relative w-10 h-5 rounded-full transition-colors ${settings.hero_search_compact ? 'bg-orange-500' : 'bg-gray-600'}`}
+                  >
+                    <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${settings.hero_search_compact ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                  </button>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
