@@ -321,8 +321,15 @@ export default function Home() {
           )}
         </div>
         
-        {/* Content */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 w-full">
+        {/* Content - Mode Libre ou Mode Standard */}
+        {heroSettings.hero_free_position_enabled ? (
+          // Mode Position Libre
+          <div className="relative w-full h-[70vh] min-h-[500px]">
+            <HeroFreePosition settings={heroSettings} />
+          </div>
+        ) : (
+          // Mode Standard
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 w-full">
           <div 
             className={`animate-fade-in-up ${
               heroSettings.hero_text_align === 'center' ? 'mx-auto text-center max-w-4xl' : 
