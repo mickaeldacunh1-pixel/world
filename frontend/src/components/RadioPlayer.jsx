@@ -208,8 +208,8 @@ export default function RadioPlayer() {
     changeStation(stations[prevIndex]);
   };
 
-  // Si désactivé dans les settings
-  if (!settings.enabled) {
+  // Si désactivé dans les settings ET pas forcé par le bouton Hero
+  if (!settings.enabled && !forceShow) {
     return null;
   }
 
