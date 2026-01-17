@@ -10457,6 +10457,209 @@ async def update_boxtal_margin(data: dict, current_user: dict = Depends(get_curr
         "message": f"Marge mise à jour à {BOXTAL_MARGIN_PERCENT}%"
     }
 
+# Endpoint simplifié pour l'estimation des frais de livraison (frontend)
+class ShippingEstimateRequest(BaseModel):
+    listing_id: str
+    destination_postal_code: str
+    weight: float = 1000  # grammes
+    length: float = 30    # cm
+    width: float = 20     # cm
+    height: float = 15    # cm
+
+@app.post("/api/shipping/estimate")
+async def estimate_shipping(request: ShippingEstimateRequest):
+    """
+    Estimation simplifiée des frais de livraison pour une annonce.
+    Ne nécessite que le code postal de destination et les dimensions du colis.
+    """
+    
+    # Récupérer l'annonce pour avoir l'adresse du vendeur
+    listing = await db.listings.find_one({"_id": ObjectId(request.listing_id)})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    # Récupérer les infos du vendeur
+    seller = await db.users.find_one({"_id": ObjectId(listing["seller_id"])})
+    if not seller:
+        raise HTTPException(status_code=404, detail="Vendeur non trouvé")
+    
+    # Adresse de l'expéditeur (vendeur) - utiliser les infos disponibles
+    sender_postal_code = seller.get("postal_code") or seller.get("address", {}).get("postal_code") or "75001"
+    sender_city = seller.get("city") or seller.get("address", {}).get("city") or "Paris"
+    
+    # Poids - utiliser celui de l'annonce si disponible
+    weight = listing.get("weight") or request.weight
+    
+    # En mode simulation, retourner des prix estimés directement
+    if BOXTAL_MODE == "simulation":
+        # Calcul basé sur le poids et la distance approximative
+        weight_kg = weight / 1000
+        
+        # Prix de base simulés avec variation selon le poids
+        quotes = [
+            {
+                "service_id": "colissimo_domicile",
+                "carrier_name": "Colissimo",
+                "service_name": "Livraison à domicile",
+                "delivery_time_min": 2,
+                "delivery_time_max": 4,
+                "price_ttc": apply_shipping_margin(round(5.50 + weight_kg * 2, 2) * 1.20)
+            },
+            {
+                "service_id": "chronopost_express",
+                "carrier_name": "Chronopost",
+                "service_name": "Express 24h",
+                "delivery_time_min": 1,
+                "delivery_time_max": 1,
+                "price_ttc": apply_shipping_margin(round(12.90 + weight_kg * 3, 2) * 1.20)
+            },
+            {
+                "service_id": "mondial_relay_point",
+                "carrier_name": "Mondial Relay",
+                "service_name": "Point Relais",
+                "delivery_time_min": 3,
+                "delivery_time_max": 5,
+                "price_ttc": apply_shipping_margin(round(3.90 + weight_kg * 1.5, 2) * 1.20)
+            },
+            {
+                "service_id": "dpd_classic",
+                "carrier_name": "DPD",
+                "service_name": "DPD Classic",
+                "delivery_time_min": 2,
+                "delivery_time_max": 3,
+                "price_ttc": apply_shipping_margin(round(6.90 + weight_kg * 2.2, 2) * 1.20)
+            },
+            {
+                "service_id": "gls_business",
+                "carrier_name": "GLS",
+                "service_name": "Business Parcel",
+                "delivery_time_min": 2,
+                "delivery_time_max": 4,
+                "price_ttc": apply_shipping_margin(round(5.90 + weight_kg * 1.8, 2) * 1.20)
+            }
+        ]
+        
+        # Trier par prix
+        quotes.sort(key=lambda x: x["price_ttc"])
+        
+        return {
+            "mode": "simulation",
+            "listing_id": request.listing_id,
+            "destination_postal_code": request.destination_postal_code,
+            "quotes": quotes
+        }
+    
+    # Mode production - appeler l'API Boxtal
+    try:
+        token = await get_boxtal_token()
+        
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+        
+        # Construire la requête pour Boxtal
+        payload = {
+            "shipper": {
+                "zipcode": sender_postal_code,
+                "city": sender_city,
+                "country": "FR"
+            },
+            "recipient": {
+                "zipcode": request.destination_postal_code,
+                "country": "FR"
+            },
+            "parcels": [{
+                "weight": weight / 1000,  # Convertir en kg
+                "length": request.length,
+                "width": request.width,
+                "height": request.height
+            }]
+        }
+        
+        async with httpx.AsyncClient(timeout=30.0) as http_client:
+            response = await http_client.post(
+                f"{BOXTAL_API_URL}/v3/shipping/quote",
+                headers=headers,
+                json=payload
+            )
+            
+            if response.status_code != 200:
+                logger.error(f"Boxtal estimate error: {response.status_code} - {response.text}")
+                # Fallback sur simulation en cas d'erreur
+                return await estimate_shipping_fallback(request, weight)
+            
+            data = response.json()
+            
+            # Parser et formater les options
+            quotes = []
+            for offer in data.get("offers", []):
+                base_price_ttc = float(offer.get("price", {}).get("tax_inclusive", 0))
+                quotes.append({
+                    "service_id": offer.get("id"),
+                    "carrier_name": offer.get("carrier", {}).get("name"),
+                    "service_name": offer.get("service", {}).get("name"),
+                    "delivery_time_min": offer.get("delivery", {}).get("min_days", 1),
+                    "delivery_time_max": offer.get("delivery", {}).get("max_days", 5),
+                    "price_ttc": apply_shipping_margin(base_price_ttc)
+                })
+            
+            # Trier par prix
+            quotes.sort(key=lambda x: x["price_ttc"])
+            
+            return {
+                "mode": "production",
+                "listing_id": request.listing_id,
+                "destination_postal_code": request.destination_postal_code,
+                "quotes": quotes
+            }
+            
+    except Exception as e:
+        logger.error(f"Boxtal estimate error: {e}")
+        # Fallback sur simulation en cas d'erreur
+        return await estimate_shipping_fallback(request, weight)
+
+async def estimate_shipping_fallback(request: ShippingEstimateRequest, weight: float):
+    """Fallback avec des prix simulés si l'API Boxtal échoue"""
+    weight_kg = weight / 1000
+    
+    quotes = [
+        {
+            "service_id": "colissimo_domicile",
+            "carrier_name": "Colissimo",
+            "service_name": "Livraison à domicile",
+            "delivery_time_min": 2,
+            "delivery_time_max": 4,
+            "price_ttc": apply_shipping_margin(round(5.50 + weight_kg * 2, 2) * 1.20)
+        },
+        {
+            "service_id": "chronopost_express",
+            "carrier_name": "Chronopost",
+            "service_name": "Express 24h",
+            "delivery_time_min": 1,
+            "delivery_time_max": 1,
+            "price_ttc": apply_shipping_margin(round(12.90 + weight_kg * 3, 2) * 1.20)
+        },
+        {
+            "service_id": "mondial_relay_point",
+            "carrier_name": "Mondial Relay",
+            "service_name": "Point Relais",
+            "delivery_time_min": 3,
+            "delivery_time_max": 5,
+            "price_ttc": apply_shipping_margin(round(3.90 + weight_kg * 1.5, 2) * 1.20)
+        }
+    ]
+    
+    quotes.sort(key=lambda x: x["price_ttc"])
+    
+    return {
+        "mode": "fallback",
+        "listing_id": request.listing_id,
+        "destination_postal_code": request.destination_postal_code,
+        "quotes": quotes,
+        "notice": "Estimation basée sur des tarifs moyens"
+    }
+
 # ================== WAREHOUSE / ENTREPOT ==================
 
 class WarehouseSection(BaseModel):
