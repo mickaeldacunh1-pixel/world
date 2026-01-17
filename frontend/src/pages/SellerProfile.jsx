@@ -28,6 +28,7 @@ const BADGE_COLORS = {
 };
 
 export default function SellerProfile() {
+  const { t } = useTranslation();
   const { sellerId } = useParams();
   const [seller, setSeller] = useState(null);
   const [listings, setListings] = useState([]);
