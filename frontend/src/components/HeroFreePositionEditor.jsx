@@ -339,9 +339,50 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
   };
 
   const selectedElementData = selectedElement ? HERO_ELEMENTS.find(e => e.id === selectedElement) : null;
+  
+  const isEnabled = settings.hero_free_position_enabled === true;
+  
+  const toggleFreePositionMode = async () => {
+    const newEnabled = !isEnabled;
+    const newSettings = {
+      ...settings,
+      hero_free_position_enabled: newEnabled
+    };
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/api/settings/hero`, newSettings, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      onChange(newSettings);
+      toast.success(newEnabled ? 'Mode position libre activé !' : 'Mode standard activé');
+    } catch (error) {
+      toast.error('Erreur lors du changement de mode');
+    }
+  };
 
   return (
     <div className="space-y-4">
+      {/* Toggle Mode */}
+      <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-500/20 to-purple-500/20 rounded-lg border border-orange-500/30">
+        <div>
+          <p className="font-medium text-white">Mode Position Libre</p>
+          <p className="text-sm text-white/60">Activez pour positionner les éléments où vous voulez sur le Hero</p>
+        </div>
+        <button
+          onClick={toggleFreePositionMode}
+          className={`relative w-14 h-7 rounded-full transition-colors ${isEnabled ? 'bg-orange-500' : 'bg-gray-600'}`}
+        >
+          <div className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${isEnabled ? 'translate-x-8' : 'translate-x-1'}`} />
+        </button>
+      </div>
+      
+      {!isEnabled && (
+        <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-300 text-sm">
+          ⚠️ Le mode position libre est désactivé. Activez-le ci-dessus pour que vos modifications s'appliquent sur la page d'accueil.
+        </div>
+      )}
+      
       {/* Barre d'outils */}
       <div className="flex items-center justify-between gap-4 p-3 bg-gray-800 rounded-lg">
         <div className="flex items-center gap-2">
