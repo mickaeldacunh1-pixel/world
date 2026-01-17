@@ -455,13 +455,11 @@ export default function Home() {
               heroSettings.hero_text_align === 'center' ? 'justify-center' : 
               heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
             }`}>
-              {/* Plate Scanner - Hidden on mobile (< 640px) */}
+              {/* Plate Scanner - Visible sur mobile aussi */}
               {heroSettings.hero_show_plate_scanner !== false && (
-                <div className="hidden sm:block">
-                  <PlateScanner onVehicleSelect={(v) => {
-                    navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
-                  }} />
-                </div>
+                <PlateScanner onVehicleSelect={(v) => {
+                  navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
+                }} />
               )}
 
               {/* Bouton Tobi Assistant */}
@@ -494,12 +492,12 @@ export default function Home() {
                 </Link>
               )}
               
-              {/* CTA Button 2 - Hidden on mobile to save space */}
+              {/* CTA Button 2 - Visible sur mobile */}
               {heroSettings.hero_cta2_enabled && heroSettings.hero_cta2_text && (
-                <Link to={heroSettings.hero_cta2_link || '/encheres'} className="hidden sm:block">
+                <Link to={heroSettings.hero_cta2_link || '/encheres'}>
                   <Button 
                     variant="outline" 
-                    className="gap-2 text-sm h-10 px-4"
+                    className="gap-1 sm:gap-2 text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4"
                     style={{ 
                       backgroundColor: heroSettings.hero_cta2_style === 'filled' ? (heroSettings.hero_cta2_bg_color || 'transparent') : 'transparent',
                       color: heroSettings.hero_cta2_text_color || '#FFFFFF',
@@ -507,7 +505,8 @@ export default function Home() {
                     }}
                   >
                     {heroSettings.hero_cta2_icon && <span>{heroSettings.hero_cta2_icon}</span>}
-                    {heroSettings.hero_cta2_text}
+                    <span className="hidden sm:inline">{heroSettings.hero_cta2_text}</span>
+                    <span className="sm:hidden">Enchères</span>
                   </Button>
                 </Link>
               )}
