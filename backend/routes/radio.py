@@ -34,20 +34,22 @@ class RadioSettings(BaseModel):
 
 # Default stations
 DEFAULT_STATIONS = [
-    {"id": "skyrock", "name": "Skyrock", "genre": "Rap & RnB", "logo": "🎤", "stream_url": "https://icecast.skyrock.net/s/natio_mp3_128k", "color": "#000000", "enabled": True, "order": 0},
-    {"id": "funradio", "name": "Fun Radio", "genre": "Dance", "logo": "🎧", "stream_url": "https://streaming.radio.funradio.fr/fun-1-44-128", "color": "#FF6B00", "enabled": True, "order": 1},
-    {"id": "rtl", "name": "RTL", "genre": "Généraliste", "logo": "📻", "stream_url": "https://streaming.radio.rtl.fr/rtl-1-44-128", "color": "#E30613", "enabled": True, "order": 2},
-    {"id": "rtl2", "name": "RTL2", "genre": "Pop Rock", "logo": "🎸", "stream_url": "https://streaming.radio.rtl2.fr/rtl2-1-44-128", "color": "#00A0E4", "enabled": True, "order": 3},
-    {"id": "nova", "name": "Radio Nova", "genre": "Éclectique", "logo": "🌟", "stream_url": "https://novazz.ice.infomaniak.ch/novazz-128.mp3", "color": "#FF5500", "enabled": True, "order": 4},
-    {"id": "beurfm", "name": "Beur FM", "genre": "Musique du monde", "logo": "🌍", "stream_url": "https://beurfm.ice.infomaniak.ch/beurfm-high.mp3", "color": "#009933", "enabled": True, "order": 5},
-    {"id": "franceinter", "name": "France Inter", "genre": "Généraliste", "logo": "🇫🇷", "stream_url": "https://icecast.radiofrance.fr/franceinter-midfi.mp3", "color": "#E20074", "enabled": True, "order": 6},
-    {"id": "franceinfo", "name": "France Info", "genre": "Info", "logo": "📰", "stream_url": "https://icecast.radiofrance.fr/franceinfo-midfi.mp3", "color": "#0066CC", "enabled": True, "order": 7},
+    # Stations demandées par l'utilisateur en priorité
+    {"id": "nostalgie", "name": "Nostalgie", "genre": "Oldies", "logo": "💫", "stream_url": "https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3", "color": "#FFD700", "enabled": True, "order": 0},
+    {"id": "fipreggae", "name": "FIP Reggae", "genre": "Reggae", "logo": "🌴", "stream_url": "https://icecast.radiofrance.fr/fipreggae-midfi.mp3", "color": "#2ECC71", "enabled": True, "order": 1},
+    {"id": "fiprock", "name": "FIP Rock", "genre": "Rock", "logo": "🤘", "stream_url": "https://icecast.radiofrance.fr/fiprock-midfi.mp3", "color": "#E74C3C", "enabled": True, "order": 2},
+    {"id": "fipgroove", "name": "FIP Groove", "genre": "Funk & Soul", "logo": "🕺", "stream_url": "https://icecast.radiofrance.fr/fipgroove-midfi.mp3", "color": "#FF6B35", "enabled": True, "order": 3},
+    # Autres stations populaires
+    {"id": "skyrock", "name": "Skyrock", "genre": "Rap & RnB", "logo": "🎤", "stream_url": "https://icecast.skyrock.net/s/natio_mp3_128k", "color": "#000000", "enabled": True, "order": 4},
+    {"id": "funradio", "name": "Fun Radio", "genre": "Dance", "logo": "🎧", "stream_url": "https://streaming.radio.funradio.fr/fun-1-44-128", "color": "#FF6B00", "enabled": True, "order": 5},
+    {"id": "rtl2", "name": "RTL2", "genre": "Pop Rock", "logo": "🎸", "stream_url": "https://streaming.radio.rtl2.fr/rtl2-1-44-128", "color": "#00A0E4", "enabled": True, "order": 6},
+    {"id": "nova", "name": "Radio Nova", "genre": "Éclectique", "logo": "🌟", "stream_url": "https://novazz.ice.infomaniak.ch/novazz-128.mp3", "color": "#FF5500", "enabled": True, "order": 7},
     {"id": "fip", "name": "FIP", "genre": "Jazz & Groove", "logo": "🎹", "stream_url": "https://icecast.radiofrance.fr/fip-midfi.mp3", "color": "#E85D75", "enabled": True, "order": 8},
     {"id": "mouv", "name": "Mouv'", "genre": "Urban", "logo": "🔥", "stream_url": "https://icecast.radiofrance.fr/mouv-midfi.mp3", "color": "#00D4AA", "enabled": True, "order": 9},
-    {"id": "francemusique", "name": "France Musique", "genre": "Classique", "logo": "🎻", "stream_url": "https://icecast.radiofrance.fr/francemusique-midfi.mp3", "color": "#8B4513", "enabled": True, "order": 10},
-    {"id": "franceculture", "name": "France Culture", "genre": "Culture", "logo": "📚", "stream_url": "https://icecast.radiofrance.fr/franceculture-midfi.mp3", "color": "#9932CC", "enabled": True, "order": 11},
-    {"id": "oui", "name": "OÜI FM", "genre": "Rock Indé", "logo": "🤘", "stream_url": "https://ouifm.ice.infomaniak.ch/ouifm-high.mp3", "color": "#FF0000", "enabled": True, "order": 12},
-    {"id": "tsfjazz", "name": "TSF Jazz", "genre": "Jazz", "logo": "🎷", "stream_url": "https://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3", "color": "#1E90FF", "enabled": True, "order": 13},
+    {"id": "oui", "name": "OÜI FM", "genre": "Rock Indé", "logo": "🎸", "stream_url": "https://ouifm.ice.infomaniak.ch/ouifm-high.mp3", "color": "#FF0000", "enabled": True, "order": 10},
+    {"id": "tsfjazz", "name": "TSF Jazz", "genre": "Jazz", "logo": "🎷", "stream_url": "https://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3", "color": "#1E90FF", "enabled": True, "order": 11},
+    {"id": "rtl", "name": "RTL", "genre": "Généraliste", "logo": "📻", "stream_url": "https://streaming.radio.rtl.fr/rtl-1-44-128", "color": "#E30613", "enabled": True, "order": 12},
+    {"id": "franceinter", "name": "France Inter", "genre": "Généraliste", "logo": "🇫🇷", "stream_url": "https://icecast.radiofrance.fr/franceinter-midfi.mp3", "color": "#E20074", "enabled": True, "order": 13},
 ]
 
 # Database reference will be injected
