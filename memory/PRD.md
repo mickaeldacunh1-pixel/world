@@ -96,15 +96,16 @@ Plateforme marketplace automobile complète permettant l'achat/vente de véhicul
 ## Prioritized Backlog
 
 ### P0 - Critique
-- [ ] Résoudre problème de traduction i18n sur VPS utilisateur
+- [x] Vérifier intégrations Boxtal et SEO ✅ Fonctionnels
+- [ ] Bug sauvegarde éditeur mobile Hero (si persiste après test utilisateur)
 
 ### P1 - Important  
 - [ ] Tester l'estimation Boxtal avec une vraie annonce en production
-- [ ] Valider éditeur Hero mobile en production
-- [ ] Traduire pages principales (Home, Pricing, FAQ)
+- [ ] Valider éditeur Hero mobile en production (activer mode Position Libre)
+- [ ] Traduire texte codé en dur dans Home.jsx avec i18next
 
 ### P2 - Normal
-- [ ] Résoudre erreurs Docker récurrentes
+- [ ] Optimiser déploiement Docker sur VPS (script wabuild.sh fourni)
 - [ ] Améliorer performance sitemap pour gros volumes
 
 ### P3 - Futur
