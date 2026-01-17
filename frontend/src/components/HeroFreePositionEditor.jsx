@@ -25,6 +25,7 @@ const HERO_ELEMENTS = [
   { id: 'stats', label: 'Statistiques', defaultWidth: 500, defaultHeight: 40 },
   { id: 'plate_scanner', label: 'Scanner Plaque', defaultWidth: 200, defaultHeight: 45 },
   { id: 'tobi_button', label: 'Bouton Tobi', defaultWidth: 180, defaultHeight: 45 },
+  { id: 'radio_button', label: 'Bouton Radio', defaultWidth: 150, defaultHeight: 45 },
 ];
 
 // Positions par défaut Desktop
@@ -35,7 +36,8 @@ const DEFAULT_DESKTOP_POSITIONS = {
   subtitle: { x: 50, y: 42, visible: true },
   search: { x: 50, y: 55, visible: true },
   plate_scanner: { x: 35, y: 70, visible: true },
-  tobi_button: { x: 65, y: 70, visible: true },
+  tobi_button: { x: 50, y: 70, visible: true },
+  radio_button: { x: 65, y: 70, visible: true },
   cta_buttons: { x: 50, y: 78, visible: true },
   premium_buttons: { x: 50, y: 88, visible: true },
   stats: { x: 50, y: 95, visible: true },
