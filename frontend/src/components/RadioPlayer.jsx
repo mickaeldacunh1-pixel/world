@@ -63,6 +63,16 @@ export default function RadioPlayer() {
     fetchData();
   }, []);
 
+  // Écouter l'événement toggleRadio depuis le Hero
+  useEffect(() => {
+    const handleToggleRadio = () => {
+      setIsOpen(prev => !prev);
+    };
+    
+    window.addEventListener('toggleRadio', handleToggleRadio);
+    return () => window.removeEventListener('toggleRadio', handleToggleRadio);
+  }, []);
+
   // Initialiser l'audio
   useEffect(() => {
     if (!audioRef.current) {
