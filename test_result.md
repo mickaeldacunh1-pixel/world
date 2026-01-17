@@ -14,7 +14,7 @@ Testing the integration of 4 UX features:
 - `GET/POST/DELETE /api/search-history` - Search history
 
 ## Test Environment
-- Base URL: https://worldauto-hero.preview.emergentagent.com/api
+- Base URL: https://shopify-translator.preview.emergentagent.com/api
 - Test user: contact@worldautofrance.com (admin account exists)
 
 ## Backend Test Results
