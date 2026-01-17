@@ -68,9 +68,13 @@ export default function RadioPlayer() {
   }, []);
 
   // Écouter l'événement toggleRadio depuis le Hero
+  // Cet événement force l'ouverture même si settings.enabled est false
+  const [forceShow, setForceShow] = useState(false);
+  
   useEffect(() => {
     const handleToggleRadio = () => {
       console.log('toggleRadio event received');
+      setForceShow(true);
       setIsOpen(true);
       setIsExpanded(true);
     };
