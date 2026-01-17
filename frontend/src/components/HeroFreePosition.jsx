@@ -212,7 +212,8 @@ export default function HeroFreePosition({ settings, onSearch }) {
     subtitle: { x: 50, y: 45, visible: true },
     search: { x: 50, y: 58, visible: true },
     plate_scanner: { x: 35, y: 72, visible: true },
-    tobi_button: { x: 65, y: 72, visible: true },
+    tobi_button: { x: 50, y: 72, visible: true },
+    radio_button: { x: 65, y: 72, visible: true },
     cta_buttons: { x: 50, y: 82, visible: true },
     premium_buttons: { x: 50, y: 92, visible: true },
   };
@@ -225,7 +226,8 @@ export default function HeroFreePosition({ settings, onSearch }) {
     subtitle: { x: 50, y: 35, visible: true },
     search: { x: 50, y: 48, visible: true },
     plate_scanner: { x: 50, y: 60, visible: false }, // Caché sur mobile par défaut
-    tobi_button: { x: 50, y: 68, visible: true },
+    tobi_button: { x: 35, y: 68, visible: true },
+    radio_button: { x: 65, y: 68, visible: true }, // Visible sur mobile
     cta_buttons: { x: 50, y: 78, visible: true },
     premium_buttons: { x: 50, y: 88, visible: false }, // Caché sur mobile par défaut
   };
