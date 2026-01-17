@@ -480,25 +480,26 @@ export default function Home() {
               {heroSettings.hero_cta1_enabled !== false && heroSettings.hero_cta1_text && (
                 <Link to={heroSettings.hero_cta1_link || '/deposer'}>
                   <Button 
-                    className={`gap-2 ${heroSettings.hero_cta1_style === 'outline' ? 'bg-transparent border-2' : heroSettings.hero_cta1_style === 'ghost' ? 'bg-transparent' : ''}`}
+                    className={`gap-1 sm:gap-2 text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4 ${heroSettings.hero_cta1_style === 'outline' ? 'bg-transparent border-2' : heroSettings.hero_cta1_style === 'ghost' ? 'bg-transparent' : ''}`}
                     style={{ 
                       backgroundColor: heroSettings.hero_cta1_style === 'filled' ? (heroSettings.hero_cta1_bg_color || '#F97316') : 'transparent',
                       color: heroSettings.hero_cta1_text_color || '#FFFFFF',
                       borderColor: heroSettings.hero_cta1_style === 'outline' ? (heroSettings.hero_cta1_bg_color || '#F97316') : undefined
                     }}
                   >
-                    {heroSettings.hero_cta1_icon && <span>{heroSettings.hero_cta1_icon}</span>}
-                    {heroSettings.hero_cta1_text}
+                    {heroSettings.hero_cta1_icon && <span className="text-sm sm:text-base">{heroSettings.hero_cta1_icon}</span>}
+                    <span className="hidden sm:inline">{heroSettings.hero_cta1_text}</span>
+                    <span className="sm:hidden">Déposer</span>
                   </Button>
                 </Link>
               )}
               
-              {/* CTA Button 2 */}
+              {/* CTA Button 2 - Hidden on mobile to save space */}
               {heroSettings.hero_cta2_enabled && heroSettings.hero_cta2_text && (
-                <Link to={heroSettings.hero_cta2_link || '/encheres'}>
+                <Link to={heroSettings.hero_cta2_link || '/encheres'} className="hidden sm:block">
                   <Button 
                     variant="outline" 
-                    className="gap-2"
+                    className="gap-2 text-sm h-10 px-4"
                     style={{ 
                       backgroundColor: heroSettings.hero_cta2_style === 'filled' ? (heroSettings.hero_cta2_bg_color || 'transparent') : 'transparent',
                       color: heroSettings.hero_cta2_text_color || '#FFFFFF',
@@ -511,11 +512,11 @@ export default function Home() {
                 </Link>
               )}
 
-              {/* Boutons Premium (CTA3 & CTA4) */}
+              {/* Boutons Premium (CTA3 & CTA4) - Hidden on mobile */}
               {heroSettings.hero_cta3_enabled && heroSettings.hero_cta3_text && (
-                <Link to={heroSettings.hero_cta3_link || '/tarifs'}>
+                <Link to={heroSettings.hero_cta3_link || '/tarifs'} className="hidden md:block">
                   <Button 
-                    className="gap-2 ring-2 ring-yellow-400/50"
+                    className="gap-2 text-sm h-10 px-4 ring-2 ring-yellow-400/50"
                     style={{ 
                       backgroundColor: heroSettings.hero_cta3_bg_color || '#EAB308',
                       color: heroSettings.hero_cta3_text_color || '#FFFFFF'
@@ -529,9 +530,9 @@ export default function Home() {
               )}
               
               {heroSettings.hero_cta4_enabled && heroSettings.hero_cta4_text && (
-                <Link to={heroSettings.hero_cta4_link || '/tarifs'}>
+                <Link to={heroSettings.hero_cta4_link || '/tarifs'} className="hidden md:block">
                   <Button 
-                    className="gap-2 ring-2 ring-purple-400/50"
+                    className="gap-2 text-sm h-10 px-4 ring-2 ring-purple-400/50"
                     style={{ 
                       backgroundColor: heroSettings.hero_cta4_bg_color || '#8B5CF6',
                       color: heroSettings.hero_cta4_text_color || '#FFFFFF'
