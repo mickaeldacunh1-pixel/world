@@ -455,9 +455,9 @@ export default function Home() {
               heroSettings.hero_text_align === 'center' ? 'justify-center' : 
               heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
             }`}>
-              {/* Plate Scanner - Hidden on very small screens */}
+              {/* Plate Scanner - Hidden on mobile (< 640px) */}
               {heroSettings.hero_show_plate_scanner !== false && (
-                <div className="hidden xs:block">
+                <div className="hidden sm:block">
                   <PlateScanner onVehicleSelect={(v) => {
                     navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
                   }} />
