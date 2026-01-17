@@ -25,6 +25,7 @@ const HERO_ELEMENTS = [
   { id: 'stats', label: 'Statistiques', defaultWidth: 500, defaultHeight: 40 },
   { id: 'plate_scanner', label: 'Scanner Plaque', defaultWidth: 200, defaultHeight: 45 },
   { id: 'tobi_button', label: 'Bouton Tobi', defaultWidth: 180, defaultHeight: 45 },
+  { id: 'diag_button', label: 'Bouton Diag IA', defaultWidth: 180, defaultHeight: 45 },
   { id: 'radio_button', label: 'Bouton Radio', defaultWidth: 150, defaultHeight: 45 },
 ];
 
@@ -35,9 +36,10 @@ const DEFAULT_DESKTOP_POSITIONS = {
   title2: { x: 50, y: 32, visible: true },
   subtitle: { x: 50, y: 42, visible: true },
   search: { x: 50, y: 55, visible: true },
-  plate_scanner: { x: 35, y: 70, visible: true },
-  tobi_button: { x: 50, y: 70, visible: true },
-  radio_button: { x: 65, y: 70, visible: true },
+  plate_scanner: { x: 25, y: 70, visible: true },
+  tobi_button: { x: 40, y: 70, visible: true },
+  diag_button: { x: 55, y: 70, visible: true },
+  radio_button: { x: 70, y: 70, visible: true },
   cta_buttons: { x: 50, y: 78, visible: true },
   premium_buttons: { x: 50, y: 88, visible: true },
   stats: { x: 50, y: 95, visible: true },
@@ -50,12 +52,13 @@ const DEFAULT_MOBILE_POSITIONS = {
   title2: { x: 50, y: 26, visible: true },
   subtitle: { x: 50, y: 36, visible: true },
   search: { x: 50, y: 50, visible: true },
-  plate_scanner: { x: 50, y: 62, visible: false }, // Caché par défaut sur mobile
-  tobi_button: { x: 35, y: 68, visible: true },
-  radio_button: { x: 65, y: 68, visible: true }, // Visible sur mobile
+  plate_scanner: { x: 50, y: 62, visible: false },
+  tobi_button: { x: 30, y: 68, visible: true },
+  diag_button: { x: 50, y: 68, visible: true },
+  radio_button: { x: 70, y: 68, visible: true },
   cta_buttons: { x: 50, y: 78, visible: true },
-  premium_buttons: { x: 50, y: 88, visible: false }, // Caché par défaut sur mobile
-  stats: { x: 50, y: 94, visible: false }, // Caché par défaut sur mobile
+  premium_buttons: { x: 50, y: 88, visible: false },
+  stats: { x: 50, y: 94, visible: false },
 };
 
 // Composant élément draggable
