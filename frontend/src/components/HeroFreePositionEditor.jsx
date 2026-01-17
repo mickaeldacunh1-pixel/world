@@ -687,7 +687,7 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
                 <Input
                   value={settings.hero_description || ''}
                   onChange={(e) => onChange({...settings, hero_description: e.target.value})}
-                  placeholder="Trouvez la pièce qu'il vous faut"
+                  placeholder="Trouvez la pièce qu&apos;il vous faut"
                   className="h-8 bg-gray-700 border-gray-600 text-white text-xs"
                 />
               </div>
