@@ -33,6 +33,14 @@ export default function Navbar() {
     promo_text_color: '#FFFFFF',
     cart_bg_color: '#1E3A5F',
     cart_text_color: '#FFFFFF',
+    navbar_bg_color: '#FFFFFF',
+    navbar_text_color: '#0F172A',
+    navbar_logo_text: 'World Auto Pro',
+    promo_banner_enabled: true,
+    promo_banner_title: 'Compte Premium',
+    promo_banner_subtitle: 'Économisez encore plus',
+    promo_banner_badge: 'NOUVEAU',
+    promo_accent_color: '#F97316',
   });
 
   const categories = [
