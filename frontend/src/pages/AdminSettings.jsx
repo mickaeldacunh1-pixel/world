@@ -2207,26 +2207,11 @@ export default function AdminSettings() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   🎯 Éditeur de Position Libre
-                  <span className="text-xs font-normal text-muted-foreground ml-2">Nouveau</span>
+                  <span className="text-xs font-normal text-muted-foreground ml-2">Glissez les éléments où vous voulez</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <HeroFreePositionEditor 
-                  settings={settings} 
-                  onChange={setSettings}
-                />
-              </CardContent>
-            </Card>
-
-            {/* Éditeur Visuel Drag & Drop - Ordre des lignes */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  📝 Ordre des Éléments (vertical)
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <HeroVisualEditor 
                   settings={settings} 
                   onChange={setSettings}
                 />
