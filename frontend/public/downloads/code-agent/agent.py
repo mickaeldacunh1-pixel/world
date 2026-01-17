@@ -43,7 +43,7 @@ def get_version():
     return "1.0.0"
 
 VERSION = get_version()
-UPDATE_URL = "https://shopify-translator.preview.emergentagent.com/downloads/code-agent"
+UPDATE_URL = "https://responsive-ui-30.preview.emergentagent.com/downloads/code-agent"
 VERSION_URL = f"{UPDATE_URL}/version.txt"
 ZIP_URL = f"{UPDATE_URL}.zip"
 
