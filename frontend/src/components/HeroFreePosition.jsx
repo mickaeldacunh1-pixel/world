@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Search, MessageCircle, X, Mic, ChevronDown, Car, Wrench, Bike, Truck, Settings, Tractor, Star } from 'lucide-react';
+import { Search, MessageCircle, X, Mic, ChevronDown, Car, Wrench, Bike, Truck, Settings, Tractor, Star, Stethoscope } from 'lucide-react';
 import PlateScanner from './PlateScanner';
 import VoiceSearch from './VoiceSearch';
 
