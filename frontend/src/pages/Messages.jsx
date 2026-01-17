@@ -39,6 +39,7 @@ export default function Messages() {
   const wsRef = useRef(null);
   const typingTimeoutRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
+  const { t } = useTranslation();
   
   const { showNotification, requestPermission } = useNotifications();
 
