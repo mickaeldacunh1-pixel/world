@@ -136,12 +136,18 @@ export default function Navbar() {
           </Link>
 
           {/* Promo Banner - Tablette et Desktop */}
-          <div className="hidden md:block flex-1 mx-4">
-            <PromoBanner 
-              bgColor={navbarSettings.promo_bg_color} 
-              textColor={navbarSettings.promo_text_color} 
-            />
-          </div>
+          {navbarSettings.promo_banner_enabled && (
+            <div className="hidden md:block flex-1 mx-4">
+              <PromoBanner 
+                bgColor={navbarSettings.promo_bg_color} 
+                textColor={navbarSettings.promo_text_color}
+                title={navbarSettings.promo_banner_title}
+                subtitle={navbarSettings.promo_banner_subtitle}
+                badge={navbarSettings.promo_banner_badge}
+                accentColor={navbarSettings.promo_accent_color}
+              />
+            </div>
+          )}
 
           {/* Promo Banner - Mobile (version compacte) */}
           <div className="md:hidden">
