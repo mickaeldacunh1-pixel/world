@@ -351,13 +351,17 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/settings/hero`, newSettings, {
+      console.log('Saving to:', `${API}/settings/hero`);
+      console.log('Token:', token ? 'Present' : 'Missing');
+      const response = await axios.post(`${API}/settings/hero`, newSettings, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      console.log('Response:', response.data);
       onChange(newSettings);
       toast.success(newEnabled ? 'Mode position libre activé !' : 'Mode standard activé');
     } catch (error) {
-      toast.error('Erreur lors du changement de mode');
+      console.error('Toggle error:', error.response?.data || error.message);
+      toast.error(`Erreur: ${error.response?.data?.detail || error.message}`);
     }
   };
 
