@@ -149,9 +149,9 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* Promo Banner - Mobile (version compacte) */}
+          {/* Promo Banner - Mobile (version compacte) - Hidden on very small screens */}
           {navbarSettings.promo_banner_enabled && (
-            <div className="md:hidden">
+            <div className="hidden xs:block md:hidden">
               <PromoBanner 
                 bgColor={navbarSettings.promo_bg_color} 
                 textColor={navbarSettings.promo_text_color}
