@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
@@ -20,6 +21,7 @@ const statusLabels = {
 };
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const { user, refreshUser, lastRefresh, token } = useAuth();
   const [stats, setStats] = useState(null);
   const [listings, setListings] = useState([]);
