@@ -35,6 +35,7 @@ const returnReasons = [
 ];
 
 export default function Orders() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [returns, setReturns] = useState([]);
