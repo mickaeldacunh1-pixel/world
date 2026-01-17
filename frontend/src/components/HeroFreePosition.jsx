@@ -264,47 +264,53 @@ export default function HeroFreePosition({ settings, onSearch }) {
         </p>
       </PositionedElement>
       
-      {/* Barre de recherche */}
+      {/* Barre de recherche - Mode compact ou étendu */}
       {settings.hero_show_search !== false && (
         <PositionedElement elementId="search" position={getPos('search')}>
-          <form 
-            onSubmit={handleSearch}
-            className="flex flex-col sm:flex-row gap-2 glass p-2 rounded-2xl w-[90vw] max-w-3xl"
-          >
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <Input
-                type="text"
-                placeholder={settings.hero_search_placeholder || "Rechercher une pièce, marque, modèle..."}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-14 bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-xl"
-              />
-            </div>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="h-14 min-w-[180px] bg-white/10 border-white/20 text-white rounded-xl">
-                <SelectValue placeholder="Catégorie" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pieces">Pièces Détachées</SelectItem>
-                <SelectItem value="voitures">Voitures</SelectItem>
-                <SelectItem value="motos">Motos</SelectItem>
-                <SelectItem value="utilitaires">Utilitaires</SelectItem>
-                <SelectItem value="accessoires">Accessoires</SelectItem>
-              </SelectContent>
-            </Select>
-            {settings.hero_show_voice_search !== false && (
-              <VoiceSearch onSearch={(q) => navigate(`/annonces?search=${encodeURIComponent(q)}`)} />
-            )}
-            <Button 
-              type="submit" 
-              className="h-14 px-8 rounded-xl text-base font-semibold"
-              style={{ backgroundColor: settings.hero_search_button_bg || '#F97316' }}
+          {settings.hero_search_compact ? (
+            // Mode compact avec popup
+            <CompactSearchButton settings={settings} navigate={navigate} />
+          ) : (
+            // Mode barre étendue classique
+            <form 
+              onSubmit={handleSearch}
+              className="flex flex-col sm:flex-row gap-2 glass p-2 rounded-2xl w-[90vw] max-w-3xl"
             >
-              <Search className="w-5 h-5 mr-2" />
-              {settings.hero_search_button_text || 'Rechercher'}
-            </Button>
-          </form>
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  type="text"
+                  placeholder={settings.hero_search_placeholder || "Rechercher une pièce, marque, modèle..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-12 h-14 bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-xl"
+                />
+              </div>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="h-14 min-w-[180px] bg-white/10 border-white/20 text-white rounded-xl">
+                  <SelectValue placeholder="Catégorie" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pieces">Pièces Détachées</SelectItem>
+                  <SelectItem value="voitures">Voitures</SelectItem>
+                  <SelectItem value="motos">Motos</SelectItem>
+                  <SelectItem value="utilitaires">Utilitaires</SelectItem>
+                  <SelectItem value="accessoires">Accessoires</SelectItem>
+                </SelectContent>
+              </Select>
+              {settings.hero_show_voice_search !== false && (
+                <VoiceSearch onSearch={(q) => navigate(`/annonces?search=${encodeURIComponent(q)}`)} />
+              )}
+              <Button 
+                type="submit" 
+                className="h-14 px-8 rounded-xl text-base font-semibold"
+                style={{ backgroundColor: settings.hero_search_button_bg || '#F97316' }}
+              >
+                <Search className="w-5 h-5 mr-2" />
+                {settings.hero_search_button_text || 'Rechercher'}
+              </Button>
+            </form>
+          )}
         </PositionedElement>
       )}
       
