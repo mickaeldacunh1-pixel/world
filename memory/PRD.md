@@ -30,6 +30,23 @@ Plateforme marketplace automobile complète permettant l'achat/vente de véhicul
 
 ## What's Been Implemented
 
+### Session du 18 Janvier 2026
+
+#### Corrections et améliorations
+- **HeroFreePositionEditor.jsx** : Corrigé bug de synchronisation des positions
+  - Ajout `useEffect` pour synchroniser les settings avec l'état local
+  - Les positions (y compris le nouveau bouton Diag IA) sont maintenant correctement initialisées
+- **Script wabuild.sh** : Créé script de déploiement automatique
+  - Options: `--quick` (avec cache), `--clean` (sans cache), `--logs`
+  - Commande complète encapsulée pour simplifier les déploiements
+
+#### Vérifications d'intégrations
+- ✅ **Boxtal** : Configuré en mode production, marge 15%
+- ✅ **SEO** : sitemap.xml et robots.txt fonctionnels
+- ✅ **Bouton Diag IA** : Présent dans l'éditeur (nécessite mode Position Libre activé)
+
+---
+
 ### Session du 17 Janvier 2026
 
 #### Phase 1 : Amélioration affichage mobile Hero
