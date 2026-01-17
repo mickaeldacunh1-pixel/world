@@ -583,5 +583,68 @@
     "newsletter_title": "Restez informé des nouveautés !",
     "newsletter_desc": "Inscrivez-vous à notre newsletter pour recevoir les dernières actualités.",
     "newsletter_cta": "S'inscrire à la newsletter"
+  },
+  "pricing": {
+    "title": "Tarifs",
+    "subtitle": "Des formules adaptées à tous vos besoins",
+    "seo_title": "Tarifs et Abonnements - World Auto",
+    "seo_description": "Découvrez nos tarifs pour particuliers et professionnels. Crédits à l'unité, packs et abonnements PRO.",
+    "individual": "Particulier",
+    "professional": "Professionnel",
+    "credit_packs": "Packs de crédits",
+    "per_listing": "par annonce",
+    "per_month": "par mois",
+    "per_quarter": "par trimestre",
+    "per_semester": "par semestre",
+    "per_year": "par an",
+    "credit": "crédit",
+    "credits": "crédits",
+    "listing": "annonce",
+    "listings": "annonces",
+    "best_value": "Meilleur rapport qualité/prix",
+    "most_popular": "Le plus populaire",
+    "save": "Économisez",
+    "buy_pack": "Acheter ce pack",
+    "subscribe": "S'abonner",
+    "current_plan": "Votre forfait actuel",
+    "features": {
+      "photos_5": "5 photos par annonce",
+      "photos_50": "50 photos par annonce",
+      "messaging": "Messagerie intégrée",
+      "alerts": "Alertes de recherche",
+      "tobi_access": "Accès à Tobi IA",
+      "secure_payment": "Paiement sécurisé",
+      "stock_management": "Gestion de stock",
+      "pro_badge": "Badge PRO vérifié",
+      "reduced_fees": "-10% sur les frais",
+      "priority_search": "Priorité dans les recherches",
+      "advanced_stats": "Statistiques avancées",
+      "priority_support": "Support prioritaire",
+      "video_presentation": "Vidéo de présentation",
+      "custom_training": "Formation personnalisée",
+      "api_access": "Accès API"
+    },
+    "pro_plans": {
+      "monthly": "PRO Mensuel",
+      "quarterly": "PRO Trimestriel",
+      "biannual": "PRO Semestriel", 
+      "annual": "PRO Annuel"
+    },
+    "boost": {
+      "title": "Boosts & Promotions",
+      "highlight_24h": "Mise en avant 24h",
+      "highlight_7d": "Mise en avant 7 jours",
+      "urgent_badge": "Badge Urgent",
+      "homepage_display": "Affichage page d'accueil"
+    },
+    "faq": {
+      "title": "Questions fréquentes",
+      "how_credits_work": "Comment fonctionnent les crédits ?",
+      "credits_answer": "1 crédit = 1 annonce publiée. Les crédits n'expirent jamais.",
+      "refund": "Puis-je être remboursé ?",
+      "refund_answer": "Les crédits non utilisés peuvent être remboursés sous 14 jours.",
+      "pro_benefits": "Quels sont les avantages PRO ?",
+      "pro_answer": "Badge vérifié, priorité dans les résultats, statistiques avancées, jusqu'à 50 photos et -10% sur les commissions."
+    }
   }
 }
