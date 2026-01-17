@@ -17,6 +17,10 @@ const DEFAULT_STATIONS = [
   { id: 'europe1', name: 'Europe 1', genre: 'Info & Talk', logo: '🎙️', stream_url: 'https://europe1.lmn.fm/europe1.mp3', color: '#003DA5' },
   { id: 'rtl2', name: 'RTL2', genre: 'Pop Rock', logo: '🎸', stream_url: 'https://streamer-02.rtl.fr/rtl2-1-44-128', color: '#FF6600' },
   { id: 'funradio', name: 'Fun Radio', genre: 'Dance', logo: '🎧', stream_url: 'https://streamer-02.rtl.fr/fun-1-44-128', color: '#8B5CF6' },
+  { id: 'nostalgie', name: 'Nostalgie', genre: 'Oldies', logo: '💫', stream_url: 'https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3', color: '#FFD700' },
+  { id: 'radiofunk', name: 'FIP Groove', genre: 'Funk & Soul', logo: '🕺', stream_url: 'https://icecast.radiofrance.fr/fipgroove-midfi.mp3', color: '#FF6B35' },
+  { id: 'reggae', name: 'FIP Reggae', genre: 'Reggae', logo: '🌴', stream_url: 'https://icecast.radiofrance.fr/fipreggae-midfi.mp3', color: '#2ECC71' },
+  { id: 'rock', name: 'FIP Rock', genre: 'Rock', logo: '🤘', stream_url: 'https://icecast.radiofrance.fr/fiprock-midfi.mp3', color: '#E74C3C' },
 ];
 
 export default function RadioPlayer() {
