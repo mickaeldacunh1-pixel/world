@@ -38,7 +38,14 @@ const ICON_MAP = {
   sparkles: Sparkles,
 };
 
-export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF' }) {
+export default function PromoBanner({ 
+  bgColor = '#1E3A5F', 
+  textColor = '#FFFFFF',
+  title,
+  subtitle,
+  badge,
+  accentColor
+}) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, token } = useAuth();
@@ -46,6 +53,10 @@ export default function PromoBanner({ bgColor = '#1E3A5F', textColor = '#FFFFFF'
   const [promoConfig, setPromoConfig] = useState({
     ...DEFAULT_PROMO,
     bg_color: bgColor,
+    title: title || DEFAULT_PROMO.title,
+    subtitle: subtitle || DEFAULT_PROMO.subtitle,
+    badge_text: badge || DEFAULT_PROMO.badge_text,
+    accent_color: accentColor || DEFAULT_PROMO.accent_color,
   });
   const [dismissed, setDismissed] = useState(false);
   const [trialStatus, setTrialStatus] = useState(null);
