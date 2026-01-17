@@ -412,6 +412,25 @@ export default function HeroFreePosition({ settings, onSearch }) {
           </Button>
         </Link>
       </PositionedElement>
+
+      {/* Bouton Diagnostic IA */}
+      <PositionedElement 
+        elementId="diag_button" 
+        position={getPos('diag_button')}
+        mobilePosition={getMobilePos('diag_button')}
+        isMobile={isMobile}
+      >
+        <Link to="/diagnostic">
+          <Button 
+            className="gap-1.5 sm:gap-2 text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg"
+            data-testid="hero-diag-btn"
+          >
+            <Stethoscope className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+            <span className="hidden sm:inline">Diagnostic IA</span>
+            <span className="sm:hidden">Diag</span>
+          </Button>
+        </Link>
+      </PositionedElement>
       
       {/* Bouton Radio */}
       <PositionedElement 
