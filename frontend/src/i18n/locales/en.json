@@ -582,5 +582,68 @@
     "newsletter_title": "Stay informed about updates!",
     "newsletter_desc": "Subscribe to our newsletter to receive the latest news.",
     "newsletter_cta": "Subscribe to newsletter"
+  },
+  "pricing": {
+    "title": "Pricing",
+    "subtitle": "Plans tailored to all your needs",
+    "seo_title": "Pricing and Subscriptions - World Auto",
+    "seo_description": "Discover our pricing for individuals and professionals. Pay-per-listing credits, packs and PRO subscriptions.",
+    "individual": "Individual",
+    "professional": "Professional",
+    "credit_packs": "Credit Packs",
+    "per_listing": "per listing",
+    "per_month": "per month",
+    "per_quarter": "per quarter",
+    "per_semester": "per semester",
+    "per_year": "per year",
+    "credit": "credit",
+    "credits": "credits",
+    "listing": "listing",
+    "listings": "listings",
+    "best_value": "Best value",
+    "most_popular": "Most popular",
+    "save": "Save",
+    "buy_pack": "Buy this pack",
+    "subscribe": "Subscribe",
+    "current_plan": "Your current plan",
+    "features": {
+      "photos_5": "5 photos per listing",
+      "photos_50": "50 photos per listing",
+      "messaging": "Integrated messaging",
+      "alerts": "Search alerts",
+      "tobi_access": "Access to Tobi AI",
+      "secure_payment": "Secure payment",
+      "stock_management": "Stock management",
+      "pro_badge": "Verified PRO badge",
+      "reduced_fees": "-10% on fees",
+      "priority_search": "Priority in search results",
+      "advanced_stats": "Advanced statistics",
+      "priority_support": "Priority support",
+      "video_presentation": "Video presentation",
+      "custom_training": "Custom training",
+      "api_access": "API access"
+    },
+    "pro_plans": {
+      "monthly": "PRO Monthly",
+      "quarterly": "PRO Quarterly",
+      "biannual": "PRO Biannual",
+      "annual": "PRO Annual"
+    },
+    "boost": {
+      "title": "Boosts & Promotions",
+      "highlight_24h": "24h highlight",
+      "highlight_7d": "7 days highlight",
+      "urgent_badge": "Urgent badge",
+      "homepage_display": "Homepage display"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "how_credits_work": "How do credits work?",
+      "credits_answer": "1 credit = 1 published listing. Credits never expire.",
+      "refund": "Can I get a refund?",
+      "refund_answer": "Unused credits can be refunded within 14 days.",
+      "pro_benefits": "What are the PRO benefits?",
+      "pro_answer": "Verified badge, priority in results, advanced stats, up to 50 photos and -10% on commissions."
+    }
   }
 }
