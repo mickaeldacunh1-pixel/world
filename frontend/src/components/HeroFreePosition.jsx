@@ -391,7 +391,7 @@ export default function HeroFreePosition({ settings, onSearch }) {
         >
           <PlateScanner onVehicleSelect={(v) => {
             navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
-          }} compact={isMobile} />
+          }} />
         </PositionedElement>
       )}
       
