@@ -9817,6 +9817,118 @@ async def get_my_stories(current_user: dict = Depends(get_current_user)):
     
     return stories
 
+# ================== SEO: SITEMAP & ROBOTS ==================
+
+SITE_URL = os.environ.get('SITE_URL', 'https://worldautofrance.com')
+
+@app.get("/sitemap.xml", response_class=Response)
+async def sitemap_xml():
+    """Generate dynamic sitemap for SEO"""
+    
+    # Pages statiques
+    static_pages = [
+        ('/', 'daily', '1.0'),
+        ('/annonces', 'hourly', '0.9'),
+        ('/tarifs', 'weekly', '0.8'),
+        ('/faq', 'monthly', '0.7'),
+        ('/contact', 'monthly', '0.5'),
+        ('/auth', 'monthly', '0.4'),
+        ('/cgu', 'yearly', '0.3'),
+        ('/mentions-legales', 'yearly', '0.3'),
+        ('/confidentialite', 'yearly', '0.3'),
+    ]
+    
+    # Récupérer les annonces actives (limité aux 1000 plus récentes pour performance)
+    listings = await db.listings.find(
+        {"status": "active"},
+        {"_id": 1, "updated_at": 1, "created_at": 1}
+    ).sort("created_at", -1).limit(1000).to_list(1000)
+    
+    # Récupérer les catégories
+    categories = ['pieces', 'voitures', 'motos', 'utilitaires', 'accessoires', 'engins', 'rare']
+    
+    # Construire le XML
+    xml_parts = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
+    
+    # Ajouter les pages statiques
+    for path, changefreq, priority in static_pages:
+        xml_parts.append(f'''  <url>
+    <loc>{SITE_URL}{path}</loc>
+    <changefreq>{changefreq}</changefreq>
+    <priority>{priority}</priority>
+  </url>''')
+    
+    # Ajouter les pages de catégories
+    for cat in categories:
+        xml_parts.append(f'''  <url>
+    <loc>{SITE_URL}/annonces?category={cat}</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>''')
+    
+    # Ajouter les annonces
+    for listing in listings:
+        listing_id = str(listing["_id"])
+        lastmod = listing.get("updated_at") or listing.get("created_at", datetime.now(timezone.utc).isoformat())
+        if isinstance(lastmod, datetime):
+            lastmod = lastmod.strftime('%Y-%m-%d')
+        elif isinstance(lastmod, str):
+            lastmod = lastmod[:10]  # Garder seulement la date
+        
+        xml_parts.append(f'''  <url>
+    <loc>{SITE_URL}/annonce/{listing_id}</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>''')
+    
+    xml_parts.append('</urlset>')
+    
+    xml_content = '\n'.join(xml_parts)
+    
+    return Response(
+        content=xml_content,
+        media_type="application/xml",
+        headers={"Cache-Control": "public, max-age=3600"}  # Cache 1 heure
+    )
+
+@app.get("/robots.txt", response_class=PlainTextResponse)
+async def robots_txt():
+    """Generate robots.txt for SEO"""
+    content = f"""# World Auto France - Robots.txt
+User-agent: *
+Allow: /
+Allow: /annonces
+Allow: /annonce/
+Allow: /tarifs
+Allow: /faq
+Allow: /contact
+
+# Block admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /profil
+Disallow: /messages
+Disallow: /commandes
+Disallow: /panier
+Disallow: /paiement
+Disallow: /auth
+
+# Sitemap location
+Sitemap: {SITE_URL}/sitemap.xml
+
+# Crawl delay for politeness
+Crawl-delay: 1
+"""
+    return PlainTextResponse(
+        content=content,
+        headers={"Cache-Control": "public, max-age=86400"}  # Cache 24h
+    )
+
 # ================== ROOT ==================
 
 @api_router.get("/")
