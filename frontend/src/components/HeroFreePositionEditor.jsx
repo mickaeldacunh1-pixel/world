@@ -374,7 +374,7 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
       default: newX = 50;
     }
     
-    setCurrentPositions(prev => ({
+    updateCurrentPositions(prev => ({
       ...prev,
       [selectedElement]: { ...prev[selectedElement], x: newX }
     }));
