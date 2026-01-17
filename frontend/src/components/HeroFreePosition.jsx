@@ -1,11 +1,161 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Search, MessageCircle } from 'lucide-react';
+import { Search, MessageCircle, X, Mic, ChevronDown, Car, Wrench, Bike, Truck, Settings, Tractor, Star } from 'lucide-react';
 import PlateScanner from './PlateScanner';
 import VoiceSearch from './VoiceSearch';
+
+// Bouton de recherche compact avec popup
+function CompactSearchButton({ settings, navigate }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [oemQuery, setOemQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const popupRef = useRef(null);
+
+  const categories = [
+    { name: 'Pièces Détachées', slug: 'pieces', icon: Wrench },
+    { name: 'Voitures', slug: 'voitures', icon: Car },
+    { name: 'Motos', slug: 'motos', icon: Bike },
+    { name: 'Utilitaires', slug: 'utilitaires', icon: Truck },
+    { name: 'Engins', slug: 'engins', icon: Tractor },
+    { name: 'Accessoires', slug: 'accessoires', icon: Settings },
+    { name: 'Pièces Rares', slug: 'rare', icon: Star },
+  ];
+
+  // Fermer le popup quand on clique en dehors
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (popupRef.current && !popupRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
+
+  const handleSearch = (e) => {
+    e?.preventDefault();
+    const params = new URLSearchParams();
+    if (searchQuery) params.set('search', searchQuery);
+    if (oemQuery) params.set('oem', oemQuery);
+    if (selectedCategory) params.set('category', selectedCategory);
+    navigate(`/annonces?${params.toString()}`);
+    setIsOpen(false);
+  };
+
+  const handleCategoryClick = (slug) => {
+    navigate(`/annonces?category=${slug}`);
+    setIsOpen(false);
+  };
+
+  const handleVoiceResult = (text) => {
+    setSearchQuery(text);
+    // Auto-search after voice input
+    const params = new URLSearchParams();
+    params.set('search', text);
+    navigate(`/annonces?${params.toString()}`);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative" ref={popupRef}>
+      {/* Bouton compact */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 px-5 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-full text-white transition-all shadow-lg hover:shadow-xl"
+      >
+        <Search className="w-5 h-5" />
+        <span className="font-medium">Rechercher</span>
+        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      {/* Popup de recherche */}
+      {isOpen && (
+        <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[90vw] max-w-md bg-gray-900/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-5 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-white font-semibold flex items-center gap-2">
+              <Search className="w-4 h-4 text-orange-400" />
+              Recherche avancée
+            </h3>
+            <button 
+              onClick={() => setIsOpen(false)}
+              className="p-1 hover:bg-white/10 rounded-full"
+            >
+              <X className="w-4 h-4 text-white/60" />
+            </button>
+          </div>
+
+          <form onSubmit={handleSearch} className="space-y-4">
+            {/* Recherche texte */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+              <Input
+                type="text"
+                placeholder="Rechercher une pièce, marque..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10 h-11 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl"
+                autoFocus
+              />
+              {/* Bouton vocal */}
+              <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                <VoiceSearch onSearch={handleVoiceResult} compact />
+              </div>
+            </div>
+
+            {/* Recherche OEM */}
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-orange-400 font-bold">OEM</span>
+              <Input
+                type="text"
+                placeholder="Référence constructeur..."
+                value={oemQuery}
+                onChange={(e) => setOemQuery(e.target.value)}
+                className="pl-12 h-11 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl"
+              />
+            </div>
+
+            {/* Catégories en grille */}
+            <div>
+              <p className="text-white/60 text-xs mb-2">Catégories</p>
+              <div className="grid grid-cols-4 gap-2">
+                {categories.map((cat) => {
+                  const Icon = cat.icon;
+                  return (
+                    <button
+                      key={cat.slug}
+                      type="button"
+                      onClick={() => handleCategoryClick(cat.slug)}
+                      className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/5 hover:bg-orange-500/20 border border-transparent hover:border-orange-500/30 transition-all group"
+                    >
+                      <Icon className="w-5 h-5 text-white/60 group-hover:text-orange-400" />
+                      <span className="text-[10px] text-white/60 group-hover:text-white text-center leading-tight">{cat.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Bouton rechercher */}
+            <Button 
+              type="submit" 
+              className="w-full h-11 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl"
+            >
+              <Search className="w-4 h-4 mr-2" />
+              Rechercher
+            </Button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
 
 // Composant pour afficher un élément positionné librement
 function PositionedElement({ elementId, position, children, fallbackPosition }) {
