@@ -36,6 +36,7 @@ const categoryLabels = {
 export default function ListingDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user, token } = useAuth();
   
   const [listing, setListing] = useState(null);
