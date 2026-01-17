@@ -398,72 +398,81 @@ export default function Home() {
               {heroSettings.hero_description}
             </p>
 
-            {/* Search Form - Glass effect */}
+            {/* Search Form - Glass effect - Mobile optimized */}
             {heroSettings.hero_show_search !== false && (
               <form 
                 onSubmit={handleSearch} 
-                className={`flex flex-col sm:flex-row gap-3 animate-fade-in-up stagger-4 glass p-2 rounded-2xl ${
+                className={`flex flex-col gap-2 sm:flex-row sm:gap-3 animate-fade-in-up stagger-4 glass p-2 sm:p-3 rounded-xl sm:rounded-2xl ${
                   heroSettings.hero_text_align === 'center' ? 'max-w-3xl mx-auto' : ''
                 }`}
                 data-testid="search-form"
               >
                 <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 sm:w-5 h-4 sm:h-5 text-muted-foreground" />
                   <Input
                     placeholder={heroSettings.hero_search_placeholder || "Rechercher une pièce, un véhicule..."}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="pl-12 h-14 bg-transparent border-0 text-lg focus-ring rounded-xl"
+                    className="pl-10 sm:pl-12 h-11 sm:h-14 bg-transparent border-0 text-sm sm:text-lg focus-ring rounded-lg sm:rounded-xl"
                     data-testid="search-input"
                   />
                 </div>
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="w-full sm:w-52 h-14 bg-transparent border-0 text-base rounded-xl focus-ring" data-testid="category-select">
-                    <SelectValue placeholder="Catégorie" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pieces">Pièces Détachées</SelectItem>
-                    <SelectItem value="voitures">Voitures</SelectItem>
-                    <SelectItem value="motos">Motos</SelectItem>
-                    <SelectItem value="utilitaires">Utilitaires</SelectItem>
-                    <SelectItem value="accessoires">Accessoires</SelectItem>
-                  </SelectContent>
-                </Select>
-                {heroSettings.hero_show_voice_search !== false && (
-                  <VoiceSearch onSearch={(q) => navigate(`/annonces?search=${encodeURIComponent(q)}`)} />
-                )}
+                {/* Mobile: Row with category and voice search */}
+                <div className="flex gap-2 sm:contents">
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger className="flex-1 sm:w-52 h-11 sm:h-14 bg-transparent border-0 text-sm sm:text-base rounded-lg sm:rounded-xl focus-ring" data-testid="category-select">
+                      <SelectValue placeholder="Catégorie" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pieces">Pièces Détachées</SelectItem>
+                      <SelectItem value="voitures">Voitures</SelectItem>
+                      <SelectItem value="motos">Motos</SelectItem>
+                      <SelectItem value="utilitaires">Utilitaires</SelectItem>
+                      <SelectItem value="accessoires">Accessoires</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {heroSettings.hero_show_voice_search !== false && (
+                    <div className="flex-shrink-0">
+                      <VoiceSearch onSearch={(q) => navigate(`/annonces?search=${encodeURIComponent(q)}`)} />
+                    </div>
+                  )}
+                </div>
                 <Button 
                   type="submit" 
-                  className="h-14 px-8 btn-primary rounded-xl text-base font-semibold" 
+                  className="h-11 sm:h-14 px-4 sm:px-8 btn-primary rounded-lg sm:rounded-xl text-sm sm:text-base font-semibold" 
                   data-testid="search-btn"
                   style={{ backgroundColor: heroSettings.hero_search_button_bg }}
                 >
-                  <Search className="w-5 h-5 mr-2" />
-                  {heroSettings.hero_search_button_text || 'Rechercher'}
+                  <Search className="w-4 sm:w-5 h-4 sm:h-5 mr-1 sm:mr-2" />
+                  <span className="hidden xs:inline">{heroSettings.hero_search_button_text || 'Rechercher'}</span>
+                  <span className="xs:hidden">OK</span>
                 </Button>
               </form>
             )}
 
-            {/* CTA Buttons - Fully Customizable */}
-            <div className={`flex flex-wrap items-center gap-4 mt-6 animate-fade-in-up stagger-4 ${
+            {/* CTA Buttons - Fully Customizable - Mobile optimized */}
+            <div className={`flex flex-wrap items-center gap-2 sm:gap-4 mt-4 sm:mt-6 animate-fade-in-up stagger-4 ${
               heroSettings.hero_text_align === 'center' ? 'justify-center' : 
               heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
             }`}>
-              {/* Plate Scanner */}
+              {/* Plate Scanner - Hidden on very small screens */}
               {heroSettings.hero_show_plate_scanner !== false && (
-                <PlateScanner onVehicleSelect={(v) => {
-                  navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
-                }} />
+                <div className="hidden xs:block">
+                  <PlateScanner onVehicleSelect={(v) => {
+                    navigate(`/annonces?brand=${encodeURIComponent(v.brand)}&model=${encodeURIComponent(v.model)}&year=${v.year}`);
+                  }} />
+                </div>
               )}
 
               {/* Bouton Tobi Assistant */}
               <Link to="/tobi">
                 <Button 
-                  className="gap-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg"
+                  className="gap-1 sm:gap-2 text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg"
                   data-testid="tobi-home-btn"
                 >
-                  <MessageCircle className="w-4 h-4" />
-                  Demander à Tobi
+                  <MessageCircle className="w-3 sm:w-4 h-3 sm:h-4" />
+                  <span className="hidden sm:inline">Demander à Tobi</span>
+                  <span className="sm:hidden">Tobi</span>
                 </Button>
               </Link>
               
