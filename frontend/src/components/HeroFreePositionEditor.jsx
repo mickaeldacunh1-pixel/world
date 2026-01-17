@@ -197,6 +197,12 @@ function DraggableElement({
             💬 {isMobileView ? 'Tobi' : 'Demander à Tobi'}
           </button>
         );
+      case 'radio_button':
+        return (
+          <button className={`${isMobileView ? 'px-2 py-1 text-[10px]' : 'px-3 py-2 text-xs'} bg-gradient-to-r from-pink-500 to-violet-500 text-white rounded-lg font-medium`}>
+            🎵 {isMobileView ? 'Radio' : 'Radio Live'}
+          </button>
+        );
       default:
         return <div className="text-white/50 text-sm">{element.label}</div>;
     }
