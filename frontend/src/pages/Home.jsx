@@ -579,6 +579,7 @@ export default function Home() {
             )}
           </div>
         </div>
+        )}
       </section>
 
       {/* Categories Bento Grid - Improved */}
