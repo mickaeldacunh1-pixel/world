@@ -319,17 +319,24 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
         hero_element_positions_mobile: mobilePositions
       };
       
+      console.log('Saving positions:', {
+        desktop: desktopPositions,
+        mobile: mobilePositions
+      });
+      
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/settings/hero`, newSettings, {
+      const response = await axios.post(`${API}/settings/hero`, newSettings, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
+      console.log('Save response:', response.data);
       
       onChange(newSettings);
       setHasChanges(false);
       toast.success('Positions desktop et mobile sauvegardées !');
     } catch (error) {
-      toast.error('Erreur lors de la sauvegarde');
-      console.error(error);
+      toast.error('Erreur lors de la sauvegarde: ' + (error.response?.data?.detail || error.message));
+      console.error('Save error:', error);
     } finally {
       setSaving(false);
     }
