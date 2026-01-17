@@ -28,9 +28,9 @@ Plateforme marketplace automobile complète permettant l'achat/vente de véhicul
 
 ## What's Been Implemented
 
-### Session du 17 Janvier 2026 - Amélioration Mobile Hero
+### Session du 17 Janvier 2026 - Amélioration Mobile Hero + Éditeur Mobile
 
-#### Modifications apportées :
+#### Phase 1 : Amélioration affichage mobile
 1. **Home.jsx** - Barre de recherche et CTA responsive
    - Recherche compacte sur mobile (bouton "OK")
    - Catégorie et vocal sur même ligne
@@ -46,6 +46,15 @@ Plateforme marketplace automobile complète permettant l'achat/vente de véhicul
 3. **Navbar.jsx** - PromoBanner caché < 480px
 
 4. **index.js** - ServiceWorker limité à production
+
+#### Phase 2 : Éditeur mobile admin
+5. **HeroFreePositionEditor.jsx** - Nouvel éditeur avec support mobile
+   - Toggle Desktop/Mobile
+   - Canvas 9:16 pour mobile, 16:9 pour desktop
+   - Positions séparées `hero_element_positions` et `hero_element_positions_mobile`
+   - Bouton "Copier Desktop vers Mobile"
+   - Visibilité par défaut différente (scanner, premium masqués sur mobile)
+   - Sauvegarde des deux configurations ensemble
 
 ### Fonctionnalités déjà complétées (sessions précédentes)
 - ✅ Intégration Stock/Annonces
@@ -65,8 +74,8 @@ Plateforme marketplace automobile complète permettant l'achat/vente de véhicul
   - Vérifier que les commits sont bien déployés
   - Tester les pages modifiées localement
 
-### P1 - Important
-- [ ] Valider éditeur Hero position libre (flux complet)
+### P1 - Important  
+- [ ] Tester éditeur Hero position libre mobile en production
 - [ ] Traduire pages principales (Home, Pricing, FAQ)
 
 ### P2 - Normal
@@ -80,7 +89,7 @@ Plateforme marketplace automobile complète permettant l'achat/vente de véhicul
 ---
 
 ## Key API Endpoints
-- `POST/GET /api/settings/hero` - Paramètres Hero
+- `POST/GET /api/settings/hero` - Paramètres Hero (inclut `hero_element_positions` et `hero_element_positions_mobile`)
 - `POST/GET /api/settings/navbar` - Paramètres Navbar
 - `GET /api/categories/stats` - Stats par catégorie
 - `GET /api/listings` - Liste des annonces
@@ -92,7 +101,8 @@ Plateforme marketplace automobile complète permettant l'achat/vente de véhicul
 ## Files of Reference
 - `/app/frontend/src/pages/Home.jsx`
 - `/app/frontend/src/components/HeroFreePosition.jsx`
-- `/app/frontend/src/components/HeroFreePositionEditor.jsx`
+- `/app/frontend/src/components/HeroFreePositionEditor.jsx` (MISE À JOUR)
 - `/app/frontend/src/components/Navbar.jsx`
+- `/app/frontend/src/pages/AdminSettings.jsx`
 - `/app/frontend/src/i18n/` (configuration traduction)
 - `/app/frontend/tailwind.config.js`
