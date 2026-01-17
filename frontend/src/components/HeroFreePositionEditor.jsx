@@ -351,7 +351,7 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/api/settings/hero`, newSettings, {
+      await axios.post(`${API}/settings/hero`, newSettings, {
         headers: { Authorization: `Bearer ${token}` }
       });
       onChange(newSettings);
