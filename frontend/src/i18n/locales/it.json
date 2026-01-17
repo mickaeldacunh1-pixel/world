@@ -423,5 +423,52 @@
     "newsletter_title": "Resta informato sulle novità!",
     "newsletter_desc": "Iscriviti alla nostra newsletter per ricevere le ultime notizie.",
     "newsletter_cta": "Iscriviti alla newsletter"
+  },
+  "pricing": {
+    "title": "Tariffe",
+    "subtitle": "Piani adatti a tutte le tue esigenze",
+    "seo_title": "Tariffe e Abbonamenti - World Auto",
+    "seo_description": "Scopri le nostre tariffe per privati e professionisti.",
+    "individual": "Privato",
+    "professional": "Professionista",
+    "credit_packs": "Pacchetti crediti",
+    "per_listing": "per annuncio",
+    "per_month": "al mese",
+    "per_quarter": "a trimestre",
+    "per_semester": "a semestre",
+    "per_year": "all'anno",
+    "credit": "credito",
+    "credits": "crediti",
+    "listing": "annuncio",
+    "listings": "annunci",
+    "best_value": "Miglior rapporto qualità-prezzo",
+    "most_popular": "Più popolare",
+    "save": "Risparmia",
+    "buy_pack": "Acquista pacchetto",
+    "subscribe": "Abbonati",
+    "current_plan": "Il tuo piano attuale",
+    "features": {
+      "photos_5": "5 foto per annuncio",
+      "photos_50": "50 foto per annuncio",
+      "messaging": "Messaggistica integrata",
+      "alerts": "Avvisi di ricerca",
+      "tobi_access": "Accesso a Tobi IA",
+      "secure_payment": "Pagamento sicuro",
+      "stock_management": "Gestione magazzino",
+      "pro_badge": "Badge PRO verificato",
+      "reduced_fees": "-10% sulle commissioni",
+      "priority_search": "Priorità nelle ricerche",
+      "advanced_stats": "Statistiche avanzate",
+      "priority_support": "Supporto prioritario",
+      "video_presentation": "Video presentazione",
+      "custom_training": "Formazione personalizzata",
+      "api_access": "Accesso API"
+    },
+    "pro_plans": {
+      "monthly": "PRO Mensile",
+      "quarterly": "PRO Trimestrale",
+      "biannual": "PRO Semestrale",
+      "annual": "PRO Annuale"
+    }
   }
 }

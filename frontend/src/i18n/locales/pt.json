@@ -423,5 +423,20 @@
     "newsletter_title": "Fique informado sobre as novidades!",
     "newsletter_desc": "Inscreva-se na nossa newsletter para receber as últimas notícias.",
     "newsletter_cta": "Inscrever-se na newsletter"
+  },
+  "pricing": {
+    "title": "Preços",
+    "subtitle": "Planos adaptados a todas as suas necessidades",
+    "individual": "Particular",
+    "professional": "Profissional",
+    "credit_packs": "Pacotes de créditos",
+    "per_listing": "por anúncio",
+    "per_month": "por mês",
+    "per_year": "por ano",
+    "credits": "créditos",
+    "best_value": "Melhor custo-benefício",
+    "most_popular": "Mais popular",
+    "buy_pack": "Comprar pacote",
+    "subscribe": "Assinar"
   }
 }

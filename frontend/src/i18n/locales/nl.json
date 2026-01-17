@@ -423,5 +423,20 @@
     "newsletter_title": "Blijf op de hoogte van nieuws!",
     "newsletter_desc": "Abonneer je op onze nieuwsbrief om het laatste nieuws te ontvangen.",
     "newsletter_cta": "Abonneer op nieuwsbrief"
+  },
+  "pricing": {
+    "title": "Tarieven",
+    "subtitle": "Plannen aangepast aan al uw behoeften",
+    "individual": "Particulier",
+    "professional": "Professioneel",
+    "credit_packs": "Kredietpakketten",
+    "per_listing": "per advertentie",
+    "per_month": "per maand",
+    "per_year": "per jaar",
+    "credits": "kredieten",
+    "best_value": "Beste prijs-kwaliteit",
+    "most_popular": "Meest populair",
+    "buy_pack": "Pakket kopen",
+    "subscribe": "Abonneren"
   }
 }

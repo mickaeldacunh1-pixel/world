@@ -423,5 +423,20 @@
     "newsletter_title": "Håll dig informerad om nyheter!",
     "newsletter_desc": "Prenumerera på vårt nyhetsbrev för att få de senaste nyheterna.",
     "newsletter_cta": "Prenumerera på nyhetsbrevet"
+  },
+  "pricing": {
+    "title": "Priser",
+    "subtitle": "Planer anpassade till alla dina behov",
+    "individual": "Privatperson",
+    "professional": "Professionell",
+    "credit_packs": "Kreditpaket",
+    "per_listing": "per annons",
+    "per_month": "per månad",
+    "per_year": "per år",
+    "credits": "krediter",
+    "best_value": "Bästa värde",
+    "most_popular": "Mest populär",
+    "buy_pack": "Köp paket",
+    "subscribe": "Prenumerera"
   }
 }
