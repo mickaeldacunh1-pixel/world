@@ -225,11 +225,11 @@ export default function HeroFreePosition({ settings, onSearch }) {
     title2: { x: 50, y: 26, visible: true },
     subtitle: { x: 50, y: 35, visible: true },
     search: { x: 50, y: 48, visible: true },
-    plate_scanner: { x: 50, y: 60, visible: false }, // Caché sur mobile par défaut
-    tobi_button: { x: 35, y: 68, visible: true },
-    radio_button: { x: 65, y: 68, visible: true }, // Visible sur mobile
-    cta_buttons: { x: 50, y: 78, visible: true },
-    premium_buttons: { x: 50, y: 88, visible: false }, // Caché sur mobile par défaut
+    plate_scanner: { x: 50, y: 60, visible: true }, // Visible sur mobile
+    tobi_button: { x: 35, y: 70, visible: true },
+    radio_button: { x: 65, y: 70, visible: true }, // Visible sur mobile
+    cta_buttons: { x: 50, y: 80, visible: true },
+    premium_buttons: { x: 50, y: 90, visible: false }, // Caché sur mobile par défaut
   };
   
   const getPos = (id) => positions[id] || defaultPositions[id];
