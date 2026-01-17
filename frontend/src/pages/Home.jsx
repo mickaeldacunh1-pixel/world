@@ -546,44 +546,44 @@ export default function Home() {
               )}
             </div>
 
-            {/* Quick stats - Customizable */}
+            {/* Quick stats - Customizable - Hidden on small mobile */}
             {heroSettings.hero_show_stats !== false && (
-              <div className={`flex flex-wrap items-center gap-6 mt-8 animate-fade-in-up stagger-5 ${
+              <div className={`hidden xs:flex flex-wrap items-center gap-4 sm:gap-6 mt-6 sm:mt-8 animate-fade-in-up stagger-5 ${
                 heroSettings.hero_text_align === 'center' ? 'justify-center' : 
                 heroSettings.hero_text_align === 'right' ? 'justify-end' : ''
               }`}>
                 {/* Stat 1 */}
-                <div style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
+                <div className="text-xs sm:text-sm" style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
                   {heroSettings.hero_stat1_icon && <span className="mr-1">{heroSettings.hero_stat1_icon}</span>}
-                  <span className="text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
+                  <span className="text-lg sm:text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
                     {heroSettings.hero_stat1_number || Object.values(categoryStats).reduce((a, b) => a + b, 0) || '100+'}
                   </span>
-                  <span className="ml-2 text-sm">{heroSettings.hero_stat1_label || 'annonces actives'}</span>
+                  <span className="ml-1 sm:ml-2">{heroSettings.hero_stat1_label || 'annonces actives'}</span>
                 </div>
                 
                 {/* Stat 2 */}
-                <div style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
+                <div className="text-xs sm:text-sm" style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
                   {heroSettings.hero_stat2_icon && <span className="mr-1">{heroSettings.hero_stat2_icon}</span>}
-                  <span className="text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
+                  <span className="text-lg sm:text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
                     {heroSettings.hero_stat2_number || '5'}
                   </span>
-                  <span className="ml-2 text-sm">{heroSettings.hero_stat2_label || 'catégories'}</span>
+                  <span className="ml-1 sm:ml-2">{heroSettings.hero_stat2_label || 'catégories'}</span>
                 </div>
                 
-                {/* Stat 3 (optional) */}
+                {/* Stat 3 (optional) - Hidden on mobile */}
                 {heroSettings.hero_stat3_enabled && heroSettings.hero_stat3_number && (
-                  <div style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
+                  <div className="hidden sm:block text-sm" style={{ color: heroSettings.hero_stats_color || 'rgba(255, 255, 255, 0.7)' }}>
                     {heroSettings.hero_stat3_icon && <span className="mr-1">{heroSettings.hero_stat3_icon}</span>}
                     <span className="text-2xl font-bold" style={{ color: heroSettings.hero_stats_number_color || '#FFFFFF' }}>
                       {heroSettings.hero_stat3_number}
                     </span>
-                    <span className="ml-2 text-sm">{heroSettings.hero_stat3_label}</span>
+                    <span className="ml-2">{heroSettings.hero_stat3_label}</span>
                   </div>
                 )}
                 
-                {/* AI Tools */}
+                {/* AI Tools - Hidden on mobile */}
                 {heroSettings.hero_show_ai_tools !== false && (
-                  <div className={heroSettings.hero_text_align !== 'center' ? 'ml-auto' : ''}>
+                  <div className={`hidden md:block ${heroSettings.hero_text_align !== 'center' ? 'ml-auto' : ''}`}>
                     <AITools />
                   </div>
                 )}
