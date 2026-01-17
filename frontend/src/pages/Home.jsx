@@ -473,6 +473,18 @@ export default function Home() {
                   <span className="sm:hidden">Tobi</span>
                 </Button>
               </Link>
+
+              {/* Bouton Diagnostic IA */}
+              <Link to="/diagnostic">
+                <Button 
+                  className="gap-1 sm:gap-2 text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg"
+                  data-testid="diagnostic-home-btn"
+                >
+                  <Stethoscope className="w-3 sm:w-4 h-3 sm:h-4" />
+                  <span className="hidden sm:inline">Diagnostic IA</span>
+                  <span className="sm:hidden">Diag</span>
+                </Button>
+              </Link>
               
               {/* CTA Button 1 */}
               {heroSettings.hero_cta1_enabled !== false && heroSettings.hero_cta1_text && (
