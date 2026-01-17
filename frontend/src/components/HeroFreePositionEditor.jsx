@@ -404,7 +404,7 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
       
       {!isEnabled && (
         <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-300 text-sm">
-          ⚠️ Le mode position libre est désactivé. Activez-le pour que vos modifications s'appliquent.
+          ⚠️ Le mode position libre est désactivé. Activez-le pour que vos modifications s&apos;appliquent.
         </div>
       )}
 
