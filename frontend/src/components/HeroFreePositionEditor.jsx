@@ -247,47 +247,35 @@ function DraggableElement({
 export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
   const containerRef = useRef(null);
   const [selectedElement, setSelectedElement] = useState(null);
-  const [desktopPositions, setDesktopPositions] = useState({});
-  const [mobilePositions, setMobilePositions] = useState({});
-  const [saving, setSaving] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
-  const [viewMode, setViewMode] = useState('desktop'); // 'desktop' ou 'mobile'
-  const isInitialized = useRef(false);
-
-  // Charger les positions sauvegardées - seulement au premier rendu
-  useEffect(() => {
-    // Ne pas réinitialiser si on a des changements non sauvegardés
-    if (isInitialized.current && hasChanges) {
-      return;
-    }
-    
+  const [desktopPositions, setDesktopPositions] = useState(() => {
+    // Initialisation directe depuis les settings
     const savedDesktop = settings.hero_element_positions || {};
-    const savedMobile = settings.hero_element_positions_mobile || {};
-    
-    // Initialiser desktop
-    const desktopInit = {};
+    const init = {};
     Object.keys(DEFAULT_DESKTOP_POSITIONS).forEach(id => {
-      desktopInit[id] = {
+      init[id] = {
         x: savedDesktop[id]?.x ?? DEFAULT_DESKTOP_POSITIONS[id].x,
         y: savedDesktop[id]?.y ?? DEFAULT_DESKTOP_POSITIONS[id].y,
         visible: savedDesktop[id]?.visible ?? DEFAULT_DESKTOP_POSITIONS[id].visible,
       };
     });
-    setDesktopPositions(desktopInit);
-    
-    // Initialiser mobile
-    const mobileInit = {};
+    return init;
+  });
+  const [mobilePositions, setMobilePositions] = useState(() => {
+    // Initialisation directe depuis les settings
+    const savedMobile = settings.hero_element_positions_mobile || {};
+    const init = {};
     Object.keys(DEFAULT_MOBILE_POSITIONS).forEach(id => {
-      mobileInit[id] = {
+      init[id] = {
         x: savedMobile[id]?.x ?? DEFAULT_MOBILE_POSITIONS[id].x,
         y: savedMobile[id]?.y ?? DEFAULT_MOBILE_POSITIONS[id].y,
         visible: savedMobile[id]?.visible ?? DEFAULT_MOBILE_POSITIONS[id].visible,
       };
     });
-    setMobilePositions(mobileInit);
-    
-    isInitialized.current = true;
-  }, [settings.hero_element_positions, settings.hero_element_positions_mobile]);
+    return init;
+  });
+  const [saving, setSaving] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [viewMode, setViewMode] = useState('desktop'); // 'desktop' ou 'mobile'
 
   // Utiliser les bonnes positions selon le mode
   const currentPositions = viewMode === 'mobile' ? mobilePositions : desktopPositions;
