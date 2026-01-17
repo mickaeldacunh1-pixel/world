@@ -150,12 +150,17 @@ export default function Navbar() {
           )}
 
           {/* Promo Banner - Mobile (version compacte) */}
-          <div className="md:hidden">
-            <PromoBanner 
-              bgColor={navbarSettings.promo_bg_color} 
-              textColor={navbarSettings.promo_text_color} 
-            />
-          </div>
+          {navbarSettings.promo_banner_enabled && (
+            <div className="md:hidden">
+              <PromoBanner 
+                bgColor={navbarSettings.promo_bg_color} 
+                textColor={navbarSettings.promo_text_color}
+                title={navbarSettings.promo_banner_title}
+                badge={navbarSettings.promo_banner_badge}
+                accentColor={navbarSettings.promo_accent_color}
+              />
+            </div>
+          )}
 
           {/* Lien Tarifs - Desktop (après le PRO) */}
           <Link 
