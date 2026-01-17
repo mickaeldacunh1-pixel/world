@@ -223,17 +223,17 @@ export default function RadioPlayer() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-24 ${positionClasses} z-50 w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center`}
+        className={`fixed bottom-20 sm:bottom-24 ${positionClasses} z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center`}
         title="Ouvrir la radio"
         data-testid="radio-open-btn"
       >
-        <Radio className="w-6 h-6" />
+        <Radio className="w-5 h-5 sm:w-6 sm:h-6" />
       </button>
     );
   }
 
   return (
-    <div className={`fixed bottom-24 ${positionClasses} z-50 transition-all duration-300 ${isExpanded ? 'w-80' : 'w-72'}`} data-testid="radio-player">
+    <div className={`fixed bottom-20 sm:bottom-24 ${positionClasses} z-50 transition-all duration-300 ${isExpanded ? 'w-72 sm:w-80' : 'w-64 sm:w-72'}`} data-testid="radio-player">
       {/* Mini Player */}
       <div 
         className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-border overflow-hidden"
