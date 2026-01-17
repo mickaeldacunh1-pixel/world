@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Plus, Settings, Send, ArrowLeft } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function TobiChat() {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
