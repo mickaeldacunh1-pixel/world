@@ -488,6 +488,12 @@ export default function ListingDetail() {
               )}
             </div>
 
+            {/* Shipping Estimator - Estimation des frais via Boxtal */}
+            <ShippingEstimator 
+              listing={listing} 
+              sellerPostalCode={listing.seller_postal_code}
+            />
+
             <Card className="p-6">
               <h2 className="font-heading font-bold text-lg mb-4">Description</h2>
               <p className="text-muted-foreground whitespace-pre-line" data-testid="listing-description">
