@@ -94,12 +94,12 @@ export default function CreateListing() {
 
   // Options de livraison disponibles
   const shippingOptions = [
-    { value: 'hand_delivery', label: 'Remise en main propre', icon: '🤝', description: "L'acheteur vient chercher" },
-    { value: 'colissimo', label: 'Colissimo', icon: '📦', description: 'La Poste - 2-3 jours' },
-    { value: 'mondial_relay', label: 'Mondial Relay', icon: '🏪', description: 'Point relais - Économique' },
-    { value: 'chronopost', label: 'Chronopost', icon: '⚡', description: 'Express 24h' },
-    { value: 'boxtal', label: 'Boxtal Multi-Transporteurs', icon: '🚚', description: 'Comparez les prix' },
-    { value: 'custom', label: 'Autre transporteur', icon: '📋', description: 'À préciser' },
+    { value: 'hand_delivery', labelKey: 'createListing.shipping_hand_delivery', icon: '🤝', descKey: 'createListing.shipping_hand_delivery_desc' },
+    { value: 'colissimo', labelKey: 'createListing.shipping_colissimo', icon: '📦', descKey: 'createListing.shipping_colissimo_desc' },
+    { value: 'mondial_relay', labelKey: 'createListing.shipping_mondial_relay', icon: '🏪', descKey: 'createListing.shipping_mondial_relay_desc' },
+    { value: 'chronopost', labelKey: 'createListing.shipping_chronopost', icon: '⚡', descKey: 'createListing.shipping_chronopost_desc' },
+    { value: 'boxtal', labelKey: 'createListing.shipping_boxtal', icon: '🚚', descKey: 'createListing.shipping_boxtal_desc' },
+    { value: 'custom', labelKey: 'createListing.shipping_custom', icon: '📋', descKey: 'createListing.shipping_custom_desc' },
   ];
 
   const regions = [
