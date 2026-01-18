@@ -285,7 +285,7 @@ export default function CreateListing() {
     const maxPhotos = photoLimit.max_photos || 5;
     
     if (images.length + files.length > maxPhotos) {
-      toast.error(`Maximum ${maxPhotos} photos. Achetez des photos supplémentaires pour en ajouter plus.`);
+      toast.error(t('createListing.max_photos_error', { max: maxPhotos }));
       return;
     }
 
