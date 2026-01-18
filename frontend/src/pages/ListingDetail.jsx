@@ -656,7 +656,7 @@ export default function ListingDetail() {
 
             {/* Seller Info */}
             <Card className="p-6">
-              <h2 className="font-heading font-bold text-lg mb-4">Vendeur</h2>
+              <h2 className="font-heading font-bold text-lg mb-4">{t('listingDetail.seller_title')}</h2>
               <Link to={`/vendeur/${listing.seller_id}`} className="flex items-center gap-4 group">
                 <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center group-hover:bg-accent/20 transition-colors">
                   <User className="w-6 h-6 text-muted-foreground group-hover:text-accent" />
@@ -668,12 +668,12 @@ export default function ListingDetail() {
                     {listing.seller_is_verified && (
                       <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-medium">
                         <Shield className="w-3 h-3" />
-                        Vérifié
+                        {t('listingDetail.verified_seller')}
                       </span>
                     )}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Cliquez pour voir le profil vendeur
+                    {t('listingDetail.view_seller_profile')}
                   </p>
                 </div>
               </Link>
