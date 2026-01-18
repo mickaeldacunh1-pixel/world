@@ -1155,7 +1155,7 @@ export default function CreateListing() {
                       controls
                       className="w-full max-h-64"
                     >
-                      Votre navigateur ne supporte pas la lecture vidéo.
+                      {t('listingDetail.video_not_supported')}
                     </video>
                     <Button
                       type="button"
@@ -1184,14 +1184,14 @@ export default function CreateListing() {
                       {uploadingVideo ? (
                         <div className="flex flex-col items-center gap-2">
                           <Loader2 className="w-8 h-8 animate-spin text-accent" />
-                          <span className="text-sm text-muted-foreground">Upload de la vidéo en cours...</span>
+                          <span className="text-sm text-muted-foreground">{t('createListing.video_uploading')}</span>
                         </div>
                       ) : (
                         <div className="flex flex-col items-center gap-2">
                           <Video className="w-8 h-8 text-muted-foreground" />
-                          <span className="text-sm font-medium">Cliquez pour ajouter une vidéo</span>
+                          <span className="text-sm font-medium">{t('createListing.video_click_to_add')}</span>
                           <span className="text-xs text-muted-foreground">
-                            Max {videoLimit.max_size_mb} Mo • {videoLimit.max_duration}s • MP4, MOV, WebM
+                            Max {videoLimit.max_size_mb} Mo • {videoLimit.max_duration}s • {t('createListing.video_formats')}
                           </span>
                         </div>
                       )}
@@ -1208,14 +1208,14 @@ export default function CreateListing() {
                   disabled={loading || uploadingImages || uploadingVideo || user?.credits <= 0}
                   data-testid="submit-listing-btn"
                 >
-                  {loading ? 'Publication...' : 'Publier l\'annonce (1 crédit)'}
+                  {loading ? t('createListing.publishing') : t('createListing.submit_btn')}
                 </Button>
               </div>
 
               {user?.credits <= 0 && (
                 <p className="text-center text-destructive text-sm">
-                  Vous n'avez plus de crédits.{' '}
-                  <Link to="/tarifs" className="underline">Achetez un pack</Link>
+                  {t('createListing.no_credits_error')}{' '}
+                  <Link to="/tarifs" className="underline">{t('createListing.buy_pack')}</Link>
                 </p>
               )}
             </form>
@@ -1229,7 +1229,7 @@ export default function CreateListing() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Warehouse className="w-5 h-5 text-accent" />
-              Sélectionner un article de l'entrepôt
+              {t('createListing.warehouse_modal_title')}
             </DialogTitle>
           </DialogHeader>
           
@@ -1237,7 +1237,7 @@ export default function CreateListing() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
-              placeholder="Rechercher par nom, référence OEM, marque..."
+              placeholder={t('createListing.warehouse_search_placeholder')}
               value={warehouseSearch}
               onChange={(e) => setWarehouseSearch(e.target.value)}
               className="pl-10"
