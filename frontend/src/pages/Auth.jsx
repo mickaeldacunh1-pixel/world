@@ -361,16 +361,16 @@ export default function Auth() {
                         <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                           <Lock className="w-6 h-6 text-blue-600" />
                         </div>
-                        <h3 className="font-medium text-blue-800 mb-1">Vérification requise</h3>
+                        <h3 className="font-medium text-blue-800 mb-1">{t('auth.verification_required')}</h3>
                         <p className="text-sm text-blue-600">
                           {twoFactorMethod === 'totp' 
-                            ? 'Entrez le code de Google Authenticator'
-                            : 'Un code a été envoyé à votre adresse email'}
+                            ? t('auth.enter_authenticator_code')
+                            : t('auth.code_sent_email')}
                         </p>
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="totp-code">Code de vérification</Label>
+                        <Label htmlFor="totp-code">{t('auth.verification_code')}</Label>
                         <Input
                           id="totp-code"
                           type="text"
@@ -385,8 +385,8 @@ export default function Auth() {
                         />
                         <p className="text-xs text-muted-foreground text-center">
                           {twoFactorMethod === 'totp' 
-                            ? 'Code à 6 chiffres ou code de secours à 8 caractères'
-                            : 'Code à 6 chiffres envoyé par email'}
+                            ? t('auth.code_6_or_8')
+                            : t('auth.code_sent_email')}
                         </p>
                       </div>
                       
@@ -395,7 +395,7 @@ export default function Auth() {
                         onClick={handleCancelTwoFactor}
                         className="w-full text-sm text-muted-foreground hover:text-foreground"
                       >
-                        ← Retour à la connexion
+                        ← {t('auth.back_to_login')}
                       </button>
                     </div>
                   )}
@@ -409,9 +409,9 @@ export default function Auth() {
                     {loading ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : twoFactorRequired ? (
-                      'Vérifier'
+                      t('auth.verify')
                     ) : (
-                      'Se connecter'
+                      t('auth.login_btn')
                     )}
                   </Button>
 
@@ -421,7 +421,7 @@ export default function Auth() {
                         to="/mot-de-passe-oublie" 
                         className="text-sm text-muted-foreground hover:text-accent"
                       >
-                        Mot de passe oublié ?
+                        {t('auth.forgot_password')}
                       </Link>
                     </div>
                   )}
@@ -435,13 +435,13 @@ export default function Auth() {
                   <div className="mb-4 p-4 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg text-white">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-xl">🎉</span>
-                      <span className="font-bold">OFFRE DE LANCEMENT !</span>
+                      <span className="font-bold">{t('auth.launch_offer')}</span>
                     </div>
                     <p className="text-sm opacity-90">
-                      Inscrivez-vous maintenant et recevez <strong>{promoStatus.free_ads} annonces gratuites</strong> !
+                      {t('auth.launch_offer_desc', { count: promoStatus.free_ads })}
                     </p>
                     <p className="text-xs mt-1 opacity-75">
-                      Plus que {promoStatus.remaining} annonces disponibles sur 1000
+                      {t('auth.launch_remaining', { count: promoStatus.remaining })}
                     </p>
                   </div>
                 )}
