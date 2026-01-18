@@ -18,20 +18,20 @@ import CommissionSimulator from '../components/CommissionSimulator';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const categories = [
-  { value: 'pieces', label: 'Pièces Détachées' },
-  { value: 'voitures', label: 'Voitures d\'Occasion' },
-  { value: 'motos', label: 'Motos' },
-  { value: 'utilitaires', label: 'Utilitaires' },
-  { value: 'engins', label: 'Engins' },
-  { value: 'accessoires', label: 'Accessoires' },
-  { value: 'recherche', label: 'Recherche (je cherche une pièce)' },
-  { value: 'rare', label: 'Rare & Collection' },
+  { value: 'pieces', labelKey: 'createListing.category_pieces' },
+  { value: 'voitures', labelKey: 'createListing.category_voitures' },
+  { value: 'motos', labelKey: 'createListing.category_motos' },
+  { value: 'utilitaires', labelKey: 'createListing.category_utilitaires' },
+  { value: 'engins', labelKey: 'createListing.category_engins' },
+  { value: 'accessoires', labelKey: 'createListing.category_accessoires' },
+  { value: 'recherche', labelKey: 'createListing.category_recherche' },
+  { value: 'rare', labelKey: 'createListing.category_rare' },
 ];
 
 const conditions = [
-  { value: 'neuf', label: 'Neuf' },
-  { value: 'occasion', label: 'Occasion' },
-  { value: 'reconditionne', label: 'Reconditionné' },
+  { value: 'neuf', labelKey: 'createListing.condition_neuf' },
+  { value: 'occasion', labelKey: 'createListing.condition_occasion' },
+  { value: 'reconditionne', labelKey: 'createListing.condition_reconditionne' },
 ];
 
 export default function CreateListing() {
