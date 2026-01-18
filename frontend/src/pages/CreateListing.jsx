@@ -340,13 +340,13 @@ export default function CreateListing() {
     // Check file size based on user's limit
     const maxSizeMb = videoLimit.max_size_mb || 30;
     if (file.size > maxSizeMb * 1024 * 1024) {
-      toast.error(`La vidéo ne doit pas dépasser ${maxSizeMb} Mo. ${!videoLimit.is_extended ? 'Achetez l\'option vidéo étendue pour 1€ (100 Mo, 2 min).' : ''}`);
+      toast.error(t('createListing.video_size_error', { size: maxSizeMb }));
       return;
     }
 
     // Check file type
     if (!file.type.startsWith('video/')) {
-      toast.error('Veuillez sélectionner un fichier vidéo');
+      toast.error(t('createListing.video_type_error'));
       return;
     }
 
