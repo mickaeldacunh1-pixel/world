@@ -179,13 +179,13 @@ export default function CreateListing() {
       compatible_models: item.compatible_vehicles || '',
     }));
     setShowWarehouseModal(false);
-    toast.success(`Article "${item.name}" sélectionné ! Complétez les informations manquantes.`);
+    toast.success(t('createListing.warehouse_item_selected_toast'));
   };
 
   // Retirer l'article entrepôt sélectionné
   const clearWarehouseItem = () => {
     setSelectedWarehouseItem(null);
-    toast.info('Article entrepôt retiré');
+    toast.info(t('createListing.warehouse_item_removed'));
   };
 
   // Filtrer les articles entrepôt par recherche
