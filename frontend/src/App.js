@@ -31,6 +31,7 @@ import BuyerProfile from "./pages/BuyerProfile";
 import AdminSettings from "./pages/AdminSettings";
 import AdminUpdates from "./pages/AdminUpdates";
 import AdminReports from "./pages/AdminReports";
+import AdminPayments from "./pages/AdminPayments";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
