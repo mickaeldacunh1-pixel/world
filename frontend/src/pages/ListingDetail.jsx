@@ -158,7 +158,7 @@ export default function ListingDetail() {
 
   const toggleFavorite = async () => {
     if (!user) {
-      toast.error('Connectez-vous pour ajouter aux favoris');
+      toast.error(t('listingDetail.login_to_favorite'));
       navigate('/auth');
       return;
     }
@@ -168,14 +168,14 @@ export default function ListingDetail() {
       if (isFavorite) {
         await axios.delete(`${API}/favorites/${id}`);
         setIsFavorite(false);
-        toast.success('Retiré des favoris');
+        toast.success(t('listingDetail.removed_from_favorites'));
       } else {
         await axios.post(`${API}/favorites/${id}`);
         setIsFavorite(true);
-        toast.success('Ajouté aux favoris');
+        toast.success(t('listingDetail.added_to_favorites'));
       }
     } catch (error) {
-      toast.error('Erreur');
+      toast.error('Error');
     } finally {
       setFavoriteLoading(false);
     }
@@ -183,13 +183,13 @@ export default function ListingDetail() {
 
   const handleReport = async () => {
     if (!user) {
-      toast.error('Connectez-vous pour signaler');
+      toast.error(t('listingDetail.login_to_report'));
       navigate('/auth');
       return;
     }
 
     if (!reportReason) {
-      toast.error('Veuillez sélectionner une raison');
+      toast.error(t('listingDetail.select_reason'));
       return;
     }
 
@@ -203,15 +203,15 @@ export default function ListingDetail() {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Signalement envoyé. Merci de nous aider à garder la plateforme sûre !');
+      toast.success(t('listingDetail.report_success'));
       setReportDialogOpen(false);
       setReportReason('');
       setReportDescription('');
     } catch (error) {
       if (error.response?.data?.detail?.includes('déjà signalé')) {
-        toast.error('Vous avez déjà signalé cette annonce');
+        toast.error(t('listingDetail.report_already'));
       } else {
-        toast.error('Erreur lors du signalement');
+        toast.error(t('listingDetail.report_error'));
       }
     } finally {
       setReportLoading(false);
@@ -220,13 +220,13 @@ export default function ListingDetail() {
 
   const handleSendMessage = async () => {
     if (!user) {
-      toast.error('Connectez-vous pour envoyer un message');
+      toast.error(t('listingDetail.login_to_message'));
       navigate('/auth');
       return;
     }
 
     if (!message.trim()) {
-      toast.error('Veuillez écrire un message');
+      toast.error(t('listingDetail.write_message'));
       return;
     }
 
@@ -237,11 +237,11 @@ export default function ListingDetail() {
         receiver_id: listing.seller_id,
         content: message,
       });
-      toast.success('Message envoyé !');
+      toast.success(t('listingDetail.message_sent'));
       setMessage('');
       setMessageDialogOpen(false);
     } catch (error) {
-      toast.error('Erreur lors de l\'envoi du message');
+      toast.error(t('listingDetail.message_error'));
     } finally {
       setSendingMessage(false);
     }
@@ -256,7 +256,7 @@ export default function ListingDetail() {
       });
     } else {
       navigator.clipboard.writeText(window.location.href);
-      toast.success('Lien copié !');
+      toast.success(t('listingDetail.link_copied'));
     }
   };
 
@@ -266,7 +266,7 @@ export default function ListingDetail() {
     
     // Check if item already in cart
     if (cart.some(item => item.id === listing.id)) {
-      toast.info('Cet article est déjà dans votre panier');
+      toast.info(t('listingDetail.already_in_cart'));
       return;
     }
     
@@ -281,7 +281,7 @@ export default function ListingDetail() {
     });
     
     localStorage.setItem('worldauto_cart', JSON.stringify(cart));
-    toast.success('Ajouté au panier !');
+    toast.success(t('listingDetail.added_to_cart'));
   };
 
   const images = listing?.images?.length > 0 
