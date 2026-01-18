@@ -604,13 +604,13 @@ export default function Listings() {
                           {listing.is_boosted && (
                             <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
                               <Zap className="w-3 h-3 mr-1" />
-                              Boosté
+                              {t('listing.boosted')}
                             </Badge>
                           )}
                           {listing.is_featured && (
                             <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
                               <Star className="w-3 h-3 mr-1" />
-                              À la Une
+                              {t('listing.featured')}
                             </Badge>
                           )}
                           {listing.seller_is_pro && (
@@ -618,13 +618,13 @@ export default function Listings() {
                           )}
                         </div>
                         <span className="absolute top-3 right-3 badge-condition">
-                          {conditionLabels[listing.condition] || listing.condition}
+                          {t(conditionLabels[listing.condition]) || listing.condition}
                         </span>
                         
                         {/* Quick view */}
                         <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                           <span className="bg-white/95 backdrop-blur-sm text-primary px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
-                            Voir →
+                            {t('listing.view_listing')} →
                           </span>
                         </div>
                       </div>
