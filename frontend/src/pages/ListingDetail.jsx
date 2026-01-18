@@ -544,12 +544,12 @@ export default function ListingDetail() {
               <Card className="p-6 border-blue-100 bg-blue-50/50">
                 <h2 className="font-heading font-bold text-lg mb-4 flex items-center gap-2">
                   <span className="text-blue-600">🔧</span>
-                  Compatibilité véhicule
+                  {t('listingDetail.compatibility_title')}
                 </h2>
                 <div className="space-y-4">
                   {listing.compatible_brands?.length > 0 && (
                     <div>
-                      <span className="text-muted-foreground text-sm block mb-2">Marques compatibles</span>
+                      <span className="text-muted-foreground text-sm block mb-2">{t('listingDetail.compatible_brands')}</span>
                       <div className="flex flex-wrap gap-2">
                         {listing.compatible_brands.map((brand) => (
                           <span key={brand} className="bg-white px-3 py-1 rounded-full text-sm font-medium border">
@@ -561,7 +561,7 @@ export default function ListingDetail() {
                   )}
                   {listing.compatible_models?.length > 0 && (
                     <div>
-                      <span className="text-muted-foreground text-sm block mb-2">Modèles compatibles</span>
+                      <span className="text-muted-foreground text-sm block mb-2">{t('listingDetail.compatible_models')}</span>
                       <div className="flex flex-wrap gap-2">
                         {listing.compatible_models.map((model) => (
                           <span key={model} className="bg-white px-3 py-1 rounded-full text-sm font-medium border">
@@ -573,20 +573,20 @@ export default function ListingDetail() {
                   )}
                   {listing.compatible_years && (
                     <div>
-                      <span className="text-muted-foreground text-sm">Années compatibles</span>
+                      <span className="text-muted-foreground text-sm">{t('listingDetail.compatible_years')}</span>
                       <p className="font-medium">{listing.compatible_years}</p>
                     </div>
                   )}
                   <div className="grid grid-cols-2 gap-4 pt-2 border-t">
                     {listing.oem_reference && (
                       <div>
-                        <span className="text-muted-foreground text-sm">Réf. OEM (constructeur)</span>
+                        <span className="text-muted-foreground text-sm">{t('listingDetail.oem_ref')}</span>
                         <p className="font-mono font-bold text-blue-600">{listing.oem_reference}</p>
                       </div>
                     )}
                     {listing.aftermarket_reference && (
                       <div>
-                        <span className="text-muted-foreground text-sm">Réf. équipementier</span>
+                        <span className="text-muted-foreground text-sm">{t('listingDetail.aftermarket_ref')}</span>
                         <p className="font-mono font-bold">{listing.aftermarket_reference}</p>
                       </div>
                     )}
