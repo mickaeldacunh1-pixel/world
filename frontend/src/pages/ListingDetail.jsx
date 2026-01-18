@@ -600,24 +600,24 @@ export default function ListingDetail() {
               <Card className="p-6 border-green-100 bg-green-50/50 dark:bg-green-950/20">
                 <h2 className="font-heading font-bold text-lg mb-4 flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-green-600" />
-                  Traçabilité & Confiance
+                  {t('listingDetail.traceability_title')}
                 </h2>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     {listing.part_origin && (
                       <div>
-                        <span className="text-muted-foreground text-sm">Origine de la pièce</span>
+                        <span className="text-muted-foreground text-sm">{t('listingDetail.part_origin')}</span>
                         <p className="font-medium capitalize">
-                          {listing.part_origin === 'casse' ? '🏭 Casse automobile' :
-                           listing.part_origin === 'particulier' ? '👤 Particulier' :
-                           listing.part_origin === 'professionnel' ? '🏢 Professionnel' :
-                           listing.part_origin === 'neuf' ? '✨ Pièce neuve' : listing.part_origin}
+                          {listing.part_origin === 'casse' ? `🏭 ${t('listingDetail.origin_casse')}` :
+                           listing.part_origin === 'particulier' ? `👤 ${t('listingDetail.origin_particulier')}` :
+                           listing.part_origin === 'professionnel' ? `🏢 ${t('listingDetail.origin_professionnel')}` :
+                           listing.part_origin === 'neuf' ? `✨ ${t('listingDetail.origin_neuf')}` : listing.part_origin}
                         </p>
                       </div>
                     )}
                     {listing.vehicle_mileage && (
                       <div>
-                        <span className="text-muted-foreground text-sm">Kilométrage véhicule d&apos;origine</span>
+                        <span className="text-muted-foreground text-sm">{t('listingDetail.vehicle_mileage')}</span>
                         <p className="font-medium">{listing.vehicle_mileage.toLocaleString('fr-FR')} km</p>
                       </div>
                     )}
@@ -628,10 +628,10 @@ export default function ListingDetail() {
                       <Award className={`w-8 h-8 ${listing.verification_level === 'gold' ? 'text-amber-500' : 'text-slate-400'}`} />
                       <div>
                         <p className="font-medium">
-                          {listing.verification_level === 'gold' ? 'Certification Or' : 'Certification Argent'}
+                          {listing.verification_level === 'gold' ? t('listingDetail.certification_gold') : t('listingDetail.certification_silver')}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          Score de confiance: {listing.verification_score}/100
+                          {t('listingDetail.trust_score')}: {listing.verification_score}/100
                         </p>
                       </div>
                     </div>
@@ -642,10 +642,10 @@ export default function ListingDetail() {
                       <Shield className="w-8 h-8 text-green-500" />
                       <div>
                         <p className="font-medium text-green-700 dark:text-green-400">
-                          Garantie World Auto - {listing.warranty_duration} mois
+                          {t('listingDetail.warranty_title')} - {listing.warranty_duration} mois
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          Expire le {new Date(listing.warranty_expires).toLocaleDateString('fr-FR')}
+                          {t('listingDetail.warranty_expires')} {new Date(listing.warranty_expires).toLocaleDateString('fr-FR')}
                         </p>
                       </div>
                     </div>
