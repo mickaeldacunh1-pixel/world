@@ -478,20 +478,20 @@ export default function Listings() {
                       <SelectItem value="all">{t('listings.all_conditions')}</SelectItem>
                       <SelectItem value="neuf">{t('listing.new')}</SelectItem>
                       <SelectItem value="occasion">{t('listing.used')}</SelectItem>
-                      <SelectItem value="reconditionne">Reconditionné</SelectItem>
+                      <SelectItem value="reconditionne">{t('listing.reconditioned')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 {/* Region */}
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Région</label>
+                  <label className="text-sm font-medium mb-2 block">{t('listings.filter_region')}</label>
                   <Select value={region || "all"} onValueChange={(v) => setRegion(v === "all" ? "" : v)}>
                     <SelectTrigger data-testid="filter-region">
-                      <SelectValue placeholder="Toutes les régions" />
+                      <SelectValue placeholder={t('listings.all_regions')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Toutes les régions</SelectItem>
+                      <SelectItem value="all">{t('listings.all_regions')}</SelectItem>
                       {regions.map((r) => (
                         <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
                       ))}
@@ -501,26 +501,26 @@ export default function Listings() {
 
                 {/* Sort */}
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Trier par</label>
+                  <label className="text-sm font-medium mb-2 block">{t('common.sort')}</label>
                   <Select value={sort} onValueChange={setSort}>
                     <SelectTrigger data-testid="filter-sort">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="recent">Plus récentes</SelectItem>
-                      <SelectItem value="price_asc">Prix croissant</SelectItem>
-                      <SelectItem value="price_desc">Prix décroissant</SelectItem>
-                      <SelectItem value="views">Plus vues</SelectItem>
+                      <SelectItem value="recent">{t('listings.sort_recent')}</SelectItem>
+                      <SelectItem value="price_asc">{t('listings.sort_price_asc')}</SelectItem>
+                      <SelectItem value="price_desc">{t('listings.sort_price_desc')}</SelectItem>
+                      <SelectItem value="views">{t('listings.sort_views')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="flex gap-2">
                   <Button type="submit" className="flex-1 bg-accent hover:bg-accent/90" data-testid="apply-filters-btn">
-                    Appliquer
+                    {t('listings.apply_filters')}
                   </Button>
                   <Button type="button" variant="outline" onClick={handleClearFilters}>
-                    Effacer
+                    {t('listings.clear_filters')}
                   </Button>
                 </div>
               </form>
@@ -538,7 +538,7 @@ export default function Listings() {
                 data-testid="toggle-filters-btn"
               >
                 <Filter className="w-4 h-4 mr-2" />
-                Filtres
+                {t('listings.filters')}
               </Button>
 
               <div className="hidden sm:flex items-center gap-2">
@@ -575,9 +575,9 @@ export default function Listings() {
               </div>
             ) : listings.length === 0 ? (
               <Card className="p-12 text-center">
-                <p className="text-muted-foreground text-lg mb-4">Aucune annonce trouvée</p>
+                <p className="text-muted-foreground text-lg mb-4">{t('listings.no_results_title')}</p>
                 <Button variant="outline" onClick={handleClearFilters}>
-                  Réinitialiser les filtres
+                  {t('listings.clear_filters')}
                 </Button>
               </Card>
             ) : (
