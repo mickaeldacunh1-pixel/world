@@ -999,7 +999,7 @@ export default function CreateListing() {
                   <Label htmlFor="region">{t('createListing.region_label')}</Label>
                   <Select value={formData.region} onValueChange={(v) => handleChange('region', v)}>
                     <SelectTrigger data-testid="region-select">
-                      <SelectValue placeholder="Sélectionner une région" />
+                      <SelectValue placeholder={t('createListing.region_placeholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {regions.map((r) => (
@@ -1013,10 +1013,10 @@ export default function CreateListing() {
               {/* Images */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label>Photos de l'annonce</Label>
+                  <Label>{t('createListing.photos_label')}</Label>
                   <div className="flex items-center gap-2">
                     <span className={`text-sm font-medium ${images.length >= maxPhotos ? 'text-orange-500' : 'text-muted-foreground'}`}>
-                      {images.length}/{maxPhotos} photos
+                      {t('createListing.photos_count', { count: images.length, max: maxPhotos })}
                     </span>
                     {photoLimit.is_pro && (
                       <span className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-0.5 rounded-full">PRO</span>
@@ -1024,7 +1024,7 @@ export default function CreateListing() {
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Ajoutez jusqu'à {maxPhotos} photos (JPG, PNG, WebP, HEIC - max 10MB chacune)
+                  {t('createListing.photos_hint', { max: maxPhotos })}
                 </p>
                 
                 {/* Image Preview Grid */}
@@ -1048,7 +1048,7 @@ export default function CreateListing() {
                         </Button>
                         {index === 0 && (
                           <span className="absolute bottom-2 left-2 bg-accent text-white text-xs px-2 py-1 rounded">
-                            Photo principale
+                            {t('createListing.main_photo')}
                           </span>
                         )}
                       </div>
@@ -1072,14 +1072,14 @@ export default function CreateListing() {
                       {uploadingImages ? (
                         <div className="flex flex-col items-center gap-2">
                           <Loader2 className="w-8 h-8 animate-spin text-accent" />
-                          <span className="text-sm text-muted-foreground">Upload en cours...</span>
+                          <span className="text-sm text-muted-foreground">{t('createListing.photos_uploading')}</span>
                         </div>
                       ) : (
                         <div className="flex flex-col items-center gap-2">
                           <Upload className="w-8 h-8 text-muted-foreground" />
-                          <span className="text-sm font-medium">Cliquez pour ajouter des photos</span>
+                          <span className="text-sm font-medium">{t('createListing.photos_click_to_add')}</span>
                           <span className="text-xs text-muted-foreground">
-                            {images.length}/{maxPhotos} photos ajoutées
+                            {images.length}/{maxPhotos} {t('createListing.photos_added')}
                           </span>
                         </div>
                       )}
@@ -1096,8 +1096,8 @@ export default function CreateListing() {
                           <Camera className="w-5 h-5 text-orange-600" />
                         </div>
                         <div>
-                          <p className="font-medium text-sm">Besoin de plus de photos ?</p>
-                          <p className="text-xs text-muted-foreground">+15 photos supplémentaires pour seulement 1€</p>
+                          <p className="font-medium text-sm">{t('createListing.buy_extra_photos_title')}</p>
+                          <p className="text-xs text-muted-foreground">{t('createListing.buy_extra_photos_desc')}</p>
                         </div>
                       </div>
                       <Button
@@ -1111,7 +1111,7 @@ export default function CreateListing() {
                         ) : (
                           <Plus className="w-4 h-4 mr-2" />
                         )}
-                        Acheter +15 photos
+                        {t('createListing.buy_extra_photos_btn')}
                       </Button>
                     </div>
                   </div>
@@ -1122,14 +1122,14 @@ export default function CreateListing() {
               <div className="space-y-4">
                 <Label className="flex items-center gap-2">
                   <Video className="w-4 h-4" />
-                  Vidéo de présentation (optionnel)
+                  {t('createListing.video_label')}
                 </Label>
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">
                     {videoLimit.is_extended || videoLimit.is_pro ? (
-                      <>🎬 Limite : <span className="font-medium text-green-600">{videoLimit.max_duration}s / {videoLimit.max_size_mb} Mo</span> {videoLimit.is_pro && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full ml-1">PRO</span>}</>
+                      <>🎬 {t('createListing.video_limit_extended')} : <span className="font-medium text-green-600">{videoLimit.max_duration}s / {videoLimit.max_size_mb} Mo</span> {videoLimit.is_pro && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full ml-1">PRO</span>}</>
                     ) : (
-                      <>🎬 Limite gratuite : <span className="font-medium">{videoLimit.max_duration}s / {videoLimit.max_size_mb} Mo</span></>
+                      <>🎬 {t('createListing.video_limit_free')} : <span className="font-medium">{videoLimit.max_duration}s / {videoLimit.max_size_mb} Mo</span></>
                     )}
                   </p>
                   {!videoLimit.is_extended && !videoLimit.is_pro && (
@@ -1142,7 +1142,7 @@ export default function CreateListing() {
                       className="text-xs"
                     >
                       {buyingVideo ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Sparkles className="w-3 h-3 mr-1" />}
-                      2 min / 100 Mo pour 1€
+                      {t('createListing.video_buy_extended')}
                     </Button>
                   )}
                 </div>
