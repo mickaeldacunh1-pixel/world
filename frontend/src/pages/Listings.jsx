@@ -249,14 +249,14 @@ export default function Listings() {
   const showCompatibilityFilters = category === 'pieces' || category === 'accessoires';
 
   // SEO: Build breadcrumb and page title
-  const pageTitle = category ? categoryNames[category] : 'Toutes les annonces';
+  const pageTitle = category ? t(categoryNames[category]) : t('listings.all_listings');
   const pageDescription = category 
-    ? categoryDescriptions[category] 
-    : 'Parcourez toutes les annonces de pièces détachées et véhicules d\'occasion sur World Auto France.';
+    ? t(categoryDescriptions[category]) 
+    : t('listings.no_listings_desc');
   const breadcrumbItems = [
-    { name: 'Accueil', url: '/' },
-    { name: 'Annonces', url: '/annonces' },
-    ...(category ? [{ name: categoryNames[category], url: `/annonces/${category}` }] : [])
+    { name: t('nav.home'), url: '/' },
+    { name: t('listings.title'), url: '/annonces' },
+    ...(category ? [{ name: t(categoryNames[category]), url: `/annonces/${category}` }] : [])
   ];
 
   return (
@@ -272,10 +272,10 @@ export default function Listings() {
       <div className="bg-primary py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-primary-foreground mb-2">
-            {category ? categoryNames[category] : 'Toutes les annonces'}
+            {category ? t(categoryNames[category]) : t('listings.all_listings')}
           </h1>
           <p className="text-primary-foreground/70">
-            {total} annonce{total > 1 ? 's' : ''} disponible{total > 1 ? 's' : ''}
+            {total} {total > 1 ? t('listings.available_plural') : t('listings.available')}
           </p>
         </div>
       </div>
@@ -297,17 +297,17 @@ export default function Listings() {
           {/* Filters Sidebar */}
           <aside className={`lg:w-64 flex-shrink-0 ${showFilters ? 'block' : 'hidden lg:block'}`}>
             <Card className="p-6 sticky top-24">
-              <h2 className="font-heading font-bold text-lg mb-6">Filtres</h2>
+              <h2 className="font-heading font-bold text-lg mb-6">{t('listings.filters')}</h2>
               
               <form onSubmit={handleSearch} className="space-y-6">
                 {/* Search with Voice */}
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Recherche</label>
+                  <label className="text-sm font-medium mb-2 block">{t('listings.search')}</label>
                   <div className="relative flex gap-2">
                     <div className="relative flex-1">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
-                        placeholder="Mots-clés..."
+                        placeholder={t('listings.keywords')}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="pl-9"
@@ -322,14 +322,14 @@ export default function Listings() {
                 {(category === 'pieces' || category === 'accessoires') && Object.keys(subcategories).length > 0 && (
                   <div>
                     <label className="text-sm font-medium mb-2 block">
-                      {category === 'pieces' ? 'Type de pièce' : 'Type d\'accessoire'}
+                      {category === 'pieces' ? t('listings.part_type') : t('listings.accessory_type')}
                     </label>
                     <Select value={subcategory || "all"} onValueChange={(v) => setSubcategory(v === "all" ? "" : v)}>
                       <SelectTrigger data-testid="filter-subcategory">
-                        <SelectValue placeholder={category === 'pieces' ? 'Toutes les pièces' : 'Tous les accessoires'} />
+                        <SelectValue placeholder={category === 'pieces' ? t('listings.all_parts') : t('listings.all_accessories')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">{category === 'pieces' ? 'Toutes les pièces' : 'Tous les accessoires'}</SelectItem>
+                        <SelectItem value="all">{category === 'pieces' ? t('listings.all_parts') : t('listings.all_accessories')}</SelectItem>
                         {Object.entries(subcategories).map(([key, label]) => (
                           <SelectItem key={key} value={key}>{label}</SelectItem>
                         ))}
@@ -344,12 +344,12 @@ export default function Listings() {
                   <div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 space-y-3">
                     <div className="flex items-center gap-2 mb-2">
                       <Car className="w-5 h-5 text-primary" />
-                      <span className="font-semibold text-sm">Recherche par véhicule</span>
+                      <span className="font-semibold text-sm">{t('listings.vehicle_search')}</span>
                     </div>
                     
                     {/* Brand */}
                     <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">Marque</label>
+                      <label className="text-xs text-muted-foreground mb-1 block">{t('listings.filter_brand')}</label>
                       <Select 
                         value={compatibleBrand || "all"} 
                         onValueChange={(v) => {
@@ -358,10 +358,10 @@ export default function Listings() {
                         }}
                       >
                         <SelectTrigger data-testid="filter-compatible-brand" className="bg-white">
-                          <SelectValue placeholder="Sélectionner une marque" />
+                          <SelectValue placeholder={t('listings.all_brands')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">Toutes les marques</SelectItem>
+                          <SelectItem value="all">{t('listings.all_brands')}</SelectItem>
                           {Object.keys(CAR_MODELS_BY_BRAND).sort().map((brand) => (
                             <SelectItem key={brand} value={brand}>{brand}</SelectItem>
                           ))}
@@ -371,7 +371,7 @@ export default function Listings() {
                     
                     {/* Model - only show if brand is selected */}
                     <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">Modèle</label>
+                      <label className="text-xs text-muted-foreground mb-1 block">{t('listings.filter_model')}</label>
                       <Select 
                         value={compatibleModel || "all"} 
                         onValueChange={(v) => setCompatibleModel(v === "all" ? "" : v)}
