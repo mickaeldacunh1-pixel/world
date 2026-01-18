@@ -308,8 +308,8 @@ export default function ListingDetail() {
 
   // SEO: Build breadcrumb items
   const breadcrumbItems = [
-    { name: 'Accueil', url: '/' },
-    { name: 'Annonces', url: '/annonces' },
+    { name: t('listingDetail.breadcrumb_home'), url: '/' },
+    { name: t('listingDetail.breadcrumb_listings'), url: '/annonces' },
     { name: categoryLabels[listing.category], url: `/annonces/${listing.category}` },
     { name: listing.title, url: `/annonce/${listing.id}` }
   ];
@@ -329,9 +329,9 @@ export default function ListingDetail() {
       <div className="bg-secondary/30 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Link to="/" className="hover:text-foreground">Accueil</Link>
+            <Link to="/" className="hover:text-foreground">{t('listingDetail.breadcrumb_home')}</Link>
             <span>/</span>
-            <Link to="/annonces" className="hover:text-foreground">Annonces</Link>
+            <Link to="/annonces" className="hover:text-foreground">{t('listingDetail.breadcrumb_listings')}</Link>
             <span>/</span>
             <Link to={`/annonces/${listing.category}`} className="hover:text-foreground">
               {categoryLabels[listing.category]}
