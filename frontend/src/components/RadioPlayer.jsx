@@ -340,8 +340,16 @@ export default function RadioPlayer() {
           </div>
           <div className="flex items-center gap-1">
             <button
+              onClick={() => setIsMini(true)}
+              className="p-1.5 hover:bg-secondary rounded-lg transition-colors"
+              title="Réduire en mini-lecteur"
+            >
+              <Minimize2 className="w-4 h-4" />
+            </button>
+            <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="p-1.5 hover:bg-secondary rounded-lg transition-colors"
+              title={isExpanded ? "Réduire" : "Voir les stations"}
             >
               {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
             </button>
@@ -352,8 +360,10 @@ export default function RadioPlayer() {
                   setIsPlaying(false);
                 }
                 setIsOpen(false);
+                setIsMini(false);
               }}
               className="p-1.5 hover:bg-secondary rounded-lg transition-colors"
+              title="Fermer la radio"
             >
               <X className="w-4 h-4" />
             </button>
