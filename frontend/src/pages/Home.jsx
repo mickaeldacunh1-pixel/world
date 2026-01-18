@@ -20,18 +20,20 @@ import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const categories = [
-  { name: 'Pièces Détachées', slug: 'pieces', icon: Wrench, image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=400&fit=crop', count: 0, color: 'from-orange-500 to-red-500' },
-  { name: 'Voitures', slug: 'voitures', icon: Car, image: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop', count: 0, color: 'from-blue-500 to-indigo-500' },
-  { name: 'Motos', slug: 'motos', icon: Bike, image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&h=400&fit=crop', count: 0, color: 'from-green-500 to-teal-500' },
-  { name: 'Utilitaires', slug: 'utilitaires', icon: Truck, image: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&h=400&fit=crop', count: 0, color: 'from-purple-500 to-pink-500' },
-  { name: 'Accessoires', slug: 'accessoires', icon: Settings, image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&h=400&fit=crop', count: 0, color: 'from-yellow-500 to-orange-500' },
+// Categories will be translated via t() function
+const getCategoriesConfig = () => [
+  { nameKey: 'categories.pieces', slug: 'pieces', icon: Wrench, image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=400&fit=crop', count: 0, color: 'from-orange-500 to-red-500' },
+  { nameKey: 'categories.voitures', slug: 'voitures', icon: Car, image: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop', count: 0, color: 'from-blue-500 to-indigo-500' },
+  { nameKey: 'categories.motos', slug: 'motos', icon: Bike, image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&h=400&fit=crop', count: 0, color: 'from-green-500 to-teal-500' },
+  { nameKey: 'categories.utilitaires', slug: 'utilitaires', icon: Truck, image: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&h=400&fit=crop', count: 0, color: 'from-purple-500 to-pink-500' },
+  { nameKey: 'categories.accessoires', slug: 'accessoires', icon: Settings, image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&h=400&fit=crop', count: 0, color: 'from-yellow-500 to-orange-500' },
 ];
 
-const features = [
-  { icon: Shield, title: 'Transactions Sécurisées', description: 'Paiements sécurisés via Stripe et messagerie intégrée pour des échanges en toute confiance.' },
-  { icon: Users, title: 'Pro & Particuliers', description: 'Une communauté de vendeurs vérifiés, particuliers comme professionnels du secteur.' },
-  { icon: Clock, title: 'Annonces 30 jours', description: 'Vos annonces restent visibles pendant 30 jours avec possibilité de renouvellement.' },
+// Features will be translated via t() function
+const getFeaturesConfig = () => [
+  { icon: Shield, titleKey: 'home.secure_payment', descKey: 'home.secure_payment_desc' },
+  { icon: Users, titleKey: 'home.trusted_sellers', descKey: 'home.trusted_sellers_desc' },
+  { icon: Clock, titleKey: 'home.fast_shipping', descKey: 'home.fast_shipping_desc' },
 ];
 
 const DEFAULT_HERO = {
