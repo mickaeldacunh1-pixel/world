@@ -617,10 +617,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 animate-fade-in-up">
             <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4">
-              Explorez nos catégories
+              {t('categories.title')}
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Trouvez exactement ce que vous cherchez parmi des milliers d&apos;annonces vérifiées
+              {t('categories.subtitle')}
             </p>
           </div>
 
@@ -648,7 +648,7 @@ export default function Home() {
                   <div className={`relative ${index === 0 ? 'h-80 md:h-[420px]' : 'h-44 md:h-52'}`}>
                     <img
                       src={categoryImage}
-                      alt={cat.name}
+                      alt={t(cat.nameKey)}
                       className="absolute inset-0 w-full h-full object-cover img-zoom"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
@@ -661,11 +661,11 @@ export default function Home() {
                           <cat.icon className="w-5 h-5 text-white" />
                         </div>
                         <span className="text-white font-heading font-bold text-lg md:text-xl drop-shadow-lg">
-                          {cat.name}
+                          {t(cat.nameKey)}
                         </span>
                       </div>
                       <p className="text-white/80 text-sm font-medium">
-                        {categoryStats[cat.slug] || 0} annonces
+                        {categoryStats[cat.slug] || 0} {t('hero.listings')}
                       </p>
                     </div>
                   </div>
