@@ -671,7 +671,7 @@ export default function Listings() {
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
                 <span className="text-sm text-muted-foreground px-4">
-                  Page {page} sur {pages}
+                  {t('listings.page')} {page} {t('listings.of')} {pages}
                 </span>
                 <Button
                   variant="outline"
