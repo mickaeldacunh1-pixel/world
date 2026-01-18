@@ -274,14 +274,9 @@ export default function Footer() {
           <p className="text-primary-foreground/50 text-sm text-center" style={linkStyle}>
             {copyrightText}
           </p>
-          <a 
-            href="https://app.emergent.sh/?utm_source=emergent-badge" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="block text-primary-foreground/40 text-xs text-center mt-2 hover:text-accent transition-colors"
-          >
-            Emergent
-          </a>
+          <p className="text-primary-foreground/40 text-xs text-center mt-2 max-w-md mx-auto">
+            Aucune partie de ce site ne peut être reproduite ou transmise sous quelque forme ou par quelque moyen que ce soit sans notre autorisation.
+          </p>
         </div>
       </div>
     </footer>
