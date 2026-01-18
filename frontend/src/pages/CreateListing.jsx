@@ -126,20 +126,20 @@ export default function CreateListing() {
     
     // Handle photo purchase success/cancel
     if (searchParams.get('photos_success') === 'true') {
-      toast.success('🎉 +15 photos supplémentaires ajoutées !');
+      toast.success(t('createListing.photos_success'));
       fetchPhotoLimit();
       refreshUser();
     } else if (searchParams.get('photos_cancelled') === 'true') {
-      toast.info('Achat de photos annulé');
+      toast.info(t('createListing.photos_cancelled'));
     }
     
     // Handle video purchase success/cancel
     if (searchParams.get('video_success') === 'true') {
-      toast.success('🎬 Option vidéo étendue activée ! (2 min / 100 Mo)');
+      toast.success(t('createListing.video_success'));
       fetchVideoLimit();
       refreshUser();
     } else if (searchParams.get('video_cancelled') === 'true') {
-      toast.info('Achat vidéo annulé');
+      toast.info(t('createListing.video_cancelled'));
     }
   }, [searchParams]);
 
