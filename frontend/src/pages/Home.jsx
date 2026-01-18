@@ -956,15 +956,15 @@ export default function Home() {
             <div className="flex items-center justify-between mb-12">
               <div className="animate-slide-in-left">
                 <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-2">
-                  {heroSettings.recent_listings_title || 'Annonces récentes'}
+                  {heroSettings.recent_listings_title || t('home.recent_listings')}
                 </h2>
                 <p className="text-muted-foreground">
-                  {heroSettings.recent_listings_subtitle || 'Découvrez les dernières annonces publiées'}
+                  {heroSettings.recent_listings_subtitle || t('listings.no_listings_desc')}
                 </p>
               </div>
               <Link to="/annonces" className="animate-slide-in-right">
                 <Button variant="outline" className="hidden sm:flex items-center gap-2 hover:bg-accent hover:text-white hover:border-accent transition-all" data-testid="view-all-btn">
-                  Voir tout
+                  {t('common.see_all')}
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
@@ -1001,7 +1001,7 @@ export default function Home() {
                       {/* Quick view button */}
                       <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                         <span className="bg-white/95 backdrop-blur-sm text-primary px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
-                          Voir l&apos;annonce →
+                          {t('listing.view_listing')} →
                         </span>
                       </div>
                     </div>
@@ -1038,7 +1038,7 @@ export default function Home() {
             <div className="mt-8 text-center sm:hidden">
               <Link to="/annonces">
                 <Button variant="outline" className="w-full">
-                  Voir toutes les annonces
+                  {t('listings.view_all')}
                 </Button>
               </Link>
             </div>
