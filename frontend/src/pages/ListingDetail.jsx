@@ -410,7 +410,7 @@ export default function ListingDetail() {
               <div className="mt-4">
                 <p className="text-sm font-medium mb-2 flex items-center gap-2">
                   <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                  Vidéo de présentation
+                  {t('listingDetail.video_presentation')}
                 </p>
                 <div className="rounded-xl overflow-hidden bg-black">
                   <video
@@ -419,7 +419,7 @@ export default function ListingDetail() {
                     className="w-full max-h-80"
                     poster={images[0]}
                   >
-                    Votre navigateur ne supporte pas la lecture vidéo.
+                    {t('listingDetail.video_not_supported')}
                   </video>
                 </div>
               </div>
