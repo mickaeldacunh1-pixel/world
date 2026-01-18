@@ -9930,6 +9930,216 @@ Crawl-delay: 1
         headers={"Cache-Control": "public, max-age=86400"}  # Cache 24h
     )
 
+# ================== ADMIN PAYMENTS ==================
+
+@api_router.get("/admin/payments")
+async def get_admin_payments(
+    page: int = 1,
+    limit: int = 20,
+    status: str = None,
+    date_from: str = None,
+    date_to: str = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get all payment transactions for admin"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    query = {}
+    
+    if status:
+        query["payment_status"] = status
+    
+    if date_from:
+        query["created_at"] = {"$gte": date_from}
+    
+    if date_to:
+        if "created_at" in query:
+            query["created_at"]["$lte"] = date_to
+        else:
+            query["created_at"] = {"$lte": date_to}
+    
+    skip = (page - 1) * limit
+    
+    # Get transactions
+    cursor = db.payment_transactions.find(query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit)
+    transactions = await cursor.to_list(length=limit)
+    
+    # Enrich with user info
+    for tx in transactions:
+        user = await db.users.find_one({"id": tx.get("user_id")}, {"_id": 0, "name": 1, "email": 1})
+        tx["user"] = user
+    
+    total = await db.payment_transactions.count_documents(query)
+    
+    return {
+        "transactions": transactions,
+        "total": total,
+        "page": page,
+        "pages": (total + limit - 1) // limit
+    }
+
+@api_router.get("/admin/payments/stats")
+async def get_admin_payment_stats(current_user: dict = Depends(get_current_user)):
+    """Get payment statistics for admin dashboard"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    now = datetime.now(timezone.utc)
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+    week_start = (now - timedelta(days=7)).isoformat()
+    month_start = (now - timedelta(days=30)).isoformat()
+    
+    # Total revenue
+    pipeline_total = [
+        {"$match": {"payment_status": "paid"}},
+        {"$group": {"_id": None, "total": {"$sum": "$amount"}, "count": {"$sum": 1}}}
+    ]
+    total_result = await db.payment_transactions.aggregate(pipeline_total).to_list(1)
+    total_revenue = total_result[0]["total"] if total_result else 0
+    total_transactions = total_result[0]["count"] if total_result else 0
+    
+    # Today's revenue
+    pipeline_today = [
+        {"$match": {"payment_status": "paid", "created_at": {"$gte": today_start}}},
+        {"$group": {"_id": None, "total": {"$sum": "$amount"}, "count": {"$sum": 1}}}
+    ]
+    today_result = await db.payment_transactions.aggregate(pipeline_today).to_list(1)
+    today_revenue = today_result[0]["total"] if today_result else 0
+    today_transactions = today_result[0]["count"] if today_result else 0
+    
+    # This week's revenue
+    pipeline_week = [
+        {"$match": {"payment_status": "paid", "created_at": {"$gte": week_start}}},
+        {"$group": {"_id": None, "total": {"$sum": "$amount"}, "count": {"$sum": 1}}}
+    ]
+    week_result = await db.payment_transactions.aggregate(pipeline_week).to_list(1)
+    week_revenue = week_result[0]["total"] if week_result else 0
+    week_transactions = week_result[0]["count"] if week_result else 0
+    
+    # This month's revenue
+    pipeline_month = [
+        {"$match": {"payment_status": "paid", "created_at": {"$gte": month_start}}},
+        {"$group": {"_id": None, "total": {"$sum": "$amount"}, "count": {"$sum": 1}}}
+    ]
+    month_result = await db.payment_transactions.aggregate(pipeline_month).to_list(1)
+    month_revenue = month_result[0]["total"] if month_result else 0
+    month_transactions = month_result[0]["count"] if month_result else 0
+    
+    # Pending payments
+    pending_count = await db.payment_transactions.count_documents({"payment_status": "pending"})
+    
+    # Revenue by day (last 30 days)
+    pipeline_daily = [
+        {"$match": {"payment_status": "paid", "created_at": {"$gte": month_start}}},
+        {"$addFields": {"date": {"$substr": ["$created_at", 0, 10]}}},
+        {"$group": {"_id": "$date", "total": {"$sum": "$amount"}, "count": {"$sum": 1}}},
+        {"$sort": {"_id": 1}}
+    ]
+    daily_revenue = await db.payment_transactions.aggregate(pipeline_daily).to_list(31)
+    
+    # Revenue by package
+    pipeline_packages = [
+        {"$match": {"payment_status": "paid"}},
+        {"$group": {"_id": "$package_id", "total": {"$sum": "$amount"}, "count": {"$sum": 1}}},
+        {"$sort": {"total": -1}}
+    ]
+    revenue_by_package = await db.payment_transactions.aggregate(pipeline_packages).to_list(10)
+    
+    return {
+        "total_revenue": total_revenue,
+        "total_transactions": total_transactions,
+        "today_revenue": today_revenue,
+        "today_transactions": today_transactions,
+        "week_revenue": week_revenue,
+        "week_transactions": week_transactions,
+        "month_revenue": month_revenue,
+        "month_transactions": month_transactions,
+        "pending_count": pending_count,
+        "daily_revenue": daily_revenue,
+        "revenue_by_package": revenue_by_package
+    }
+
+@api_router.get("/admin/payments/{transaction_id}")
+async def get_admin_payment_detail(transaction_id: str, current_user: dict = Depends(get_current_user)):
+    """Get detailed information about a specific payment"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    transaction = await db.payment_transactions.find_one({"id": transaction_id}, {"_id": 0})
+    if not transaction:
+        raise HTTPException(status_code=404, detail="Transaction non trouvée")
+    
+    # Get user info
+    user = await db.users.find_one({"id": transaction.get("user_id")}, {"_id": 0, "name": 1, "email": 1, "phone": 1})
+    transaction["user"] = user
+    
+    # Get Stripe session info if available
+    if transaction.get("session_id"):
+        try:
+            stripe.api_key = STRIPE_API_KEY
+            session = stripe.checkout.Session.retrieve(transaction["session_id"])
+            transaction["stripe_info"] = {
+                "payment_status": session.payment_status,
+                "amount_total": session.amount_total,
+                "currency": session.currency,
+                "customer_email": session.customer_details.email if session.customer_details else None,
+                "payment_intent": session.payment_intent
+            }
+        except Exception as e:
+            logging.error(f"Error fetching Stripe session: {e}")
+    
+    return transaction
+
+@api_router.post("/admin/payments/{transaction_id}/refund")
+async def admin_refund_payment(transaction_id: str, current_user: dict = Depends(get_current_user)):
+    """Refund a payment (admin only)"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    transaction = await db.payment_transactions.find_one({"id": transaction_id}, {"_id": 0})
+    if not transaction:
+        raise HTTPException(status_code=404, detail="Transaction non trouvée")
+    
+    if transaction.get("payment_status") != "paid":
+        raise HTTPException(status_code=400, detail="Seuls les paiements complétés peuvent être remboursés")
+    
+    if transaction.get("refunded"):
+        raise HTTPException(status_code=400, detail="Cette transaction a déjà été remboursée")
+    
+    try:
+        stripe.api_key = STRIPE_API_KEY
+        session = stripe.checkout.Session.retrieve(transaction["session_id"])
+        
+        if session.payment_intent:
+            refund = stripe.Refund.create(payment_intent=session.payment_intent)
+            
+            # Update transaction
+            await db.payment_transactions.update_one(
+                {"id": transaction_id},
+                {"$set": {
+                    "refunded": True,
+                    "refund_id": refund.id,
+                    "refunded_at": datetime.now(timezone.utc).isoformat(),
+                    "refunded_by": current_user["id"]
+                }}
+            )
+            
+            # Remove credits from user
+            credits_to_remove = transaction.get("credits_count", 0)
+            if credits_to_remove > 0:
+                await db.users.update_one(
+                    {"id": transaction["user_id"]},
+                    {"$inc": {"credits": -credits_to_remove}}
+                )
+            
+            return {"success": True, "refund_id": refund.id, "message": "Remboursement effectué avec succès"}
+        else:
+            raise HTTPException(status_code=400, detail="Impossible de trouver le payment_intent Stripe")
+    except stripe.error.StripeError as e:
+        logging.error(f"Stripe refund error: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur Stripe: {str(e)}")
+
 # ================== ROOT ==================
 
 @api_router.get("/")
