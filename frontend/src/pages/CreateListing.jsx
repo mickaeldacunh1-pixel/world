@@ -700,29 +700,29 @@ export default function CreateListing() {
 
               {/* Shipping / Livraison */}
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-4">
-                <h3 className="font-medium text-blue-900">📦 Livraison</h3>
+                <h3 className="font-medium text-blue-900">📦 {t('createListing.shipping_title')}</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="shipping_cost">Frais de port (€)</Label>
+                    <Label htmlFor="shipping_cost">{t('createListing.shipping_cost_label')}</Label>
                     <Input
                       id="shipping_cost"
                       type="number"
                       step="0.01"
                       min="0"
-                      placeholder="0 = Gratuit, vide = À définir"
+                      placeholder={t('createListing.shipping_cost_placeholder')}
                       value={formData.shipping_cost}
                       onChange={(e) => handleChange('shipping_cost', e.target.value)}
                       data-testid="shipping-cost-input"
                     />
                     <p className="text-xs text-muted-foreground">
-                      Laissez vide si à définir avec l'acheteur
+                      {t('createListing.shipping_cost_hint')}
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="shipping_info">Infos livraison</Label>
+                    <Label htmlFor="shipping_info">{t('createListing.shipping_info_label')}</Label>
                     <Input
                       id="shipping_info"
-                      placeholder="Ex: Colissimo, retrait possible..."
+                      placeholder={t('createListing.shipping_info_placeholder')}
                       value={formData.shipping_info}
                       onChange={(e) => handleChange('shipping_info', e.target.value)}
                       data-testid="shipping-info-input"
@@ -732,7 +732,7 @@ export default function CreateListing() {
                 
                 {/* Shipping Methods Selection */}
                 <div className="mt-4">
-                  <Label className="mb-2 block">Modes de livraison acceptés *</Label>
+                  <Label className="mb-2 block">{t('createListing.shipping_methods_label')} *</Label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {shippingOptions.map((option) => {
                       const isSelected = formData.shipping_methods.includes(option.value);
@@ -756,9 +756,9 @@ export default function CreateListing() {
                             <span className="text-xl">{option.icon}</span>
                             <div className="flex-1 min-w-0">
                               <p className={`text-sm font-medium ${isSelected ? 'text-blue-900 dark:text-blue-200' : 'text-gray-900 dark:text-gray-100'}`}>
-                                {option.label}
+                                {t(option.labelKey)}
                               </p>
-                              <p className="text-xs text-gray-500 truncate">{option.description}</p>
+                              <p className="text-xs text-gray-500 truncate">{t(option.descKey)}</p>
                             </div>
                           </div>
                         </div>
@@ -766,7 +766,7 @@ export default function CreateListing() {
                     })}
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Sélectionnez au moins un mode de livraison
+                    {t('createListing.shipping_methods_hint')}
                   </p>
                 </div>
               </div>
@@ -774,30 +774,30 @@ export default function CreateListing() {
               {/* Vehicle-specific fields */}
               {showVehicleFields && (
                 <div className="p-4 bg-secondary/50 rounded-lg space-y-4 animate-fade-in">
-                  <h3 className="font-medium">Informations véhicule</h3>
+                  <h3 className="font-medium">{t('createListing.vehicle_info_title')}</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="brand">Marque</Label>
+                      <Label htmlFor="brand">{t('createListing.brand_label')}</Label>
                       <Input
                         id="brand"
-                        placeholder="Ex: BMW, Renault..."
+                        placeholder={t('createListing.brand_placeholder')}
                         value={formData.brand}
                         onChange={(e) => handleChange('brand', e.target.value)}
                         data-testid="brand-input"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="model">Modèle</Label>
+                      <Label htmlFor="model">{t('createListing.model_label')}</Label>
                       <Input
                         id="model"
-                        placeholder="Ex: Série 3, Clio..."
+                        placeholder={t('createListing.model_placeholder')}
                         value={formData.model}
                         onChange={(e) => handleChange('model', e.target.value)}
                         data-testid="model-input"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="year">Année</Label>
+                      <Label htmlFor="year">{t('createListing.year_label')}</Label>
                       <Input
                         id="year"
                         type="number"
@@ -808,7 +808,7 @@ export default function CreateListing() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="mileage">Kilométrage</Label>
+                      <Label htmlFor="mileage">{t('createListing.mileage_label')}</Label>
                       <Input
                         id="mileage"
                         type="number"
@@ -826,20 +826,20 @@ export default function CreateListing() {
               {formData.category === 'pieces' && (
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="brand">Marque du véhicule</Label>
+                    <Label htmlFor="brand">{t('createListing.brand_vehicle_label')}</Label>
                     <Input
                       id="brand"
-                      placeholder="Ex: BMW, Renault..."
+                      placeholder={t('createListing.brand_placeholder')}
                       value={formData.brand}
                       onChange={(e) => handleChange('brand', e.target.value)}
                       data-testid="brand-input"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="model">Modèle compatible</Label>
+                    <Label htmlFor="model">{t('createListing.model_compatible_label')}</Label>
                     <Input
                       id="model"
-                      placeholder="Ex: Série 3, Clio..."
+                      placeholder={t('createListing.model_placeholder')}
                       value={formData.model}
                       onChange={(e) => handleChange('model', e.target.value)}
                       data-testid="model-input"
