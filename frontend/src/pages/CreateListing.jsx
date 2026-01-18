@@ -434,17 +434,17 @@ export default function CreateListing() {
       });
 
       await refreshUser();
-      toast.success('Annonce publiée avec succès !');
+      toast.success(t('createListing.publish_success'));
       navigate(`/annonce/${response.data.id}`);
     } catch (error) {
       console.error('Erreur création annonce:', error);
       if (error.response?.status === 402) {
-        toast.error('Crédits insuffisants. Achetez un pack d\'annonces.');
+        toast.error(t('createListing.credits_insufficient'));
         navigate('/tarifs');
       } else if (error.response?.status === 403) {
         toast.error(error.response?.data?.detail || 'Action non autorisée');
       } else {
-        toast.error(error.response?.data?.detail || 'Erreur lors de la publication');
+        toast.error(error.response?.data?.detail || t('createListing.publish_error'));
       }
     } finally {
       setLoading(false);
