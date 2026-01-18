@@ -19,19 +19,7 @@ import ShippingEstimator from '../components/ShippingEstimator';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const conditionLabels = {
-  neuf: 'Neuf',
-  occasion: 'Occasion',
-  reconditionne: 'Reconditionné',
-};
-
-const categoryLabels = {
-  pieces: 'Pièces Détachées',
-  voitures: 'Voitures',
-  motos: 'Motos',
-  utilitaires: 'Utilitaires',
-  accessoires: 'Accessoires',
-};
+// Labels now handled via translation
 
 export default function ListingDetail() {
   const { id } = useParams();
