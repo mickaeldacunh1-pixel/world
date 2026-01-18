@@ -35,7 +35,7 @@ class RadioSettings(BaseModel):
 # Default stations
 DEFAULT_STATIONS = [
     # Stations demandées par l'utilisateur en priorité
-    {"id": "nostalgie", "name": "Nostalgie", "genre": "Oldies", "logo": "💫", "stream_url": "https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3", "color": "#FFD700", "enabled": True, "order": 0},
+    {"id": "nostalgie", "name": "Nostalgie", "genre": "Oldies", "logo": "💫", "stream_url": "https://n09a-eu.rcs.revma.com/ypqt40u0x1zuv", "color": "#FFD700", "enabled": True, "order": 0},
     {"id": "fipreggae", "name": "FIP Reggae", "genre": "Reggae", "logo": "🌴", "stream_url": "https://icecast.radiofrance.fr/fipreggae-midfi.mp3", "color": "#2ECC71", "enabled": True, "order": 1},
     {"id": "fiprock", "name": "FIP Rock", "genre": "Rock", "logo": "🤘", "stream_url": "https://icecast.radiofrance.fr/fiprock-midfi.mp3", "color": "#E74C3C", "enabled": True, "order": 2},
     {"id": "fipgroove", "name": "FIP Groove", "genre": "Funk & Soul", "logo": "🕺", "stream_url": "https://icecast.radiofrance.fr/fipgroove-midfi.mp3", "color": "#FF6B35", "enabled": True, "order": 3},
