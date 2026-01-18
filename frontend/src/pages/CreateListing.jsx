@@ -370,7 +370,7 @@ export default function CreateListing() {
         fetchVideoLimit();
       }
       
-      toast.success(`🎬 Vidéo uploadée ! (${Math.round(response.data.duration || 0)}s)`);
+      toast.success(t('createListing.video_uploaded'));
     } catch (error) {
       const errorMsg = error.response?.data?.detail || 'Erreur lors de l\'upload de la vidéo';
       toast.error(errorMsg);
