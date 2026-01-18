@@ -233,6 +233,92 @@ export default function RadioPlayer() {
     );
   }
 
+  // Mode mini - petit bouton discret avec station en cours
+  if (isMini) {
+    return (
+      <div 
+        className={`fixed bottom-20 sm:bottom-24 ${positionClasses} z-50 flex items-center gap-2`}
+        data-testid="radio-player-mini"
+      >
+        {/* Bouton principal mini */}
+        <div 
+          className="flex items-center gap-1 bg-white dark:bg-gray-900 rounded-full shadow-lg border border-border px-2 py-1.5 cursor-pointer hover:shadow-xl transition-all"
+          style={{ borderColor: currentStation.color }}
+        >
+          {/* Logo station - clic pour ouvrir le player complet */}
+          <button
+            onClick={() => setIsMini(false)}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-lg hover:scale-110 transition-transform"
+            style={{ backgroundColor: `${currentStation.color}20` }}
+            title={`${currentStation.name} - Cliquer pour ouvrir`}
+          >
+            {currentStation.logo}
+          </button>
+          
+          {/* Bouton Play/Pause */}
+          <button
+            onClick={togglePlay}
+            disabled={isLoading}
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110"
+            style={{ backgroundColor: currentStation.color, color: 'white' }}
+            title={isPlaying ? 'Pause' : 'Lecture'}
+          >
+            {isLoading ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : isPlaying ? (
+              <Pause className="w-4 h-4" />
+            ) : (
+              <Play className="w-4 h-4 ml-0.5" />
+            )}
+          </button>
+
+          {/* Indicateur de lecture */}
+          {isPlaying && !isLoading && (
+            <div className="flex items-end gap-0.5 h-4 px-1">
+              {[...Array(3)].map((_, i) => (
+                <div
+                  key={i}
+                  className="w-1 rounded-full"
+                  style={{
+                    backgroundColor: currentStation.color,
+                    animation: `radioWave 0.5s ease-in-out infinite`,
+                    animationDelay: `${i * 0.1}s`,
+                    height: '100%'
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Bouton station suivante */}
+          <button
+            onClick={nextStation}
+            className="w-6 h-6 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
+            title="Station suivante"
+          >
+            <SkipForward className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Bouton fermer */}
+        <button
+          onClick={() => {
+            if (isPlaying) {
+              audioRef.current?.pause();
+              setIsPlaying(false);
+            }
+            setIsOpen(false);
+            setIsMini(false);
+          }}
+          className="w-6 h-6 rounded-full bg-white dark:bg-gray-900 shadow border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
+          title="Fermer la radio"
+        >
+          <X className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className={`fixed bottom-20 sm:bottom-24 ${positionClasses} z-50 transition-all duration-300 ${isExpanded ? 'w-72 sm:w-80' : 'w-64 sm:w-72'}`} data-testid="radio-player">
       {/* Mini Player */}
