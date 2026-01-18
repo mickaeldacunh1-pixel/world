@@ -28,6 +28,7 @@ export default function RadioPlayer() {
   const audioRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMini, setIsMini] = useState(false); // Mode mini - juste un petit bouton
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(70);
   const [isMuted, setIsMuted] = useState(false);
