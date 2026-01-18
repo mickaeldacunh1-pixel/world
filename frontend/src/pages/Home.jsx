@@ -1160,21 +1160,21 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 animate-fade-in-up">
             <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4">
-              Pourquoi choisir World Auto France ?
+              {t('home.why_choose_us')}
             </h2>
             <p className="text-muted-foreground text-lg">
-              La plateforme de confiance pour vos transactions automobiles
+              {t('home.join_community')}
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={feature.title} className={`p-8 text-center card-hover border-0 shadow-md animate-fade-in-up stagger-${index + 1}`}>
+              <Card key={feature.titleKey} className={`p-8 text-center card-hover border-0 shadow-md animate-fade-in-up stagger-${index + 1}`}>
                 <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-orange-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                   <feature.icon className="w-8 h-8 text-accent" />
                 </div>
-                <h3 className="font-heading font-bold text-xl mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                <h3 className="font-heading font-bold text-xl mb-3">{t(feature.titleKey)}</h3>
+                <p className="text-muted-foreground leading-relaxed">{t(feature.descKey)}</p>
               </Card>
             ))}
           </div>
