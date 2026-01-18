@@ -395,18 +395,18 @@ export default function CreateListing() {
     const hasFreeAds = (user?.free_ads_remaining || 0) > 0;
     
     if (!hasCredits && !hasFreeAds) {
-      toast.error('Vous n\'avez pas de crédits. Achetez un pack d\'annonces.');
+      toast.error(t('createListing.no_credits_redirect'));
       navigate('/tarifs');
       return;
     }
 
     if (!formData.title || !formData.description || !formData.price || !formData.category) {
-      toast.error('Veuillez remplir tous les champs obligatoires');
+      toast.error(t('createListing.required_fields_error'));
       return;
     }
 
     if (formData.shipping_methods.length === 0) {
-      toast.error('Veuillez sélectionner au moins un mode de livraison');
+      toast.error(t('createListing.shipping_method_required'));
       return;
     }
 
