@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { Slider } from './ui/slider';
 import { 
   Radio, Play, Pause, Volume2, VolumeX, X, ChevronUp, ChevronDown,
-  SkipBack, SkipForward, Music2
+  SkipBack, SkipForward, Music2, Minimize2
 } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
