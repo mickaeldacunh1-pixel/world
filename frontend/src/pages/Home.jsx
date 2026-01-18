@@ -1200,27 +1200,26 @@ export default function Home() {
                 <Gift className="w-10 h-10 text-white" />
               </div>
               <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
-                Parrainez vos amis,<br />
-                <span className="text-yellow-200">Gagnez des récompenses !</span>
+                {t('home.referral_title')},<br />
+                <span className="text-yellow-200">{t('home.referral_desc')}</span>
               </h2>
               <p className="text-white/90 text-lg md:text-xl max-w-xl mb-6">
-                Invitez vos proches sur World Auto France et recevez <strong>100 points</strong> par filleul. 
-                Eux aussi reçoivent <strong>50 points</strong> de bienvenue !
+                {t('home.referral_invite_desc')}
               </p>
 
               {/* Benefits badges */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-3 mb-8">
                 <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-yellow-200" />
-                  <span className="text-white font-medium">+100 pts / filleul</span>
+                  <span className="text-white font-medium">{t('home.pts_per_referral')}</span>
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2">
                   <Gift className="w-5 h-5 text-yellow-200" />
-                  <span className="text-white font-medium">+50 pts pour eux</span>
+                  <span className="text-white font-medium">{t('home.pts_for_them')}</span>
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-yellow-200" />
-                  <span className="text-white font-medium">Illimité</span>
+                  <span className="text-white font-medium">{t('home.unlimited')}</span>
                 </div>
               </div>
             </div>
@@ -1230,7 +1229,7 @@ export default function Home() {
               {user && referralData ? (
                 <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 min-w-[320px] md:min-w-[380px]">
                   <div className="text-center mb-6">
-                    <p className="text-muted-foreground text-sm mb-2">Votre code de parrainage</p>
+                    <p className="text-muted-foreground text-sm mb-2">{t('home.your_referral_code')}</p>
                     <div className="flex items-center justify-center gap-3">
                       <span className="font-mono text-3xl md:text-4xl font-black text-primary tracking-wider">
                         {referralData.referral_code}
@@ -1252,11 +1251,11 @@ export default function Home() {
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="bg-secondary/50 rounded-xl p-4 text-center">
                       <p className="text-2xl font-bold text-primary">{referralData.referral_count || 0}</p>
-                      <p className="text-sm text-muted-foreground">Filleuls</p>
+                      <p className="text-sm text-muted-foreground">{t('home.referrals')}</p>
                     </div>
                     <div className="bg-secondary/50 rounded-xl p-4 text-center">
                       <p className="text-2xl font-bold text-green-600">{referralData.total_points_earned || 0}</p>
-                      <p className="text-sm text-muted-foreground">Points gagnés</p>
+                      <p className="text-sm text-muted-foreground">{t('home.points_earned')}</p>
                     </div>
                   </div>
 
@@ -1265,11 +1264,11 @@ export default function Home() {
                     className="w-full h-12 bg-accent hover:bg-accent/90 text-white font-semibold text-lg gap-2"
                   >
                     <UserPlus className="w-5 h-5" />
-                    Inviter mes amis
+                    {t('home.invite_friends')}
                   </Button>
 
                   <Link to="/fidelite" className="block mt-4 text-center text-accent hover:underline text-sm font-medium">
-                    Voir tous mes filleuls →
+                    {t('home.see_all_referrals')} →
                   </Link>
                 </div>
               ) : (
@@ -1277,17 +1276,17 @@ export default function Home() {
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <UserPlus className="w-8 h-8 text-accent" />
                   </div>
-                  <h3 className="font-heading text-xl font-bold mb-2">Rejoignez le programme !</h3>
+                  <h3 className="font-heading text-xl font-bold mb-2">{t('home.join_program')}</h3>
                   <p className="text-muted-foreground mb-6">
-                    Créez votre compte pour obtenir votre code de parrainage personnel.
+                    {t('home.create_account_referral')}
                   </p>
                   <Link to="/auth?mode=register">
                     <Button className="w-full h-12 bg-accent hover:bg-accent/90 text-white font-semibold text-lg">
-                      Créer mon compte
+                      {t('home.create_account')}
                     </Button>
                   </Link>
                   <p className="mt-4 text-sm text-muted-foreground">
-                    Vous avez un code ? <Link to="/auth?mode=register" className="text-accent hover:underline">Inscrivez-vous ici</Link>
+                    {t('home.have_code')} <Link to="/auth?mode=register" className="text-accent hover:underline">{t('home.register_here')}</Link>
                   </p>
                 </div>
               )}
@@ -1308,21 +1307,21 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="animate-fade-in-up">
             <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-6">
-              Prêt à vendre votre véhicule ?
+              {t('home.ready_to_sell')}
             </h2>
             <p className="text-white/70 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
-              Déposez votre annonce en quelques minutes et touchez des milliers d&apos;acheteurs potentiels dans toute la France.
+              {t('home.cta_desc')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/deposer">
                 <Button size="lg" className="btn-primary text-lg h-14 px-10" data-testid="cta-create-listing">
                   <Sparkles className="w-5 h-5 mr-2" />
-                  Déposer une annonce
+                  {t('hero.postAd')}
                 </Button>
               </Link>
               <Link to="/tarifs">
                 <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 h-14 px-10 text-lg" data-testid="cta-pricing">
-                  Voir les tarifs
+                  {t('home.see_pricing')}
                 </Button>
               </Link>
             </div>
