@@ -553,10 +553,10 @@ export default function CreateListing() {
               {/* Subcategory for Pieces */}
               {formData.category === 'pieces' && Object.keys(piecesSubcategories).length > 0 && (
                 <div className="space-y-2">
-                  <Label>Type de pièce *</Label>
+                  <Label>{t('createListing.subcategory_pieces')} *</Label>
                   <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
                     <SelectTrigger data-testid="subcategory-select">
-                      <SelectValue placeholder="Choisir un type de pièce" />
+                      <SelectValue placeholder={t('createListing.subcategory_pieces_placeholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(piecesSubcategories).map(([key, label]) => (
@@ -570,10 +570,10 @@ export default function CreateListing() {
               {/* Subcategory for Accessoires */}
               {formData.category === 'accessoires' && Object.keys(accessoiresSubcategories).length > 0 && (
                 <div className="space-y-2">
-                  <Label>Type d'accessoire *</Label>
+                  <Label>{t('createListing.subcategory_accessoires')} *</Label>
                   <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
                     <SelectTrigger data-testid="subcategory-select">
-                      <SelectValue placeholder="Choisir un type d'accessoire" />
+                      <SelectValue placeholder={t('createListing.subcategory_accessoires_placeholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(accessoiresSubcategories).map(([key, label]) => (
@@ -586,10 +586,10 @@ export default function CreateListing() {
 
               {formData.category === 'motos' && Object.keys(motosSubcategories).length > 0 && (
                 <div className="space-y-2">
-                  <Label>Type de deux-roues *</Label>
+                  <Label>{t('createListing.subcategory_motos')} *</Label>
                   <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
                     <SelectTrigger data-testid="subcategory-select">
-                      <SelectValue placeholder="Choisir un type" />
+                      <SelectValue placeholder={t('createListing.subcategory_motos_placeholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(motosSubcategories).map(([key, label]) => (
@@ -602,10 +602,10 @@ export default function CreateListing() {
 
               {formData.category === 'utilitaires' && Object.keys(utilitairesSubcategories).length > 0 && (
                 <div className="space-y-2">
-                  <Label>Type d&apos;utilitaire *</Label>
+                  <Label>{t('createListing.subcategory_utilitaires')} *</Label>
                   <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
                     <SelectTrigger data-testid="subcategory-select">
-                      <SelectValue placeholder="Choisir un type" />
+                      <SelectValue placeholder={t('createListing.subcategory_utilitaires_placeholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(utilitairesSubcategories).map(([key, label]) => (
@@ -618,10 +618,10 @@ export default function CreateListing() {
 
               {formData.category === 'engins' && Object.keys(enginsSubcategories).length > 0 && (
                 <div className="space-y-2">
-                  <Label>Type d&apos;engin *</Label>
+                  <Label>{t('createListing.subcategory_engins')} *</Label>
                   <Select value={formData.subcategory} onValueChange={(v) => handleChange('subcategory', v)}>
                     <SelectTrigger data-testid="subcategory-engins-select">
-                      <SelectValue placeholder="Choisir un type d'engin" />
+                      <SelectValue placeholder={t('createListing.subcategory_engins_placeholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(enginsSubcategories).map(([key, label]) => (
@@ -634,10 +634,10 @@ export default function CreateListing() {
 
               {/* Title */}
               <div className="space-y-2">
-                <Label htmlFor="title">Titre de l'annonce *</Label>
+                <Label htmlFor="title">{t('createListing.title_label')} *</Label>
                 <Input
                   id="title"
-                  placeholder="Ex: Moteur BMW 320d 150cv en parfait état"
+                  placeholder={t('createListing.title_placeholder')}
                   value={formData.title}
                   onChange={(e) => handleChange('title', e.target.value)}
                   required
@@ -647,10 +647,10 @@ export default function CreateListing() {
 
               {/* Description */}
               <div className="space-y-2">
-                <Label htmlFor="description">Description *</Label>
+                <Label htmlFor="description">{t('createListing.description_label')} *</Label>
                 <Textarea
                   id="description"
-                  placeholder="Décrivez votre article en détail..."
+                  placeholder={t('createListing.description_placeholder')}
                   value={formData.description}
                   onChange={(e) => handleChange('description', e.target.value)}
                   rows={5}
@@ -662,7 +662,7 @@ export default function CreateListing() {
               {/* Price & Condition */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="price">Prix (€) *</Label>
+                  <Label htmlFor="price">{t('createListing.price_label')} *</Label>
                   <Input
                     id="price"
                     type="number"
@@ -676,14 +676,14 @@ export default function CreateListing() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>État *</Label>
+                  <Label>{t('createListing.condition_label')} *</Label>
                   <Select value={formData.condition} onValueChange={(v) => handleChange('condition', v)}>
                     <SelectTrigger data-testid="condition-select">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {conditions.map(cond => (
-                        <SelectItem key={cond.value} value={cond.value}>{cond.label}</SelectItem>
+                        <SelectItem key={cond.value} value={cond.value}>{t(cond.labelKey)}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
