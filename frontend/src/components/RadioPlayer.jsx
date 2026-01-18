@@ -12,7 +12,7 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 // Default stations (fallback)
 const DEFAULT_STATIONS = [
-  { id: 'nostalgie', name: 'Nostalgie', genre: 'Oldies', logo: '💫', stream_url: 'https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3', color: '#FFD700' },
+  { id: 'nostalgie', name: 'Nostalgie', genre: 'Oldies', logo: '💫', stream_url: 'https://n09a-eu.rcs.revma.com/ypqt40u0x1zuv', color: '#FFD700' },
   { id: 'fipreggae', name: 'FIP Reggae', genre: 'Reggae', logo: '🌴', stream_url: 'https://icecast.radiofrance.fr/fipreggae-midfi.mp3', color: '#2ECC71' },
   { id: 'fiprock', name: 'FIP Rock', genre: 'Rock', logo: '🤘', stream_url: 'https://icecast.radiofrance.fr/fiprock-midfi.mp3', color: '#E74C3C' },
   { id: 'fipgroove', name: 'FIP Groove', genre: 'Funk & Soul', logo: '🕺', stream_url: 'https://icecast.radiofrance.fr/fipgroove-midfi.mp3', color: '#FF6B35' },
