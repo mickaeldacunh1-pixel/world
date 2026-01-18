@@ -300,20 +300,20 @@ export default function Auth() {
         <Card className="shadow-lg">
           <CardHeader className="text-center">
             <CardTitle className="font-heading text-2xl">
-              {activeTab === 'login' ? 'Connexion' : 'Créer un compte'}
+              {activeTab === 'login' ? t('auth.login_title') : t('auth.register_title')}
             </CardTitle>
             <CardDescription>
               {activeTab === 'login' 
-                ? 'Connectez-vous à votre compte'
-                : 'Rejoignez la communauté World Auto Pro Pro'
+                ? t('auth.welcome_back')
+                : t('auth.create_account')
               }
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="login" data-testid="login-tab">Connexion</TabsTrigger>
-                <TabsTrigger value="register" data-testid="register-tab">Inscription</TabsTrigger>
+                <TabsTrigger value="login" data-testid="login-tab">{t('auth.login_title')}</TabsTrigger>
+                <TabsTrigger value="register" data-testid="register-tab">{t('auth.register_title')}</TabsTrigger>
               </TabsList>
 
               {/* Login Form */}
@@ -322,7 +322,7 @@ export default function Auth() {
                   {!twoFactorRequired ? (
                     <>
                       <div className="space-y-2">
-                        <Label htmlFor="login-email">Email</Label>
+                        <Label htmlFor="login-email">{t('auth.email')}</Label>
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                           <Input
@@ -339,7 +339,7 @@ export default function Auth() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="login-password">Mot de passe</Label>
+                        <Label htmlFor="login-password">{t('auth.password')}</Label>
                         <div className="relative">
                           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                           <Input
