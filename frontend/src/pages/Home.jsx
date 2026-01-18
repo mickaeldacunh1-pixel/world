@@ -816,13 +816,13 @@ export default function Home() {
           <div className="text-center mb-8 animate-fade-in-up">
             <div className="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-4">
               <span className="text-lg">🔍</span>
-              <span className="text-sm font-medium">Recherche professionnelle</span>
+              <span className="text-sm font-medium">{t('home.pro_search')}</span>
             </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white">
-              Recherche par référence OEM
+              {t('home.oem_search')}
             </h2>
             <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Trouvez la pièce exacte avec sa référence constructeur ou équipementier
+              {t('home.oem_search_desc')}
             </p>
           </div>
 
@@ -834,7 +834,7 @@ export default function Home() {
               <div className="relative flex-1">
                 <input
                   type="text"
-                  placeholder="Entrez la référence OEM (ex: 7701474426, 1K0615301M...)"
+                  placeholder={t('home.oem_placeholder')}
                   value={oemSearch}
                   onChange={(e) => setOemSearch(e.target.value)}
                   className="w-full h-14 px-5 bg-white rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent font-mono text-lg"
@@ -846,12 +846,12 @@ export default function Home() {
                 className="h-14 px-8 btn-primary rounded-xl text-base font-semibold whitespace-nowrap"
               >
                 <Search className="w-5 h-5 mr-2" />
-                Rechercher
+                {t('common.search')}
               </Button>
             </div>
             
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <span className="text-white/60 text-sm">Exemples :</span>
+              <span className="text-white/60 text-sm">{t('home.oem_examples')} :</span>
               {['7701474426', '1K0615301M', '30735878', '04E115561H'].map((ref) => (
                 <button
                   key={ref}
@@ -868,19 +868,19 @@ export default function Home() {
           <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div className="bg-white/5 rounded-xl p-4">
               <div className="text-2xl mb-2">🏭</div>
-              <p className="text-white/80 text-sm">Références constructeur</p>
+              <p className="text-white/80 text-sm">{t('home.oem_manufacturer')}</p>
             </div>
             <div className="bg-white/5 rounded-xl p-4">
               <div className="text-2xl mb-2">🔧</div>
-              <p className="text-white/80 text-sm">Références équipementier</p>
+              <p className="text-white/80 text-sm">{t('home.oem_supplier')}</p>
             </div>
             <div className="bg-white/5 rounded-xl p-4">
               <div className="text-2xl mb-2">✅</div>
-              <p className="text-white/80 text-sm">Compatibilité garantie</p>
+              <p className="text-white/80 text-sm">{t('home.oem_compatibility')}</p>
             </div>
             <div className="bg-white/5 rounded-xl p-4">
               <div className="text-2xl mb-2">⚡</div>
-              <p className="text-white/80 text-sm">Recherche instantanée</p>
+              <p className="text-white/80 text-sm">{t('home.oem_instant')}</p>
             </div>
           </div>
         </div>
