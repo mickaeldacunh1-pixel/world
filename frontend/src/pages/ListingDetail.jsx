@@ -27,6 +27,21 @@ export default function ListingDetail() {
   const { t } = useTranslation();
   const { user, token } = useAuth();
   
+  // Dynamic labels from translations
+  const conditionLabels = {
+    neuf: t('createListing.condition_neuf'),
+    occasion: t('createListing.condition_occasion'),
+    reconditionne: t('createListing.condition_reconditionne'),
+  };
+
+  const categoryLabels = {
+    pieces: t('createListing.category_pieces'),
+    voitures: t('createListing.category_voitures'),
+    motos: t('createListing.category_motos'),
+    utilitaires: t('createListing.category_utilitaires'),
+    accessoires: t('createListing.category_accessoires'),
+  };
+  
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
@@ -44,13 +59,13 @@ export default function ListingDetail() {
   const [videoCallLoading, setVideoCallLoading] = useState(false);
 
   const REPORT_REASONS = [
-    { value: 'spam', label: 'Spam ou publicité' },
-    { value: 'scam', label: 'Arnaque suspectée' },
-    { value: 'inappropriate', label: 'Contenu inapproprié' },
-    { value: 'counterfeit', label: 'Contrefaçon' },
-    { value: 'wrong_category', label: 'Mauvaise catégorie' },
-    { value: 'duplicate', label: 'Annonce en double' },
-    { value: 'other', label: 'Autre raison' }
+    { value: 'spam', label: t('listingDetail.report_reason_spam') },
+    { value: 'scam', label: t('listingDetail.report_reason_scam') },
+    { value: 'inappropriate', label: t('listingDetail.report_reason_inappropriate') },
+    { value: 'counterfeit', label: t('listingDetail.report_reason_counterfeit') },
+    { value: 'wrong_category', label: t('listingDetail.report_reason_wrong_category') },
+    { value: 'duplicate', label: t('listingDetail.report_reason_duplicate') },
+    { value: 'other', label: t('listingDetail.report_reason_other') }
   ];
 
   const handleVideoCall = async () => {
