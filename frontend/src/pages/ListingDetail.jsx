@@ -70,7 +70,7 @@ export default function ListingDetail() {
 
   const handleVideoCall = async () => {
     if (!user) {
-      toast.error('Connectez-vous pour demander un appel vidéo');
+      toast.error(t('listingDetail.login_to_video'));
       navigate('/auth');
       return;
     }
@@ -80,13 +80,13 @@ export default function ListingDetail() {
       const response = await axios.post(`${API}/video-call/request?listing_id=${listing.id}`);
       const { whatsapp_link, seller_name } = response.data;
       
-      toast.success(`Ouverture WhatsApp pour contacter ${seller_name}`);
+      toast.success(`${t('listingDetail.opening_whatsapp')} ${seller_name}`);
       window.open(whatsapp_link, '_blank');
     } catch (error) {
       if (error.response?.data?.detail?.includes('pas de numéro')) {
-        toast.error('Le vendeur n\'a pas de numéro de téléphone enregistré');
+        toast.error(t('listingDetail.seller_no_phone'));
       } else {
-        toast.error('Erreur lors de la demande');
+        toast.error(t('listingDetail.video_call_error'));
       }
     } finally {
       setVideoCallLoading(false);
