@@ -853,15 +853,15 @@ export default function CreateListing() {
                 <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg space-y-4">
                   <h3 className="font-heading font-bold text-lg flex items-center gap-2">
                     <span className="text-blue-600">🔧</span>
-                    Compatibilité véhicule
+                    {t('createListing.compatibility_title')}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Ces informations aident les acheteurs à trouver la bonne pièce pour leur véhicule
+                    {t('createListing.compatibility_hint')}
                   </p>
                   
                   {/* Compatible Brands */}
                   <div className="space-y-2">
-                    <Label>Marques compatibles</Label>
+                    <Label>{t('createListing.compatible_brands_label')}</Label>
                     <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 bg-white rounded border">
                       {carBrands.slice(0, -1).map((brand) => (
                         <button
@@ -881,17 +881,17 @@ export default function CreateListing() {
                     </div>
                     {formData.compatible_brands.length > 0 && (
                       <p className="text-sm text-accent">
-                        {formData.compatible_brands.length} marque(s) sélectionnée(s)
+                        {formData.compatible_brands.length} {t('createListing.compatible_brands_selected')}
                       </p>
                     )}
                   </div>
 
                   {/* Compatible Models */}
                   <div className="space-y-2">
-                    <Label htmlFor="compatible_models">Modèles compatibles</Label>
+                    <Label htmlFor="compatible_models">{t('createListing.compatible_models_label')}</Label>
                     <Input
                       id="compatible_models"
-                      placeholder="Ex: 308, 3008, 508 (séparés par des virgules)"
+                      placeholder={t('createListing.compatible_models_placeholder')}
                       value={formData.compatible_models}
                       onChange={(e) => handleChange('compatible_models', e.target.value)}
                       data-testid="compatible-models-input"
@@ -900,10 +900,10 @@ export default function CreateListing() {
 
                   {/* Compatible Years */}
                   <div className="space-y-2">
-                    <Label htmlFor="compatible_years">Années compatibles</Label>
+                    <Label htmlFor="compatible_years">{t('createListing.compatible_years_label')}</Label>
                     <Input
                       id="compatible_years"
-                      placeholder="Ex: 2015-2020"
+                      placeholder={t('createListing.compatible_years_placeholder')}
                       value={formData.compatible_years}
                       onChange={(e) => handleChange('compatible_years', e.target.value)}
                       data-testid="compatible-years-input"
@@ -913,10 +913,10 @@ export default function CreateListing() {
                   <div className="grid grid-cols-2 gap-4">
                     {/* OEM Reference */}
                     <div className="space-y-2">
-                      <Label htmlFor="oem_reference">Référence OEM (constructeur)</Label>
+                      <Label htmlFor="oem_reference">{t('createListing.oem_reference_label')}</Label>
                       <Input
                         id="oem_reference"
-                        placeholder="Ex: 7701474426"
+                        placeholder={t('createListing.oem_reference_placeholder')}
                         value={formData.oem_reference}
                         onChange={(e) => handleChange('oem_reference', e.target.value)}
                         data-testid="oem-reference-input"
@@ -925,10 +925,10 @@ export default function CreateListing() {
 
                     {/* Aftermarket Reference */}
                     <div className="space-y-2">
-                      <Label htmlFor="aftermarket_reference">Référence équipementier</Label>
+                      <Label htmlFor="aftermarket_reference">{t('createListing.aftermarket_reference_label')}</Label>
                       <Input
                         id="aftermarket_reference"
-                        placeholder="Ex: VALEO 437389"
+                        placeholder={t('createListing.aftermarket_reference_placeholder')}
                         value={formData.aftermarket_reference}
                         onChange={(e) => handleChange('aftermarket_reference', e.target.value)}
                         data-testid="aftermarket-reference-input"
@@ -940,33 +940,33 @@ export default function CreateListing() {
                   <div className="mt-6 p-4 border rounded-lg bg-secondary/30">
                     <h4 className="font-medium mb-4 flex items-center gap-2">
                       <Shield className="w-4 h-4 text-accent" />
-                      Traçabilité (améliore votre score de confiance)
+                      {t('createListing.traceability_title')}
                     </h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="part_origin">Origine de la pièce</Label>
+                        <Label htmlFor="part_origin">{t('createListing.part_origin_label')}</Label>
                         <Select value={formData.part_origin} onValueChange={(v) => handleChange('part_origin', v)}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Sélectionner l'origine" />
+                            <SelectValue placeholder={t('createListing.part_origin_placeholder')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="casse">Casse automobile</SelectItem>
-                            <SelectItem value="particulier">Particulier</SelectItem>
-                            <SelectItem value="professionnel">Professionnel</SelectItem>
-                            <SelectItem value="neuf">Pièce neuve</SelectItem>
+                            <SelectItem value="casse">{t('createListing.part_origin_casse')}</SelectItem>
+                            <SelectItem value="particulier">{t('createListing.part_origin_particulier')}</SelectItem>
+                            <SelectItem value="professionnel">{t('createListing.part_origin_professionnel')}</SelectItem>
+                            <SelectItem value="neuf">{t('createListing.part_origin_neuf')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="vehicle_mileage">Kilométrage du véhicule d'origine</Label>
+                        <Label htmlFor="vehicle_mileage">{t('createListing.vehicle_mileage_label')}</Label>
                         <Input
                           id="vehicle_mileage"
                           type="number"
-                          placeholder="Ex: 125000"
+                          placeholder={t('createListing.vehicle_mileage_placeholder')}
                           value={formData.vehicle_mileage}
                           onChange={(e) => handleChange('vehicle_mileage', e.target.value)}
                         />
-                        <p className="text-xs text-muted-foreground">km au compteur lors du démontage</p>
+                        <p className="text-xs text-muted-foreground">{t('createListing.vehicle_mileage_hint')}</p>
                       </div>
                     </div>
                   </div>
@@ -976,7 +976,7 @@ export default function CreateListing() {
               {/* Location */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="location">Ville</Label>
+                  <Label htmlFor="location">{t('createListing.city_label')}</Label>
                   <Input
                     id="location"
                     placeholder="Paris"
@@ -986,7 +986,7 @@ export default function CreateListing() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="postal_code">Code postal</Label>
+                  <Label htmlFor="postal_code">{t('createListing.postal_code_label')}</Label>
                   <Input
                     id="postal_code"
                     placeholder="75001"
@@ -996,7 +996,7 @@ export default function CreateListing() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="region">Région</Label>
+                  <Label htmlFor="region">{t('createListing.region_label')}</Label>
                   <Select value={formData.region} onValueChange={(v) => handleChange('region', v)}>
                     <SelectTrigger data-testid="region-select">
                       <SelectValue placeholder="Sélectionner une région" />
