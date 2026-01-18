@@ -52,25 +52,25 @@ const generateYears = () => {
 const YEARS = generateYears();
 
 const categoryNames = {
-  pieces: 'Pièces Détachées',
-  voitures: 'Voitures d\'Occasion',
-  motos: 'Motos',
-  utilitaires: 'Utilitaires',
-  accessoires: 'Accessoires',
+  pieces: 'categories.pieces',
+  voitures: 'categories.voitures',
+  motos: 'categories.motos',
+  utilitaires: 'categories.utilitaires',
+  accessoires: 'categories.accessoires',
 };
 
 const categoryDescriptions = {
-  pieces: 'Trouvez des pièces détachées automobiles neuves et d\'occasion. Moteurs, carrosserie, électronique et plus.',
-  voitures: 'Découvrez notre sélection de voitures d\'occasion vérifiées par des particuliers et professionnels.',
-  motos: 'Achetez ou vendez des motos d\'occasion. Large choix de marques et modèles.',
-  utilitaires: 'Utilitaires, camionnettes et véhicules commerciaux d\'occasion à vendre.',
-  accessoires: 'Accessoires automobiles, équipements et tuning pour personnaliser votre véhicule.',
+  pieces: 'listings.desc_pieces',
+  voitures: 'listings.desc_voitures',
+  motos: 'listings.desc_motos',
+  utilitaires: 'listings.desc_utilitaires',
+  accessoires: 'listings.desc_accessoires',
 };
 
 const conditionLabels = {
-  neuf: 'Neuf',
-  occasion: 'Occasion',
-  reconditionne: 'Reconditionné',
+  neuf: 'listing.new',
+  occasion: 'listing.used',
+  reconditionne: 'listing.reconditioned',
 };
 
 export default function Listings() {
