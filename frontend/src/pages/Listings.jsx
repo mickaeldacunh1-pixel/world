@@ -378,10 +378,10 @@ export default function Listings() {
                         disabled={!compatibleBrand}
                       >
                         <SelectTrigger data-testid="filter-compatible-model" className={`bg-white ${!compatibleBrand ? 'opacity-50' : ''}`}>
-                          <SelectValue placeholder={compatibleBrand ? "Sélectionner un modèle" : "Choisir d'abord une marque"} />
+                          <SelectValue placeholder={compatibleBrand ? t('listings.select_model') : t('listings.all_brands')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">Tous les modèles</SelectItem>
+                          <SelectItem value="all">{t('listings.select_model')}</SelectItem>
                           {availableModels.map((model) => (
                             <SelectItem key={model} value={model}>{model}</SelectItem>
                           ))}
@@ -391,16 +391,16 @@ export default function Listings() {
                     
                     {/* Year */}
                     <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">Année</label>
+                      <label className="text-xs text-muted-foreground mb-1 block">{t('listing.year')}</label>
                       <Select 
                         value={compatibleYear || "all"} 
                         onValueChange={(v) => setCompatibleYear(v === "all" ? "" : v)}
                       >
                         <SelectTrigger data-testid="filter-compatible-year" className="bg-white">
-                          <SelectValue placeholder="Toutes les années" />
+                          <SelectValue placeholder={t('listings.all_years')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">Toutes les années</SelectItem>
+                          <SelectItem value="all">{t('listings.all_years')}</SelectItem>
                           {YEARS.map((year) => (
                             <SelectItem key={year} value={year}>{year}</SelectItem>
                           ))}
@@ -420,7 +420,7 @@ export default function Listings() {
                           setCompatibleYear('');
                         }}
                       >
-                        Effacer les filtres véhicule
+                        {t('listings.clear_filters')}
                       </Button>
                     )}
                   </div>
@@ -429,7 +429,7 @@ export default function Listings() {
                 {/* OEM Reference Search - Always visible with highlight */}
                 <div className={`p-3 rounded-lg ${showCompatibilityFilters ? 'bg-accent/10 border border-accent/30' : 'bg-secondary/50'}`}>
                   <label className="text-sm font-medium mb-2 flex items-center gap-2">
-                    🔍 Référence OEM / Équipementier
+                    🔍 {t('listings.oem_reference')}
                     {showCompatibilityFilters && (
                       <span className="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full">Pro</span>
                     )}
@@ -442,24 +442,24 @@ export default function Listings() {
                     data-testid="filter-oem"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    Recherche dans les références constructeur et équipementier
+                    {t('home.oem_search_desc')}
                   </p>
                 </div>
 
                 {/* Price Range */}
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Prix (€)</label>
+                  <label className="text-sm font-medium mb-2 block">{t('listings.filter_price')} (€)</label>
                   <div className="flex gap-2">
                     <Input
                       type="number"
-                      placeholder="Min"
+                      placeholder={t('listings.filter_min_price')}
                       value={minPrice}
                       onChange={(e) => setMinPrice(e.target.value)}
                       data-testid="filter-min-price"
                     />
                     <Input
                       type="number"
-                      placeholder="Max"
+                      placeholder={t('listings.filter_max_price')}
                       value={maxPrice}
                       onChange={(e) => setMaxPrice(e.target.value)}
                       data-testid="filter-max-price"
@@ -469,15 +469,15 @@ export default function Listings() {
 
                 {/* Condition */}
                 <div>
-                  <label className="text-sm font-medium mb-2 block">État</label>
+                  <label className="text-sm font-medium mb-2 block">{t('listings.filter_condition')}</label>
                   <Select value={condition || "all"} onValueChange={(v) => setCondition(v === "all" ? "" : v)}>
                     <SelectTrigger data-testid="filter-condition">
-                      <SelectValue placeholder="Tous les états" />
+                      <SelectValue placeholder={t('listings.all_conditions')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Tous les états</SelectItem>
-                      <SelectItem value="neuf">Neuf</SelectItem>
-                      <SelectItem value="occasion">Occasion</SelectItem>
+                      <SelectItem value="all">{t('listings.all_conditions')}</SelectItem>
+                      <SelectItem value="neuf">{t('listing.new')}</SelectItem>
+                      <SelectItem value="occasion">{t('listing.used')}</SelectItem>
                       <SelectItem value="reconditionne">Reconditionné</SelectItem>
                     </SelectContent>
                   </Select>
