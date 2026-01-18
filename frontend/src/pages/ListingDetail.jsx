@@ -113,7 +113,7 @@ export default function ListingDetail() {
       }
     } catch (error) {
       console.error('Error fetching listing:', error);
-      toast.error('Annonce non trouvée');
+      toast.error(t('listingDetail.listing_not_found'));
       navigate('/annonces');
     } finally {
       setLoading(false);
@@ -122,7 +122,7 @@ export default function ListingDetail() {
 
   const handleBuyNow = async () => {
     if (!user) {
-      toast.error('Connectez-vous pour acheter');
+      toast.error(t('listingDetail.login_to_buy'));
       navigate('/auth');
       return;
     }
@@ -140,7 +140,7 @@ export default function ListingDetail() {
         window.location.href = response.data.url;
       }
     } catch (error) {
-      const message = error.response?.data?.detail || 'Erreur lors de la création du paiement';
+      const message = error.response?.data?.detail || t('listingDetail.payment_error');
       toast.error(message);
     } finally {
       setBuyLoading(false);
