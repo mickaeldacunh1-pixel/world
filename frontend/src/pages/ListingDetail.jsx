@@ -480,13 +480,13 @@ export default function ListingDetail() {
 
             {/* Shipping info */}
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted-foreground">📦 Livraison :</span>
+              <span className="text-muted-foreground">📦 {t('listingDetail.shipping_label')} :</span>
               {listing.shipping_cost === 0 ? (
-                <span className="font-semibold text-green-600">Gratuite</span>
+                <span className="font-semibold text-green-600">{t('listingDetail.shipping_free')}</span>
               ) : listing.shipping_cost ? (
                 <span className="font-semibold">{listing.shipping_cost?.toLocaleString('fr-FR')} €</span>
               ) : (
-                <span className="text-muted-foreground">À définir avec le vendeur</span>
+                <span className="text-muted-foreground">{t('listingDetail.shipping_tbd')}</span>
               )}
               {listing.shipping_info && (
                 <span className="text-muted-foreground">• {listing.shipping_info}</span>
