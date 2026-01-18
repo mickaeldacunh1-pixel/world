@@ -165,6 +165,10 @@ export default function Home() {
   const [referralData, setReferralData] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
 
+  // Get translated categories and features
+  const categories = getCategoriesConfig();
+  const features = getFeaturesConfig();
+
   const fetchAllData = async () => {
     const cacheBuster = `?_t=${Date.now()}`;
     
