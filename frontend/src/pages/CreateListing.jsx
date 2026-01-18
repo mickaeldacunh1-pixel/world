@@ -458,18 +458,18 @@ export default function CreateListing() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link to="/tableau-de-bord" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
           <ArrowLeft className="w-4 h-4" />
-          Retour au tableau de bord
+          {t('createListing.back_to_dashboard')}
         </Link>
 
         <Card>
           <CardHeader>
             <CardTitle className="font-heading text-2xl flex items-center justify-between">
-              Déposer une annonce
+              {t('createListing.page_title')}
               <span className="text-sm font-normal text-muted-foreground">
                 {(user?.free_ads_remaining || 0) > 0 ? (
-                  <span>Annonces gratuites: <span className="font-bold text-green-600">{user.free_ads_remaining}</span></span>
+                  <span>{t('createListing.free_ads_remaining')}: <span className="font-bold text-green-600">{user.free_ads_remaining}</span></span>
                 ) : (
-                  <span>Crédits: <span className="font-bold text-accent">{user?.credits || 0}</span></span>
+                  <span>{t('createListing.credits_remaining')}: <span className="font-bold text-accent">{user?.credits || 0}</span></span>
                 )}
               </span>
             </CardTitle>
@@ -477,12 +477,12 @@ export default function CreateListing() {
               <div className="mb-6 p-4 bg-accent/10 border border-accent/30 rounded-lg">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h3 className="font-semibold text-accent">💼 Espace PRO</h3>
-                    <p className="text-sm text-muted-foreground">Gérez votre stock et publiez depuis votre entrepôt</p>
+                    <h3 className="font-semibold text-accent">💼 {t('createListing.pro_space_title')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('createListing.pro_space_desc')}</p>
                   </div>
                   <Link to="/entrepot">
                     <Button variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white">
-                      Mon Entrepôt
+                      {t('createListing.my_warehouse')}
                     </Button>
                   </Link>
                 </div>
@@ -515,7 +515,7 @@ export default function CreateListing() {
                       </Button>
                     </div>
                     <p className="text-xs text-green-600 dark:text-green-400 mt-2">
-                      Le stock sera automatiquement décrémenté lors de la publication.
+                      {t('createListing.warehouse_stock_note')}
                     </p>
                   </div>
                 ) : (
@@ -527,7 +527,7 @@ export default function CreateListing() {
                     data-testid="select-warehouse-item-btn"
                   >
                     <Warehouse className="w-4 h-4 mr-2" />
-                    Sélectionner un article de mon entrepôt
+                    {t('createListing.select_warehouse_item')}
                   </Button>
                 )}
               </div>
@@ -537,14 +537,14 @@ export default function CreateListing() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Category */}
               <div className="space-y-2">
-                <Label>Catégorie *</Label>
+                <Label>{t('createListing.category_label')} *</Label>
                 <Select value={formData.category} onValueChange={(v) => { handleChange('category', v); handleChange('subcategory', ''); }}>
                   <SelectTrigger data-testid="category-select">
-                    <SelectValue placeholder="Choisir une catégorie" />
+                    <SelectValue placeholder={t('createListing.category_placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map(cat => (
-                      <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+                      <SelectItem key={cat.value} value={cat.value}>{t(cat.labelKey)}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
