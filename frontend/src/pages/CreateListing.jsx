@@ -1293,14 +1293,14 @@ export default function CreateListing() {
                 <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                 <p className="text-muted-foreground">
                   {warehouseSearch 
-                    ? 'Aucun article trouvé pour cette recherche'
-                    : 'Aucun article disponible dans votre entrepôt'}
+                    ? t('createListing.warehouse_no_search_results')
+                    : t('createListing.warehouse_no_items')}
                 </p>
                 {!warehouseSearch && (
                   <Link to="/entrepot">
                     <Button variant="outline" className="mt-4">
                       <Plus className="w-4 h-4 mr-2" />
-                      Ajouter des articles
+                      {t('createListing.warehouse_add_items')}
                     </Button>
                   </Link>
                 )}
@@ -1310,7 +1310,7 @@ export default function CreateListing() {
 
           <DialogFooter className="mt-4">
             <Button variant="outline" onClick={() => setShowWarehouseModal(false)}>
-              Annuler
+              {t('common.cancel')}
             </Button>
           </DialogFooter>
         </DialogContent>
