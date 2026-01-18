@@ -891,10 +891,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 animate-fade-in-up">
             <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-4">
-              Recherche par région
+              {t('home.search_by_region')}
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Trouvez des annonces près de chez vous
+              {t('home.search_by_region_desc')}
             </p>
           </div>
 
@@ -933,7 +933,7 @@ export default function Home() {
               to="/annonces" 
               className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
             >
-              Voir toutes les régions
+              {t('home.see_all_regions')}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
