@@ -689,19 +689,19 @@ export default function ListingDetail() {
                   <DialogTrigger asChild>
                     <Button className="flex-1 h-12 bg-accent hover:bg-accent/90 text-accent-foreground btn-primary" data-testid="contact-seller-btn">
                       <MessageSquare className="w-5 h-5 mr-2" />
-                      Contacter le vendeur
+                      {t('listingDetail.contact_seller')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Envoyer un message</DialogTitle>
+                      <DialogTitle>{t('listingDetail.send_message_title')}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 mt-4">
                       <p className="text-sm text-muted-foreground">
-                        À propos de : <span className="font-medium text-foreground">{listing.title}</span>
+                        {t('listingDetail.about_listing')} : <span className="font-medium text-foreground">{listing.title}</span>
                       </p>
                       <Textarea
-                        placeholder="Bonjour, je suis intéressé(e) par votre annonce..."
+                        placeholder={t('listingDetail.message_placeholder')}
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         rows={4}
@@ -713,7 +713,7 @@ export default function ListingDetail() {
                         className="w-full bg-accent hover:bg-accent/90"
                         data-testid="send-message-btn"
                       >
-                        {sendingMessage ? 'Envoi...' : 'Envoyer le message'}
+                        {sendingMessage ? t('listingDetail.sending') : t('listingDetail.send_message')}
                       </Button>
                     </div>
                   </DialogContent>
@@ -721,7 +721,7 @@ export default function ListingDetail() {
               ) : (
                 <Link to={`/annonce/${listing.id}/modifier`} className="flex-1">
                   <Button className="w-full h-12" variant="outline">
-                    Modifier mon annonce
+                    {t('listingDetail.edit_listing')}
                   </Button>
                 </Link>
               )}
@@ -736,7 +736,7 @@ export default function ListingDetail() {
               {user?.id !== listing.seller_id && (
                 <Button variant="outline" className="h-12" onClick={handleAddToCart} data-testid="add-to-cart-btn">
                   <ShoppingCart className="w-5 h-5 mr-2" />
-                  Panier
+                  {t('listingDetail.add_to_cart')}
                 </Button>
               )}
 
@@ -753,7 +753,7 @@ export default function ListingDetail() {
                   ) : (
                     <>
                       <Video className="w-5 h-5 mr-2" />
-                      Appel vidéo
+                      {t('listingDetail.video_call')}
                     </>
                   )}
                 </Button>
@@ -773,11 +773,11 @@ export default function ListingDetail() {
                   ) : (
                     <CreditCard className="w-5 h-5 mr-2" />
                   )}
-                  Acheter maintenant - {listing.price + (listing.shipping_cost || 0)}€
+                  {t('listingDetail.buy_now')} - {listing.price + (listing.shipping_cost || 0)}€
                 </Button>
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                   <Shield className="w-4 h-4 text-green-600" />
-                  Paiement sécurisé - Argent protégé jusqu&apos;à réception
+                  {t('listingDetail.secure_payment_info')}
                 </div>
               </div>
             )}
@@ -788,19 +788,19 @@ export default function ListingDetail() {
                 <DialogTrigger asChild>
                   <Button variant="ghost" className="w-full mt-4 text-muted-foreground hover:text-red-500">
                     <Flag className="w-4 h-4 mr-2" />
-                    Signaler cette annonce
+                    {t('listingDetail.report_listing')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                       <AlertTriangle className="w-5 h-5 text-orange-500" />
-                      Signaler l&apos;annonce
+                      {t('listingDetail.report_title')}
                     </DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4 mt-4">
                     <p className="text-sm text-muted-foreground">
-                      Aidez-nous à garder World Auto France sûr. Pourquoi signalez-vous cette annonce ?
+                      {t('listingDetail.report_intro')}
                     </p>
                     <div className="space-y-2">
                       {REPORT_REASONS.map((reason) => (
@@ -832,7 +832,7 @@ export default function ListingDetail() {
                       ))}
                     </div>
                     <Textarea
-                      placeholder="Détails supplémentaires (optionnel)..."
+                      placeholder={t('listingDetail.report_details')}
                       value={reportDescription}
                       onChange={(e) => setReportDescription(e.target.value)}
                       rows={3}
@@ -847,7 +847,7 @@ export default function ListingDetail() {
                       ) : (
                         <Flag className="w-4 h-4 mr-2" />
                       )}
-                      Envoyer le signalement
+                      {t('listingDetail.send_report')}
                     </Button>
                   </div>
                 </DialogContent>
