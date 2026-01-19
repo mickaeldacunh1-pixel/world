@@ -1,37 +1,6 @@
 version: '3.8'
 
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: worldauto-backend
-    ports:
-      - "8001:8001"
-    env_file:
-      - ./backend/.env
-    depends_on:
-      - mongodb
-    restart: unless-stopped
-    networks:
-      - worldauto-network
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: worldauto-frontend
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-    depends_on:
-      - backend
-    restart: unless-stopped
-    networks:
-      - worldauto-network
-
   mongodb:
     image: mongo:6.0
     container_name: worldauto-mongodb
@@ -42,6 +11,53 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=WA_Secure_2026!
     volumes:
       - mongo_data:/data/db
+    restart: unless-stopped
+    networks:
+      - worldauto-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: worldauto-backend
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - worldauto-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_BACKEND_URL=https://worldautofrance.com
+    container_name: worldauto-frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      backend:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - worldauto-network
