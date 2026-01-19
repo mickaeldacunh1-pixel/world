@@ -499,7 +499,7 @@ export default function Dashboard() {
                       ) : (
                         <>
                           <FileDown className="w-4 h-4 mr-2" />
-                          Télécharger PDF
+                          {t('dashboard.export_btn')}
                         </>
                       )}
                     </Button>
@@ -519,9 +519,9 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3">
                       <Target className="w-8 h-8 text-green-500" />
                       <div>
-                        <p className="text-xs text-muted-foreground">Taux de conversion</p>
+                        <p className="text-xs text-muted-foreground">{t('dashboard.stats_conversion_rate')}</p>
                         <p className="text-2xl font-bold">{stats?.conversion_rate || 0}%</p>
-                        <p className="text-xs text-muted-foreground">messages / vues</p>
+                        <p className="text-xs text-muted-foreground">{t('dashboard.stats_conversion_hint')}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -532,9 +532,9 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3">
                       <Eye className="w-8 h-8 text-blue-500" />
                       <div>
-                        <p className="text-xs text-muted-foreground">Vues moyennes</p>
+                        <p className="text-xs text-muted-foreground">{t('dashboard.stats_avg_views')}</p>
                         <p className="text-2xl font-bold">{stats?.avg_views_per_listing || 0}</p>
-                        <p className="text-xs text-muted-foreground">par annonce</p>
+                        <p className="text-xs text-muted-foreground">{t('dashboard.stats_avg_views_hint')}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -545,9 +545,9 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3">
                       <Rocket className="w-8 h-8 text-purple-500" />
                       <div>
-                        <p className="text-xs text-muted-foreground">Annonces boostées</p>
+                        <p className="text-xs text-muted-foreground">{t('dashboard.stats_boosted')}</p>
                         <p className="text-2xl font-bold">{stats?.boosted_count || 0}</p>
-                        <p className="text-xs text-muted-foreground">en promotion</p>
+                        <p className="text-xs text-muted-foreground">{t('dashboard.stats_boosted_hint')}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -558,9 +558,9 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3">
                       <ShoppingBag className="w-8 h-8 text-amber-500" />
                       <div>
-                        <p className="text-xs text-muted-foreground">Ventes réalisées</p>
+                        <p className="text-xs text-muted-foreground">{t('dashboard.stats_sold')}</p>
                         <p className="text-2xl font-bold">{stats?.sold_listings || 0}</p>
-                        <p className="text-xs text-muted-foreground">annonces vendues</p>
+                        <p className="text-xs text-muted-foreground">{t('dashboard.stats_sold_hint')}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -574,7 +574,7 @@ export default function Dashboard() {
                   <CardHeader>
                     <CardTitle className="font-heading flex items-center gap-2">
                       <TrendingUp className="w-5 h-5" />
-                      Vues par annonce
+                      {t('dashboard.views_per_listing')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -598,7 +598,7 @@ export default function Dashboard() {
                       </div>
                     ) : (
                       <p className="text-center text-muted-foreground py-12">
-                        Pas encore de données
+                        {t('dashboard.no_data')}
                       </p>
                     )}
                   </CardContent>
@@ -609,7 +609,7 @@ export default function Dashboard() {
                   <CardHeader>
                     <CardTitle className="font-heading flex items-center gap-2">
                       <Award className="w-5 h-5 text-amber-500" />
-                      Top 5 Annonces
+                      {t('dashboard.top_listings_title')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -641,7 +641,7 @@ export default function Dashboard() {
                       </div>
                     ) : (
                       <p className="text-center text-muted-foreground py-8">
-                        Publiez des annonces pour voir vos performances
+                        {t('dashboard.publish_listings_hint')}
                       </p>
                     )}
                   </CardContent>
