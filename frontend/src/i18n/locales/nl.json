@@ -48,7 +48,13 @@
     "go_to_dashboard": "Naar dashboard",
     "retry": "Opnieuw proberen",
     "back_home": "Terug naar home",
-    "remove": "Verwijderen"
+    "remove": "Verwijderen",
+    "category": "Categorie"
+  },
+  "condition": {
+    "new": "Nieuw",
+    "used": "Gebruikt",
+    "refurbished": "Gereviseerd"
   },
   "nav": {
     "home": "Home",

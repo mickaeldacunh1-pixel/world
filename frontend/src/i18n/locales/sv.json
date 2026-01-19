@@ -48,7 +48,13 @@
     "go_to_dashboard": "Gå till kontrollpanelen",
     "retry": "Försök igen",
     "back_home": "Tillbaka till startsidan",
-    "remove": "Ta bort"
+    "remove": "Ta bort",
+    "category": "Kategori"
+  },
+  "condition": {
+    "new": "Ny",
+    "used": "Begagnad",
+    "refurbished": "Renoverad"
   },
   "nav": {
     "home": "Hem",
