@@ -99,6 +99,15 @@ export default function Checkout() {
       const availableItems = updatedItems.filter(item => item.available);
       setCartItems(availableItems);
       
+      // Vérifier si tous les vendeurs ont Stripe Connect configuré
+      const allSellersHaveStripe = availableItems.every(item => item.seller_stripe_connected === true);
+      setSellerHasStripe(allSellersHaveStripe);
+      
+      // Si aucun vendeur n'a Stripe, forcer le mode contact
+      if (!allSellersHaveStripe) {
+        setPaymentMethod('contact');
+      }
+      
       // Determine available shipping methods from items
       const allMethods = new Set();
       availableItems.forEach(item => {
