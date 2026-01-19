@@ -177,26 +177,38 @@ export default function Checkout() {
     
     setSubmitting(true);
     try {
-      // Prepare shipping data based on delivery method
-      let shippingData = {};
+      const currentMethod = availableShippingMethods.find(m => m.id === deliveryMethod);
       
-      if (deliveryMethod === 'relay' && selectedRelay) {
+      // Prepare shipping data based on delivery method
+      let shippingData = {
+        delivery_method: deliveryMethod
+      };
+      
+      if (currentMethod?.isRelay && selectedRelay) {
         shippingData = {
+          ...shippingData,
           buyer_address: `Point Relais: ${selectedRelay.name} - ${selectedRelay.address}`,
           buyer_city: selectedRelay.city,
           buyer_postal: selectedRelay.postalCode,
           buyer_phone: shippingInfo.phone || undefined,
-          delivery_method: 'relay',
           relay_id: selectedRelay.id,
           relay_name: selectedRelay.name
         };
+      } else if (deliveryMethod === 'hand_delivery') {
+        shippingData = {
+          ...shippingData,
+          buyer_address: 'Remise en main propre',
+          buyer_city: shippingInfo.city || user?.city || '',
+          buyer_postal: shippingInfo.postal_code || user?.postal_code || '',
+          buyer_phone: shippingInfo.phone || undefined,
+        };
       } else {
         shippingData = {
+          ...shippingData,
           buyer_address: shippingInfo.address,
           buyer_city: shippingInfo.city,
           buyer_postal: shippingInfo.postal_code,
           buyer_phone: shippingInfo.phone || undefined,
-          delivery_method: 'home'
         };
       }
       
