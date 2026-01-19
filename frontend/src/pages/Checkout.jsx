@@ -418,6 +418,21 @@ export default function Checkout() {
                   </div>
                 )}
 
+                {/* Boxtal Carrier Picker */}
+                {deliveryMethod === 'boxtal' && (
+                  <div className="pt-4 border-t">
+                    <BoxtalPicker
+                      receiverPostalCode={shippingInfo.postal_code}
+                      receiverCity={shippingInfo.city}
+                      senderPostalCode={cartItems[0]?.seller_postal_code || '75001'}
+                      senderCity={cartItems[0]?.seller_city || 'Paris'}
+                      onSelect={setSelectedBoxtalCarrier}
+                      selectedCarrier={selectedBoxtalCarrier}
+                      token={token}
+                    />
+                  </div>
+                )}
+
                 {/* Address Form - for methods that need it */}
                 {deliveryMethod && 
                  deliveryMethod !== 'mondial_relay' && 
