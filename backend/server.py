@@ -10809,17 +10809,23 @@ def apply_shipping_margin(price: float) -> float:
 
 class BoxtalAddress(BaseModel):
     company_name: Optional[str] = None
-    first_name: str
-    last_name: str
-    street: str
+    first_name: str = "Client"
+    last_name: str = "WorldAuto"
+    street: str = "1 rue du Commerce"
     postal_code: str
     city: str
     country_code: str = "FR"
     phone: Optional[str] = None
     email: Optional[str] = None
 
+# Modèle simplifié pour les devis (sans infos personnelles obligatoires)
+class BoxtalQuoteAddress(BaseModel):
+    country: str = "FR"
+    postal_code: str
+    city: str
+
 class BoxtalParcel(BaseModel):
-    weight: float  # in grams
+    weight: float  # in kg
     length: float  # in cm
     width: float   # in cm
     height: float  # in cm
@@ -10827,8 +10833,8 @@ class BoxtalParcel(BaseModel):
     value: Optional[float] = None  # for insurance
 
 class BoxtalQuoteRequest(BaseModel):
-    sender_address: BoxtalAddress
-    receiver_address: BoxtalAddress
+    sender_address: BoxtalQuoteAddress
+    receiver_address: BoxtalQuoteAddress
     parcels: List[BoxtalParcel]
 
 class BoxtalShipmentRequest(BaseModel):
