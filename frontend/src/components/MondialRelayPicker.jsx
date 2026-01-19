@@ -1,84 +1,126 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { MapPin, Package, Search, X, CheckCircle } from 'lucide-react';
+import { MapPin, Package, Search, X, CheckCircle, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 
-// Mondial Relay Widget Component
 export default function MondialRelayPicker({ onSelect, selectedRelay, postalCode = '' }) {
   const widgetRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchPostal, setSearchPostal] = useState(postalCode);
   const [widgetLoaded, setWidgetLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  // Check if jQuery and widget are loaded
   useEffect(() => {
-    // Check if jQuery and MR widget are loaded
-    if (typeof window !== 'undefined' && window.jQuery) {
-      setWidgetLoaded(true);
-    }
+    const checkWidget = () => {
+      if (typeof window !== 'undefined' && window.jQuery && window.jQuery.fn.MR_ParcelShopPicker) {
+        setWidgetLoaded(true);
+        return true;
+      }
+      return false;
+    };
+
+    if (checkWidget()) return;
+
+    // Poll for widget load
+    const interval = setInterval(() => {
+      if (checkWidget()) {
+        clearInterval(interval);
+      }
+    }, 500);
+
+    // Timeout after 10s
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+      if (!widgetLoaded) {
+        setError('Le widget Mondial Relay n\'a pas pu être chargé');
+      }
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, []);
 
   useEffect(() => {
-    if (isOpen && widgetLoaded && widgetRef.current) {
-      initWidget();
+    if (postalCode && postalCode !== searchPostal) {
+      setSearchPostal(postalCode);
     }
-  }, [isOpen, widgetLoaded, searchPostal]);
+  }, [postalCode]);
+
+  useEffect(() => {
+    if (isOpen && widgetLoaded && widgetRef.current) {
+      setTimeout(() => initWidget(), 100);
+    }
+  }, [isOpen, widgetLoaded]);
 
   const initWidget = () => {
     const $ = window.jQuery;
     if (!$ || !$.fn.MR_ParcelShopPicker) {
-      console.error('Mondial Relay widget not loaded');
+      setError('Widget Mondial Relay non disponible');
       return;
     }
 
-    // Clear previous widget
-    $(widgetRef.current).empty();
+    setLoading(true);
+    setError(null);
 
-    // Initialize widget
-    $(widgetRef.current).MR_ParcelShopPicker({
-      Target: "#MR_Selected_ID",
-      Brand: "CC23S7ZB", // Code Enseigne Mondial Relay Production
-      Country: "FR",
-      PostCode: searchPostal || "",
-      ColLivMod: "24R", // Mode de livraison (Point Relais)
-      NbResults: 7,
-      ShowResultsOnMap: true,
-      Responsive: true,
-      OnParcelShopSelected: (data) => {
-        if (data && data.ID) {
-          const relayInfo = {
-            id: data.ID,
-            name: data.Nom,
-            address: data.Adresse1,
-            address2: data.Adresse2 || '',
-            postalCode: data.CP,
-            city: data.Ville,
-            country: data.Pays,
-            latitude: data.Latitude,
-            longitude: data.Longitude,
-            openingHours: data.Horaires_Lundi + ' | ' + data.Horaires_Mardi + ' | ' + data.Horaires_Mercredi + ' | ' + data.Horaires_Jeudi + ' | ' + data.Horaires_Vendredi + ' | ' + data.Horaires_Samedi + ' | ' + data.Horaires_Dimanche
-          };
-          onSelect(relayInfo);
-          setIsOpen(false);
+    try {
+      $(widgetRef.current).empty();
+
+      $(widgetRef.current).MR_ParcelShopPicker({
+        Target: "#MR_Selected_ID",
+        Brand: "CC23S7ZB",
+        Country: "FR",
+        PostCode: searchPostal || "",
+        ColLivMod: "24R",
+        NbResults: 7,
+        ShowResultsOnMap: true,
+        Responsive: true,
+        OnParcelShopSelected: (data) => {
+          if (data && data.ID) {
+            onSelect({
+              id: data.ID,
+              name: data.Nom,
+              address: data.Adresse1,
+              address2: data.Adresse2 || '',
+              postalCode: data.CP,
+              city: data.Ville,
+              country: data.Pays,
+              latitude: data.Latitude,
+              longitude: data.Longitude
+            });
+            setIsOpen(false);
+          }
+        },
+        OnNoResultReturned: () => {
+          setError('Aucun point relais trouvé pour ce code postal');
+          setLoading(false);
         }
-      }
-    });
+      });
+      
+      setLoading(false);
+    } catch (err) {
+      console.error('MR Widget error:', err);
+      setError('Erreur lors du chargement des points relais');
+      setLoading(false);
+    }
   };
 
   const handleSearch = () => {
-    if (searchPostal && widgetRef.current) {
+    if (searchPostal && searchPostal.length === 5) {
       initWidget();
     }
   };
 
   return (
     <div className="space-y-3">
-      {/* Hidden input for widget */}
       <input type="hidden" id="MR_Selected_ID" />
 
-      {/* Selected Relay Display */}
       {selectedRelay ? (
         <Card className="bg-green-50 border-green-200">
           <CardContent className="p-4">
@@ -118,40 +160,46 @@ export default function MondialRelayPicker({ onSelect, selectedRelay, postalCode
               </DialogTitle>
             </DialogHeader>
 
-            {/* Search by postal code */}
             <div className="flex gap-2 mb-4">
               <div className="flex-1">
                 <Label htmlFor="postal-search" className="sr-only">Code postal</Label>
                 <Input
                   id="postal-search"
-                  placeholder="Entrez votre code postal"
+                  placeholder="Entrez votre code postal (ex: 75001)"
                   value={searchPostal}
-                  onChange={(e) => setSearchPostal(e.target.value)}
+                  onChange={(e) => setSearchPostal(e.target.value.replace(/\D/g, '').slice(0, 5))}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  maxLength={5}
                 />
               </div>
-              <Button onClick={handleSearch} className="bg-accent hover:bg-accent/90">
+              <Button onClick={handleSearch} className="bg-accent hover:bg-accent/90" disabled={searchPostal.length !== 5}>
                 <Search className="w-4 h-4 mr-2" />
                 Rechercher
               </Button>
             </div>
 
-            {/* Widget Container */}
-            {widgetLoaded ? (
-              <div 
-                ref={widgetRef} 
-                id="Zone_Widget"
-                className="min-h-[400px] border rounded-lg"
-                style={{ minHeight: '450px' }}
-              />
-            ) : (
-              <div className="flex items-center justify-center h-64 text-muted-foreground">
-                Chargement du widget...
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm mb-4">
+                {error}
               </div>
             )}
 
+            {!widgetLoaded ? (
+              <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
+                <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                <p>Chargement du widget Mondial Relay...</p>
+              </div>
+            ) : (
+              <div 
+                ref={widgetRef} 
+                id="Zone_Widget"
+                className="min-h-[400px] border rounded-lg bg-white"
+                style={{ minHeight: '450px' }}
+              />
+            )}
+
             <p className="text-xs text-muted-foreground text-center mt-2">
-              Cliquez sur un point relais sur la carte pour le sélectionner
+              Entrez votre code postal et cliquez sur un point relais pour le sélectionner
             </p>
           </DialogContent>
         </Dialog>
