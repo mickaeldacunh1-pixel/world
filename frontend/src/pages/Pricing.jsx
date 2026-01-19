@@ -756,8 +756,8 @@ export default function Pricing() {
         {/* Boost Vidéo Homepage */}
         <div className="mb-8">
           <h2 className="font-heading text-2xl font-bold mb-6 text-center">
-            🔥 Boost Vidéo Homepage
-            <span className="block text-sm font-normal text-muted-foreground mt-1">Diffusez votre vidéo sur la page d&apos;accueil</span>
+            🔥 {t('pricing.boost_title')}
+            <span className="block text-sm font-normal text-muted-foreground mt-1">{t('pricing.boost_subtitle')}</span>
           </h2>
           <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {/* Boost 1h */}
