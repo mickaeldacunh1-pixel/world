@@ -604,7 +604,7 @@ export default function Checkout() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Frais de livraison</span>
-                    <span className="text-sm">À convenir avec vendeur</span>
+                    <span className="text-sm">À définir avec vendeur</span>
                   </div>
                 </div>
                 
@@ -624,19 +624,30 @@ export default function Checkout() {
                     {submitting ? (
                       <>
                         <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                        Confirmation...
+                        {paymentMethod === 'stripe' ? 'Redirection vers le paiement...' : 'Envoi de la demande...'}
                       </>
                     ) : (
                       <>
-                        <CheckCircle className="w-5 h-5 mr-2" />
-                        Confirmer ma commande
+                        {paymentMethod === 'stripe' ? (
+                          <>
+                            <CreditCard className="w-5 h-5 mr-2" />
+                            Payer {totalPrice.toLocaleString('fr-FR')} €
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle className="w-5 h-5 mr-2" />
+                            Réserver et contacter le vendeur
+                          </>
+                        )}
                       </>
                     )}
                   </Button>
                   
                   <p className="text-xs text-muted-foreground text-center mt-4">
-                    En confirmant, vous acceptez nos conditions de vente.
-                    Les vendeurs seront notifiés et vous contacteront pour organiser la livraison et le paiement.
+                    {paymentMethod === 'stripe' 
+                      ? "Paiement sécurisé par Stripe. L'argent est protégé jusqu'à confirmation de réception."
+                      : "En réservant, le vendeur sera notifié et vous contactera pour organiser le paiement et la livraison."
+                    }
                   </p>
                 </div>
               </CardContent>
