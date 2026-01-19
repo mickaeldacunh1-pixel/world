@@ -203,26 +203,26 @@ export default function Dashboard() {
         {/* Tabs */}
         <Tabs defaultValue="listings" className="space-y-6">
           <TabsList>
-            <TabsTrigger value="listings">Mes annonces</TabsTrigger>
-            <TabsTrigger value="sales">💰 Ventes</TabsTrigger>
-            <TabsTrigger value="stats">Statistiques</TabsTrigger>
+            <TabsTrigger value="listings">{t('dashboard.tab_listings')}</TabsTrigger>
+            <TabsTrigger value="sales">💰 {t('dashboard.tab_sales')}</TabsTrigger>
+            <TabsTrigger value="stats">{t('dashboard.tab_stats')}</TabsTrigger>
           </TabsList>
 
           {/* Listings Tab */}
           <TabsContent value="listings">
             <Card>
               <CardHeader>
-                <CardTitle className="font-heading">Mes annonces ({listings.length})</CardTitle>
+                <CardTitle className="font-heading">{t('dashboard.listings_title')} ({listings.length})</CardTitle>
               </CardHeader>
               <CardContent>
                 {listings.length === 0 ? (
                   <div className="text-center py-12">
                     <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground mb-4">Vous n'avez pas encore d'annonces</p>
+                    <p className="text-muted-foreground mb-4">{t('dashboard.no_listings')}</p>
                     <Link to="/deposer">
                       <Button className="bg-accent hover:bg-accent/90">
                         <Plus className="w-4 h-4 mr-2" />
-                        Créer ma première annonce
+                        {t('dashboard.create_first_listing')}
                       </Button>
                     </Link>
                   </div>
@@ -231,12 +231,12 @@ export default function Dashboard() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Annonce</TableHead>
-                          <TableHead>Prix</TableHead>
-                          <TableHead>Vues</TableHead>
-                          <TableHead>Statut</TableHead>
-                          <TableHead>Date</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
+                          <TableHead>{t('dashboard.table_listing')}</TableHead>
+                          <TableHead>{t('dashboard.table_price')}</TableHead>
+                          <TableHead>{t('dashboard.table_views')}</TableHead>
+                          <TableHead>{t('dashboard.table_status')}</TableHead>
+                          <TableHead>{t('dashboard.table_date')}</TableHead>
+                          <TableHead className="text-right">{t('dashboard.table_actions')}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -287,7 +287,7 @@ export default function Dashboard() {
                                       variant="ghost"
                                       size="icon"
                                       className={listing.is_boosted ? 'text-purple-500' : 'text-accent'}
-                                      title={listing.is_boosted ? 'Déjà boosté' : 'Booster cette annonce'}
+                                      title={listing.is_boosted ? t('dashboard.already_boosted') : t('dashboard.boost_listing')}
                                     >
                                       <Rocket className="w-4 h-4" />
                                     </Button>
@@ -327,12 +327,12 @@ export default function Dashboard() {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-green-700 dark:text-green-400">Ventes ce mois</p>
+                        <p className="text-sm text-green-700 dark:text-green-400">{t('dashboard.sales_monthly_count')}</p>
                         <p className="text-3xl font-heading font-bold text-green-800 dark:text-green-300">
                           {stats?.sales?.monthly_count || 0}
                         </p>
                         <p className="text-xs text-green-600 dark:text-green-500 mt-1">
-                          {stats?.sales?.monthly_revenue?.toFixed(2) || '0.00'} € brut
+                          {stats?.sales?.monthly_revenue?.toFixed(2) || '0.00'} € {t('dashboard.sales_monthly_gross')}
                         </p>
                       </div>
                       <div className="w-14 h-14 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center">
@@ -346,7 +346,7 @@ export default function Dashboard() {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-blue-700 dark:text-blue-400">Revenus nets ce mois</p>
+                        <p className="text-sm text-blue-700 dark:text-blue-400">{t('dashboard.sales_monthly_net')}</p>
                         <p className="text-3xl font-heading font-bold text-blue-800 dark:text-blue-300">
                           {stats?.sales?.monthly_net?.toFixed(2) || '0.00'} €
                         </p>
