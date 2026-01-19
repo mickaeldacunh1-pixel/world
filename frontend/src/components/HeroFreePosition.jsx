@@ -252,8 +252,9 @@ export default function HeroFreePosition({ settings, onSearch }) {
   
   return (
     <div className="relative w-full h-full overflow-hidden">
-      {/* Video Background */}
-      {settings.hero_video_enabled && settings.hero_video_url && (
+      {/* Background: Video OU Image */}
+      {useVideoBackground ? (
+        /* Video Background */
         <div className="absolute inset-0 z-0">
           <video
             src={settings.hero_video_url}
@@ -271,6 +272,25 @@ export default function HeroFreePosition({ settings, onSearch }) {
               backgroundColor: settings.hero_video_overlay_color || 'rgba(0,0,0,0.4)'
             }} 
           />
+        </div>
+      ) : settings.hero_image && (
+        /* Image Background - quand pas de vidéo de fond */
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={settings.hero_image} 
+            alt="Hero background" 
+            className="w-full h-full object-cover"
+          />
+          {/* Overlay pour lisibilité du texte */}
+          {settings.hero_overlay_enabled !== false && (
+            <div 
+              className={`absolute inset-0 ${settings.hero_overlay_gradient ? 'bg-gradient-to-r from-black/90 to-black/50' : ''}`}
+              style={{ 
+                backgroundColor: settings.hero_overlay_gradient ? undefined : (settings.hero_overlay_color || '#000000'),
+                opacity: (settings.hero_overlay_opacity || 50) / 100 
+              }}
+            />
+          )}
         </div>
       )}
       
