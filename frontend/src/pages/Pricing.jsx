@@ -831,40 +831,36 @@ export default function Pricing() {
             </Card>
           </div>
           <p className="text-center text-sm text-muted-foreground mt-4">
-            💡 Le boost vidéo est disponible depuis la page de votre annonce avec vidéo
+            💡 {t('pricing.boost_tip')}
           </p>
         </div>
 
         {/* FAQ */}
         <div className="mt-16 text-center">
-          <h2 className="font-heading text-2xl font-bold mb-4">Questions fréquentes</h2>
+          <h2 className="font-heading text-2xl font-bold mb-4">{t('pricing.faq_title')}</h2>
           <div className="grid md:grid-cols-2 gap-6 text-left max-w-4xl mx-auto">
             <Card className="p-6">
-              <h3 className="font-heading font-bold mb-2">Comment ça marche ?</h3>
+              <h3 className="font-heading font-bold mb-2">{t('pricing.faq_how_title')}</h3>
               <p className="text-muted-foreground text-sm">
-                Chaque crédit vous permet de publier une annonce qui restera visible pendant 30 jours. 
-                Vous pouvez acheter des crédits à l&apos;unité ou en pack pour économiser.
+                {t('pricing.faq_how_desc')}
               </p>
             </Card>
             <Card className="p-6">
-              <h3 className="font-heading font-bold mb-2">Les crédits expirent-ils ?</h3>
+              <h3 className="font-heading font-bold mb-2">{t('pricing.faq_expire_title')}</h3>
               <p className="text-muted-foreground text-sm">
-                Non, vos crédits n&apos;expirent jamais. Vous pouvez les utiliser quand vous le souhaitez 
-                pour publier vos annonces.
+                {t('pricing.faq_expire_desc')}
               </p>
             </Card>
             <Card className="p-6">
-              <h3 className="font-heading font-bold mb-2">Puis-je modifier mon annonce ?</h3>
+              <h3 className="font-heading font-bold mb-2">{t('pricing.faq_modify_title')}</h3>
               <p className="text-muted-foreground text-sm">
-                Oui, vous pouvez modifier votre annonce à tout moment depuis votre tableau de bord, 
-                sans frais supplémentaires.
+                {t('pricing.faq_modify_desc')}
               </p>
             </Card>
             <Card className="p-6">
-              <h3 className="font-heading font-bold mb-2">Quels moyens de paiement ?</h3>
+              <h3 className="font-heading font-bold mb-2">{t('pricing.faq_payment_title')}</h3>
               <p className="text-muted-foreground text-sm">
-                Nous acceptons les cartes bancaires (Visa, Mastercard, American Express). 
-                Tous les paiements sont sécurisés via Stripe.
+                {t('pricing.faq_payment_desc')}
               </p>
             </Card>
           </div>
