@@ -229,12 +229,16 @@ export default function Checkout() {
       
       // Choisir l'endpoint selon le mode de paiement
       if (paymentMethod === 'stripe') {
-        // Paiement Stripe - redirection vers la page de paiement
+        // Paiement Stripe Direct - via la plateforme
         const response = await axios.post(
-          `${API}/stripe/connect/checkout`,
+          `${API}/stripe/direct/checkout`,
           {
             listing_id: cartItems[0].id, // Pour l'instant, un article à la fois pour Stripe
-            ...shippingData
+            delivery_method: deliveryMethod,
+            buyer_address: shippingData.buyer_address,
+            buyer_city: shippingData.buyer_city,
+            buyer_postal: shippingData.buyer_postal,
+            buyer_phone: shippingData.buyer_phone,
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
