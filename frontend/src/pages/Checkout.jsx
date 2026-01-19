@@ -429,15 +429,22 @@ export default function Checkout() {
                 {/* Boxtal Carrier Picker */}
                 {deliveryMethod === 'boxtal' && (
                   <div className="pt-4 border-t">
-                    <BoxtalPicker
-                      receiverPostalCode={shippingInfo.postal_code}
-                      receiverCity={shippingInfo.city}
-                      senderPostalCode={cartItems[0]?.seller_postal_code || '75001'}
-                      senderCity={cartItems[0]?.seller_city || 'Paris'}
-                      onSelect={setSelectedBoxtalCarrier}
-                      selectedCarrier={selectedBoxtalCarrier}
-                      token={token}
-                    />
+                    {shippingInfo.postal_code && shippingInfo.city ? (
+                      <BoxtalPicker
+                        receiverPostalCode={shippingInfo.postal_code}
+                        receiverCity={shippingInfo.city}
+                        senderPostalCode={cartItems[0]?.seller_postal_code || '75001'}
+                        senderCity={cartItems[0]?.seller_city || 'Paris'}
+                        onSelect={setSelectedBoxtalCarrier}
+                        selectedCarrier={selectedBoxtalCarrier}
+                        token={token}
+                      />
+                    ) : (
+                      <div className="text-center py-4 text-muted-foreground">
+                        <Package className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                        <p>Remplissez votre code postal et ville ci-dessous pour voir les transporteurs</p>
+                      </div>
+                    )}
                   </div>
                 )}
 
