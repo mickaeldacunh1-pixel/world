@@ -84,8 +84,10 @@ export default function EditListing() {
   useEffect(() => {
     fetchSubcategories();
     fetchCarBrands();
-    fetchListing();
-  }, [id]);
+    if (id && token) {
+      fetchListing();
+    }
+  }, [id, token]);
 
   const fetchListing = async () => {
     try {
