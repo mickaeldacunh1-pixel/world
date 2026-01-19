@@ -227,12 +227,13 @@ export default function HeroFreePosition({ settings, onSearch }) {
     title2: { x: 50, y: 26, visible: true },
     subtitle: { x: 50, y: 35, visible: true },
     search: { x: 50, y: 48, visible: true },
-    plate_scanner: { x: 50, y: 60, visible: true }, // Visible sur mobile
+    plate_scanner: { x: 50, y: 60, visible: true },
     tobi_button: { x: 30, y: 70, visible: true },
-    diag_button: { x: 50, y: 70, visible: true }, // Nouveau bouton Diag
-    radio_button: { x: 70, y: 70, visible: true }, // Visible sur mobile
+    diag_button: { x: 50, y: 70, visible: true },
+    radio_button: { x: 70, y: 70, visible: true },
+    promo_video: { x: 50, y: 90, visible: false },
     cta_buttons: { x: 50, y: 82, visible: true },
-    premium_buttons: { x: 50, y: 92, visible: false }, // Caché sur mobile par défaut
+    premium_buttons: { x: 50, y: 92, visible: false },
   };
   
   const getPos = (id) => positions[id] || defaultPositions[id];
