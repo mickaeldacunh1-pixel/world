@@ -221,8 +221,8 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-secondary/30 py-8">
       <SEO
-        title="Mon Profil"
-        description="Gérez votre compte World Auto France - Modifiez vos informations personnelles et paramètres de sécurité."
+        title={t('profile.title')}
+        description={t('profile.subtitle')}
         url="/profil"
         noindex={true}
       />
@@ -230,8 +230,8 @@ export default function Profile() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="font-heading text-3xl font-bold">Mon Profil</h1>
-          <p className="text-muted-foreground">Gérez vos informations personnelles et paramètres de sécurité</p>
+          <h1 className="font-heading text-3xl font-bold">{t('profile.title')}</h1>
+          <p className="text-muted-foreground">{t('profile.subtitle')}</p>
         </div>
 
         {/* Account Summary Card */}
@@ -250,7 +250,7 @@ export default function Profile() {
                 <div className="flex flex-wrap gap-4 mt-4 text-sm">
                   <span className="flex items-center gap-1 text-muted-foreground">
                     <Calendar className="w-4 h-4" />
-                    Membre depuis {formatDate(user?.created_at)}
+                    {t('profile.member_since')} {formatDate(user?.created_at)}
                   </span>
                   <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
                     user?.is_professional 
@@ -258,14 +258,14 @@ export default function Profile() {
                       : 'bg-blue-100 text-blue-700'
                   }`}>
                     {user?.is_professional ? (
-                      <><Building className="w-3 h-3" /> Professionnel</>
+                      <><Building className="w-3 h-3" /> {t('profile.professional')}</>
                     ) : (
-                      <><User className="w-3 h-3" /> Particulier</>
+                      <><User className="w-3 h-3" /> {t('profile.individual')}</>
                     )}
                   </span>
                   <span className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-medium">
                     <Shield className="w-3 h-3" />
-                    {user?.credits || 0} crédits
+                    {user?.credits || 0} {t('profile.credits')}
                   </span>
                 </div>
               </div>
@@ -283,19 +283,19 @@ export default function Profile() {
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="w-4 h-4" />
-              Informations
+              {t('profile.tab_info')}
             </TabsTrigger>
             <TabsTrigger value="stripe" className="flex items-center gap-2">
               <CreditCard className="w-4 h-4" />
-              Paiements
+              {t('profile.tab_payments')}
             </TabsTrigger>
             <TabsTrigger value="password" className="flex items-center gap-2">
               <Lock className="w-4 h-4" />
-              Mot de passe
+              {t('profile.tab_password')}
             </TabsTrigger>
             <TabsTrigger value="danger" className="flex items-center gap-2 text-destructive">
               <Trash2 className="w-4 h-4" />
-              Supprimer
+              {t('profile.tab_delete')}
             </TabsTrigger>
           </TabsList>
 
@@ -303,14 +303,14 @@ export default function Profile() {
           <TabsContent value="profile">
             <Card>
               <CardHeader>
-                <CardTitle className="font-heading">Informations personnelles</CardTitle>
-                <CardDescription>Modifiez vos informations de contact et adresse</CardDescription>
+                <CardTitle className="font-heading">{t('profile.personal_info')}</CardTitle>
+                <CardDescription>{t('profile.personal_info_desc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleProfileSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Nom complet *</Label>
+                      <Label htmlFor="name">{t('profile.full_name')} *</Label>
                       <Input
                         id="name"
                         name="name"
@@ -322,7 +322,7 @@ export default function Profile() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Téléphone</Label>
+                      <Label htmlFor="phone">{t('profile.phone')}</Label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
@@ -338,7 +338,7 @@ export default function Profile() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="address">Adresse</Label>
+                    <Label htmlFor="address">{t('profile.address')}</Label>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
@@ -354,7 +354,7 @@ export default function Profile() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="city">Ville</Label>
+                      <Label htmlFor="city">{t('profile.city')}</Label>
                       <Input
                         id="city"
                         name="city"
@@ -365,7 +365,7 @@ export default function Profile() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="postal_code">Code postal</Label>
+                      <Label htmlFor="postal_code">{t('profile.postal_code')}</Label>
                       <Input
                         id="postal_code"
                         name="postal_code"
@@ -381,11 +381,11 @@ export default function Profile() {
                       <div className="border-t pt-6">
                         <h3 className="font-heading font-semibold mb-4 flex items-center gap-2">
                           <Building className="w-5 h-5" />
-                          Informations professionnelles
+                          {t('profile.pro_info')}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-2">
-                            <Label htmlFor="company_name">Nom de l&apos;entreprise</Label>
+                            <Label htmlFor="company_name">{t('profile.company_name')}</Label>
                             <Input
                               id="company_name"
                               name="company_name"
@@ -396,7 +396,7 @@ export default function Profile() {
                           </div>
                           
                           <div className="space-y-2">
-                            <Label htmlFor="siret">SIRET</Label>
+                            <Label htmlFor="siret">{t('profile.siret')}</Label>
                             <Input
                               id="siret"
                               name="siret"
@@ -413,7 +413,7 @@ export default function Profile() {
                   <div className="flex justify-end pt-4">
                     <Button type="submit" disabled={loading} className="bg-accent hover:bg-accent/90">
                       <Save className="w-4 h-4 mr-2" />
-                      {loading ? 'Enregistrement...' : 'Enregistrer les modifications'}
+                      {loading ? t('profile.saving') : t('profile.save_changes')}
                     </Button>
                   </div>
                 </form>
