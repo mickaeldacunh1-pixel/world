@@ -1,135 +1,65 @@
-# WorldAuto - Product Requirements Document
+# World Auto Pro - PRD
 
 ## Original Problem Statement
-Plateforme marketplace automobile complète permettant l'achat/vente de véhicules et pièces détachées, avec fonctionnalités premium, notifications push, assistant IA (Tobi), système de parrainage, et gestion multi-pays.
-
-## User Personas
-- **Particuliers** : Achat/vente de véhicules et pièces
-- **Professionnels** : Gestion de stock, annonces multiples, fonctionnalités PRO
-- **Administrateur** : Personnalisation du site, gestion des utilisateurs
+Application marketplace de pièces automobiles avec fonctionnalités avancées : annonces, messagerie, paiements Stripe, assistant IA, livraison multi-transporteurs, système de radio intégré.
 
 ## Core Requirements
-1. Système d'annonces avec catégories multiples
-2. Paiement sécurisé (Stripe)
-3. Messagerie intégrée
-4. Notifications push
-5. Assistant IA Tobi
-6. Programme de fidélité/parrainage
-7. Internationalisation (9 pays)
-8. Personnalisation admin (Hero, Navbar)
-9. Estimation des frais de livraison (Boxtal)
-10. SEO optimisé (sitemap, meta tags)
+- Marketplace d'annonces auto (création, recherche, filtres)
+- Authentification utilisateur (particuliers/professionnels)
+- Système de crédits pour publier des annonces
+- Paiements sécurisés via Stripe Connect
+- Messagerie entre acheteurs/vendeurs
+- Support multilingue (8 langues)
 
 ## Tech Stack
-- **Frontend**: React + Tailwind CSS + Shadcn/UI
-- **Backend**: FastAPI (Python)
+- **Frontend**: React, Tailwind CSS, Shadcn/UI, i18next
+- **Backend**: FastAPI, Python
 - **Database**: MongoDB
-- **Integrations**: Stripe, Cloudinary, i18next, @dnd-kit, Boxtal API
-
----
+- **Payments**: Stripe
+- **Media**: Cloudinary
 
 ## What's Been Implemented
 
-### Session du 18 Janvier 2026
+### Traductions (Janvier 2025)
+- ✅ `Home.jsx` - Page d'accueil
+- ✅ `Listings.jsx` - Liste des annonces
+- ✅ `Auth.jsx` - Authentification
+- ✅ `ListingDetail.jsx` - Détail d'annonce
+- ✅ `CreateListing.jsx` - Création d'annonce
+- ✅ `Dashboard.jsx` - Tableau de bord
+- ✅ `Profile.jsx` - Profil utilisateur
+- ✅ `Pricing.jsx` - Tarifs
+- ✅ 8 fichiers de langues (fr, en, de, es, it, nl, pt, sv)
 
-#### Corrections et améliorations
-- **HeroFreePositionEditor.jsx** : Corrigé bug de synchronisation des positions
-  - Ajout `useEffect` pour synchroniser les settings avec l'état local
-  - Les positions (y compris le nouveau bouton Diag IA) sont maintenant correctement initialisées
-- **Script wabuild.sh** : Créé script de déploiement automatique
-  - Options: `--quick` (avec cache), `--clean` (sans cache), `--logs`
-  - Commande complète encapsulée pour simplifier les déploiements
-
-#### Vérifications d'intégrations
-- ✅ **Boxtal** : Configuré en mode production, marge 15%
-- ✅ **SEO** : sitemap.xml et robots.txt fonctionnels
-- ✅ **Bouton Diag IA** : Présent dans l'éditeur (nécessite mode Position Libre activé)
-
----
-
-### Session du 17 Janvier 2026
-
-#### Phase 1 : Amélioration affichage mobile Hero
-- Home.jsx - Barre de recherche et CTA responsive
-- HeroFreePosition.jsx - Support mobile avec hook `useIsMobile()`
-- Navbar.jsx - PromoBanner caché < 480px
-
-#### Phase 2 : Éditeur mobile admin
-- HeroFreePositionEditor.jsx - Toggle Desktop/Mobile, positions séparées
-
-#### Phase 3 : Intégration Boxtal (frais de livraison)
-- **ShippingEstimator.jsx** : Composant d'estimation des frais
-  - Entrée code postal destination
-  - Affiche Colissimo, Chronopost, Mondial Relay, DPD, GLS
-  - Tri par prix, badge "MOINS CHER"
-  - Sauvegarde du code postal en localStorage
-- **Endpoint `/api/shipping/estimate`** :
-  - Récupère les dimensions de l'annonce
-  - Appelle l'API Boxtal en production
-  - Applique la marge configurée (15%)
-  - Fallback automatique si erreur API
-- **Intégré dans ListingDetail.jsx**
-
-#### Phase 4 : SEO Pre-rendering
-- **Sitemap dynamique** (`/sitemap.xml`) :
-  - Pages statiques avec priorités
-  - Catégories (hourly)
-  - Annonces actives (1000 max, triées par date)
-- **Robots.txt** (`/robots.txt`) :
-  - Bloque admin, profil, panier, paiement
-  - Autorise annonces, vendeur, pages publiques
-- **Meta tags enrichis** dans index.html :
-  - OpenGraph complets (og:image, og:locale)
-  - Twitter Card (summary_large_image)
-  - Keywords SEO
-
-### Fonctionnalités déjà complétées (sessions précédentes)
-- ✅ Intégration Stock/Annonces
-- ✅ Correction Notifications Push
-- ✅ Restauration bouton Tobi
-- ✅ Éditeur de Hero à positionnement libre
-- ✅ Personnalisation Navbar admin
-- ✅ Début internationalisation (i18next configuré)
-
----
+### Fonctionnalités récentes
+- ✅ Lecteur radio avec 4 nouvelles stations + mode mini
+- ✅ Page admin paiements (`/admin/paiements`)
+- ✅ Correction SEO sitemap/robots.txt
+- ✅ Bouton téléchargement page présentation
 
 ## Prioritized Backlog
 
-### P0 - Critique
-- [x] Vérifier intégrations Boxtal et SEO ✅ Fonctionnels
-- [ ] Bug sauvegarde éditeur mobile Hero (si persiste après test utilisateur)
+### P0 (Haute priorité)
+- [ ] Traduire `Contact.jsx`
+- [ ] Traduire `FAQ.jsx`
 
-### P1 - Important  
-- [ ] Tester l'estimation Boxtal avec une vraie annonce en production
-- [ ] Valider éditeur Hero mobile en production (activer mode Position Libre)
-- [ ] Traduire texte codé en dur dans Home.jsx avec i18next
+### P1 (Moyenne priorité)
+- [ ] Traduire `About.jsx`
+- [ ] Traduire `Newsletter.jsx`
 
-### P2 - Normal
-- [ ] Optimiser déploiement Docker sur VPS (script wabuild.sh fourni)
-- [ ] Améliorer performance sitemap pour gros volumes
+### P2 (Basse priorité)
+- [ ] Traduire pages légales (CGV, LegalNotice, ReturnsPolicy)
+- [ ] Refactoriser `server.py` (monolithe)
+- [ ] Améliorer processus déploiement Docker
 
-### P3 - Futur
-- [ ] Refactoring backend server.py (> 10k lignes)
+## Known Issues
+- Processus de déploiement Docker parfois instable sur VPS utilisateur
+- Erreurs Sentry "Network Error AxiosError" (à investiguer)
 
----
-
-## Key API Endpoints
-
-### Nouveaux endpoints
-- `POST /api/shipping/estimate` - Estimation frais de livraison
-- `GET /sitemap.xml` - Sitemap dynamique SEO
-- `GET /robots.txt` - Robots.txt SEO
-
-### Endpoints existants
-- `POST/GET /api/settings/hero` - Paramètres Hero
-- `POST/GET /api/settings/navbar` - Paramètres Navbar
-- `GET /api/boxtal/status` - Statut configuration Boxtal
-- `POST /api/boxtal/quotes` - Devis complets Boxtal
-
-## Files of Reference
-- `/app/frontend/src/components/ShippingEstimator.jsx` (NOUVEAU)
-- `/app/frontend/src/pages/ListingDetail.jsx` (MODIFIÉ)
-- `/app/frontend/src/pages/Home.jsx`
-- `/app/frontend/src/components/HeroFreePositionEditor.jsx`
-- `/app/frontend/public/index.html` (META TAGS AMÉLIORÉS)
-- `/app/backend/server.py` (ENDPOINTS SEO + SHIPPING)
+## 3rd Party Integrations
+- Stripe (Paiements)
+- Cloudinary (Images)
+- Boxtal, Mondial Relay, Colissimo, Chronopost (Livraison)
+- Emergent LLM Key (Assistant Tobi)
+- Google reCAPTCHA v3
+- i18next & react-i18next (Traduction)
