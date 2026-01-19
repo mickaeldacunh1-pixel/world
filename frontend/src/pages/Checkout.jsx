@@ -456,37 +456,6 @@ export default function Checkout() {
                     </div>
                   </div>
                 )}
-                  </div>
-                )}
-
-                {/* Point Relay Picker */}
-                {deliveryMethod === 'relay' && (
-                  <div className="pt-4 border-t">
-                    <MondialRelayPicker 
-                      onSelect={setSelectedRelay}
-                      selectedRelay={selectedRelay}
-                      postalCode={shippingInfo.postal_code}
-                    />
-                  </div>
-                )}
-                
-                {/* Phone - Always visible */}
-                <div className="space-y-2 pt-4 border-t">
-                  <Label htmlFor="phone">Téléphone</Label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      id="phone"
-                      placeholder="06 12 34 56 78"
-                      value={shippingInfo.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Pour que le vendeur puisse vous contacter si besoin
-                  </p>
-                </div>
               </CardContent>
             </Card>
 
