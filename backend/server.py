@@ -11847,8 +11847,9 @@ async def startup_event():
         BOXTAL_MARGIN_PERCENT = float(boxtal_settings["margin_percent"])
         logger.info(f"📦 Marge Boxtal chargée depuis la base: {BOXTAL_MARGIN_PERCENT}%")
     
-    # Log Boxtal configuration
-    if BOXTAL_ACCESS_KEY and BOXTAL_SECRET_KEY:
+    # Log Boxtal configuration - charger les credentials pour vérifier
+    creds = await get_boxtal_credentials()
+    if creds["access_key"] and creds["secret_key"]:
         logger.info(f"📦 Boxtal API configuré - Mode: {BOXTAL_MODE}, Marge: {BOXTAL_MARGIN_PERCENT}%")
     else:
         logger.warning("⚠️ Boxtal API non configuré (clés manquantes)")
