@@ -10425,6 +10425,227 @@ async def admin_refund_payment(transaction_id: str, current_user: dict = Depends
         logging.error(f"Stripe refund error: {e}")
         raise HTTPException(status_code=500, detail=f"Erreur Stripe: {str(e)}")
 
+# ================== ADMIN - VENTES & REVERSEMENTS ==================
+
+@api_router.get("/admin/sales")
+async def get_admin_sales(
+    page: int = 1,
+    limit: int = 20,
+    status: str = None,
+    payout_status: str = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Récupérer toutes les ventes (commandes payées) pour l'admin"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    query = {"payment_method": "stripe_direct"}
+    
+    if status:
+        query["status"] = status
+    
+    if payout_status:
+        query["payout_status"] = payout_status
+    
+    skip = (page - 1) * limit
+    
+    # Récupérer les commandes
+    cursor = db.orders.find(query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit)
+    orders = await cursor.to_list(length=limit)
+    
+    # Enrichir avec infos utilisateur
+    for order in orders:
+        buyer = await db.users.find_one({"id": order.get("buyer_id")}, {"_id": 0, "name": 1, "email": 1})
+        seller = await db.users.find_one({"id": order.get("seller_id")}, {"_id": 0, "name": 1, "email": 1, "iban": 1, "bic": 1, "account_holder": 1, "is_pro": 1})
+        order["buyer"] = buyer
+        order["seller"] = seller
+    
+    total = await db.orders.count_documents(query)
+    
+    return {
+        "orders": orders,
+        "total": total,
+        "page": page,
+        "pages": (total + limit - 1) // limit
+    }
+
+@api_router.get("/admin/sales/stats")
+async def get_admin_sales_stats(current_user: dict = Depends(get_current_user)):
+    """Statistiques des ventes pour l'admin"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    now = datetime.now(timezone.utc)
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+    week_start = (now - timedelta(days=7)).isoformat()
+    month_start = (now - timedelta(days=30)).isoformat()
+    
+    # Ventes totales payées
+    total_sales_pipeline = [
+        {"$match": {"payment_method": "stripe_direct", "status": "paid"}},
+        {"$group": {
+            "_id": None,
+            "total_amount": {"$sum": "$listing_price"},
+            "total_commission": {"$sum": "$commission"},
+            "total_seller_amount": {"$sum": "$seller_amount"},
+            "count": {"$sum": 1}
+        }}
+    ]
+    total_result = await db.orders.aggregate(total_sales_pipeline).to_list(1)
+    total_stats = total_result[0] if total_result else {"total_amount": 0, "total_commission": 0, "total_seller_amount": 0, "count": 0}
+    
+    # Reversements en attente
+    pending_payouts_pipeline = [
+        {"$match": {"payment_method": "stripe_direct", "status": "paid", "payout_status": "pending"}},
+        {"$group": {
+            "_id": None,
+            "pending_amount": {"$sum": "$seller_amount"},
+            "count": {"$sum": 1}
+        }}
+    ]
+    pending_result = await db.orders.aggregate(pending_payouts_pipeline).to_list(1)
+    pending_stats = pending_result[0] if pending_result else {"pending_amount": 0, "count": 0}
+    
+    # Reversements effectués
+    completed_payouts_pipeline = [
+        {"$match": {"payment_method": "stripe_direct", "payout_status": "completed"}},
+        {"$group": {
+            "_id": None,
+            "completed_amount": {"$sum": "$seller_amount"},
+            "count": {"$sum": 1}
+        }}
+    ]
+    completed_result = await db.orders.aggregate(completed_payouts_pipeline).to_list(1)
+    completed_stats = completed_result[0] if completed_result else {"completed_amount": 0, "count": 0}
+    
+    # Ventes par statut
+    status_pipeline = [
+        {"$match": {"payment_method": "stripe_direct"}},
+        {"$group": {"_id": "$status", "count": {"$sum": 1}}}
+    ]
+    status_result = await db.orders.aggregate(status_pipeline).to_list(100)
+    by_status = {item["_id"]: item["count"] for item in status_result}
+    
+    return {
+        "total_sales": total_stats.get("total_amount", 0),
+        "total_commission": total_stats.get("total_commission", 0),
+        "total_seller_amount": total_stats.get("total_seller_amount", 0),
+        "sales_count": total_stats.get("count", 0),
+        "pending_payouts_amount": pending_stats.get("pending_amount", 0),
+        "pending_payouts_count": pending_stats.get("count", 0),
+        "completed_payouts_amount": completed_stats.get("completed_amount", 0),
+        "completed_payouts_count": completed_stats.get("count", 0),
+        "by_status": by_status
+    }
+
+@api_router.post("/admin/sales/{order_id}/mark-payout")
+async def mark_sale_payout(order_id: str, current_user: dict = Depends(get_current_user)):
+    """Marquer un reversement comme effectué"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Commande non trouvée")
+    
+    if order.get("payout_status") == "completed":
+        raise HTTPException(status_code=400, detail="Ce reversement a déjà été effectué")
+    
+    await db.orders.update_one(
+        {"id": order_id},
+        {"$set": {
+            "payout_status": "completed",
+            "payout_at": datetime.now(timezone.utc).isoformat(),
+            "payout_by": current_user["id"]
+        }}
+    )
+    
+    # Notifier le vendeur
+    await db.notifications.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": order["seller_id"],
+        "type": "payout_completed",
+        "title": "💰 Virement effectué",
+        "message": f"Le virement de {order.get('seller_amount', 0):.2f}€ pour la vente de '{order.get('listing_title', '')}' a été effectué.",
+        "data": {"order_id": order_id},
+        "read": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    return {"success": True, "message": "Reversement marqué comme effectué"}
+
+@api_router.post("/admin/sales/batch-payout")
+async def batch_payout(
+    order_ids: list[str],
+    current_user: dict = Depends(get_current_user)
+):
+    """Marquer plusieurs reversements comme effectués"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    updated_count = 0
+    for order_id in order_ids:
+        result = await db.orders.update_one(
+            {"id": order_id, "payout_status": {"$ne": "completed"}},
+            {"$set": {
+                "payout_status": "completed",
+                "payout_at": datetime.now(timezone.utc).isoformat(),
+                "payout_by": current_user["id"]
+            }}
+        )
+        if result.modified_count > 0:
+            updated_count += 1
+            
+            # Récupérer la commande pour notifier
+            order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+            if order:
+                await db.notifications.insert_one({
+                    "id": str(uuid.uuid4()),
+                    "user_id": order["seller_id"],
+                    "type": "payout_completed",
+                    "title": "💰 Virement effectué",
+                    "message": f"Le virement de {order.get('seller_amount', 0):.2f}€ pour la vente de '{order.get('listing_title', '')}' a été effectué.",
+                    "data": {"order_id": order_id},
+                    "read": False,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                })
+    
+    return {"success": True, "updated_count": updated_count, "message": f"{updated_count} reversements marqués comme effectués"}
+
+@api_router.get("/admin/sellers/payouts")
+async def get_sellers_pending_payouts(current_user: dict = Depends(get_current_user)):
+    """Récupérer la liste des vendeurs avec reversements en attente"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    # Grouper par vendeur
+    pipeline = [
+        {"$match": {"payment_method": "stripe_direct", "status": "paid", "payout_status": "pending"}},
+        {"$group": {
+            "_id": "$seller_id",
+            "total_pending": {"$sum": "$seller_amount"},
+            "orders_count": {"$sum": 1},
+            "orders": {"$push": {
+                "id": "$id",
+                "listing_title": "$listing_title",
+                "listing_price": "$listing_price",
+                "seller_amount": "$seller_amount",
+                "commission": "$commission",
+                "paid_at": "$paid_at"
+            }}
+        }},
+        {"$sort": {"total_pending": -1}}
+    ]
+    
+    results = await db.orders.aggregate(pipeline).to_list(100)
+    
+    # Enrichir avec infos vendeur
+    for item in results:
+        seller = await db.users.find_one({"id": item["_id"]}, {"_id": 0, "name": 1, "email": 1, "company_name": 1, "is_pro": 1, "iban": 1, "bic": 1, "account_holder": 1})
+        item["seller"] = seller
+    
+    return {"sellers": results}
+
 # ================== ROOT ==================
 
 @api_router.get("/")
