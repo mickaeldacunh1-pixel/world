@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -13,20 +14,16 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 // Default values
 const DEFAULTS = {
-  contact_title: 'Contactez-nous',
-  contact_subtitle: 'Une question ? Un problème ? Notre équipe est là pour vous aider.',
   contact_email: 'contact@worldautofrance.com',
   contact_phone: '',
   contact_hours: 'Lun-Ven : 9h-18h',
   contact_address: '',
   contact_form_enabled: true,
-  contact_success_message: 'Merci de nous avoir contacté. Nous vous répondrons dans les plus brefs délais.',
-  contact_form_title: 'Envoyez-nous un message',
   contact_show_response_time: true,
-  contact_response_time: 'Nous répondons généralement sous 24h',
 };
 
 export default function Contact() {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState(DEFAULTS);
   const [formData, setFormData] = useState({
     name: '',
@@ -55,7 +52,7 @@ export default function Contact() {
     e.preventDefault();
     
     if (!formData.name || !formData.email || !formData.message) {
-      toast.error('Veuillez remplir tous les champs obligatoires');
+      toast.error(t('contact.error_required'));
       return;
     }
 
@@ -65,7 +62,7 @@ export default function Contact() {
     setTimeout(() => {
       setSending(false);
       setSent(true);
-      toast.success('Message envoyé avec succès !');
+      toast.success(t('contact.success'));
     }, 1500);
   };
 
@@ -73,8 +70,8 @@ export default function Contact() {
     return (
       <div className="min-h-screen bg-secondary/30 py-12">
         <SEO
-          title="Contact"
-          description="Contactez l'équipe World Auto Pro. Nous sommes là pour répondre à vos questions sur les annonces, paiements et support."
+          title={t('contact.seo_title')}
+          description={t('contact.seo_description')}
           keywords="contact world auto, support, aide, question"
           url="/contact"
         />
@@ -83,12 +80,12 @@ export default function Contact() {
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="w-10 h-10 text-green-600" />
             </div>
-            <h1 className="font-heading text-3xl font-bold mb-4">Message envoyé !</h1>
+            <h1 className="font-heading text-3xl font-bold mb-4">{t('contact.sent_title')}</h1>
             <p className="text-muted-foreground mb-6">
-              {s.contact_success_message}
+              {t('contact.sent_message')}
             </p>
             <Button onClick={() => setSent(false)} variant="outline">
-              Envoyer un autre message
+              {t('contact.send_another')}
             </Button>
           </Card>
         </div>
@@ -99,16 +96,16 @@ export default function Contact() {
   return (
     <div className="min-h-screen bg-secondary/30 py-12">
       <SEO
-        title="Contact"
-        description="Contactez l'équipe World Auto Pro. Nous sommes là pour répondre à vos questions sur les annonces, paiements et support."
+        title={t('contact.seo_title')}
+        description={t('contact.seo_description')}
         keywords="contact world auto, support, aide, question"
         url="/contact"
       />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-fade-in-up">
-          <h1 className="font-heading text-4xl font-bold mb-4">{s.contact_title}</h1>
+          <h1 className="font-heading text-4xl font-bold mb-4">{t('contact.title')}</h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            {s.contact_subtitle}
+            {t('contact.subtitle')}
           </p>
         </div>
 
@@ -121,7 +118,7 @@ export default function Contact() {
                   <Mail className="w-6 h-6 text-accent" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold mb-1">Email</h3>
+                  <h3 className="font-heading font-bold mb-1">{t('contact.email')}</h3>
                   <a href={`mailto:${s.contact_email}`} className="text-accent hover:underline text-sm">
                     {s.contact_email}
                   </a>
@@ -136,7 +133,7 @@ export default function Contact() {
                     <Phone className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-heading font-bold mb-1">Téléphone</h3>
+                    <h3 className="font-heading font-bold mb-1">{t('contact.phone')}</h3>
                     <a href={`tel:${s.contact_phone}`} className="text-accent hover:underline text-sm">
                       {s.contact_phone}
                     </a>
@@ -152,9 +149,9 @@ export default function Contact() {
                     <Clock className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-heading font-bold mb-1">Délai de réponse</h3>
+                    <h3 className="font-heading font-bold mb-1">{t('contact.response_time')}</h3>
                     <p className="text-muted-foreground text-sm">
-                      {s.contact_response_time}
+                      {t('contact.response_time_value')}
                     </p>
                     {s.contact_hours && (
                       <p className="text-muted-foreground text-xs mt-1">
@@ -173,7 +170,7 @@ export default function Contact() {
                     <MapPin className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-heading font-bold mb-1">Adresse</h3>
+                    <h3 className="font-heading font-bold mb-1">{t('contact.address')}</h3>
                     <p className="text-muted-foreground text-sm whitespace-pre-line">
                       {s.contact_address}
                     </p>
@@ -190,10 +187,10 @@ export default function Contact() {
                 <div>
                   <h3 className="font-heading font-bold mb-1">FAQ</h3>
                   <p className="text-muted-foreground text-sm mb-2">
-                    Consultez notre FAQ pour des réponses rapides aux questions fréquentes.
+                    {t('contact.faq_desc')}
                   </p>
                   <a href="/faq" className="text-accent text-sm hover:underline">
-                    Voir la FAQ →
+                    {t('contact.see_faq')} →
                   </a>
                 </div>
               </div>
@@ -205,16 +202,16 @@ export default function Contact() {
             <Card className="lg:col-span-2 p-8 animate-fade-in-up stagger-2">
               <h2 className="font-heading text-2xl font-bold mb-6 flex items-center gap-3">
                 <Send className="w-6 h-6 text-accent" />
-                {s.contact_form_title}
+                {t('contact.form_title')}
               </h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="name">Nom complet *</Label>
+                    <Label htmlFor="name">{t('contact.full_name')} *</Label>
                     <Input
                       id="name"
-                      placeholder="Votre nom"
+                      placeholder={t('contact.your_name')}
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       required
@@ -222,11 +219,11 @@ export default function Contact() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email">Email *</Label>
+                    <Label htmlFor="email">{t('contact.email_label')} *</Label>
                     <Input
                       id="email"
                       type="email"
-                      placeholder="votre@email.com"
+                      placeholder={t('contact.email_placeholder')}
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       required
@@ -236,10 +233,10 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <Label htmlFor="subject">Sujet</Label>
+                  <Label htmlFor="subject">{t('contact.subject')}</Label>
                   <Input
                     id="subject"
-                    placeholder="De quoi souhaitez-vous parler ?"
+                    placeholder={t('contact.subject_placeholder')}
                     value={formData.subject}
                     onChange={(e) => setFormData({...formData, subject: e.target.value})}
                     className="mt-1"
@@ -247,10 +244,10 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <Label htmlFor="message">Message *</Label>
+                  <Label htmlFor="message">{t('contact.message')} *</Label>
                   <Textarea
                     id="message"
-                    placeholder="Décrivez votre demande en détail..."
+                    placeholder={t('contact.message_placeholder')}
                     value={formData.message}
                     onChange={(e) => setFormData({...formData, message: e.target.value})}
                     required
@@ -263,12 +260,12 @@ export default function Contact() {
                   {sending ? (
                     <>
                       <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Envoi en cours...
+                      {t('contact.sending')}
                     </>
                   ) : (
                     <>
                       <Send className="w-4 h-4 mr-2" />
-                      Envoyer le message
+                      {t('contact.send')}
                     </>
                   )}
                 </Button>
