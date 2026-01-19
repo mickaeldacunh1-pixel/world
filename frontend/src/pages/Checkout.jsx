@@ -85,7 +85,9 @@ export default function Checkout() {
         items.map(async (item) => {
           try {
             const response = await axios.get(`${API}/listings/${item.id}`);
-            return { ...item, ...response.data, available: response.data.status === 'active' };
+            // Accepter les annonces active OU reserved (réservée par cet utilisateur)
+            const isAvailable = response.data.status === 'active' || response.data.status === 'reserved';
+            return { ...item, ...response.data, available: isAvailable };
           } catch {
             return { ...item, available: false };
           }
@@ -100,8 +102,10 @@ export default function Checkout() {
       availableItems.forEach(item => {
         const methods = item.shipping_methods || [];
         if (methods.length === 0) {
-          // Default methods if none configured
+          // Default methods if none configured - ajouter toutes les options par défaut
+          allMethods.add('hand_delivery');
           allMethods.add('home');
+          allMethods.add('colissimo');
           allMethods.add('mondial_relay');
         } else {
           methods.forEach(m => allMethods.add(m));
