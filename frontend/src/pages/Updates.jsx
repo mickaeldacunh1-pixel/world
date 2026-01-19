@@ -12,34 +12,67 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
-    id: 'static-new-27',
+    id: 'static-new-29',
     date: '2026-01-19',
-    version: '5.6.0',
+    version: '5.8.0',
     title: '🔐 Sécurisation Tobi & Amélioration Déploiement',
-    category: 'feature',
+    category: 'security',
     items: [
       { type: 'new', text: '🔐 Tobi sécurisé : authentification obligatoire pour accéder à l\'assistant IA' },
       { type: 'new', text: '🎁 Accès gratuit illimité à Tobi pour les utilisateurs avec annonce active' },
-      { type: 'new', text: '💳 Système de crédits diagnostic pour Tobi (même logique que le Diagnostic IA)' },
+      { type: 'new', text: '💳 Système de crédits diagnostic intégré à Tobi' },
       { type: 'new', text: '🏥 Endpoint /api/health pour vérifier l\'état du backend' },
-      { type: 'new', text: '🐳 Healthchecks Docker : MongoDB, Backend et Frontend démarrent dans le bon ordre' },
+      { type: 'new', text: '🐳 Healthchecks Docker : MongoDB → Backend → Frontend (démarrage ordonné)' },
       { type: 'improvement', text: '🚀 Script wabuild amélioré : --status, --restart, attente des healthchecks' },
-      { type: 'improvement', text: '🔒 Endpoints Tobi protégés : /tobi/chat, /tobi/history, /tobi/access' },
+      { type: 'improvement', text: '🌍 Traduction complète de Contact.jsx en 8 langues' },
+      { type: 'improvement', text: '🏠 Home.jsx : textes durs traduits (catégories, conditions)' },
+    ]
+  },
+  {
+    id: 'static-new-28',
+    date: '2026-01-18',
+    version: '5.7.0',
+    title: '💳 Page Admin Paiements & Traductions',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '💳 Page Admin Paiements : vue complète de toutes les transactions Stripe' },
+      { type: 'new', text: '📊 Statistiques en temps réel : revenus, nombre de transactions, taux de réussite' },
+      { type: 'new', text: '🔍 Filtres avancés : par statut, recherche par utilisateur ou ID' },
+      { type: 'new', text: '📄 Export CSV des transactions' },
+      { type: 'new', text: '👁️ Modal de détail pour chaque transaction' },
+      { type: 'new', text: '📥 Page de présentation : bouton de téléchargement ajouté' },
+      { type: 'improvement', text: '🌍 Traductions complètes : Dashboard, CreateListing, ListingDetail, Profile, Pricing' },
+      { type: 'improvement', text: '📂 8 fichiers de langues mis à jour avec nouvelles clés' },
+    ]
+  },
+  {
+    id: 'static-new-27',
+    date: '2026-01-17',
+    version: '5.6.0',
+    title: '📻 Radio améliorée & Hero Mobile',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '📻 4 nouvelles stations radio : RTL, RTL2, Fun Radio, Europe 1' },
+      { type: 'new', text: '🔽 Mode mini du lecteur radio : réduisez le lecteur tout en écoutant' },
+      { type: 'fix', text: '📱 Correction de la sauvegarde des positions Hero en mode mobile' },
+      { type: 'fix', text: '🗺️ Correction du sitemap.xml (génération dynamique)' },
+      { type: 'improvement', text: '🤖 Amélioration robots.txt pour un meilleur SEO' },
     ]
   },
   {
     id: 'static-new-26',
-    date: '2026-01-18',
+    date: '2026-01-16',
     version: '5.5.0',
-    title: '🌍 Traductions & Page de Présentation',
-    category: 'improvement',
+    title: '🎨 Éditeur Hero Libre (Free Position)',
+    category: 'feature',
     items: [
-      { type: 'new', text: '📄 Page de présentation WorldAuto : bouton de téléchargement ajouté' },
-      { type: 'new', text: '🌍 Traduction Contact.jsx : page entièrement traduite en 8 langues' },
-      { type: 'improvement', text: '🏠 Home.jsx : textes durs traduits (catégories, conditions)' },
-      { type: 'improvement', text: '📝 Traductions Profile.jsx et Pricing.jsx complétées' },
-      { type: 'improvement', text: '🗂️ Nouvelles clés i18n : condition.new/used/refurbished, common.category' },
-      { type: 'improvement', text: '📻 Lecteur radio : fonction minimiser ajoutée' },
+      { type: 'new', text: '🖱️ Mode Position Libre : placez les éléments du Hero exactement où vous voulez' },
+      { type: 'new', text: '📐 Drag & Drop pixel-perfect avec coordonnées X/Y' },
+      { type: 'new', text: '📱 Positions séparées Desktop et Mobile' },
+      { type: 'new', text: '↩️ Bouton Reset pour revenir aux positions par défaut' },
+      { type: 'new', text: '👁️ Aperçu en temps réel des modifications' },
+      { type: 'improvement', text: '💾 Sauvegarde automatique des positions dans la base de données' },
+      { type: 'improvement', text: '🔄 Synchronisation instantanée avec la page d\'accueil' },
     ]
   },
   {
