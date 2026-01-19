@@ -247,6 +247,28 @@ export default function HeroFreePosition({ settings, onSearch }) {
   
   return (
     <div className="relative w-full h-full overflow-hidden">
+      {/* Video Background */}
+      {settings.hero_video_enabled && settings.hero_video_url && (
+        <div className="absolute inset-0 z-0">
+          <video
+            src={settings.hero_video_url}
+            poster={settings.hero_video_poster || ''}
+            autoPlay
+            loop={settings.hero_video_loop !== false}
+            muted={settings.hero_video_muted !== false}
+            playsInline
+            className="w-full h-full object-cover"
+          />
+          {/* Overlay pour lisibilité du texte */}
+          <div 
+            className="absolute inset-0" 
+            style={{ 
+              backgroundColor: settings.hero_video_overlay_color || 'rgba(0,0,0,0.4)'
+            }} 
+          />
+        </div>
+      )}
+      
       {/* Badge */}
       <PositionedElement 
         elementId="badge" 
