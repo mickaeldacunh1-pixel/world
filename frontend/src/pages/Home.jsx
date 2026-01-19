@@ -310,7 +310,7 @@ export default function Home() {
         structuredData={[createOrganizationSchema(), createWebsiteSchema()]}
       />
       {/* Hero Section - Full Customization */}
-      <section className={`relative ${HERO_HEIGHT_CLASSES[heroSettings.hero_height] || 'min-h-[600px] md:min-h-[700px]'} flex items-center overflow-hidden`}>
+      <section className={`relative ${HERO_HEIGHT_CLASSES[heroSettings.hero_height] || 'min-h-[600px] md:min-h-[700px]'} flex items-center overflow-hidden -mt-0`}>
         {/* Background Image - Seulement en mode standard (pas en mode libre qui gère son propre fond) */}
         {!heroSettings.hero_free_position_enabled && (
           <div className="absolute inset-0">
@@ -334,7 +334,7 @@ export default function Home() {
         {/* Content - Mode Libre ou Mode Standard */}
         {heroSettings.hero_free_position_enabled ? (
           // Mode Position Libre - gère son propre fond (image ou vidéo)
-          <div className="relative w-full h-[70vh] min-h-[500px]">
+          <div className="absolute inset-0">
             <HeroFreePosition settings={heroSettings} />
           </div>
         ) : (
