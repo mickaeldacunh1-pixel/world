@@ -268,7 +268,7 @@ export default function Pricing() {
                   disabled={loading.single}
                   data-testid="buy-single"
                 >
-                  {loading.single ? '...' : 'Acheter'}
+                  {loading.single ? '...' : t('pricing.buy')}
                 </Button>
               </CardFooter>
             </Card>
