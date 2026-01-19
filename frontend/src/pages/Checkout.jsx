@@ -354,31 +354,38 @@ export default function Checkout() {
               <CardContent className="space-y-6">
                 {/* Delivery Method Selection */}
                 <RadioGroup value={deliveryMethod} onValueChange={setDeliveryMethod} className="space-y-3">
-                  <div className={`flex items-center space-x-3 p-4 border rounded-lg cursor-pointer transition-colors ${deliveryMethod === 'home' ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                    <RadioGroupItem value="home" id="home" />
-                    <Label htmlFor="home" className="flex items-center gap-3 cursor-pointer flex-1">
-                      <Home className="w-5 h-5 text-accent" />
-                      <div>
-                        <p className="font-medium">Livraison à domicile</p>
-                        <p className="text-sm text-muted-foreground">Recevoir à votre adresse</p>
-                      </div>
-                    </Label>
-                  </div>
-                  
-                  <div className={`flex items-center space-x-3 p-4 border rounded-lg cursor-pointer transition-colors ${deliveryMethod === 'relay' ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                    <RadioGroupItem value="relay" id="relay" />
-                    <Label htmlFor="relay" className="flex items-center gap-3 cursor-pointer flex-1">
-                      <Package className="w-5 h-5 text-accent" />
-                      <div>
-                        <p className="font-medium">Point Relais Mondial Relay</p>
-                        <p className="text-sm text-muted-foreground">Retirer dans un point relais près de chez vous</p>
-                      </div>
-                    </Label>
-                  </div>
+                  {availableShippingMethods.map((method) => (
+                    <div 
+                      key={method.id}
+                      className={`flex items-center space-x-3 p-4 border rounded-lg cursor-pointer transition-colors ${deliveryMethod === method.id ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'}`}
+                    >
+                      <RadioGroupItem value={method.id} id={method.id} />
+                      <Label htmlFor={method.id} className="flex items-center gap-3 cursor-pointer flex-1">
+                        <span className="text-2xl">{method.icon}</span>
+                        <div>
+                          <p className="font-medium">{method.name}</p>
+                          <p className="text-sm text-muted-foreground">{method.desc}</p>
+                        </div>
+                      </Label>
+                    </div>
+                  ))}
                 </RadioGroup>
 
-                {/* Home Delivery Form */}
-                {deliveryMethod === 'home' && (
+                {/* Mondial Relay Picker */}
+                {deliveryMethod === 'mondial_relay' && (
+                  <div className="pt-4 border-t">
+                    <MondialRelayPicker 
+                      postalCode={shippingInfo.postal_code || user?.postal_code}
+                      onSelect={setSelectedRelay}
+                      selectedRelay={selectedRelay}
+                    />
+                  </div>
+                )}
+
+                {/* Address Form - for methods that need it */}
+                {deliveryMethod && 
+                 deliveryMethod !== 'mondial_relay' && 
+                 deliveryMethod !== 'hand_delivery' && (
                   <div className="space-y-4 pt-4 border-t">
                     <div className="space-y-2">
                       <Label htmlFor="address">Adresse *</Label>
@@ -414,6 +421,41 @@ export default function Checkout() {
                         />
                       </div>
                     </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Téléphone</Label>
+                      <Input
+                        id="phone"
+                        placeholder="06 12 34 56 78"
+                        value={shippingInfo.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground">Pour que le vendeur puisse vous contacter si besoin</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Hand delivery info */}
+                {deliveryMethod === 'hand_delivery' && (
+                  <div className="pt-4 border-t">
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                      <p className="text-sm text-amber-800">
+                        <strong>🤝 Remise en main propre</strong><br/>
+                        Le vendeur vous contactera pour convenir d'un lieu et d'une heure de rendez-vous.
+                        Assurez-vous que votre numéro de téléphone est à jour dans votre profil.
+                      </p>
+                    </div>
+                    <div className="space-y-2 mt-4">
+                      <Label htmlFor="phone_hand">Téléphone de contact</Label>
+                      <Input
+                        id="phone_hand"
+                        placeholder="06 12 34 56 78"
+                        value={shippingInfo.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                )}
                   </div>
                 )}
 
