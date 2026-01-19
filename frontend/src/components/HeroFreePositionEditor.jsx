@@ -27,6 +27,7 @@ const HERO_ELEMENTS = [
   { id: 'tobi_button', label: 'Bouton Tobi', defaultWidth: 180, defaultHeight: 45 },
   { id: 'diag_button', label: 'Bouton Diag IA', defaultWidth: 180, defaultHeight: 45 },
   { id: 'radio_button', label: 'Bouton Radio', defaultWidth: 150, defaultHeight: 45 },
+  { id: 'promo_video', label: 'Lecteur Vidéo Promo', defaultWidth: 320, defaultHeight: 200 },
 ];
 
 // Positions par défaut Desktop
@@ -43,6 +44,7 @@ const DEFAULT_DESKTOP_POSITIONS = {
   cta_buttons: { x: 50, y: 78, visible: true },
   premium_buttons: { x: 50, y: 88, visible: true },
   stats: { x: 50, y: 95, visible: true },
+  promo_video: { x: 85, y: 50, visible: true },
 };
 
 // Positions par défaut Mobile (optimisées pour écran vertical)
@@ -59,6 +61,7 @@ const DEFAULT_MOBILE_POSITIONS = {
   cta_buttons: { x: 50, y: 78, visible: true },
   premium_buttons: { x: 50, y: 88, visible: false },
   stats: { x: 50, y: 94, visible: false },
+  promo_video: { x: 50, y: 85, visible: true },
 };
 
 // Composant élément draggable
