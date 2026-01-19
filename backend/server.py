@@ -10763,13 +10763,45 @@ async def process_abandoned_cart_reminders():
 
 # ================== BOXTAL SHIPPING API ==================
 
-# Boxtal Config
-BOXTAL_APP_ID = os.environ.get('BOXTAL_APP_ID', '')
-BOXTAL_ACCESS_KEY = os.environ.get('BOXTAL_ACCESS_KEY', '')
-BOXTAL_SECRET_KEY = os.environ.get('BOXTAL_SECRET_KEY', '')
+# Boxtal Config - Chargé depuis la DB ou les variables d'environnement
 BOXTAL_API_URL = os.environ.get('BOXTAL_API_URL', 'https://api.boxtal.com')
 BOXTAL_MODE = os.environ.get('BOXTAL_MODE', 'simulation')  # simulation or production
 BOXTAL_MARGIN_PERCENT = float(os.environ.get('BOXTAL_MARGIN_PERCENT', '15'))  # Marge sur les frais de port
+
+# Cache pour les credentials Boxtal (chargés depuis la DB)
+boxtal_credentials_cache = {
+    "app_id": None,
+    "access_key": None,
+    "secret_key": None,
+    "loaded": False
+}
+
+async def get_boxtal_credentials():
+    """Récupère les credentials Boxtal depuis la DB ou le cache"""
+    if boxtal_credentials_cache["loaded"]:
+        return boxtal_credentials_cache
+    
+    # Charger depuis la base de données
+    boxtal_settings = await db.site_settings.find_one({"setting_type": "boxtal"})
+    if boxtal_settings:
+        boxtal_credentials_cache["app_id"] = boxtal_settings.get("app_id", "")
+        boxtal_credentials_cache["access_key"] = boxtal_settings.get("access_key", "")
+        boxtal_credentials_cache["secret_key"] = boxtal_settings.get("secret_key", "")
+        boxtal_credentials_cache["loaded"] = True
+        # Mettre à jour la marge si présente
+        global BOXTAL_MARGIN_PERCENT
+        if "margin_percent" in boxtal_settings:
+            BOXTAL_MARGIN_PERCENT = float(boxtal_settings["margin_percent"])
+        logger.info("Boxtal credentials loaded from database")
+    else:
+        # Fallback sur les variables d'environnement
+        boxtal_credentials_cache["app_id"] = os.environ.get('BOXTAL_APP_ID', '')
+        boxtal_credentials_cache["access_key"] = os.environ.get('BOXTAL_ACCESS_KEY', '')
+        boxtal_credentials_cache["secret_key"] = os.environ.get('BOXTAL_SECRET_KEY', '')
+        boxtal_credentials_cache["loaded"] = True
+        logger.info("Boxtal credentials loaded from environment variables")
+    
+    return boxtal_credentials_cache
 
 def apply_shipping_margin(price: float) -> float:
     """Applique la marge sur le prix de livraison"""
