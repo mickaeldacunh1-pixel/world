@@ -59,8 +59,21 @@ export default function BoxtalPicker({
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       
-      if (response.data.quotes && response.data.quotes.length > 0) {
-        setCarriers(response.data.quotes);
+      // L'API renvoie "options" pour les transporteurs
+      const carriers = response.data.options || response.data.quotes || [];
+      if (carriers.length > 0) {
+        // Transformer le format pour le composant
+        const formattedCarriers = carriers.map(c => ({
+          id: c.service_id,
+          name: c.carrier_name,
+          logo: c.carrier_logo,
+          delivery_type: c.service_name,
+          delivery_time: `${c.delivery_time_min}-${c.delivery_time_max} jours`,
+          price: c.price_ttc || c.price_ht,
+          original_price: c.price_ht_base,
+          quote_id: response.data.quote_id
+        }));
+        setCarriers(formattedCarriers);
       } else {
         setCarriers([]);
         setError('Aucun transporteur disponible pour cette destination');
