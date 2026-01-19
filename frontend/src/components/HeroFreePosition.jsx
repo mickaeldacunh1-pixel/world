@@ -202,6 +202,9 @@ export default function HeroFreePosition({ settings, onSearch }) {
   const [selectedCategory, setSelectedCategory] = useState('');
   const isMobile = useIsMobile();
   
+  // Déterminer si on utilise la vidéo de fond OU l'image de fond
+  const useVideoBackground = settings.hero_video_enabled && settings.hero_video_url;
+  
   const positions = settings.hero_element_positions || {};
   
   // Positions par défaut si non définies - Desktop
