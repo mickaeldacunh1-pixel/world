@@ -33,6 +33,7 @@ import AdminUpdates from "./pages/AdminUpdates";
 import AdminReports from "./pages/AdminReports";
 import AdminPayments from "./pages/AdminPayments";
 import AdminSales from "./pages/AdminSales";
+import AdminGuide from "./pages/AdminGuide";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
