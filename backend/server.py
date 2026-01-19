@@ -11215,6 +11215,51 @@ async def create_boxtal_shipment(request: BoxtalShipmentRequest, current_user: d
         logger.error(f"Boxtal shipment error: {e}")
         raise HTTPException(status_code=500, detail=f"Error creating shipment: {str(e)}")
 
+# Webhook Boxtal pour recevoir les notifications
+BOXTAL_WEBHOOK_SECRET = "worldauto-boxtal-2026"
+
+@app.post("/api/boxtal/webhook")
+async def boxtal_webhook(request: Request):
+    """Receive webhook notifications from Boxtal"""
+    try:
+        body = await request.json()
+        
+        # Log the webhook event
+        logger.info(f"📦 Boxtal webhook received: {body.get('event_type', 'unknown')}")
+        
+        # Vérifier la signature si présente
+        signature = request.headers.get("x-bxt-signature")
+        if signature:
+            logger.info(f"Webhook signature: {signature[:20]}...")
+        
+        # Enregistrer l'événement
+        webhook_event = {
+            "event_type": body.get("event_type"),
+            "shipment_id": body.get("shipment_id"),
+            "tracking_number": body.get("tracking_number"),
+            "status": body.get("status"),
+            "payload": body,
+            "received_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.boxtal_webhooks.insert_one(webhook_event)
+        
+        # Mettre à jour le statut de l'expédition si on a un tracking_number
+        if body.get("tracking_number"):
+            await db.shipments.update_one(
+                {"tracking_number": body.get("tracking_number")},
+                {"$set": {
+                    "status": body.get("status"),
+                    "last_update": datetime.now(timezone.utc).isoformat(),
+                    "last_event": body
+                }}
+            )
+        
+        return {"status": "ok", "message": "Webhook received"}
+        
+    except Exception as e:
+        logger.error(f"Boxtal webhook error: {e}")
+        return {"status": "ok", "message": "Webhook processed with errors"}
+
 @app.get("/api/boxtal/tracking/{tracking_number}")
 async def get_boxtal_tracking(tracking_number: str):
     """Get tracking information for a shipment"""
