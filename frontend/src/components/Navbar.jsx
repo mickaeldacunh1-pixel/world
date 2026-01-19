@@ -294,6 +294,16 @@ export default function Navbar() {
                         </DropdownMenuItem>
                       </>
                     )}
+                    {user.is_admin && (
+                      <>
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin/ventes" className="flex items-center gap-2 cursor-pointer text-accent">
+                            <CreditCard className="w-4 h-4" />
+                            Gestion Ventes
+                          </Link>
+                        </DropdownMenuItem>
+                      </>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link to="/tarifs" className="flex items-center gap-2 cursor-pointer">
