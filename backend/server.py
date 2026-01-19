@@ -3795,7 +3795,8 @@ async def checkout_cart(checkout: CartCheckout, background_tasks: BackgroundTask
                 "buyer_city": checkout.buyer_city,
                 "buyer_postal": checkout.buyer_postal,
                 "buyer_phone": checkout.buyer_phone or current_user.get("phone", ""),
-                "status": "confirmed",
+                "status": "pending_contact",  # En attente de contact vendeur/acheteur
+                "payment_method": "contact_direct",  # Paiement hors plateforme
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "shipped_at": None,
                 "delivered_at": None
@@ -3803,8 +3804,10 @@ async def checkout_cart(checkout: CartCheckout, background_tasks: BackgroundTask
             
             await db.orders.insert_one(order_doc)
             
-            # Mark listing as sold
-            await db.listings.update_one({"id": listing_id}, {"$set": {"status": "sold"}})
+            # NE PAS marquer l'annonce comme vendue immédiatement
+            # L'annonce reste "active" jusqu'à confirmation manuelle du vendeur
+            # Le vendeur pourra marquer comme "sold" après réception du paiement
+            await db.listings.update_one({"id": listing_id}, {"$set": {"status": "reserved"}})
             
             # Send notification emails
             if seller:
