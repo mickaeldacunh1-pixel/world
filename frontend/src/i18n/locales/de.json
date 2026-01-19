@@ -48,7 +48,13 @@
     "go_to_dashboard": "Zum Dashboard",
     "retry": "Erneut versuchen",
     "back_home": "Zurück zur Startseite",
-    "remove": "Entfernen"
+    "remove": "Entfernen",
+    "category": "Kategorie"
+  },
+  "condition": {
+    "new": "Neu",
+    "used": "Gebraucht",
+    "refurbished": "Generalüberholt"
   },
   "nav": {
     "home": "Startseite",

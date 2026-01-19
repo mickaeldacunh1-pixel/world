@@ -48,7 +48,13 @@
     "go_to_dashboard": "Vai alla dashboard",
     "retry": "Riprova",
     "back_home": "Torna alla home",
-    "remove": "Rimuovi"
+    "remove": "Rimuovi",
+    "category": "Categoria"
+  },
+  "condition": {
+    "new": "Nuovo",
+    "used": "Usato",
+    "refurbished": "Ricondizionato"
   },
   "nav": {
     "home": "Home",
