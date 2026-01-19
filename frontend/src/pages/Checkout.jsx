@@ -494,6 +494,71 @@ export default function Checkout() {
               </CardContent>
             </Card>
 
+            {/* Payment Method Selection */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="w-5 h-5" />
+                  Mode de paiement
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-3">
+                  {/* Option Stripe */}
+                  <div 
+                    className={`flex items-center space-x-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                      paymentMethod === 'stripe' ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                    } ${!sellerHasStripe ? 'opacity-50' : ''}`}
+                  >
+                    <RadioGroupItem value="stripe" id="stripe" disabled={!sellerHasStripe} />
+                    <Label htmlFor="stripe" className="flex items-center gap-3 cursor-pointer flex-1">
+                      <span className="text-2xl">💳</span>
+                      <div>
+                        <p className="font-medium">Payer maintenant par carte bancaire</p>
+                        <p className="text-sm text-muted-foreground">
+                          Paiement sécurisé via Stripe - Argent protégé jusqu'à réception
+                        </p>
+                        {!sellerHasStripe && (
+                          <p className="text-xs text-amber-600 mt-1">
+                            ⚠️ Le vendeur n'a pas encore configuré le paiement en ligne
+                          </p>
+                        )}
+                      </div>
+                    </Label>
+                  </div>
+                  
+                  {/* Option Contact direct */}
+                  <div 
+                    className={`flex items-center space-x-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                      paymentMethod === 'contact' ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <RadioGroupItem value="contact" id="contact" />
+                    <Label htmlFor="contact" className="flex items-center gap-3 cursor-pointer flex-1">
+                      <span className="text-2xl">🤝</span>
+                      <div>
+                        <p className="font-medium">Contacter le vendeur</p>
+                        <p className="text-sm text-muted-foreground">
+                          Réserver l'article et payer directement au vendeur
+                        </p>
+                      </div>
+                    </Label>
+                  </div>
+                </RadioGroup>
+
+                {paymentMethod === 'contact' && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                    <p className="text-sm text-blue-800">
+                      <strong>ℹ️ Comment ça marche ?</strong><br/>
+                      1. Vous réservez l'article<br/>
+                      2. Le vendeur vous contacte pour organiser le paiement et la livraison<br/>
+                      3. Vous réglez directement avec le vendeur (espèces, virement, etc.)
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Cart Items Summary */}
             <Card>
               <CardHeader>
