@@ -270,9 +270,9 @@ export default function Home() {
   };
 
   const conditionLabels = {
-    neuf: 'Neuf',
-    occasion: 'Occasion',
-    reconditionne: 'Reconditionné',
+    neuf: t('condition.new'),
+    occasion: t('condition.used'),
+    reconditionne: t('condition.refurbished'),
   };
 
   return (
@@ -427,14 +427,14 @@ export default function Home() {
                 <div className="flex gap-2 sm:contents">
                   <Select value={category} onValueChange={setCategory}>
                     <SelectTrigger className="flex-1 sm:w-52 h-11 sm:h-14 bg-transparent border-0 text-sm sm:text-base rounded-lg sm:rounded-xl focus-ring" data-testid="category-select">
-                      <SelectValue placeholder="Catégorie" />
+                      <SelectValue placeholder={t('common.category')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="pieces">Pièces Détachées</SelectItem>
-                      <SelectItem value="voitures">Voitures</SelectItem>
-                      <SelectItem value="motos">Motos</SelectItem>
-                      <SelectItem value="utilitaires">Utilitaires</SelectItem>
-                      <SelectItem value="accessoires">Accessoires</SelectItem>
+                      <SelectItem value="pieces">{t('categories.pieces')}</SelectItem>
+                      <SelectItem value="voitures">{t('categories.voitures')}</SelectItem>
+                      <SelectItem value="motos">{t('categories.motos')}</SelectItem>
+                      <SelectItem value="utilitaires">{t('categories.utilitaires')}</SelectItem>
+                      <SelectItem value="accessoires">{t('categories.accessoires')}</SelectItem>
                     </SelectContent>
                   </Select>
                   {heroSettings.hero_show_voice_search !== false && (
