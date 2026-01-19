@@ -12,6 +12,7 @@ import { ShoppingCart, MapPin, Phone, User, CreditCard, ArrowLeft, CheckCircle, 
 import { toast } from 'sonner';
 import SEO from '../components/SEO';
 import MondialRelayPicker from '../components/MondialRelayPicker';
+import BoxtalPicker from '../components/BoxtalPicker';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
