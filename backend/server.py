@@ -11290,10 +11290,46 @@ async def get_boxtal_config(current_user: dict = Depends(get_current_user)):
     if current_user.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     
+    creds = await get_boxtal_credentials()
     return {
         "mode": BOXTAL_MODE,
         "margin_percent": BOXTAL_MARGIN_PERCENT,
-        "configured": bool(BOXTAL_ACCESS_KEY and BOXTAL_SECRET_KEY)
+        "configured": bool(creds["access_key"] and creds["secret_key"])
+    }
+
+@app.put("/api/admin/boxtal/credentials")
+async def update_boxtal_credentials(data: dict, current_user: dict = Depends(get_current_user)):
+    """Update Boxtal API credentials (admin only)"""
+    global boxtal_credentials_cache
+    
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Mettre à jour dans la base de données
+    update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    if "app_id" in data:
+        update_data["app_id"] = data["app_id"]
+    if "access_key" in data:
+        update_data["access_key"] = data["access_key"]
+    if "secret_key" in data:
+        update_data["secret_key"] = data["secret_key"]
+    
+    await db.site_settings.update_one(
+        {"setting_type": "boxtal"},
+        {"$set": update_data},
+        upsert=True
+    )
+    
+    # Invalider le cache pour forcer le rechargement
+    boxtal_credentials_cache["loaded"] = False
+    boxtal_token_cache["token"] = None
+    boxtal_token_cache["expires_at"] = None
+    
+    logger.info("📦 Boxtal credentials updated")
+    
+    return {
+        "success": True,
+        "message": "Credentials Boxtal mis à jour"
     }
 
 @app.put("/api/admin/boxtal/margin")
