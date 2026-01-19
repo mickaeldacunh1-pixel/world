@@ -6017,6 +6017,64 @@ async def stripe_webhook(request: Request):
                         
                         logger.info(f"Added {package} video package to user {user_id}")
                 
+                # Handle direct purchase (paiement plateforme)
+                elif metadata.get("type") == "direct_purchase":
+                    listing_id = metadata.get("listing_id")
+                    buyer_id = metadata.get("buyer_id")
+                    seller_id = metadata.get("seller_id")
+                    
+                    if listing_id and buyer_id and seller_id:
+                        # Mettre à jour la commande
+                        order = await db.orders.find_one({"stripe_session_id": session_id})
+                        if order:
+                            await db.orders.update_one(
+                                {"stripe_session_id": session_id},
+                                {"$set": {
+                                    "status": "paid",
+                                    "payment_status": "paid",
+                                    "paid_at": datetime.now(timezone.utc).isoformat()
+                                }}
+                            )
+                            
+                            # Marquer l'annonce comme vendue
+                            await db.listings.update_one(
+                                {"id": listing_id},
+                                {"$set": {"status": "sold", "sold_at": datetime.now(timezone.utc).isoformat()}}
+                            )
+                            
+                            # Récupérer les infos pour notifications
+                            buyer = await db.users.find_one({"id": buyer_id}, {"_id": 0})
+                            seller = await db.users.find_one({"id": seller_id}, {"_id": 0})
+                            listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
+                            
+                            # Notifier le vendeur
+                            if seller and seller.get("email"):
+                                await db.notifications.insert_one({
+                                    "id": str(uuid.uuid4()),
+                                    "user_id": seller_id,
+                                    "type": "sale_confirmed",
+                                    "title": "🎉 Vente confirmée !",
+                                    "message": f"Votre article '{listing.get('title', '')}' a été vendu à {buyer.get('name', 'un acheteur')} pour {order.get('listing_price', 0)}€. Le paiement a été reçu.",
+                                    "data": {"order_id": order["id"], "listing_id": listing_id},
+                                    "read": False,
+                                    "created_at": datetime.now(timezone.utc).isoformat()
+                                })
+                            
+                            # Notifier l'acheteur
+                            if buyer and buyer.get("email"):
+                                await db.notifications.insert_one({
+                                    "id": str(uuid.uuid4()),
+                                    "user_id": buyer_id,
+                                    "type": "purchase_confirmed",
+                                    "title": "✅ Achat confirmé !",
+                                    "message": f"Votre achat de '{listing.get('title', '')}' a été confirmé. Le vendeur va préparer votre commande.",
+                                    "data": {"order_id": order["id"], "listing_id": listing_id},
+                                    "read": False,
+                                    "created_at": datetime.now(timezone.utc).isoformat()
+                                })
+                            
+                            logger.info(f"Direct purchase completed: {listing_id} sold to {buyer_id}")
+                
                 else:
                     # Regular transaction (credits for listings)
                     await db.payment_transactions.update_one(
