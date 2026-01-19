@@ -32,8 +32,20 @@ export default function Checkout() {
     phone: ''
   });
 
-  const [deliveryMethod, setDeliveryMethod] = useState('home'); // 'home' or 'relay'
+  const [deliveryMethod, setDeliveryMethod] = useState(''); // Set dynamically
   const [selectedRelay, setSelectedRelay] = useState(null);
+  const [availableShippingMethods, setAvailableShippingMethods] = useState([]);
+
+  // Shipping methods configuration
+  const SHIPPING_METHODS = {
+    hand_delivery: { id: 'hand_delivery', name: 'Remise en main propre', icon: '🤝', desc: 'Récupérer directement chez le vendeur', needsAddress: false },
+    home: { id: 'home', name: 'Livraison à domicile', icon: '🏠', desc: 'Recevoir à votre adresse', needsAddress: true },
+    colissimo: { id: 'colissimo', name: 'Colissimo', icon: '📦', desc: 'Livraison La Poste (2-3 jours)', needsAddress: true },
+    mondial_relay: { id: 'mondial_relay', name: 'Point Relais Mondial Relay', icon: '📍', desc: 'Retirer dans un point relais', needsAddress: false, isRelay: true },
+    chronopost: { id: 'chronopost', name: 'Chronopost', icon: '⚡', desc: 'Livraison express (24h)', needsAddress: true },
+    boxtal: { id: 'boxtal', name: 'Boxtal', icon: '📫', desc: 'Multi-transporteurs au meilleur prix', needsAddress: true },
+    custom: { id: 'custom', name: 'Autre transporteur', icon: '🚚', desc: 'Transporteur choisi par le vendeur', needsAddress: true },
+  };
 
   useEffect(() => {
     // Redirect if not logged in
@@ -82,6 +94,28 @@ export default function Checkout() {
       
       const availableItems = updatedItems.filter(item => item.available);
       setCartItems(availableItems);
+      
+      // Determine available shipping methods from items
+      const allMethods = new Set();
+      availableItems.forEach(item => {
+        const methods = item.shipping_methods || [];
+        if (methods.length === 0) {
+          // Default methods if none configured
+          allMethods.add('home');
+          allMethods.add('mondial_relay');
+        } else {
+          methods.forEach(m => allMethods.add(m));
+        }
+      });
+      
+      // Convert to array and sort
+      const methodsArray = Array.from(allMethods).map(m => SHIPPING_METHODS[m] || SHIPPING_METHODS.custom).filter(Boolean);
+      setAvailableShippingMethods(methodsArray);
+      
+      // Set default delivery method
+      if (methodsArray.length > 0 && !deliveryMethod) {
+        setDeliveryMethod(methodsArray[0].id);
+      }
       
       if (availableItems.length < items.length) {
         toast.warning('Certains articles ne sont plus disponibles et ont été retirés');
