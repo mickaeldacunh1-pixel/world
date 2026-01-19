@@ -672,6 +672,20 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 api_router = APIRouter(prefix="/api")
 
+# Health check endpoint pour Docker
+@api_router.get("/health")
+async def health_check():
+    """Endpoint de santé pour les healthchecks Docker"""
+    try:
+        # Vérifier la connexion MongoDB
+        await db.command("ping")
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        return JSONResponse(
+            status_code=503,
+            content={"status": "unhealthy", "database": "disconnected", "error": str(e)}
+        )
+
 # Middleware de sécurité pour bloquer les IPs suspectes
 @app.middleware("http")
 async def security_middleware(request: Request, call_next):
