@@ -311,27 +311,29 @@ export default function Home() {
       />
       {/* Hero Section - Full Customization */}
       <section className={`relative ${HERO_HEIGHT_CLASSES[heroSettings.hero_height] || 'min-h-[600px] md:min-h-[700px]'} flex items-center overflow-hidden`}>
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <img 
-            src={heroSettings.hero_image} 
-            alt="Hero background" 
-            className="w-full h-full object-cover"
-          />
-          {heroSettings.hero_overlay_enabled !== false && (
-            <div 
-              className={`absolute inset-0 ${heroSettings.hero_overlay_gradient ? 'bg-gradient-to-r from-black/90 to-black/50' : ''}`}
-              style={{ 
-                backgroundColor: heroSettings.hero_overlay_gradient ? undefined : heroSettings.hero_overlay_color || '#000000',
-                opacity: (heroSettings.hero_overlay_opacity || 50) / 100 
-              }}
+        {/* Background Image - Seulement en mode standard (pas en mode libre qui gère son propre fond) */}
+        {!heroSettings.hero_free_position_enabled && (
+          <div className="absolute inset-0">
+            <img 
+              src={heroSettings.hero_image} 
+              alt="Hero background" 
+              className="w-full h-full object-cover"
             />
-          )}
-        </div>
+            {heroSettings.hero_overlay_enabled !== false && (
+              <div 
+                className={`absolute inset-0 ${heroSettings.hero_overlay_gradient ? 'bg-gradient-to-r from-black/90 to-black/50' : ''}`}
+                style={{ 
+                  backgroundColor: heroSettings.hero_overlay_gradient ? undefined : heroSettings.hero_overlay_color || '#000000',
+                  opacity: (heroSettings.hero_overlay_opacity || 50) / 100 
+                }}
+              />
+            )}
+          </div>
+        )}
         
         {/* Content - Mode Libre ou Mode Standard */}
         {heroSettings.hero_free_position_enabled ? (
-          // Mode Position Libre
+          // Mode Position Libre - gère son propre fond (image ou vidéo)
           <div className="relative w-full h-[70vh] min-h-[500px]">
             <HeroFreePosition settings={heroSettings} />
           </div>
