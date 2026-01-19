@@ -60,10 +60,10 @@ export default function Profile() {
     
     // Handle Stripe redirect
     if (searchParams.get('stripe_success') === 'true') {
-      toast.success('Compte Stripe configuré avec succès !');
+      toast.success(t('profile.stripe_success'));
       checkStripeStatus();
     } else if (searchParams.get('stripe_refresh') === 'true') {
-      toast.info('Veuillez finaliser la configuration de votre compte Stripe');
+      toast.info(t('profile.stripe_refresh'));
     }
   }, [searchParams, lastRefresh]);
 
@@ -71,7 +71,7 @@ export default function Profile() {
   // Save IBAN
   const saveIban = async () => {
     if (!ibanData.iban || !ibanData.account_holder) {
-      toast.error("Veuillez remplir l IBAN et le titulaire");
+      toast.error(t('profile.iban_required'));
       return;
     }
     setLoading(true);
@@ -79,10 +79,10 @@ export default function Profile() {
       await axios.post(`${API}/users/me/iban`, ibanData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success("IBAN enregistré avec succès");
+      toast.success(t('profile.iban_saved'));
       refreshUser();
     } catch (err) {
-      toast.error(err.response?.data?.detail || "Erreur lors de l enregistrement");
+      toast.error(err.response?.data?.detail || t('profile.iban_error'));
     } finally {
       setLoading(false);
     }
