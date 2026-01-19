@@ -218,7 +218,7 @@ export default function HeroFreePosition({ settings, onSearch }) {
     tobi_button: { x: 40, y: 72, visible: true },
     diag_button: { x: 55, y: 72, visible: true },
     radio_button: { x: 70, y: 72, visible: true },
-    promo_video: { x: 85, y: 50, visible: false },
+    promo_video: { x: 85, y: 50, visible: true },
     cta_buttons: { x: 50, y: 82, visible: true },
     premium_buttons: { x: 50, y: 92, visible: true },
   };
@@ -234,7 +234,7 @@ export default function HeroFreePosition({ settings, onSearch }) {
     tobi_button: { x: 30, y: 70, visible: true },
     diag_button: { x: 50, y: 70, visible: true },
     radio_button: { x: 70, y: 70, visible: true },
-    promo_video: { x: 50, y: 90, visible: false },
+    promo_video: { x: 50, y: 85, visible: true },
     cta_buttons: { x: 50, y: 82, visible: true },
     premium_buttons: { x: 50, y: 92, visible: false },
   };
