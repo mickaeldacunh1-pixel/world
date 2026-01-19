@@ -1708,6 +1708,15 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
                     placeholder="URL de l'image de repli"
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label>Couleur de l'overlay (assombrir la vidéo)</Label>
+                  <Input
+                    value={settings.hero_video_overlay_color || 'rgba(0,0,0,0.4)'}
+                    onChange={(e) => updateSetting('hero_video_overlay_color', e.target.value)}
+                    placeholder="rgba(0,0,0,0.4)"
+                  />
+                  <p className="text-xs text-muted-foreground">Format: rgba(0,0,0,0.4) - Le dernier chiffre contrôle l'opacité (0-1)</p>
+                </div>
               </div>
             )}
           </CollapsibleSection>
