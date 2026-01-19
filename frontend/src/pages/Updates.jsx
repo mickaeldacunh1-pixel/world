@@ -12,6 +12,37 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-27',
+    date: '2026-01-19',
+    version: '5.6.0',
+    title: '🔐 Sécurisation Tobi & Amélioration Déploiement',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🔐 Tobi sécurisé : authentification obligatoire pour accéder à l\'assistant IA' },
+      { type: 'new', text: '🎁 Accès gratuit illimité à Tobi pour les utilisateurs avec annonce active' },
+      { type: 'new', text: '💳 Système de crédits diagnostic pour Tobi (même logique que le Diagnostic IA)' },
+      { type: 'new', text: '🏥 Endpoint /api/health pour vérifier l\'état du backend' },
+      { type: 'new', text: '🐳 Healthchecks Docker : MongoDB, Backend et Frontend démarrent dans le bon ordre' },
+      { type: 'improvement', text: '🚀 Script wabuild amélioré : --status, --restart, attente des healthchecks' },
+      { type: 'improvement', text: '🔒 Endpoints Tobi protégés : /tobi/chat, /tobi/history, /tobi/access' },
+    ]
+  },
+  {
+    id: 'static-new-26',
+    date: '2026-01-18',
+    version: '5.5.0',
+    title: '🌍 Traductions & Page de Présentation',
+    category: 'improvement',
+    items: [
+      { type: 'new', text: '📄 Page de présentation WorldAuto : bouton de téléchargement ajouté' },
+      { type: 'new', text: '🌍 Traduction Contact.jsx : page entièrement traduite en 8 langues' },
+      { type: 'improvement', text: '🏠 Home.jsx : textes durs traduits (catégories, conditions)' },
+      { type: 'improvement', text: '📝 Traductions Profile.jsx et Pricing.jsx complétées' },
+      { type: 'improvement', text: '🗂️ Nouvelles clés i18n : condition.new/used/refurbished, common.category' },
+      { type: 'improvement', text: '📻 Lecteur radio : fonction minimiser ajoutée' },
+    ]
+  },
+  {
     id: 'static-new-25',
     date: '2026-01-14',
     version: '5.4.0',
