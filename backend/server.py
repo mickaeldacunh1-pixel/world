@@ -3575,7 +3575,7 @@ async def create_warranty_checkout(
 @api_router.post("/listings/{listing_id}/verify")
 async def request_verification(listing_id: str, current_user: dict = Depends(get_current_user)):
     """Demander la vérification d'une pièce (Admin only ou automatique basé sur critères)"""
-    listing = await db.listings.find_one({"id": listing_id})
+    listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
     if not listing:
         raise HTTPException(status_code=404, detail="Annonce non trouvée")
     
