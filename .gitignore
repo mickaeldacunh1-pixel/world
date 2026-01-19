@@ -63,3 +63,7 @@ frontend/node_modules/.cache/default-development/13.pack
 frontend/node_modules/.cache/default-development/2.pack
 frontend/build/kim-desktop/node_modules/electron/dist/electron
 frontend/public/kim-desktop/node_modules/electron/dist/electron
+-e 
+# Environment files
+*.env
+*.env.*
