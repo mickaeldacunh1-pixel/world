@@ -461,8 +461,8 @@ export default function Pricing() {
                   <Flame className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-xl">🎁 Essai PRO Gratuit - 14 jours</h3>
-                  <p className="text-muted-foreground">10 crédits offerts + toutes les fonctionnalités PRO. Sans engagement.</p>
+                  <h3 className="font-heading font-bold text-xl">🎁 {t('pricing.pro_trial_title')}</h3>
+                  <p className="text-muted-foreground">{t('pricing.pro_trial_desc')}</p>
                 </div>
               </div>
               <Button
@@ -471,7 +471,7 @@ export default function Pricing() {
                 disabled={loading.pro_trial}
                 data-testid="buy-pro-trial"
               >
-                {loading.pro_trial ? t('pricing.loading') : 'Commencer l\'essai gratuit'}
+                {loading.pro_trial ? t('pricing.loading') : t('pricing.pro_trial_btn')}
               </Button>
             </div>
           </CardContent>
@@ -480,8 +480,8 @@ export default function Pricing() {
         {/* Abonnements PRO */}
         <div className="mb-8">
           <h2 className="font-heading text-2xl font-bold mb-6 text-center">
-            🏢 Abonnements Pro
-            <span className="block text-sm font-normal text-muted-foreground mt-1">Pour les professionnels - Crédits renouvelés automatiquement</span>
+            🏢 {t('pricing.pro_title')}
+            <span className="block text-sm font-normal text-muted-foreground mt-1">{t('pricing.pro_subtitle')}</span>
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {/* Pro 1 mois */}
