@@ -561,6 +561,36 @@ export default function HeroFreePosition({ settings, onSearch }) {
           </div>
         </PositionedElement>
       )}
+
+      {/* Lecteur vidéo promo */}
+      {settings.hero_promo_video_enabled && settings.hero_promo_video_url && (
+        <PositionedElement 
+          elementId="promo_video" 
+          position={getPos('promo_video')}
+          mobilePosition={getMobilePos('promo_video')}
+          isMobile={isMobile}
+        >
+          <div 
+            className="rounded-xl overflow-hidden shadow-2xl border-2 border-white/20"
+            style={{ 
+              width: isMobile ? '280px' : (settings.hero_promo_video_width || '320px'),
+              maxWidth: '90vw'
+            }}
+          >
+            <video
+              src={settings.hero_promo_video_url}
+              controls
+              muted={settings.hero_promo_video_muted !== false}
+              loop={settings.hero_promo_video_loop === true}
+              autoPlay={settings.hero_promo_video_autoplay === true}
+              playsInline
+              poster={settings.hero_promo_video_poster || ''}
+              className="w-full"
+              style={{ maxHeight: isMobile ? '160px' : '200px' }}
+            />
+          </div>
+        </PositionedElement>
+      )}
     </div>
   );
 }
