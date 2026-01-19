@@ -32,6 +32,7 @@ import AdminSettings from "./pages/AdminSettings";
 import AdminUpdates from "./pages/AdminUpdates";
 import AdminReports from "./pages/AdminReports";
 import AdminPayments from "./pages/AdminPayments";
+import AdminSales from "./pages/AdminSales";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
