@@ -62,7 +62,11 @@ export default function MondialRelayPicker({ onSelect, selectedRelay, postalCode
   const initWidget = () => {
     const $ = window.jQuery;
     if (!$ || !$.fn.MR_ParcelShopPicker) {
-      setError('Widget Mondial Relay non disponible');
+      console.error('Mondial Relay: jQuery ou plugin non disponible', { 
+        jQuery: !!$, 
+        plugin: $ ? !!$.fn.MR_ParcelShopPicker : false 
+      });
+      setError('Widget Mondial Relay non disponible. Veuillez rafraîchir la page.');
       return;
     }
 
@@ -82,6 +86,7 @@ export default function MondialRelayPicker({ onSelect, selectedRelay, postalCode
         ShowResultsOnMap: true,
         Responsive: true,
         OnParcelShopSelected: (data) => {
+          console.log('Mondial Relay: Point sélectionné', data);
           if (data && data.ID) {
             onSelect({
               id: data.ID,
@@ -98,12 +103,19 @@ export default function MondialRelayPicker({ onSelect, selectedRelay, postalCode
           }
         },
         OnNoResultReturned: () => {
+          console.log('Mondial Relay: Aucun résultat');
           setError('Aucun point relais trouvé pour ce code postal');
+          setLoading(false);
+        },
+        OnError: (err) => {
+          console.error('Mondial Relay Error:', err);
+          setError('Erreur Mondial Relay: ' + (err?.message || 'Erreur de chargement'));
           setLoading(false);
         }
       });
       
-      setLoading(false);
+      // Petit délai pour laisser le widget s'initialiser
+      setTimeout(() => setLoading(false), 500);
     } catch (err) {
       console.error('MR Widget error:', err);
       setError('Erreur lors du chargement des points relais');
