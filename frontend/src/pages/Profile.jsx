@@ -152,9 +152,9 @@ export default function Profile() {
     try {
       await axios.put(`${API}/auth/profile`, profileData);
       await refreshUser();
-      toast.success('Profil mis à jour avec succès !');
+      toast.success(t('profile.profile_updated'));
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur lors de la mise à jour');
+      toast.error(error.response?.data?.detail || t('profile.update_error'));
     } finally {
       setLoading(false);
     }
@@ -164,12 +164,12 @@ export default function Profile() {
     e.preventDefault();
     
     if (passwordData.new_password !== passwordData.confirm_password) {
-      toast.error('Les mots de passe ne correspondent pas');
+      toast.error(t('profile.password_mismatch'));
       return;
     }
     
     if (passwordData.new_password.length < 6) {
-      toast.error('Le nouveau mot de passe doit contenir au moins 6 caractères');
+      toast.error(t('profile.password_too_short'));
       return;
     }
     
@@ -181,9 +181,9 @@ export default function Profile() {
         new_password: passwordData.new_password,
       });
       setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
-      toast.success('Mot de passe modifié avec succès !');
+      toast.success(t('profile.password_changed'));
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur lors du changement de mot de passe');
+      toast.error(error.response?.data?.detail || t('profile.password_error'));
     } finally {
       setLoading(false);
     }
@@ -191,7 +191,7 @@ export default function Profile() {
 
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== 'SUPPRIMER') {
-      toast.error('Veuillez taper SUPPRIMER pour confirmer');
+      toast.error(t('profile.type_delete_error'));
       return;
     }
     
@@ -199,10 +199,10 @@ export default function Profile() {
     
     try {
       await axios.delete(`${API}/auth/account`);
-      toast.success('Compte supprimé avec succès');
+      toast.success(t('profile.account_deleted'));
       logout();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur lors de la suppression');
+      toast.error(error.response?.data?.detail || t('profile.delete_error'));
     } finally {
       setLoading(false);
       setDeleteDialogOpen(false);
