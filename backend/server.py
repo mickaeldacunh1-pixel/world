@@ -3533,7 +3533,7 @@ async def create_warranty_checkout(
     stripe.api_key = STRIPE_API_KEY
     
     # Vérifier que l'annonce appartient à l'utilisateur
-    listing = await db.listings.find_one({"id": listing_id, "seller_id": current_user["id"]})
+    listing = await db.listings.find_one({"id": listing_id, "seller_id": current_user["id"]}, {"_id": 0})
     if not listing:
         raise HTTPException(status_code=404, detail="Annonce non trouvée")
     
@@ -8685,7 +8685,7 @@ async def use_free_boost(type: str, listing_id: str, current_user: dict = Depend
         raise HTTPException(status_code=400, detail="Aucun abonnement actif")
     
     # Verify listing
-    listing = await db.listings.find_one({"id": listing_id, "seller_id": current_user["id"]})
+    listing = await db.listings.find_one({"id": listing_id, "seller_id": current_user["id"]}, {"_id": 0})
     if not listing:
         raise HTTPException(status_code=404, detail="Annonce non trouvée")
     
@@ -8732,7 +8732,7 @@ async def use_loyalty_boost(listing_id: str, current_user: dict = Depends(get_cu
         raise HTTPException(status_code=400, detail=f"Vous avez besoin de {LOYALTY_BOOST_COST} points")
     
     # Verify listing
-    listing = await db.listings.find_one({"id": listing_id, "seller_id": current_user["id"]})
+    listing = await db.listings.find_one({"id": listing_id, "seller_id": current_user["id"]}, {"_id": 0})
     if not listing:
         raise HTTPException(status_code=404, detail="Annonce non trouvée")
     
