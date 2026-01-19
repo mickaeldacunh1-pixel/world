@@ -11,7 +11,7 @@ import { Slider } from './ui/slider';
 import { 
   Type, Palette, Layout, Image, Eye, Sparkles, 
   Search, BarChart3, MousePointer, ChevronDown, ChevronUp,
-  RefreshCw, Upload, GripVertical
+  RefreshCw, Upload, GripVertical, Video
 } from 'lucide-react';
 import {
   DndContext,
