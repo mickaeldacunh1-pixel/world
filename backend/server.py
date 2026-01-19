@@ -3611,7 +3611,7 @@ async def request_verification(listing_id: str, current_user: dict = Depends(get
         verification_details.append("kilometrage_vehicule")
     
     # Vendeur vérifié (+25)
-    seller = await db.users.find_one({"id": listing["seller_id"]})
+    seller = await db.users.find_one({"id": listing["seller_id"]}, {"_id": 0})
     sold_count = await db.orders.count_documents({"seller_id": listing["seller_id"], "status": "delivered"})
     if sold_count >= 5:
         verification_score += 25
