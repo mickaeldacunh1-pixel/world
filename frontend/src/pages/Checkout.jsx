@@ -227,21 +227,41 @@ export default function Checkout() {
         };
       }
       
-      const response = await axios.post(
-        `${API}/orders/checkout`,
-        {
-          listing_ids: cartItems.map(item => item.id),
-          ...shippingData
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      // Clear cart
-      localStorage.removeItem('worldauto_cart');
-      
-      setOrderResult(response.data);
-      setOrderSuccess(true);
-      toast.success('Commandes confirmées !');
+      // Choisir l'endpoint selon le mode de paiement
+      if (paymentMethod === 'stripe') {
+        // Paiement Stripe - redirection vers la page de paiement
+        const response = await axios.post(
+          `${API}/stripe/connect/checkout`,
+          {
+            listing_id: cartItems[0].id, // Pour l'instant, un article à la fois pour Stripe
+            ...shippingData
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        // Redirection vers Stripe Checkout
+        if (response.data.checkout_url) {
+          window.location.href = response.data.checkout_url;
+          return;
+        }
+      } else {
+        // Mode contact direct - pas de paiement sur la plateforme
+        const response = await axios.post(
+          `${API}/orders/checkout`,
+          {
+            listing_ids: cartItems.map(item => item.id),
+            ...shippingData
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        // Clear cart
+        localStorage.removeItem('worldauto_cart');
+        
+        setOrderResult(response.data);
+        setOrderSuccess(true);
+        toast.success('Commande envoyée ! Le vendeur va vous contacter.');
+      }
       
     } catch (error) {
       console.error('Checkout error:', error);
