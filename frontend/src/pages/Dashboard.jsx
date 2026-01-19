@@ -654,10 +654,10 @@ export default function Dashboard() {
                   <CardHeader>
                     <CardTitle className="font-heading flex items-center gap-2 text-orange-600">
                       <AlertTriangle className="w-5 h-5" />
-                      Annonces à optimiser
+                      {t('dashboard.listings_needing_attention')}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground">
-                      Ces annonces ont peu de vues - pensez à les booster ou modifier leur titre/photos
+                      {t('dashboard.listings_needing_attention_hint')}
                     </p>
                   </CardHeader>
                   <CardContent>
@@ -669,7 +669,7 @@ export default function Dashboard() {
                         >
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm truncate">{listing.title}</p>
-                            <p className="text-xs text-muted-foreground">{listing.views} vues</p>
+                            <p className="text-xs text-muted-foreground">{listing.views} {t('dashboard.table_views').toLowerCase()}</p>
                           </div>
                           <div className="flex gap-1 ml-2">
                             <Link to={`/annonce/edit/${listing.id}`}>
@@ -700,13 +700,13 @@ export default function Dashboard() {
                           <Star className="w-6 h-6 text-accent" />
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Points fidélité</p>
+                          <p className="text-sm text-muted-foreground">{t('dashboard.loyalty_points')}</p>
                           <p className="text-2xl font-bold text-accent">{stats.loyalty_points} pts</p>
                         </div>
                       </div>
                       <Link to="/fidelite">
                         <Button variant="outline">
-                          Utiliser mes points
+                          {t('dashboard.use_points')}
                         </Button>
                       </Link>
                     </div>
