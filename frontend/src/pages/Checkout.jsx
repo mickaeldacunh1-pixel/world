@@ -100,13 +100,8 @@ export default function Checkout() {
       setCartItems(availableItems);
       
       // Vérifier si tous les vendeurs ont Stripe Connect configuré
-      const allSellersHaveStripe = availableItems.every(item => item.seller_stripe_connected === true);
-      setSellerHasStripe(allSellersHaveStripe);
-      
-      // Si aucun vendeur n'a Stripe, forcer le mode contact
-      if (!allSellersHaveStripe) {
-        setPaymentMethod('contact');
-      }
+      // Avec Stripe Direct (paiement plateforme), on peut toujours payer par CB
+      setSellerHasStripe(true); // Toujours disponible car paiement vers la plateforme
       
       // Determine available shipping methods from items
       const allMethods = new Set();
