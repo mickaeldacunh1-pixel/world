@@ -12,6 +12,24 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-30',
+    date: '2026-01-19',
+    version: '5.9.0',
+    title: '🎬 Lecteur Vidéo Promo & Corrections Livraison',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🎬 Lecteur vidéo promo : ajoutez une vidéo de présentation dans le Hero sans remplacer l\'image de fond' },
+      { type: 'new', text: '🖱️ Lecteur vidéo déplaçable : positionnez-le où vous voulez dans l\'éditeur Hero avancé' },
+      { type: 'new', text: '⚙️ Options vidéo : lecture auto, boucle, muet, largeur personnalisable, image poster' },
+      { type: 'new', text: '📦 Boxtal : credentials chargés depuis la base de données (plus besoin de modifier le .env)' },
+      { type: 'new', text: '🔧 Nouvel endpoint /api/admin/boxtal/credentials pour configurer Boxtal' },
+      { type: 'fix', text: '🖼️ Correction : l\'image de fond Hero reste visible avec le lecteur vidéo promo activé' },
+      { type: 'fix', text: '📍 Mondial Relay : scripts jQuery chargés correctement, meilleure gestion d\'erreurs' },
+      { type: 'fix', text: '🧹 .gitignore nettoyé : protection des fichiers .env lors des déploiements' },
+      { type: 'improvement', text: '🐳 Healthchecks Docker améliorés pour un démarrage ordonné des services' },
+    ]
+  },
+  {
     id: 'static-new-29',
     date: '2026-01-19',
     version: '5.8.0',
