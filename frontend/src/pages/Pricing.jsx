@@ -33,7 +33,7 @@ export default function Pricing() {
 
   const handleBuyPackage = async (packageId) => {
     if (!user) {
-      toast.error(t('common.login_required', 'Connectez-vous pour acheter un pack'));
+      toast.error(t('pricing.login_required'));
       return;
     }
 
@@ -42,7 +42,7 @@ export default function Pricing() {
       const response = await axios.post(`${API}/payments/checkout?package_id=${packageId}`);
       window.location.href = response.data.url;
     } catch (error) {
-      toast.error('Erreur lors de l\'initialisation du paiement');
+      toast.error(t('pricing.payment_error'));
     } finally {
       setLoading(prev => ({ ...prev, [packageId]: false }));
     }
