@@ -665,7 +665,10 @@ export default function Listings() {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setPage(Math.max(1, page - 1))}
+                  onClick={() => {
+                    setPage(Math.max(1, page - 1));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   disabled={page === 1}
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -676,7 +679,10 @@ export default function Listings() {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setPage(Math.min(pages, page + 1))}
+                  onClick={() => {
+                    setPage(Math.min(pages, page + 1));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   disabled={page === pages}
                 >
                   <ChevronRight className="w-4 h-4" />
