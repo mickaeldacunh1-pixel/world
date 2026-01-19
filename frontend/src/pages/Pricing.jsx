@@ -633,8 +633,8 @@ export default function Pricing() {
         {/* Forfaits Vidéo */}
         <div className="mb-8">
           <h2 className="font-heading text-2xl font-bold mb-6 text-center">
-            🎬 Forfaits Vidéo
-            <span className="block text-sm font-normal text-muted-foreground mt-1">Ajoutez une vidéo à votre annonce</span>
+            🎬 {t('pricing.video_title')}
+            <span className="block text-sm font-normal text-muted-foreground mt-1">{t('pricing.video_subtitle')}</span>
           </h2>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {/* Vidéo Étendue */}
