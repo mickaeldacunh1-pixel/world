@@ -176,7 +176,7 @@ export default function Pricing() {
 
   const handleBuyVideoPackage = async (packageType) => {
     if (!user) {
-      toast.error('Connectez-vous pour acheter un forfait vidéo');
+      toast.error(t('pricing.login_required'));
       return;
     }
 
@@ -185,7 +185,7 @@ export default function Pricing() {
       const response = await axios.post(`${API}/video/package/checkout?package=${packageType}`);
       window.location.href = response.data.checkout_url;
     } catch (error) {
-      toast.error('Erreur lors de l\'initialisation du paiement');
+      toast.error(t('pricing.payment_error'));
     } finally {
       setLoading(prev => ({ ...prev, [packageType]: false }));
     }
@@ -194,21 +194,20 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-secondary/30 py-12" data-testid="pricing-page">
       <SEO
-        title="Tarifs"
-        description="Découvrez nos packs de crédits pour publier vos annonces sur World Auto Pro. Des tarifs simples et transparents pour particuliers et professionnels."
+        title={t('pricing.title')}
+        description={t('pricing.description')}
         keywords="tarifs annonces auto, prix publication annonce, crédits world auto, pack annonces"
         url="/tarifs"
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-4">Tarifs</Badge>
+          <Badge variant="secondary" className="mb-4">{t('pricing.title')}</Badge>
           <h1 className="font-heading text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            Des tarifs simples et transparents
+            {t('pricing.subtitle')}
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Choisissez le pack qui correspond à vos besoins. 
-            Tous les packs incluent la publication d&apos;annonces pendant 30 jours.
+            {t('pricing.description')}
           </p>
         </div>
 
@@ -221,13 +220,13 @@ export default function Pricing() {
                   <CreditCard className="w-6 h-6 text-accent-foreground" />
                 </div>
                 <div>
-                  <p className="font-medium">Vos crédits actuels</p>
+                  <p className="font-medium">{t('pricing.your_credits')}</p>
                   <p className="text-3xl font-heading font-bold text-accent">{user.credits || 0}</p>
                 </div>
               </div>
               <Link to="/deposer">
                 <Button className="bg-accent hover:bg-accent/90">
-                  Déposer une annonce
+                  {t('pricing.post_listing')}
                 </Button>
               </Link>
             </CardContent>
@@ -237,8 +236,8 @@ export default function Pricing() {
         {/* Pricing Cards - Particuliers */}
         <div className="mb-8">
           <h2 className="font-heading text-2xl font-bold mb-6 text-center">
-            📦 Packs Crédits
-            <span className="block text-sm font-normal text-muted-foreground mt-1">Pour les particuliers - Paiement unique</span>
+            📦 {t('pricing.packs_title')}
+            <span className="block text-sm font-normal text-muted-foreground mt-1">{t('pricing.packs_subtitle')}</span>
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             {/* Single */}
