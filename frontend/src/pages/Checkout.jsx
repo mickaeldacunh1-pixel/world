@@ -35,6 +35,7 @@ export default function Checkout() {
 
   const [deliveryMethod, setDeliveryMethod] = useState(''); // Set dynamically
   const [selectedRelay, setSelectedRelay] = useState(null);
+  const [selectedBoxtalCarrier, setSelectedBoxtalCarrier] = useState(null);
   const [availableShippingMethods, setAvailableShippingMethods] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState('stripe'); // 'stripe' ou 'contact'
   const [sellerHasStripe, setSellerHasStripe] = useState(false);
