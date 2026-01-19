@@ -352,7 +352,7 @@ export default function Dashboard() {
                         </p>
                         <p className="text-xs text-blue-600 dark:text-blue-500 mt-1 flex items-center gap-1">
                           <ArrowUpRight className="w-3 h-3" />
-                          Après commission
+                          {t('dashboard.sales_after_commission')}
                         </p>
                       </div>
                       <div className="w-14 h-14 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center">
@@ -366,12 +366,12 @@ export default function Dashboard() {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-orange-700 dark:text-orange-400">Commission ce mois</p>
+                        <p className="text-sm text-orange-700 dark:text-orange-400">{t('dashboard.sales_monthly_commission')}</p>
                         <p className="text-3xl font-heading font-bold text-orange-800 dark:text-orange-300">
                           {stats?.sales?.monthly_commissions?.toFixed(2) || '0.00'} €
                         </p>
                         <p className="text-xs text-orange-600 dark:text-orange-500 mt-1">
-                          5% (min 1,50€, max 15€)
+                          {t('dashboard.sales_commission_rate')}
                         </p>
                       </div>
                       <div className="w-14 h-14 bg-orange-100 dark:bg-orange-800 rounded-full flex items-center justify-center">
@@ -385,12 +385,12 @@ export default function Dashboard() {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-purple-700 dark:text-purple-400">Total historique</p>
+                        <p className="text-sm text-purple-700 dark:text-purple-400">{t('dashboard.sales_total_history')}</p>
                         <p className="text-3xl font-heading font-bold text-purple-800 dark:text-purple-300">
                           {stats?.sales?.net_revenue?.toFixed(2) || '0.00'} €
                         </p>
                         <p className="text-xs text-purple-600 dark:text-purple-500 mt-1">
-                          {stats?.sales?.total_count || 0} ventes
+                          {stats?.sales?.total_count || 0} {t('dashboard.sales_total_count')}
                         </p>
                       </div>
                       <div className="w-14 h-14 bg-purple-100 dark:bg-purple-800 rounded-full flex items-center justify-center">
@@ -406,7 +406,7 @@ export default function Dashboard() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="w-5 h-5 text-accent" />
-                    Évolution des revenus (6 derniers mois)
+                    {t('dashboard.chart_title')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -419,10 +419,10 @@ export default function Dashboard() {
                           <YAxis />
                           <Tooltip 
                             formatter={(value, name) => {
-                              const labels = { revenue: 'Brut', net: 'Net', commission: 'Commission' };
+                              const labels = { revenue: t('dashboard.chart_gross'), net: t('dashboard.chart_net'), commission: t('dashboard.chart_commission') };
                               return [`${value.toFixed(2)} €`, labels[name] || name];
                             }}
-                            labelFormatter={(label) => `Mois : ${label}`}
+                            labelFormatter={(label) => `${t('dashboard.chart_month')} : ${label}`}
                           />
                           <Bar dataKey="revenue" name="revenue" fill="#10B981" radius={[4, 4, 0, 0]} />
                           <Bar dataKey="net" name="net" fill="#3B82F6" radius={[4, 4, 0, 0]} />
@@ -433,9 +433,9 @@ export default function Dashboard() {
                   ) : (
                     <div className="text-center py-12">
                       <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-muted-foreground">Aucune vente pour le moment</p>
+                      <p className="text-muted-foreground">{t('dashboard.no_sales')}</p>
                       <p className="text-sm text-muted-foreground mt-2">
-                        Vos statistiques de revenus apparaîtront ici après votre première vente
+                        {t('dashboard.no_sales_hint')}
                       </p>
                     </div>
                   )}
@@ -450,26 +450,25 @@ export default function Dashboard() {
                       <Percent className="w-6 h-6 text-accent" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-heading font-semibold mb-2">Comment fonctionne la commission ?</h3>
+                      <h3 className="font-heading font-semibold mb-2">{t('dashboard.commission_title')}</h3>
                       <p className="text-sm text-muted-foreground mb-3">
-                        World Auto Pro prélève une commission de <strong>5%</strong> sur chaque vente, 
-                        avec un <strong>minimum de 1,50€</strong> et un <strong>maximum de 15€</strong>.
+                        {t('dashboard.commission_desc')}
                       </p>
                       <div className="grid grid-cols-3 gap-4 text-sm">
                         <div className="bg-background rounded-lg p-3 text-center">
-                          <p className="text-muted-foreground text-xs">Pièce à 20€</p>
+                          <p className="text-muted-foreground text-xs">{t('dashboard.commission_example')} 20€</p>
                           <p className="font-bold text-orange-600">1,50€</p>
-                          <p className="text-xs text-muted-foreground">(minimum)</p>
+                          <p className="text-xs text-muted-foreground">({t('dashboard.commission_min')})</p>
                         </div>
                         <div className="bg-background rounded-lg p-3 text-center">
-                          <p className="text-muted-foreground text-xs">Pièce à 100€</p>
+                          <p className="text-muted-foreground text-xs">{t('dashboard.commission_example')} 100€</p>
                           <p className="font-bold text-orange-600">5€</p>
                           <p className="text-xs text-muted-foreground">(5%)</p>
                         </div>
                         <div className="bg-background rounded-lg p-3 text-center">
-                          <p className="text-muted-foreground text-xs">Pièce à 500€</p>
+                          <p className="text-muted-foreground text-xs">{t('dashboard.commission_example')} 500€</p>
                           <p className="font-bold text-orange-600">15€</p>
-                          <p className="text-xs text-muted-foreground">(maximum)</p>
+                          <p className="text-xs text-muted-foreground">({t('dashboard.commission_max')})</p>
                         </div>
                       </div>
                     </div>
@@ -482,9 +481,9 @@ export default function Dashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-heading font-semibold mb-1">📄 Export comptabilité</h3>
+                      <h3 className="font-heading font-semibold mb-1">📄 {t('dashboard.export_title')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Téléchargez un relevé PDF de toutes vos ventes pour votre comptabilité
+                        {t('dashboard.export_desc')}
                       </p>
                     </div>
                     <Button 
@@ -495,7 +494,7 @@ export default function Dashboard() {
                       {exportingPdf ? (
                         <>
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Génération...
+                          {t('dashboard.export_generating')}
                         </>
                       ) : (
                         <>
