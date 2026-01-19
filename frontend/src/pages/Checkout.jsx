@@ -134,8 +134,10 @@ export default function Checkout() {
   };
 
   const validateForm = () => {
-    // For relay delivery, only need phone (relay info handles address)
-    if (deliveryMethod === 'relay') {
+    const currentMethod = availableShippingMethods.find(m => m.id === deliveryMethod);
+    
+    // For relay delivery, only need selected relay
+    if (currentMethod?.isRelay) {
       if (!selectedRelay) {
         toast.error('Veuillez sélectionner un point relais');
         return false;
@@ -143,22 +145,29 @@ export default function Checkout() {
       return true;
     }
     
-    // Home delivery validation
-    if (!shippingInfo.address.trim()) {
-      toast.error('Veuillez entrer votre adresse');
-      return false;
+    // For hand delivery, no address needed
+    if (deliveryMethod === 'hand_delivery') {
+      return true;
     }
-    if (!shippingInfo.city.trim()) {
-      toast.error('Veuillez entrer votre ville');
-      return false;
-    }
-    if (!shippingInfo.postal_code.trim()) {
-      toast.error('Veuillez entrer votre code postal');
-      return false;
-    }
-    if (!/^\d{5}$/.test(shippingInfo.postal_code.trim())) {
-      toast.error('Le code postal doit contenir 5 chiffres');
-      return false;
+    
+    // For methods that need address
+    if (currentMethod?.needsAddress !== false) {
+      if (!shippingInfo.address.trim()) {
+        toast.error('Veuillez entrer votre adresse');
+        return false;
+      }
+      if (!shippingInfo.city.trim()) {
+        toast.error('Veuillez entrer votre ville');
+        return false;
+      }
+      if (!shippingInfo.postal_code.trim()) {
+        toast.error('Veuillez entrer votre code postal');
+        return false;
+      }
+      if (!/^\d{5}$/.test(shippingInfo.postal_code.trim())) {
+        toast.error('Le code postal doit contenir 5 chiffres');
+        return false;
+      }
     }
     return true;
   };
