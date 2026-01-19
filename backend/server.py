@@ -7090,20 +7090,22 @@ async def tobi_chat(chat_message: ChatMessage, current_user: dict = Depends(get_
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
 
 @api_router.get("/tobi/history/{session_id}")
-async def get_tobi_history(session_id: str):
+async def get_tobi_history(session_id: str, current_user: dict = Depends(get_current_user)):
     """Récupérer l'historique d'une conversation"""
+    # Vérifier que l'utilisateur a accès à cette session
     history = await db.tobi_conversations.find(
-        {"session_id": session_id},
+        {"session_id": session_id, "user_id": current_user["id"]},
         {"_id": 0}
     ).sort("created_at", 1).to_list(100)
     return history
 
 @api_router.delete("/tobi/session/{session_id}")
-async def clear_tobi_session(session_id: str):
+async def clear_tobi_session(session_id: str, current_user: dict = Depends(get_current_user)):
     """Effacer une session de chat"""
     if session_id in chat_sessions:
         del chat_sessions[session_id]
-    await db.tobi_conversations.delete_many({"session_id": session_id})
+    # Supprimer seulement les conversations de cet utilisateur
+    await db.tobi_conversations.delete_many({"session_id": session_id, "user_id": current_user["id"]})
     return {"message": "Session effacée"}
 
 # ================== KIM AGENT ==================
