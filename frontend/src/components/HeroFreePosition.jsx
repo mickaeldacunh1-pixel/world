@@ -213,8 +213,9 @@ export default function HeroFreePosition({ settings, onSearch }) {
     search: { x: 50, y: 58, visible: true },
     plate_scanner: { x: 25, y: 72, visible: true },
     tobi_button: { x: 40, y: 72, visible: true },
-    diag_button: { x: 55, y: 72, visible: true }, // Nouveau bouton Diag
+    diag_button: { x: 55, y: 72, visible: true },
     radio_button: { x: 70, y: 72, visible: true },
+    promo_video: { x: 85, y: 50, visible: false },
     cta_buttons: { x: 50, y: 82, visible: true },
     premium_buttons: { x: 50, y: 92, visible: true },
   };
