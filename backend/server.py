@@ -3086,7 +3086,7 @@ async def get_my_listings(current_user: dict = Depends(get_current_user)):
 
 @api_router.put("/listings/{listing_id}")
 async def update_listing(listing_id: str, listing: ListingCreate, current_user: dict = Depends(get_current_user)):
-    existing = await db.listings.find_one({"id": listing_id, "seller_id": current_user["id"]})
+    existing = await db.listings.find_one({"id": listing_id, "seller_id": current_user["id"]}, {"_id": 0})
     if not existing:
         raise HTTPException(status_code=404, detail="Annonce non trouvée")
     
