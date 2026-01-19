@@ -432,10 +432,10 @@ export default function Profile() {
               <CardHeader>
                 <CardTitle className="font-heading flex items-center gap-2">
                   <CreditCard className="w-5 h-5" />
-                  Recevoir des paiements
+                  {t('profile.receive_payments')}
                 </CardTitle>
                 <CardDescription>
-                  Connectez votre compte Stripe pour recevoir les paiements de vos ventes en toute sécurité
+                  {t('profile.receive_payments_desc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -456,15 +456,15 @@ export default function Profile() {
                         stripeStatus?.charges_enabled ? 'text-green-800' : 'text-yellow-800'
                       }`}>
                         {stripeStatus?.charges_enabled 
-                          ? 'Compte Stripe connecté !' 
-                          : 'Compte Stripe non configuré'}
+                          ? t('profile.stripe_connected')
+                          : t('profile.stripe_not_configured')}
                       </h3>
                       <p className={`text-sm ${
                         stripeStatus?.charges_enabled ? 'text-green-700' : 'text-yellow-700'
                       }`}>
                         {stripeStatus?.charges_enabled 
-                          ? 'Vous pouvez recevoir des paiements pour vos ventes.' 
-                          : 'Configurez Stripe pour recevoir l\'argent de vos ventes.'}
+                          ? t('profile.stripe_can_receive')
+                          : t('profile.stripe_configure')}
                       </p>
                     </div>
                   </div>
@@ -473,34 +473,34 @@ export default function Profile() {
                 {/* Benefits */}
                 {!stripeStatus?.charges_enabled && (
                   <div className="space-y-4">
-                    <h4 className="font-semibold">Pourquoi connecter Stripe ?</h4>
+                    <h4 className="font-semibold">{t('profile.why_stripe')}</h4>
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
                         <Shield className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-medium text-sm">Paiements sécurisés</p>
-                          <p className="text-xs text-muted-foreground">L&apos;argent est protégé jusqu&apos;à la livraison</p>
+                          <p className="font-medium text-sm">{t('profile.secure_payments')}</p>
+                          <p className="text-xs text-muted-foreground">{t('profile.secure_payments_desc')}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
                         <CreditCard className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-medium text-sm">Virements automatiques</p>
-                          <p className="text-xs text-muted-foreground">Recevez l&apos;argent directement sur votre compte</p>
+                          <p className="font-medium text-sm">{t('profile.auto_transfers')}</p>
+                          <p className="text-xs text-muted-foreground">{t('profile.auto_transfers_desc')}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
                         <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-medium text-sm">Badge vendeur vérifié</p>
-                          <p className="text-xs text-muted-foreground">Inspire confiance aux acheteurs</p>
+                          <p className="font-medium text-sm">{t('profile.verified_badge')}</p>
+                          <p className="text-xs text-muted-foreground">{t('profile.verified_badge_desc')}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 p-3 bg-secondary/50 rounded-lg">
                         <Mail className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-medium text-sm">Notifications</p>
-                          <p className="text-xs text-muted-foreground">Soyez alerté de chaque vente</p>
+                          <p className="font-medium text-sm">{t('profile.notifications')}</p>
+                          <p className="text-xs text-muted-foreground">{t('profile.notifications_desc')}</p>
                         </div>
                       </div>
                     </div>
@@ -518,7 +518,7 @@ export default function Profile() {
                         className="flex items-center gap-2"
                       >
                         <ExternalLink className="w-4 h-4" />
-                        Accéder au Dashboard Stripe
+                        {t('profile.access_stripe')}
                       </a>
                     </Button>
                   ) : stripeStatus?.connected && !stripeStatus?.charges_enabled ? (
@@ -532,7 +532,7 @@ export default function Profile() {
                       ) : (
                         <CreditCard className="w-4 h-4 mr-2" />
                       )}
-                      Finaliser la configuration
+                      {t('profile.finalize_config')}
                     </Button>
                   ) : (
                     <Button 
@@ -545,15 +545,14 @@ export default function Profile() {
                       ) : (
                         <CreditCard className="w-4 h-4 mr-2" />
                       )}
-                      Connecter mon compte Stripe
+                      {t('profile.connect_stripe')}
                     </Button>
                   )}
                 </div>
 
                 {/* Info */}
                 <p className="text-xs text-muted-foreground">
-                  En connectant Stripe, vous acceptez les <a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">conditions d&apos;utilisation de Stripe</a>. 
-                  Une commission de 5% est prélevée sur chaque vente.
+                  {t('profile.stripe_terms')}
                 </p>
               </CardContent>
             </Card>
@@ -563,15 +562,15 @@ export default function Profile() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="w-5 h-5" />
-                  Paiement par IBAN
+                  {t('profile.iban_title')}
                 </CardTitle>
                 <CardDescription>
-                  Alternative à Stripe : recevez vos paiements par virement bancaire
+                  {t('profile.iban_desc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="iban">IBAN</Label>
+                  <Label htmlFor="iban">{t('profile.iban')}</Label>
                   <Input
                     id="iban"
                     placeholder="FR76 1234 5678 9012 3456 7890 123"
@@ -580,7 +579,7 @@ export default function Profile() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="bic">BIC (optionnel)</Label>
+                  <Label htmlFor="bic">{t('profile.bic')}</Label>
                   <Input
                     id="bic"
                     placeholder="BNPAFRPP"
@@ -589,7 +588,7 @@ export default function Profile() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="account_holder">Titulaire du compte</Label>
+                  <Label htmlFor="account_holder">{t('profile.account_holder')}</Label>
                   <Input
                     id="account_holder"
                     placeholder="Nom du titulaire"
@@ -599,11 +598,11 @@ export default function Profile() {
                 </div>
                 <Button onClick={saveIban} disabled={loading}>
                   {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                  Enregistrer IBAN
+                  {t('profile.save_iban')}
                 </Button>
                 {user?.iban_configured && (
                   <p className="text-sm text-green-600">
-                    ✅ IBAN configuré : {user.iban_display}
+                    ✅ {t('profile.iban_configured')} : {user.iban_display}
                   </p>
                 )}
               </CardContent>
@@ -614,13 +613,13 @@ export default function Profile() {
           <TabsContent value="password">
             <Card>
               <CardHeader>
-                <CardTitle className="font-heading">Changer le mot de passe</CardTitle>
-                <CardDescription>Assurez-vous d&apos;utiliser un mot de passe fort et unique</CardDescription>
+                <CardTitle className="font-heading">{t('profile.change_password')}</CardTitle>
+                <CardDescription>{t('profile.password_hint')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-md">
                   <div className="space-y-2">
-                    <Label htmlFor="current_password">Mot de passe actuel</Label>
+                    <Label htmlFor="current_password">{t('profile.current_password')}</Label>
                     <Input
                       id="current_password"
                       name="current_password"
@@ -632,7 +631,7 @@ export default function Profile() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="new_password">Nouveau mot de passe</Label>
+                    <Label htmlFor="new_password">{t('profile.new_password')}</Label>
                     <Input
                       id="new_password"
                       name="new_password"
@@ -642,11 +641,11 @@ export default function Profile() {
                       required
                       minLength={6}
                     />
-                    <p className="text-xs text-muted-foreground">Minimum 6 caractères</p>
+                    <p className="text-xs text-muted-foreground">{t('profile.password_min')}</p>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="confirm_password">Confirmer le nouveau mot de passe</Label>
+                    <Label htmlFor="confirm_password">{t('profile.confirm_password')}</Label>
                     <Input
                       id="confirm_password"
                       name="confirm_password"
@@ -659,7 +658,7 @@ export default function Profile() {
 
                   <Button type="submit" disabled={loading}>
                     <Lock className="w-4 h-4 mr-2" />
-                    {loading ? 'Modification...' : 'Modifier le mot de passe'}
+                    {loading ? t('profile.changing') : t('profile.change_password_btn')}
                   </Button>
                 </form>
               </CardContent>
@@ -680,59 +679,57 @@ export default function Profile() {
           <TabsContent value="danger">
             <Card className="border-destructive/50">
               <CardHeader>
-                <CardTitle className="font-heading text-destructive">Zone de danger</CardTitle>
-                <CardDescription>Actions irréversibles sur votre compte</CardDescription>
+                <CardTitle className="font-heading text-destructive">{t('profile.danger_zone')}</CardTitle>
+                <CardDescription>{t('profile.danger_zone_desc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-6">
-                  <h3 className="font-heading font-semibold text-destructive mb-2">Supprimer mon compte</h3>
+                  <h3 className="font-heading font-semibold text-destructive mb-2">{t('profile.delete_account')}</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Cette action est <strong>irréversible</strong>. Toutes vos données seront supprimées :
+                    {t('profile.delete_warning')}
                   </p>
                   <ul className="text-sm text-muted-foreground list-disc list-inside mb-6 space-y-1">
-                    <li>Vos annonces actives</li>
-                    <li>Vos messages</li>
-                    <li>Vos favoris et alertes</li>
-                    <li>Vos avis laissés</li>
-                    <li>Vos crédits restants (non remboursables)</li>
+                    <li>{t('common.favorites')}</li>
+                    <li>{t('common.messages')}</li>
+                    <li>{t('common.alerts')}</li>
                   </ul>
                   
                   <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                     <DialogTrigger asChild>
                       <Button variant="destructive">
                         <Trash2 className="w-4 h-4 mr-2" />
-                        Supprimer mon compte
+                        {t('profile.delete_account')}
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle className="text-destructive">Confirmer la suppression</DialogTitle>
+                        <DialogTitle className="text-destructive">{t('profile.confirm_delete')}</DialogTitle>
                         <DialogDescription>
-                          Cette action est définitive et ne peut pas être annulée. Toutes vos données seront perdues.
+                          {t('profile.delete_final')}
                         </DialogDescription>
                       </DialogHeader>
                       <div className="py-4">
                         <Label htmlFor="delete-confirm">
-                          Tapez <strong>SUPPRIMER</strong> pour confirmer
+                          {t('profile.type_delete')}
                         </Label>
                         <Input
                           id="delete-confirm"
                           value={deleteConfirmText}
                           onChange={(e) => setDeleteConfirmText(e.target.value)}
-                          placeholder="SUPPRIMER"
+                          placeholder={t('profile.delete_placeholder')}
                           className="mt-2"
                         />
                       </div>
                       <DialogFooter>
                         <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-                          Annuler
+                          {t('common.cancel')}
                         </Button>
                         <Button 
                           variant="destructive" 
                           onClick={handleDeleteAccount}
                           disabled={loading || deleteConfirmText !== 'SUPPRIMER'}
                         >
-                          {loading ? 'Suppression...' : 'Supprimer définitivement'}
+                          {loading ? t('profile.deleting') : t('profile.delete_permanently')}
                         </Button>
                       </DialogFooter>
                     </DialogContent>
