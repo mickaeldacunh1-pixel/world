@@ -7085,6 +7085,8 @@ async def tobi_chat(chat_message: ChatMessage, current_user: dict = Depends(get_
             credits_remaining=diagnostic_credits
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Tobi error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
