@@ -1721,6 +1721,60 @@ export default function HeroEditor({ settings, setSettings, onImageUpload, uploa
             )}
           </CollapsibleSection>
 
+          {/* Lecteur vidéo promo */}
+          <CollapsibleSection title="Lecteur vidéo promo" icon={Video}>
+            <ToggleField 
+              label="Activer le lecteur vidéo promo" 
+              description="Affiche un petit lecteur vidéo dans le Hero"
+              checked={settings.hero_promo_video_enabled === true}
+              onChange={(v) => updateSetting('hero_promo_video_enabled', v)}
+            />
+
+            {settings.hero_promo_video_enabled && (
+              <div className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label>URL de la vidéo (MP4)</Label>
+                  <Input
+                    value={settings.hero_promo_video_url || ''}
+                    onChange={(e) => updateSetting('hero_promo_video_url', e.target.value)}
+                    placeholder="https://exemple.com/promo.mp4"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Largeur du lecteur</Label>
+                  <Input
+                    value={settings.hero_promo_video_width || '320px'}
+                    onChange={(e) => updateSetting('hero_promo_video_width', e.target.value)}
+                    placeholder="320px"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Image de couverture (poster)</Label>
+                  <Input
+                    value={settings.hero_promo_video_poster || ''}
+                    onChange={(e) => updateSetting('hero_promo_video_poster', e.target.value)}
+                    placeholder="URL de l'image"
+                  />
+                </div>
+                <ToggleField 
+                  label="Lecture automatique" 
+                  checked={settings.hero_promo_video_autoplay === true}
+                  onChange={(v) => updateSetting('hero_promo_video_autoplay', v)}
+                />
+                <ToggleField 
+                  label="Boucle" 
+                  checked={settings.hero_promo_video_loop === true}
+                  onChange={(v) => updateSetting('hero_promo_video_loop', v)}
+                />
+                <ToggleField 
+                  label="Muet par défaut" 
+                  checked={settings.hero_promo_video_muted !== false}
+                  onChange={(v) => updateSetting('hero_promo_video_muted', v)}
+                />
+              </div>
+            )}
+          </CollapsibleSection>
+
           {/* Image de fond Hero (existant) */}
           <CollapsibleSection title="Image de fond du Hero" icon={Image}>
             <p className="text-sm text-muted-foreground mb-4">
