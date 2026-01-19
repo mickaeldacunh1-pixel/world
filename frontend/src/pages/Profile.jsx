@@ -108,13 +108,13 @@ export default function Profile() {
       });
       
       if (response.data.already_connected) {
-        toast.success('Votre compte Stripe est déjà connecté !');
+        toast.success(t('profile.stripe_already_connected'));
         checkStripeStatus();
       } else if (response.data.url) {
         window.location.href = response.data.url;
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur lors de la connexion Stripe');
+      toast.error(error.response?.data?.detail || t('profile.stripe_error'));
     } finally {
       setStripeLoading(false);
     }
@@ -131,7 +131,7 @@ export default function Profile() {
         window.location.href = response.data.url;
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur lors de la création du lien');
+      toast.error(error.response?.data?.detail || t('profile.stripe_link_error'));
     } finally {
       setStripeLoading(false);
     }
