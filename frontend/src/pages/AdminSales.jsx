@@ -218,7 +218,7 @@ export default function AdminSales() {
           </div>
           <div className="flex gap-2 mt-4 md:mt-0">
             <Button variant="outline" onClick={() => navigate('/admin/guide-ventes')}>
-              <Download className="w-4 h-4 mr-2" />
+              <FileText className="w-4 h-4 mr-2" />
               Guide PDF
             </Button>
             <Button variant="outline" onClick={fetchData}>
