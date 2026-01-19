@@ -14,12 +14,6 @@ import { Plus, Eye, MessageSquare, CreditCard, Package, Trash2, Edit, TrendingUp
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const statusLabels = {
-  active: { label: 'Active', variant: 'default' },
-  inactive: { label: 'Inactive', variant: 'secondary' },
-  sold: { label: 'Vendue', variant: 'outline' },
-};
-
 export default function Dashboard() {
   const { t } = useTranslation();
   const { user, refreshUser, lastRefresh, token } = useAuth();
@@ -27,6 +21,13 @@ export default function Dashboard() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [exportingPdf, setExportingPdf] = useState(false);
+
+  // Dynamic status labels from translations
+  const statusLabels = {
+    active: { label: t('dashboard.status_active'), variant: 'default' },
+    inactive: { label: t('dashboard.status_inactive'), variant: 'secondary' },
+    sold: { label: t('dashboard.status_sold'), variant: 'outline' },
+  };
 
   useEffect(() => {
     fetchData();
@@ -67,24 +68,24 @@ export default function Dashboard() {
       link.remove();
       window.URL.revokeObjectURL(url);
       
-      toast.success('PDF téléchargé avec succès !');
+      toast.success(t('dashboard.export_success'));
     } catch (error) {
       console.error('Error exporting PDF:', error);
-      toast.error('Erreur lors de la génération du PDF');
+      toast.error(t('dashboard.export_error'));
     } finally {
       setExportingPdf(false);
     }
   };
 
   const handleDeleteListing = async (listingId) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')) return;
+    if (!window.confirm(t('dashboard.delete_confirm'))) return;
 
     try {
       await axios.delete(`${API}/listings/${listingId}`);
       setListings(listings.filter(l => l.id !== listingId));
-      toast.success('Annonce supprimée');
+      toast.success(t('dashboard.delete_success'));
     } catch (error) {
-      toast.error('Erreur lors de la suppression');
+      toast.error(t('dashboard.delete_error'));
     }
   };
 
