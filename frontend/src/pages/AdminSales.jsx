@@ -32,7 +32,7 @@ import { Checkbox } from '../components/ui/checkbox';
 import {
   Euro, TrendingUp, Clock, CheckCircle, Download, Search,
   Wallet, Users, ArrowRight, AlertCircle, RefreshCw, CreditCard,
-  Building, User
+  Building, User, FileText
 } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
