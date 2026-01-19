@@ -10854,8 +10854,17 @@ async def get_boxtal_token():
         if datetime.now() < boxtal_token_cache["expires_at"] - timedelta(minutes=5):
             return boxtal_token_cache["token"]
     
+    # Récupérer les credentials depuis la DB
+    creds = await get_boxtal_credentials()
+    access_key = creds["access_key"]
+    secret_key = creds["secret_key"]
+    app_id = creds["app_id"]
+    
+    if not access_key or not secret_key:
+        raise HTTPException(status_code=500, detail="Boxtal credentials not configured")
+    
     # Generate new token using App ID, Access Key and Secret Key
-    credentials = f"{BOXTAL_ACCESS_KEY}:{BOXTAL_SECRET_KEY}"
+    credentials = f"{access_key}:{secret_key}"
     encoded_credentials = base64.b64encode(credentials.encode()).decode()
     
     headers = {
@@ -10865,8 +10874,8 @@ async def get_boxtal_token():
     
     # Include app_id in the request if available
     data = {"grant_type": "client_credentials"}
-    if BOXTAL_APP_ID:
-        data["app_id"] = BOXTAL_APP_ID
+    if app_id:
+        data["app_id"] = app_id
     
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(
@@ -10889,8 +10898,9 @@ async def get_boxtal_token():
 @app.get("/api/boxtal/status")
 async def boxtal_status():
     """Check Boxtal integration status"""
+    creds = await get_boxtal_credentials()
     return {
-        "configured": bool(BOXTAL_ACCESS_KEY and BOXTAL_SECRET_KEY),
+        "configured": bool(creds["access_key"] and creds["secret_key"]),
         "mode": BOXTAL_MODE,
         "api_url": BOXTAL_API_URL,
         "simulation_active": BOXTAL_MODE == "simulation",
