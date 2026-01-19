@@ -6199,6 +6199,143 @@ async def refresh_connect_link(request: Request, current_user: dict = Depends(ge
         logging.error(f"Error refreshing account link: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la création du lien")
 
+# ========== STRIPE DIRECT (Paiement plateforme) ==========
+
+class DirectCheckoutRequest(BaseModel):
+    listing_id: str
+    delivery_method: str = "home"
+    buyer_address: Optional[str] = None
+    buyer_city: Optional[str] = None
+    buyer_postal: Optional[str] = None
+    buyer_phone: Optional[str] = None
+
+@api_router.post("/stripe/direct/checkout")
+async def create_direct_checkout(
+    checkout_data: DirectCheckoutRequest,
+    request: Request,
+    current_user: dict = Depends(get_current_user)
+):
+    """Créer une session de paiement Stripe Direct - paiement vers la plateforme"""
+    stripe.api_key = STRIPE_API_KEY
+    
+    # Récupérer l'annonce
+    listing = await db.listings.find_one({"id": checkout_data.listing_id}, {"_id": 0})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    if listing.get("status") not in ["active", "reserved"]:
+        raise HTTPException(status_code=400, detail="Cette annonce n'est plus disponible")
+    
+    # Vérifier que l'acheteur n'est pas le vendeur
+    if listing["seller_id"] == current_user["id"]:
+        raise HTTPException(status_code=400, detail="Vous ne pouvez pas acheter votre propre annonce")
+    
+    # Récupérer le vendeur
+    seller = await db.users.find_one({"id": listing["seller_id"]}, {"_id": 0})
+    if not seller:
+        raise HTTPException(status_code=404, detail="Vendeur non trouvé")
+    
+    # Calculer les montants
+    price = float(listing["price"])
+    total_amount_cents = int(price * 100)
+    
+    # Commission de la plateforme (5% avec min 0.50€ et max 15€)
+    commission_percent = 0.05
+    commission = price * commission_percent
+    commission = max(0.50, min(15.0, commission))  # Min 0.50€, Max 15€
+    
+    # URLs de retour
+    origin = request.headers.get("origin", SITE_URL)
+    success_url = f"{origin}/commandes?payment_success=true&session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{origin}/panier?payment_cancelled=true"
+    
+    try:
+        # Créer la session Stripe Checkout
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{
+                "price_data": {
+                    "currency": "eur",
+                    "unit_amount": total_amount_cents,
+                    "product_data": {
+                        "name": listing["title"],
+                        "description": f"Vendu par {seller.get('company_name') or seller.get('name', 'Vendeur')}",
+                        "images": listing.get("images", [])[:1] if listing.get("images") else [],
+                    },
+                },
+                "quantity": 1,
+            }],
+            mode="payment",
+            success_url=success_url,
+            cancel_url=cancel_url,
+            customer_email=current_user.get("email"),
+            metadata={
+                "type": "direct_purchase",
+                "listing_id": listing["id"],
+                "buyer_id": current_user["id"],
+                "seller_id": listing["seller_id"],
+                "delivery_method": checkout_data.delivery_method,
+                "commission": str(commission),
+            },
+            payment_intent_data={
+                "metadata": {
+                    "listing_id": listing["id"],
+                    "buyer_id": current_user["id"],
+                    "seller_id": listing["seller_id"],
+                }
+            }
+        )
+        
+        # Créer une commande en attente de paiement
+        order_id = str(uuid.uuid4())
+        order_doc = {
+            "id": order_id,
+            "listing_id": listing["id"],
+            "listing_title": listing["title"],
+            "listing_price": price,
+            "listing_image": listing.get("images", [None])[0],
+            "buyer_id": current_user["id"],
+            "buyer_name": current_user.get("name", ""),
+            "buyer_email": current_user.get("email", ""),
+            "buyer_address": checkout_data.buyer_address,
+            "buyer_city": checkout_data.buyer_city,
+            "buyer_postal": checkout_data.buyer_postal,
+            "buyer_phone": checkout_data.buyer_phone,
+            "seller_id": listing["seller_id"],
+            "seller_name": seller.get("company_name") or seller.get("name", ""),
+            "seller_email": seller.get("email", ""),
+            "delivery_method": checkout_data.delivery_method,
+            "payment_method": "stripe_direct",
+            "stripe_session_id": session.id,
+            "status": "pending_payment",  # En attente de paiement
+            "commission": commission,
+            "commission_percent": commission_percent * 100,
+            "seller_amount": price - commission,  # Montant à reverser au vendeur
+            "payout_status": "pending",  # Statut du reversement
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        
+        await db.orders.insert_one(order_doc)
+        
+        # Marquer l'annonce comme réservée
+        await db.listings.update_one(
+            {"id": listing["id"]},
+            {"$set": {"status": "reserved", "reserved_by": current_user["id"], "reserved_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        return {
+            "checkout_url": session.url,
+            "session_id": session.id,
+            "order_id": order_id
+        }
+        
+    except stripe.error.StripeError as e:
+        logging.error(f"Stripe error: {e}")
+        raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+    except Exception as e:
+        logging.error(f"Checkout error: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la création du paiement")
+
 class MarketplaceCheckoutRequest(BaseModel):
     listing_id: str
     quantity: int = 1
