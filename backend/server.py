@@ -11432,12 +11432,12 @@ async def estimate_shipping(request: ShippingEstimateRequest):
     """
     
     # Récupérer l'annonce pour avoir l'adresse du vendeur
-    listing = await db.listings.find_one({"_id": ObjectId(request.listing_id)})
+    listing = await db.listings.find_one({"id": request.listing_id}, {"_id": 0})
     if not listing:
         raise HTTPException(status_code=404, detail="Annonce non trouvée")
     
     # Récupérer les infos du vendeur
-    seller = await db.users.find_one({"_id": ObjectId(listing["seller_id"])})
+    seller = await db.users.find_one({"id": listing.get("seller_id")}, {"_id": 0})
     if not seller:
         raise HTTPException(status_code=404, detail="Vendeur non trouvé")
     
