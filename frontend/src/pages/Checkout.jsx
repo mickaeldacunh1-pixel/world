@@ -161,6 +161,14 @@ export default function Checkout() {
     if (deliveryMethod === 'hand_delivery') {
       return true;
     }
+
+    // For Boxtal, need carrier selected
+    if (deliveryMethod === 'boxtal') {
+      if (!selectedBoxtalCarrier) {
+        toast.error('Veuillez sélectionner un transporteur');
+        return false;
+      }
+    }
     
     // For methods that need address
     if (currentMethod?.needsAddress !== false) {
