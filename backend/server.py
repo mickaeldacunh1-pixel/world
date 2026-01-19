@@ -6974,17 +6974,79 @@ chat_sessions: Dict[str, LlmChat] = {}
 class ChatMessage(BaseModel):
     message: str
     session_id: Optional[str] = None
+    use_credits: bool = False  # Utiliser les crédits diagnostics
 
 class ChatResponse(BaseModel):
     response: str
     session_id: str
+    free_access: bool = False
+    credits_remaining: int = 0
+
+@api_router.get("/tobi/access")
+async def check_tobi_access(current_user: dict = Depends(get_current_user)):
+    """Vérifie si l'utilisateur a accès à Tobi"""
+    # Vérifier si l'utilisateur a au moins une annonce active
+    active_listings_count = await db.listings.count_documents({
+        "seller_id": current_user["id"],
+        "status": "active"
+    })
+    
+    has_free_access = active_listings_count > 0
+    diagnostic_credits = current_user.get("diagnostic_credits", 0)
+    loyalty_points = current_user.get("loyalty_points", 0)
+    can_use_points = loyalty_points >= DIAGNOSTIC_PRICING["points_cost"]
+    
+    return {
+        "has_free_access": has_free_access,
+        "active_listings_count": active_listings_count,
+        "diagnostic_credits": diagnostic_credits,
+        "loyalty_points": loyalty_points,
+        "can_use_points": can_use_points,
+        "pricing": {
+            "single": DIAGNOSTIC_PRICING["single_price"],
+            "pack_5": DIAGNOSTIC_PRICING["pack_5_price"],
+            "points_cost": DIAGNOSTIC_PRICING["points_cost"]
+        }
+    }
 
 @api_router.post("/tobi/chat", response_model=ChatResponse)
-async def tobi_chat(chat_message: ChatMessage):
-    """Chat avec Tobi, l'assistant IA"""
+async def tobi_chat(chat_message: ChatMessage, current_user: dict = Depends(get_current_user)):
+    """Chat avec Tobi, l'assistant IA - Requiert connexion + annonce active ou crédits"""
     try:
+        # Vérifier l'accès gratuit (a au moins une annonce active)
+        active_listings_count = await db.listings.count_documents({
+            "seller_id": current_user["id"],
+            "status": "active"
+        })
+        has_free_access = active_listings_count > 0
+        
+        diagnostic_credits = current_user.get("diagnostic_credits", 0)
+        
+        # Si pas d'accès gratuit, vérifier les crédits
+        if not has_free_access:
+            if chat_message.use_credits and diagnostic_credits > 0:
+                # Utiliser un crédit
+                await db.users.update_one(
+                    {"id": current_user["id"]},
+                    {"$inc": {"diagnostic_credits": -1}}
+                )
+                diagnostic_credits -= 1
+            elif diagnostic_credits <= 0:
+                # Pas d'accès - retourner erreur 402 Payment Required
+                raise HTTPException(
+                    status_code=402,
+                    detail={
+                        "message": "Accès payant - Publiez une annonce pour un accès gratuit ou achetez des crédits",
+                        "diagnostic_credits": diagnostic_credits,
+                        "pricing": {
+                            "single": DIAGNOSTIC_PRICING["single_price"],
+                            "pack_5": DIAGNOSTIC_PRICING["pack_5_price"]
+                        }
+                    }
+                )
+        
         # Get or create session
-        session_id = chat_message.session_id or str(uuid.uuid4())
+        session_id = chat_message.session_id or f"tobi_{current_user['id']}_{uuid.uuid4()}"
         
         # Get API key
         api_key = os.environ.get('EMERGENT_LLM_KEY')
@@ -7009,12 +7071,19 @@ async def tobi_chat(chat_message: ChatMessage):
         await db.tobi_conversations.insert_one({
             "id": str(uuid.uuid4()),
             "session_id": session_id,
+            "user_id": current_user["id"],
             "user_message": chat_message.message,
             "assistant_response": response,
+            "free_access": has_free_access,
             "created_at": datetime.now(timezone.utc).isoformat()
         })
         
-        return ChatResponse(response=response, session_id=session_id)
+        return ChatResponse(
+            response=response, 
+            session_id=session_id,
+            free_access=has_free_access,
+            credits_remaining=diagnostic_credits
+        )
         
     except Exception as e:
         logger.error(f"Tobi error: {str(e)}")
