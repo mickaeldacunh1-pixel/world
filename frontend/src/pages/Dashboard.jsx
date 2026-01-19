@@ -97,7 +97,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-secondary/30 py-8 flex items-center justify-center">
-        <p>Chargement...</p>
+        <p>{t('common.loading')}</p>
       </div>
     );
   }
@@ -108,26 +108,26 @@ export default function Dashboard() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>
-            <h1 className="font-heading text-3xl font-bold">Tableau de bord</h1>
-            <p className="text-muted-foreground">Bienvenue, {user?.name}</p>
+            <h1 className="font-heading text-3xl font-bold">{t('dashboard.title')}</h1>
+            <p className="text-muted-foreground">{t('dashboard.welcome')}, {user?.name}</p>
           </div>
           <div className="flex gap-3 flex-wrap">
             <Link to="/entrepot">
               <Button variant="outline" data-testid="warehouse-btn">
                 <Warehouse className="w-4 h-4 mr-2" />
-                Mon Entrepôt
+                {t('dashboard.warehouse_btn')}
               </Button>
             </Link>
             <Link to="/tarifs">
               <Button variant="outline" data-testid="buy-credits-btn">
                 <CreditCard className="w-4 h-4 mr-2" />
-                Acheter des crédits
+                {t('dashboard.buy_credits_btn')}
               </Button>
             </Link>
             <Link to="/deposer">
               <Button className="bg-accent hover:bg-accent/90" data-testid="create-listing-btn">
                 <Plus className="w-4 h-4 mr-2" />
-                Nouvelle annonce
+                {t('dashboard.new_listing_btn')}
               </Button>
             </Link>
           </div>
@@ -139,7 +139,7 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Annonces actives</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.stats_active_listings')}</p>
                   <p className="text-3xl font-heading font-bold" data-testid="active-listings-count">
                     {stats?.active_listings || 0}
                   </p>
@@ -155,7 +155,7 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Vues totales</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.stats_total_views')}</p>
                   <p className="text-3xl font-heading font-bold" data-testid="total-views-count">
                     {stats?.total_views || 0}
                   </p>
@@ -171,7 +171,7 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Messages non lus</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.stats_unread_messages')}</p>
                   <p className="text-3xl font-heading font-bold" data-testid="unread-messages-count">
                     {stats?.unread_messages || 0}
                   </p>
@@ -187,7 +187,7 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Crédits restants</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.stats_credits')}</p>
                   <p className="text-3xl font-heading font-bold text-accent" data-testid="credits-count">
                     {stats?.credits || 0}
                   </p>
