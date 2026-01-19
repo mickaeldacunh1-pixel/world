@@ -304,7 +304,7 @@ export default function Pricing() {
                   disabled={loading.pack3}
                   data-testid="buy-pack3"
                 >
-                  {loading.pack3 ? '...' : 'Acheter'}
+                  {loading.pack3 ? '...' : t('pricing.buy')}
                 </Button>
               </CardFooter>
             </Card>
@@ -337,7 +337,7 @@ export default function Pricing() {
                   disabled={loading.pack5}
                   data-testid="buy-pack5"
                 >
-                  {loading.pack5 ? '...' : 'Acheter'}
+                  {loading.pack5 ? '...' : t('pricing.buy')}
                 </Button>
               </CardFooter>
             </Card>
@@ -370,7 +370,7 @@ export default function Pricing() {
                   disabled={loading.pack20}
                   data-testid="buy-pack20"
                 >
-                  {loading.pack20 ? '...' : 'Acheter'}
+                  {loading.pack20 ? '...' : t('pricing.buy')}
                 </Button>
               </CardFooter>
             </Card>
@@ -408,7 +408,7 @@ export default function Pricing() {
                   disabled={loading.pack50}
                   data-testid="buy-pack50"
                 >
-                  {loading.pack50 ? '...' : 'Acheter'}
+                  {loading.pack50 ? '...' : t('pricing.buy')}
                 </Button>
               </CardFooter>
             </Card>
@@ -445,7 +445,7 @@ export default function Pricing() {
                   disabled={loading.pack100}
                   data-testid="buy-pack100"
                 >
-                  {loading.pack100 ? '...' : 'Acheter'}
+                  {loading.pack100 ? '...' : t('pricing.buy')}
                 </Button>
               </CardFooter>
             </Card>
@@ -471,7 +471,7 @@ export default function Pricing() {
                 disabled={loading.pro_trial}
                 data-testid="buy-pro-trial"
               >
-                {loading.pro_trial ? 'Chargement...' : 'Commencer l\'essai gratuit'}
+                {loading.pro_trial ? t('pricing.loading') : 'Commencer l\'essai gratuit'}
               </Button>
             </div>
           </CardContent>
@@ -511,7 +511,7 @@ export default function Pricing() {
                   disabled={loading.pro_monthly}
                   data-testid="buy-pro-monthly"
                 >
-                  {loading.pro_monthly ? 'Chargement...' : 'Souscrire'}
+                  {loading.pro_monthly ? t('pricing.loading') : t('pricing.subscribe')}
                 </Button>
               </CardFooter>
             </Card>
@@ -549,7 +549,7 @@ export default function Pricing() {
                   disabled={loading.pro_3months}
                   data-testid="buy-pro-3months"
                 >
-                  {loading.pro_3months ? 'Chargement...' : 'Souscrire'}
+                  {loading.pro_3months ? t('pricing.loading') : t('pricing.subscribe')}
                 </Button>
               </CardFooter>
             </Card>
@@ -586,7 +586,7 @@ export default function Pricing() {
                   disabled={loading.pro_6months}
                   data-testid="buy-pro-6months"
                 >
-                  {loading.pro_6months ? 'Chargement...' : 'Souscrire'}
+                  {loading.pro_6months ? t('pricing.loading') : t('pricing.subscribe')}
                 </Button>
               </CardFooter>
             </Card>
@@ -623,7 +623,7 @@ export default function Pricing() {
                   disabled={loading.pro_annual}
                   data-testid="buy-pro-annual"
                 >
-                  {loading.pro_annual ? 'Chargement...' : 'Souscrire'}
+                  {loading.pro_annual ? t('pricing.loading') : t('pricing.subscribe')}
                 </Button>
               </CardFooter>
             </Card>
@@ -667,7 +667,7 @@ export default function Pricing() {
                   disabled={loading.extended}
                   data-testid="buy-video-extended"
                 >
-                  {loading.extended ? 'Chargement...' : 'Acheter'}
+                  {loading.extended ? t('pricing.loading') : t('pricing.buy')}
                 </Button>
               </CardFooter>
             </Card>
@@ -707,7 +707,7 @@ export default function Pricing() {
                   disabled={loading.intermediate}
                   data-testid="buy-video-intermediate"
                 >
-                  {loading.intermediate ? 'Chargement...' : 'Acheter'}
+                  {loading.intermediate ? t('pricing.loading') : t('pricing.buy')}
                 </Button>
               </CardFooter>
             </Card>
@@ -746,7 +746,7 @@ export default function Pricing() {
                   disabled={loading.pro}
                   data-testid="buy-video-pro"
                 >
-                  {loading.pro ? 'Chargement...' : 'Acheter'}
+                  {loading.pro ? t('pricing.loading') : t('pricing.buy')}
                 </Button>
               </CardFooter>
             </Card>
@@ -787,7 +787,7 @@ export default function Pricing() {
                   className="w-full bg-white text-orange-600 hover:bg-white/90"
                   disabled
                 >
-                  Depuis votre annonce
+                  t('pricing.from_listing')
                 </Button>
               </CardFooter>
             </Card>
@@ -825,7 +825,7 @@ export default function Pricing() {
                   className="w-full bg-white text-orange-600 hover:bg-white/90"
                   disabled
                 >
-                  Depuis votre annonce
+                  t('pricing.from_listing')
                 </Button>
               </CardFooter>
             </Card>
