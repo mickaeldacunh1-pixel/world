@@ -103,6 +103,15 @@ export default function Listings() {
   const [sort, setSort] = useState('recent');
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  const [shouldScroll, setShouldScroll] = useState(false);
+  
+  // Scroll en haut quand la page change et le contenu est chargé
+  useEffect(() => {
+    if (shouldScroll && !loading) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setShouldScroll(false);
+    }
+  }, [shouldScroll, loading]);
   
   // Get available models based on selected brand
   const availableModels = compatibleBrand ? CAR_MODELS_BY_BRAND[compatibleBrand] || [] : [];
