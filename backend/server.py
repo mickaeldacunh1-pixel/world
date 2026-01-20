@@ -2828,15 +2828,21 @@ async def create_video_package_checkout(
     package: str = "intermediate",
     current_user: dict = Depends(get_current_user)
 ):
-    """Create Stripe checkout session for video package (intermediate or pro)"""
+    """Create Stripe checkout session for video package (extended, intermediate or pro)"""
     stripe.api_key = STRIPE_API_KEY
     
-    if package not in ["intermediate", "pro"]:
+    if package not in ["extended", "intermediate", "pro"]:
         raise HTTPException(status_code=400, detail="Forfait invalide")
     
     price = VIDEO_PACKAGE_PRICES.get(package, 2.99)
     
     package_details = {
+        "extended": {
+            "name": "Forfait Vidéo Étendue",
+            "description": "Vidéo jusqu'à 1 minute et 50 Mo",
+            "duration": 60,  # seconds
+            "size_mb": 50
+        },
         "intermediate": {
             "name": "Forfait Vidéo Intermédiaire",
             "description": "Vidéo jusqu'à 3 minutes et 150 Mo",
