@@ -251,7 +251,7 @@ export default function Dashboard() {
                                 />
                                 <div>
                                   <Link 
-                                    to={`/annonce/${listing.id}`}
+                                    to={`/annonce/${listing.id}/modifier`}
                                     className="font-medium hover:text-accent line-clamp-1"
                                   >
                                     {listing.title}
@@ -293,7 +293,7 @@ export default function Dashboard() {
                                     </Button>
                                   </Link>
                                 )}
-                                <Link to={`/annonce/edit/${listing.id}`}>
+                                <Link to={`/annonce/${listing.id}/modifier`}>
                                   <Button variant="ghost" size="icon">
                                     <Edit className="w-4 h-4" />
                                   </Button>
@@ -618,7 +618,7 @@ export default function Dashboard() {
                         {stats.top_listings.map((listing, index) => (
                           <Link 
                             key={listing.id} 
-                            to={`/annonce/${listing.id}`}
+                            to={`/annonce/${listing.id}/modifier`}
                             className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
                           >
                             <div className="flex items-center gap-3">
@@ -672,7 +672,7 @@ export default function Dashboard() {
                             <p className="text-xs text-muted-foreground">{listing.views} {t('dashboard.table_views').toLowerCase()}</p>
                           </div>
                           <div className="flex gap-1 ml-2">
-                            <Link to={`/annonce/edit/${listing.id}`}>
+                            <Link to={`/annonce/${listing.id}/modifier`}>
                               <Button variant="ghost" size="sm">
                                 <Edit className="w-4 h-4" />
                               </Button>
