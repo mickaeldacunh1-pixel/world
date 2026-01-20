@@ -676,7 +676,7 @@ export default function Listings() {
                   size="icon"
                   onClick={() => {
                     setPage(Math.max(1, page - 1));
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setShouldScroll(true);
                   }}
                   disabled={page === 1}
                 >
@@ -690,7 +690,7 @@ export default function Listings() {
                   size="icon"
                   onClick={() => {
                     setPage(Math.min(pages, page + 1));
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setShouldScroll(true);
                   }}
                   disabled={page === pages}
                 >
