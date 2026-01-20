@@ -492,28 +492,40 @@ const faqs = [
     ]
   },
   {
-    category: "Paiements & IBAN",
+    category: "Paiements & Reversements",
     icon: CreditCard,
     questions: [
       {
+        q: "Comment fonctionne le paiement Stripe Direct ?",
+        a: "Avec Stripe Direct, l'acheteur paie par carte bancaire et l'argent arrive sur le compte de la plateforme World Auto France. Nous nous occupons ensuite de reverser le montant au vendeur (moins la commission). C'est la méthode la plus simple : le vendeur n'a qu'à entrer son IBAN pour recevoir ses fonds."
+      },
+      {
         q: "Comment recevoir l'argent de mes ventes ?",
-        a: "Vous avez deux options : 1) Entrer votre IBAN directement (simple, comme sur eBay) ou 2) Créer un compte Stripe Connect (dashboard complet). Les deux méthodes sont sécurisées."
+        a: "Vous avez deux options : 1) Entrer votre IBAN directement dans votre profil (simple, comme sur eBay) - vous recevrez vos reversements par virement bancaire. 2) Créer un compte Stripe Connect (dashboard complet avec transferts automatiques)."
+      },
+      {
+        q: "À quelle fréquence sont effectués les reversements ?",
+        a: "Les reversements aux vendeurs sont effectués 2 fois par mois (le 1er et le 15 de chaque mois). Pour les vendeurs PRO, les reversements sont également effectués 2 fois par mois. Vous recevez une notification par email à chaque reversement effectué."
       },
       {
         q: "Comment configurer mon IBAN ?",
-        a: "Allez dans Profil > Paiements, puis cliquez sur 'Entrer mon IBAN'. Saisissez votre IBAN (ex: FR76...), le nom du titulaire et validez. C'est tout !"
+        a: "Allez dans Profil > Paiements, puis cliquez sur 'Entrer mon IBAN'. Saisissez votre IBAN (ex: FR76...), le nom du titulaire et validez. C'est tout ! Vos reversements seront envoyés sur ce compte."
+      },
+      {
+        q: "Quelle est la commission prélevée ?",
+        a: "World Auto France prélève une commission de 5% sur chaque vente (minimum 0,50€, maximum 15€). Exemple : pour une pièce à 80€, la commission est de 4€, vous recevez 76€. Pour une pièce à 500€, la commission est plafonnée à 15€, vous recevez 485€."
+      },
+      {
+        q: "Suis-je notifié quand je reçois un reversement ?",
+        a: "Oui ! Vous recevez un email de notification à chaque reversement effectué sur votre compte bancaire. L'email contient le détail des ventes concernées et le montant total reversé."
       },
       {
         q: "L'IBAN est-il vérifié ?",
         a: "Oui, le système vérifie automatiquement la validité de votre IBAN (checksum mod-97). Si vous faites une erreur de frappe, un message vous préviendra."
       },
       {
-        q: "Quelle est la différence entre IBAN et Stripe Connect ?",
-        a: "L'IBAN est plus simple : vous entrez vos coordonnées bancaires et recevez les virements directement. Stripe Connect offre un dashboard complet avec historique des transactions et protection vendeur avancée."
-      },
-      {
-        q: "Quand vais-je recevoir mon argent ?",
-        a: "Les virements sont effectués sous 3 à 5 jours ouvrés après la confirmation de réception par l'acheteur. Une commission de 5% (min 1,50€, max 15€) est prélevée sur chaque vente."
+        q: "Quelle est la différence entre IBAN simple et Stripe Connect ?",
+        a: "L'IBAN simple : vous entrez vos coordonnées bancaires et recevez les virements 2 fois par mois. Stripe Connect : l'argent est transféré automatiquement sur votre compte Stripe sous 2-7 jours, avec un dashboard complet pour suivre vos transactions."
       },
       {
         q: "Mes coordonnées bancaires sont-elles sécurisées ?",
@@ -521,7 +533,7 @@ const faqs = [
       },
       {
         q: "Puis-je modifier mon IBAN ?",
-        a: "Oui, vous pouvez modifier votre IBAN à tout moment dans Profil > Paiements en cliquant sur 'Modifier mon IBAN'."
+        a: "Oui, vous pouvez modifier votre IBAN à tout moment dans Profil > Paiements en cliquant sur 'Modifier mon IBAN'. Le nouvel IBAN sera utilisé pour les prochains reversements."
       }
     ]
   },
