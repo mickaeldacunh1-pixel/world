@@ -787,7 +787,7 @@ export default function Pricing() {
                   className="w-full bg-white text-orange-600 hover:bg-white/90"
                   disabled
                 >
-                  t('pricing.from_listing')
+                  {t('pricing.from_listing')}
                 </Button>
               </CardFooter>
             </Card>
@@ -825,7 +825,7 @@ export default function Pricing() {
                   className="w-full bg-white text-orange-600 hover:bg-white/90"
                   disabled
                 >
-                  t('pricing.from_listing')
+                  {t('pricing.from_listing')}
                 </Button>
               </CardFooter>
             </Card>
