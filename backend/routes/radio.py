@@ -83,11 +83,13 @@ async def get_all_stations():
     if not stations:
         # Initialize with defaults
         for station in DEFAULT_STATIONS:
-            await db.radio_stations.insert_one(station)
+            await db.radio_stations.insert_one(station.copy())
         return DEFAULT_STATIONS
     
     for station in stations:
-        station["id"] = str(station.get("_id", station.get("id", "")))
+        # Garder l'id personnalisé s'il existe, sinon utiliser _id converti
+        if not station.get("id"):
+            station["id"] = str(station.get("_id", ""))
         station.pop("_id", None)
     
     return stations
