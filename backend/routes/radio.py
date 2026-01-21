@@ -70,7 +70,9 @@ async def get_stations():
         return DEFAULT_STATIONS
     
     for station in stations:
-        station["id"] = str(station.get("_id", station.get("id", "")))
+        # Garder l'id personnalisé s'il existe, sinon utiliser _id converti
+        if not station.get("id"):
+            station["id"] = str(station.get("_id", ""))
         station.pop("_id", None)
     
     return stations
