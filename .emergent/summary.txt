@@ -1,203 +1,165 @@
 <analysis>**original_problem_statement:**
-L'utilisateur a signalé plusieurs problèmes critiques et a demandé de nouvelles fonctionnalités :
-1.  **Problème de sécurité (urgent)** : L'assistant IA Tobi était accessible publiquement sans authentification, permettant des diagnostics gratuits. L'utilisateur a demandé à ce que l'accès soit restreint selon la même logique que la page de diagnostic (connexion requise + annonce active ou crédits de diagnostic).
-2.  **Bug critique du checkout (urgent)** :
-    *   Une annonce (Embrayage neuf Citroen Xsara) a disparu du site après une tentative de commande qui a échoué.
-    *   Les options de livraison étaient incomplètes ou non fonctionnelles (Mondial Relay, Boxtal).
-    *   L'erreur se produisait sur le VPS de production de l'utilisateur, pas dans l'environnement de prévisualisation.
-3.  **Problèmes de déploiement récurrents** : L'utilisateur a signalé des difficultés et des erreurs (,  écrasant les fichiers ) lors du déploiement sur son VPS.
-4.  **Demande de fonctionnalité de paiement** : L'utilisateur a demandé que le paiement par carte bancaire soit possible pour tous les acheteurs, même si le vendeur n'a pas de compte Stripe. Cela a conduit à la mise en place d'un flux de paiement Stripe Direct (via le compte de la plateforme).
-5.  **Demande de fonctionnalité Hero** : L'utilisateur a demandé la possibilité d'ajouter un petit lecteur vidéo promotionnel dans la section Hero, en plus de la vidéo de fond existante.
-6.  **Tâche en cours** : Finaliser la traduction des textes en dur sur la page d'accueil et des pages publiques restantes.
+L'utilisateur a signalé une série de bugs et de demandes de fonctionnalités après une session précédente. Les problèmes principaux incluaient :
+1.  **Bugs critiques sur les fonctionnalités clés** :
+    *   Le lecteur vidéo promotionnel dans la section Hero supprimait l'image de fond.
+    *   Les widgets des transporteurs Mondial Relay et Boxtal ne fonctionnaient pas sur la page de checkout (ne chargeaient pas ou affichaient une page blanche).
+    *   La pagination sur la page des annonces ne scrollait pas en haut de la page.
+    *   L'estimateur de frais de port sur la page de l'annonce était cassé.
+    *   La page de modification d'annonce était une page blanche.
+    *   Le sitemap était invalide car servi comme du HTML/JSON.
+2.  **Problèmes de déploiement sur le VPS de l'utilisateur** : Le processus de build échouait fréquemment en raison d'un manque de mémoire, et la configuration () était écrasée par .
+3.  **Logique métier à affiner** :
+    *   Les crédits offerts à l'inscription n'avaient pas de date d'expiration.
+    *   L'utilisateur avait besoin d'une explication claire du fonctionnement du système de paiement (Stripe Direct vs Connect) et des commissions.
+4.  **Mises à jour de contenu** : La page FAQ devait être mise à jour pour refléter les règles de paiement et d'expiration des crédits.
 
 **User's preferred language**: français
 
 **what currently exists?**
-L'application est une marketplace full-stack (React/FastAPI/MongoDB).
-- **Sécurité** : L'assistant Tobi () et ses API sont maintenant sécurisés et requièrent une authentification, avec un accès conditionné par une annonce active ou des crédits.
-- **Déploiement** : Le  a été amélioré avec des  pour assurer un ordre de démarrage correct des services (DB -> Backend -> Frontend). Le script  a été rendu plus robuste.
-- **Paiements** : Un double système de checkout a été mis en place sur la page  :
-    1.  **Stripe Direct** : Paiement par CB via le compte de la plateforme (pour tous les acheteurs).
-    2.  **Contact Direct** : Réservation de l'article avec mise en relation vendeur/acheteur pour un paiement hors plateforme.
-- **Admin** : Une nouvelle page  a été créée pour suivre les ventes, les commissions et gérer les reversements aux vendeurs. Un guide explicatif () a été créé et rendu accessible via une page PDF .
-- **Annonces** : Le bug critique de la disparition d'annonce a été diagnostiqué comme étant une attaque ransomware passée (sans perte de données critiques), une erreur de sérialisation  (corrigée) et une logique de checkout défectueuse. Le statut de l'annonce passe désormais à reserved au lieu de sold pour les paiements hors ligne.
-- **Livraison** : Les composants  et  ont été créés/corrigés pour afficher les options de livraison dynamiquement.
-- **Hero** : Un petit lecteur vidéo promotionnel, positionnable et configurable, a été ajouté à la section Hero.
-- **Traductions** : Les textes en dur de  et la page  ont été traduits.
+L'application est une marketplace full-stack (React/FastAPI/MongoDB) fonctionnelle.
+-   **Hero & Vidéo** : Le bug du lecteur vidéo promotionnel est corrigé. Il coexiste maintenant avec l'image de fond et est positionnable depuis l'éditeur d'administration.
+-   **Livraison (Mondial Relay)** : Le widget fonctionne. Le problème a été résolu en corrigeant l'ordre de chargement des scripts et en mettant à jour la politique de sécurité de contenu (CSP) du serveur.
+-   **Livraison (Boxtal)** : L'intégration est **fonctionnelle en mode simulation**. Le mode production est actuellement bloqué car l'API de Boxtal retourne des erreurs d'authentification (502/400). Un webhook a été créé et le support de Boxtal a été contacté. En attendant leur retour, le site utilise des prix estimés.
+-   **Déploiement** : Le processus de déploiement sur le VPS de l'utilisateur a été stabilisé en nettoyant le fichier  et en guidant l'utilisateur pour créer un fichier  afin de pallier le manque de RAM lors du build.
+-   **Bugs Corrigés** : Le scroll de la pagination, l'estimateur de frais de port, la page de modification d'annonce et le format du sitemap ont tous été corrigés.
+-   **Logique des crédits** : Les crédits de bienvenue et les annonces gratuites promotionnelles expirent désormais 30 jours après l'inscription de l'utilisateur.
+-   **Contenu** : La page FAQ a été mise à jour avec des explications détaillées sur les paiements, les commissions et l'expiration des crédits.
 
 **Last working item**:
-- **Last item agent was working**: Correction d'un bug de page blanche sur les pages admin (), causé par l'oubli d'importer l'icône  dans  après l'ajout de la fonctionnalité de lecteur vidéo. L'agent a ajouté l'import manquant et a vérifié que le build passait.
-- **Status**: USER VERIFICATION PENDING
-- **Agent Testing Done**: Y (Seulement une vérification de , pas de test fonctionnel via screenshot).
-- **Which testing method agent to use?**: screenshot tool. L'agent doit prendre une capture d'écran de la page  pour confirmer qu'elle s'affiche correctement et n'est plus blanche.
-- **User Testing Done**: N
+-   **Last item agent was working**: Débogage de l'authentification à l'API de Boxtal en mode production. Après avoir reçu une nouvelle URL d'authentification du support Boxtal, l'agent l'a implémentée mais a reçu une erreur . L'agent a conclu que le format de la requête d'authentification était incorrect et a préparé un message pour que l'utilisateur demande des précisions au support de Boxtal.
+-   **Status**: BLOCKED
+-   **Agent Testing Done**: Y (L'agent a testé la nouvelle URL avec  et a confirmé l'échec de l'authentification).
+-   **Which testing method agent to use?**: manual testing by curl. Le prochain agent devra attendre la réponse du support Boxtal, puis modifier la fonction  dans  et la tester avec .
+-   **User Testing Done**: N/A
 
 **All Pending/In progress Issue list**:
-- **Issue 1 (P0)**: Problèmes de déploiement et de configuration sur le VPS de l'utilisateur.
-- **Issue 2 (P1)**: Bugs persistants sur le checkout en production.
-- **Issue 3 (P2)**: Erreurs Sentry Network Error AxiosError (ignorées pour le moment).
+-   **Issue 1 (P0)**: L'authentification à l'API Boxtal échoue en mode production.
 
 **Issues Detail**:
-- **Issue 1: (P0) Problèmes de déploiement et de configuration sur le VPS de l'utilisateur.**
-  - **Attempted fixes**: L'agent a amélioré  et a expliqué comment restaurer les fichiers . Cependant, la cause racine (le fait que les fichiers  ne sont pas dans ) n'a pas été corrigée. L'utilisateur est toujours bloqué par des  et l'écrasement de ses clés d'API.
-  - **Next debug checklist**:
-    1.  Vérifier le contenu du fichier .
-    2.  Si  ou  n'y figurent pas, les ajouter immédiatement.
-    3.  Guider l'utilisateur pour qu'il sauvegarde ses  de production, fasse un , puis restaure ses  et reconstruise les conteneurs.
-    4.  Résoudre le problème de permission sur  en guidant l'utilisateur pour exécuter .
-  - **Why fix this issue and what will be achieved with the fix?**: C'est le principal obstacle empêchant l'utilisateur de tester les corrections. Sa résolution est cruciale pour la progression du projet et la confiance de l'utilisateur.
-  - **Status**: IN PROGRESS
-  - **Is recurring issue?**: Y
-  - **Blocked on other issue**: Non.
-
-- **Issue 2: (P1) Bugs persistants sur le checkout en production.**
-  - **Attempted fixes**: L'agent a corrigé la logique du checkout, implémenté des options de livraison dynamiques et corrigé les composants Boxtal/Mondial Relay. Cependant, l'utilisateur rapporte toujours des erreurs :  et .
-  - **Next debug checklist**:
-    1.  Confirmer que l'utilisateur a bien mis sa **vraie clé API Stripe** dans son  de production.
-    2.  Une fois le déploiement réussi (après résolution de l'Issue 1), demander à l'utilisateur de retester le checkout.
-    3.  Si Boxtal et Mondial Relay ne fonctionnent toujours pas, inspecter les appels réseau depuis le navigateur du client pour voir pourquoi les requêtes échouent (API Boxtal, script Mondial Relay).
-  - **Why fix this issue and what will be achieved with the fix?**: Le checkout est une fonctionnalité essentielle pour la marketplace.
-  - **Status**: IN PROGRESS
-  - **Is recurring issue?**: Y
-  - **Blocked on other issue**: Issue 1: Problèmes de déploiement.
-
-- **Issue 3: (P2) Erreurs Sentry Network Error AxiosError.**
-  - **Attempted fixes**: Aucun. L'utilisateur a demandé d'ignorer cette tâche.
-  - **Next debug checklist**: (Idem que le handoff précédent).
-  - **Why fix this issue and what will be achieved with the fix?**: Améliorer la robustesse de l'application.
-  - **Status**: NOT STARTED
-  - **Is recurring issue?**: N
-  - **Blocked on other issue**: Non.
+-   **Issue 1: L'authentification à l'API Boxtal échoue en mode production.**
+    -   **Attempted fixes**: Le support Boxtal a fait activer le paiement différé et a fourni une nouvelle URL d'authentification (). L'agent a mis à jour le code, mais la requête retourne maintenant une erreur , indiquant un format de requête incorrect. Le système est temporairement en  pour ne pas bloquer l'utilisateur.
+    -   **Next debug checklist**:
+        1.  Attendre que l'utilisateur reçoive le format exact de la requête d'authentification de la part du support Boxtal (headers, body, type d'auth).
+        2.  Mettre à jour la fonction  dans  avec le bon format.
+        3.  Tester la nouvelle requête avec .
+        4.  Si le test est réussi, guider l'utilisateur pour passer  à  sur son VPS et reconstruire le conteneur backend.
+    -   **Why fix this issue and what will be achieved with the fix?**: C'est une fonctionnalité essentielle. La résolution permettra d'afficher les tarifs de livraison en temps réel et de créer des expéditions via Boxtal.
+    -   **Status**: BLOCKED (en attente du support Boxtal).
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: backend
+    -   **Blocked on other issue**: Non.
 
 **In progress Task List**:
-- **Task 1: (P1) Terminer la traduction complète du site.**
-  - **Where to resume**: Les pages  et  sont les prochaines à traduire. L'interface de  peut également être traduite (le contenu sera géré par l'utilisateur).
-  - **What will be achieved with this?**: Rendre le site entièrement multilingue, une demande majeure de l'utilisateur.
-  - **Status**: IN PROGRESS
-  - **Should Test frontend/backend/both after fix?**: frontend
-  - **Blocked on something**: Non.
+-   **Task 1: (P1) Terminer la traduction complète du site.**
+    -   **Where to resume**: Les pages , , les pages admin et les pages légales (, etc.) doivent encore être traduites.
+    -   **What will be achieved with this?**: Rendre le site entièrement accessible à un public non francophone.
+    -   **Status**: NOT STARTED
+    -   **Should Test frontend/backend/both after fix?**: frontend
+    -   **Blocked on something**: Non.
 
 **Upcoming and Future Tasks**
-- **Upcoming Tasks**:
-    - **(P1)** Ajouter un bouton d'upload direct vers Cloudinary pour les vidéos promotionnelles, comme suggéré par l'agent.
-    - **(P1)** Traduire , , et l'interface de .
-- **Future Tasks**:
-    - **(P2)** Traduire les pages admin (, ) et légales (, , ).
-    - **(P2)** Refactoriser le monolithe backend .
-    - **(P2)** Automatiser les reversements aux vendeurs (actuellement manuels depuis la page Admin Ventes).
+-   **Upcoming Tasks**:
+    -   **(P1)** Ajouter un bouton d'upload direct vers Cloudinary pour les vidéos promotionnelles dans l'éditeur Hero.
+-   **Future Tasks**:
+    -   **(P2)** Refactoriser le monolithe backend  en plusieurs fichiers (routes, services, modèles).
+    -   **(P2)** Automatiser les reversements aux vendeurs (actuellement manuels depuis la page d'administration).
 
 **Completed work in this session**
-- **Sécurité** : Sécurisation de l'assistant Tobi avec authentification obligatoire et logique d'accès par crédits/annonce active.
-- **Paiements** : Implémentation du paiement par Stripe Direct (compte de la plateforme) et conservation de l'option Contact direct.
-- **Admin** : Création de la page  pour la gestion des ventes et reversements.
-- **Documentation** : Création d'un guide  et d'une page PDF associée dans l'admin.
-- **Bug Fix** : Diagnostic et correction d'un bug critique de checkout : l'annonce passe à reserved (et non sold), et plusieurs  non sérialisables ont été corrigés dans l'API.
-- **Livraison** : Création/correction des composants  et  pour le checkout.
-- **Hero** : Ajout d'un lecteur vidéo promotionnel positionnable et configurable.
-- **Déploiement** : Amélioration du  avec des  et du script .
-- **Traduction** : Finalisation de la traduction des textes en dur sur  et traduction complète de .
-- **Page Nouveautés** : Mise à jour complète avec un changelog détaillé depuis le 15 janvier.
-- **Bug Fix** : Correction d'un bug de page blanche sur les pages admin.
+-   **Fonctionnalité Hero** : Correction du bug de la vidéo promotionnelle et ajout de sa gestion dans l'éditeur de position libre (, ).
+-   **Intégration Livraison** : Correction du widget Mondial Relay (, ) et mise en place du mode simulation pour Boxtal (, ).
+-   **Déploiement VPS** : Nettoyage du  et guide pour la création d'un fichier  afin de stabiliser les builds.
+-   **Correction de bugs multiples** :
+    -   Scroll de la pagination ().
+    -   Erreur de type d'ID dans l'estimateur de frais de port ().
+    -   Erreur de routage sur la page de modification d'annonce ().
+    -   Problème de traduction et d'achat sur la page des tarifs ().
+    -   Format du sitemap (, ).
+-   **Logique métier** : Ajout d'une date d'expiration de 30 jours pour les crédits/annonces gratuites ().
+-   **Contenu** : Mise à jour de la page FAQ avec les détails sur les paiements et les crédits ().
 
 **Earlier issues found/mentioned but not fixed**
-- Les erreurs Sentry Network Error AxiosError sont toujours en attente.
+-   Les erreurs Sentry Network Error AxiosError sont toujours en attente, car l'utilisateur a demandé de ne pas les prioriser.
 
 **Known issue recurrence from previous fork**
-- **Problèmes de déploiement Docker** : L'utilisateur continue de rencontrer des erreurs (,  écrasant la configuration) sur son VPS, ce qui est une source majeure de frustration et un bloqueur constant.
+-   **Problèmes de déploiement sur le VPS** : Ce problème a été une source majeure de blocage. Bien que les dernières manipulations (création de , nettoyage de ) aient permis de réussir les déploiements, l'environnement de l'utilisateur reste un point de fragilité à surveiller.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Paiements**: Stripe Direct, Stripe Connect.
-- **Déploiement**: Docker Compose avec  et .
-- **Livraison**: Intégration API Boxtal, Widget Mondial Relay.
-- **Internationalisation**:  / .
-- **Backend**: FastAPI.
+-   **API Tierces**: Boxtal, Mondial Relay, Stripe
+-   **Déploiement**: Docker Compose, Nginx, gestion de la mémoire (swap)
+-   **Backend**: FastAPI, gestion d'erreurs d'API externes, logique de date d'expiration
+-   **Frontend**: React, gestion d'état (, ), chargement de scripts externes
 
 **key DB schema**
-- Aucune modification de schéma formelle, mais de nouveaux concepts ont été introduits dans les documents :
-  - :  ('pending', 'paid'), , .
-  - : statut .
+-   **users**: Ajout des champs  et  pour gérer l'expiration des offres de bienvenue.
 
 **All files of reference**
--  (pour la clé Stripe en production)
--  (pour corriger l'écrasement des .env)
--  (point central des bugs actuels)
--  (contient la logique de checkout et de paiement)
-- 
-- 
-- 
-[0;34m=====================================================[0m
-[0;34m    World Auto France - Déploiement automatique[0m
-[0;34m=====================================================[0m
-
-[0;31m[✗][0m Le répertoire /var/www/worldauto n'existe pas
-- 
+-    (contient toute la logique métier et les API)
+-    (interface pour Boxtal)
+-    (page où les problèmes de livraison se manifestent)
+-    (gère la CSP et les headers)
+-    (contient la configuration du mode Boxtal :  ou )
 
 **Areas that need refactoring**:
--  est devenu extrêmement volumineux (plus de 10 000 lignes) et doit être découpé en plusieurs fichiers (routes, services, etc.) de toute urgence.
--  est également devenu très complexe avec la double logique de paiement et les multiples options de livraison. Il mériterait d'être décomposé en sous-composants.
+-    est un monolithe de plus de 10 000 lignes qui a urgemment besoin d'être découpé en plusieurs fichiers (routes, services, etc.).
+-    reste un composant très complexe qui pourrait être divisé en sous-composants pour plus de lisibilité.
 
 **key api endpoints**
-- 
-- 
-- 
-- 
-- 
-- 
-- 
+-   
+-    (nouveau)
+-   
+-   
 
 **Critical Info for New Agent**
-- **La langue de communication est le français.**
-- **L'utilisateur teste sur son VPS de production, PAS sur la preview Emergent.** La base de données et la configuration sont différentes. Le prochain agent doit toujours formuler ses instructions de débogage pour le VPS de l'utilisateur.
-- **Le problème le plus critique est le déploiement.** L'utilisateur est bloqué et frustré. La priorité absolue est de l'aider à déployer les corrections avec succès. La cause probable est que les fichiers  ne sont pas dans .
-- **Soyez direct et concis.** L'utilisateur a montré des signes de frustration face aux longues explications et aux actions répétitives. Proposez des commandes claires et allez droit au but.
-- Ne présumez pas que les corrections sont appliquées tant que l'utilisateur n'a pas confirmé un déploiement réussi sur son serveur.
-- Le bug de checkout est probablement un mélange de configuration (clé Stripe) et de code qui n'a pas encore été correctement déployé/testé en production.
+-   **La langue de communication est le français.**
+-   Le prochain agent doit attendre le retour de l'utilisateur concernant le support de Boxtal avant d'agir sur ce point. C'est le principal bloqueur.
+-   L'utilisateur déploie et teste sur son propre VPS de production. Les instructions doivent être claires et adaptées à cet environnement.
+-   La commande de déploiement préférée et fonctionnelle de l'utilisateur est : . Utilisez celle-ci.
+-   L'utilisateur a été frustré par les problèmes de déploiement récurrents. Il est crucial d'être particulièrement attentif à cet aspect pour maintenir sa confiance.
 
 **documents and test reports created in this job**
-- 
-- 
+-    a été mis à jour par l'agent.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: Veut insérer du MP4 dans le Hero.
-2.  **Agent**: Explique que le champ existe et suggère un bouton d'upload. (PENDING)
-3.  **User**: Signale que la page admin est blanche. (BUG REPORT)
-4.  **Agent**: Investigue et trouve un import manquant.
-5.  **User**: Exprime sa frustration sur la lenteur et le risque de fork.
-6.  **Agent**: Corrige l'import manquant et confirme le build.
-7.  **User**: Signale des erreurs de déploiement et de configuration ( permission,  écrasé). (BUG REPORT)
-8.  **Agent**: Guide l'utilisateur pour corriger le  et la clé Stripe.
-9.  **User**: Demande pourquoi Boxtal est oublié.
-10. **Agent**: Travaille sur les corrections pour Boxtal et Mondial Relay.
-11. **User**: Signale que Mondial Relay ne marche pas non plus. (BUG REPORT)
-12. **Agent**: Finit les corrections et donne les instructions de déploiement finales. (CURRENT STATE)
+1.  **User**: Signale une erreur 502/Forbidden avec Boxtal en mode production.
+2.  **User**: Se plaint des erreurs (TikTok, etc.) dans la console du chat Emergent. (Agent a clarifié que ce n'est pas lié à son site).
+3.  **User**: Signale un sitemap invalide (page HTML). (Corrigé)
+4.  **User**: Demande à ce que les crédits de bienvenue expirent après 1 mois et à mettre à jour la FAQ. (Fait)
+5.  **User**: Pose une question sur le fonctionnement des abonnements Pro une fois les crédits épuisés. (Clarifié et ajouté à la FAQ).
+6.  **User**: Reçoit une réponse de Boxtal avec une nouvelle URL d'authentification. (Agent l'implémente mais échoue).
+7.  **User**: Exprime sa frustration sur les allers-retours avec le support Boxtal.
+8.  **User**: Dit qu'il n'activera pas le mode simulation et attendra une solution définitive.
+9.  **User**: Dit qu'il a trouvé la  erronée () sur son VPS. (Agent explique que c'était un écrasement par  et corrige le fichier dans le repo).
+10. **User**: Après correction de la clé, rapporte que Boxtal est toujours en mode simulation malgré un build. (Agent explique que  n'est pas suffisant et qu'il faut ).
+11. **Pending**: L'utilisateur attend une réponse du support Boxtal avec le format d'authentification correct.
 
 **Project Health Check:**
-- **Broken**:
-  - Le processus de déploiement de l'utilisateur est cassé et non fiable, ce qui empêche de tester toute correction.
-  - Le flux de checkout sur le serveur de production de l'utilisateur est cassé (clé Stripe, Boxtal, Mondial Relay).
-- **Mocked**:
-  - La clé Stripe  est un placeholder qui continue de polluer le  de production lors des , causant des échecs.
+-   **Broken**: L'intégration Boxtal en mode production est non fonctionnelle en raison d'un problème d'authentification avec l'API tierce.
+-   **Mocked**: Boxtal fonctionne en  comme solution de contournement, affichant des prix estimés.
 
 **3rd Party Integrations**
-- **Stripe**: Migré vers un modèle hybride (Stripe Connect + Stripe Direct).
-- **Boxtal**, **Mondial Relay**, **Colissimo**, **Chronopost**: Intégrés au checkout.
-- **Cloudinary**: Utilisé pour les images et maintenant pour les vidéos.
-- **Emergent LLM Key** (Tobi)
-- **Google reCAPTCHA v3**
-- **i18next** & **react-i18next**
-- **@dnd-kit**
+-   **Stripe**: Hybride (Connect + Direct).
+-   **Mondial Relay**: Fonctionnel.
+-   **Boxtal**: Fonctionnel uniquement en **mode simulation**. Le mode production est bloqué.
+-   **Cloudinary**: Utilisé pour les images et vidéos.
+-   **Google reCAPTCHA v3**
+-   **i18next**
 
 **Testing status**
-- **Testing agent used after significant changes**: NO
-- **Troubleshoot agent used after agent stuck in loop**: NO
-- **Test files created**: []
-- **Known regressions**: Le processus de  sur le VPS de l'utilisateur provoque une régression en écrasant les fichiers  de production.
+-   **Testing agent used after significant changes**: NO
+-   **Troubleshoot agent used after agent stuck in loop**: NO
+-   **Test files created**: []
+-   **Known regressions**: L'écrasement des fichiers  par  a été une régression majeure, maintenant corrigée en nettoyant  et en s'assurant que les clés par défaut dans le repo ne sont que des placeholders.
 
 **Credentials to test flow:**
-- Les identifiants MongoDB de production sont dans l'historique ( / ). La clé Stripe de production doit être demandée à l'utilisateur car elle est privée.
+-   Les identifiants Boxtal de l'utilisateur ont été fournis et sont dans l'historique :
+    -   : 
+    -   : 
+    -   : 
+-   Les identifiants Mondial Relay sont également dans l'historique.
 
 **What agent forgot to execute**
-- L'agent n'a pas ajouté les fichiers  au fichier . C'est une omission critique qui est la cause directe des problèmes de déploiement récurrents et de la frustration de l'utilisateur, car chaque  écrase sa configuration de production.</analysis>
+-   L'agent a initialement oublié que  ne met pas à jour les variables d'environnement chargées au build, ce qui a causé de la confusion lorsque le mode Boxtal ne changeait pas sur le VPS de l'utilisateur.
+-   L'agent a mis du temps à réaliser que le fichier  sur le VPS de l'utilisateur était écrasé par  car le fichier tracké dans le repo contenait des clés de test, ce qui est une mauvaise pratique. Cela a été corrigé mais a causé une perte de temps.</analysis>
