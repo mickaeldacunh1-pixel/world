@@ -10922,28 +10922,27 @@ async def get_boxtal_token():
         "Content-Type": "application/x-www-form-urlencoded"
     }
     
-    # Include app_id in the request if available
-    data = {"grant_type": "client_credentials"}
-    if app_id:
-        data["app_id"] = app_id
+    # Body de la requête OAuth2 - grant_type seulement (pas besoin d'app_id)
+    request_data = {"grant_type": "client_credentials"}
     
-    # URL d'authentification Boxtal (différente de l'API principale)
-    auth_url = "https://api.boxtal.build/iam/account-app/token"
+    # URL d'authentification Boxtal PRODUCTION (api.boxtal.com, PAS api.boxtal.build qui est sandbox)
+    auth_url = "https://api.boxtal.com/iam/account-app/token"
     
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(
             auth_url,
             headers=headers,
-            data=data
+            data=request_data
         )
         
         if response.status_code != 200:
             logger.error(f"Boxtal auth failed: {response.status_code} - {response.text}")
             raise HTTPException(status_code=401, detail=f"Boxtal authentication failed: {response.text}")
         
-        data = response.json()
-        boxtal_token_cache["token"] = data.get("access_token")
-        expires_in = data.get("expires_in", 3600)
+        response_data = response.json()
+        # Note: L'API Boxtal retourne accessToken/expiresIn (camelCase), pas access_token/expires_in
+        boxtal_token_cache["token"] = response_data.get("accessToken") or response_data.get("access_token")
+        expires_in = response_data.get("expiresIn") or response_data.get("expires_in", 3600)
         boxtal_token_cache["expires_at"] = datetime.now() + timedelta(seconds=expires_in)
         
         return boxtal_token_cache["token"]
