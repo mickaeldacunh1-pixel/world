@@ -236,7 +236,7 @@ export default function HeroFreePosition({ settings, onSearch }) {
     radio_button: { x: 70, y: 70, visible: true },
     promo_video: { x: 50, y: 85, visible: true },
     cta_buttons: { x: 50, y: 82, visible: true },
-    premium_buttons: { x: 50, y: 92, visible: false },
+    premium_buttons: { x: 50, y: 78, visible: true },
   };
   
   const getPos = (id) => positions[id] || defaultPositions[id];
