@@ -1317,12 +1317,14 @@ async def register(request: Request, user: UserCreate, background_tasks: Backgro
         "postal_code": user.postal_code,
         "country": user.country,
         "credits": 0,
+        "credits_expiry": None,  # Date d'expiration des crédits offerts
         "referral_code": my_referral_code,
         "referred_by": referred_by,
         "referral_count": 0,
         "loyalty_points": SIGNUP_BONUS_POINTS + (REFERRAL_REWARDS["referee_points"] if referred_by else 0),
         "loyalty_lifetime_points": SIGNUP_BONUS_POINTS + (REFERRAL_REWARDS["referee_points"] if referred_by else 0),
         "free_ads_remaining": 0,  # Annonces gratuites restantes
+        "free_ads_expiry": None,  # Date d'expiration des annonces gratuites
         "promo_code_used": None,  # Code promo utilisé à l'inscription
         "created_at": datetime.now(timezone.utc).isoformat()
     }
@@ -1341,6 +1343,7 @@ async def register(request: Request, user: UserCreate, background_tasks: Backgro
                 free_ads_to_give = min(promo["free_ads"], remaining_global)
                 
                 user_doc["free_ads_remaining"] = free_ads_to_give
+                user_doc["free_ads_expiry"] = (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()  # Expire dans 1 mois
                 user_doc["promo_code_used"] = user.promo_code.upper()
                 
                 # Mettre à jour les stats promo
@@ -1357,6 +1360,7 @@ async def register(request: Request, user: UserCreate, background_tasks: Backgro
     pending_credits = await db.pending_credits.find_one({"email": user.email.lower()})
     if pending_credits:
         user_doc["credits"] = pending_credits.get("credits", 0)
+        user_doc["credits_expiry"] = (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()  # Expire dans 1 mois
         # Delete pending credits after applying
         await db.pending_credits.delete_one({"email": user.email.lower()})
     
@@ -1365,6 +1369,7 @@ async def register(request: Request, user: UserCreate, background_tasks: Backgro
         trial_pack = PRICING_PACKAGES["pro_trial"]
         trial_end = datetime.now(timezone.utc) + timedelta(days=14)
         user_doc["credits"] = user_doc.get("credits", 0) + trial_pack["credits"]  # +10 crédits
+        user_doc["credits_expiry"] = (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()  # Expire dans 1 mois
         user_doc["pro_trial_used"] = True
         user_doc["pro_trial_start"] = datetime.now(timezone.utc).isoformat()
         user_doc["pro_trial_end"] = trial_end.isoformat()
