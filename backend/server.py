@@ -10927,9 +10927,12 @@ async def get_boxtal_token():
     if app_id:
         data["app_id"] = app_id
     
+    # URL d'authentification Boxtal (différente de l'API principale)
+    auth_url = "https://api.boxtal.build/iam/account-app/token"
+    
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(
-            f"{BOXTAL_API_URL}/v3/auth/token",
+            auth_url,
             headers=headers,
             data=data
         )
