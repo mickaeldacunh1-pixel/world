@@ -2326,9 +2326,42 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
             detail=f"La création d'annonces est limitée aux vendeurs situés dans : {', '.join(ALLOWED_COUNTRIES)}. Votre pays ({user_country}) n'est pas autorisé pour la vente."
         )
     
-    # Vérifier si l'utilisateur a des annonces gratuites
+    # Vérifier si l'utilisateur a des annonces gratuites (non expirées)
     free_ads = current_user.get("free_ads_remaining", 0)
-    has_credits = current_user.get("credits", 0) > 0
+    free_ads_expiry = current_user.get("free_ads_expiry")
+    
+    # Vérifier si les annonces gratuites sont expirées
+    if free_ads > 0 and free_ads_expiry:
+        try:
+            expiry_date = datetime.fromisoformat(free_ads_expiry.replace('Z', '+00:00'))
+            if datetime.now(timezone.utc) > expiry_date:
+                free_ads = 0  # Expirés, on ne les compte plus
+                # Mettre à jour l'utilisateur pour supprimer les crédits expirés
+                await db.users.update_one(
+                    {"id": current_user["id"]},
+                    {"$set": {"free_ads_remaining": 0, "free_ads_expiry": None}}
+                )
+        except:
+            pass
+    
+    # Vérifier les crédits (non expirés)
+    credits = current_user.get("credits", 0)
+    credits_expiry = current_user.get("credits_expiry")
+    
+    # Vérifier si les crédits sont expirés
+    if credits > 0 and credits_expiry:
+        try:
+            expiry_date = datetime.fromisoformat(credits_expiry.replace('Z', '+00:00'))
+            if datetime.now(timezone.utc) > expiry_date:
+                credits = 0  # Expirés
+                await db.users.update_one(
+                    {"id": current_user["id"]},
+                    {"$set": {"credits": 0, "credits_expiry": None}}
+                )
+        except:
+            pass
+    
+    has_credits = credits > 0
     
     # Check credits or free ads
     if free_ads <= 0 and not has_credits:
