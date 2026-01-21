@@ -544,46 +544,44 @@ export default function HeroFreePosition({ settings, onSearch }) {
         </div>
       </PositionedElement>
       
-      {/* Boutons Premium - Cachés sur mobile */}
-      {!isMobile && (
-        <PositionedElement 
-          elementId="premium_buttons" 
-          position={getPos('premium_buttons')}
-          mobilePosition={getMobilePos('premium_buttons')}
-          isMobile={isMobile}
-        >
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            {settings.hero_cta3_enabled && settings.hero_cta3_text && (
-              <Link to={settings.hero_cta3_link || '/tarifs'}>
-                <Button 
-                  className="ring-2 ring-yellow-400/50"
-                  style={{ 
-                    backgroundColor: settings.hero_cta3_bg_color || '#EAB308',
-                    color: settings.hero_cta3_text_color || '#FFFFFF'
-                  }}
-                >
-                  {settings.hero_cta3_icon && <span className="mr-2">{settings.hero_cta3_icon}</span>}
-                  {settings.hero_cta3_text}
-                </Button>
-              </Link>
-            )}
-            {settings.hero_cta4_enabled && settings.hero_cta4_text && (
-              <Link to={settings.hero_cta4_link || '/tarifs'}>
-                <Button 
-                  className="ring-2 ring-purple-400/50"
-                  style={{ 
-                    backgroundColor: settings.hero_cta4_bg_color || '#8B5CF6',
-                    color: settings.hero_cta4_text_color || '#FFFFFF'
-                  }}
-                >
-                  {settings.hero_cta4_icon && <span className="mr-2">{settings.hero_cta4_icon}</span>}
-                  {settings.hero_cta4_text}
-                </Button>
-              </Link>
-            )}
-          </div>
-        </PositionedElement>
-      )}
+      {/* Boutons Premium - Visibilité contrôlée par les positions */}
+      <PositionedElement 
+        elementId="premium_buttons" 
+        position={getPos('premium_buttons')}
+        mobilePosition={getMobilePos('premium_buttons')}
+        isMobile={isMobile}
+      >
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+          {settings.hero_cta3_enabled && settings.hero_cta3_text && (
+            <Link to={settings.hero_cta3_link || '/tarifs'}>
+              <Button 
+                className="ring-2 ring-yellow-400/50 text-xs sm:text-sm h-8 sm:h-10 px-3 sm:px-4"
+                style={{ 
+                  backgroundColor: settings.hero_cta3_bg_color || '#EAB308',
+                  color: settings.hero_cta3_text_color || '#FFFFFF'
+                }}
+              >
+                {settings.hero_cta3_icon && <span className="mr-1 sm:mr-2">{settings.hero_cta3_icon}</span>}
+                {settings.hero_cta3_text}
+              </Button>
+            </Link>
+          )}
+          {settings.hero_cta4_enabled && settings.hero_cta4_text && (
+            <Link to={settings.hero_cta4_link || '/tarifs'}>
+              <Button 
+                className="ring-2 ring-purple-400/50 text-xs sm:text-sm h-8 sm:h-10 px-3 sm:px-4"
+                style={{ 
+                  backgroundColor: settings.hero_cta4_bg_color || '#8B5CF6',
+                  color: settings.hero_cta4_text_color || '#FFFFFF'
+                }}
+              >
+                {settings.hero_cta4_icon && <span className="mr-1 sm:mr-2">{settings.hero_cta4_icon}</span>}
+                {settings.hero_cta4_text}
+              </Button>
+            </Link>
+          )}
+        </div>
+      </PositionedElement>
 
       {/* Lecteur vidéo promo */}
       {settings.hero_promo_video_enabled && settings.hero_promo_video_url && (
