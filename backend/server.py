@@ -11050,32 +11050,21 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
             "Content-Type": "application/json"
         }
         
-        # Format request for Boxtal API
+        # Format request for Boxtal API - Pour les devis, on n'a besoin que des infos de base
+        # L'API Boxtal v3 utilise from/to avec zipCode/country pour les cotations
         payload = {
-            "shipper": {
-                "company": request.sender_address.company_name,
-                "firstname": request.sender_address.first_name,
-                "lastname": request.sender_address.last_name,
-                "street": request.sender_address.street,
-                "zipcode": request.sender_address.postal_code,
+            "from": {
+                "zipCode": request.sender_address.postal_code,
                 "city": request.sender_address.city,
-                "country": request.sender_address.country_code,
-                "phone": request.sender_address.phone,
-                "email": request.sender_address.email
+                "country": request.sender_address.country
             },
-            "recipient": {
-                "company": request.receiver_address.company_name,
-                "firstname": request.receiver_address.first_name,
-                "lastname": request.receiver_address.last_name,
-                "street": request.receiver_address.street,
-                "zipcode": request.receiver_address.postal_code,
+            "to": {
+                "zipCode": request.receiver_address.postal_code,
                 "city": request.receiver_address.city,
-                "country": request.receiver_address.country_code,
-                "phone": request.receiver_address.phone,
-                "email": request.receiver_address.email
+                "country": request.receiver_address.country
             },
             "parcels": [{
-                "weight": p.weight / 1000,  # Convert to kg
+                "weight": p.weight / 1000 if p.weight > 100 else p.weight,  # Ensure weight is in kg
                 "length": p.length,
                 "width": p.width,
                 "height": p.height
