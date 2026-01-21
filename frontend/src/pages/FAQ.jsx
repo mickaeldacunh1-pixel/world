@@ -110,8 +110,12 @@ const faqs = [
         a: "Après l'essai, vous conservez vos crédits restants et pouvez continuer à publier des annonces. Pour conserver les avantages PRO (50 photos, badge, stats avancées), vous pouvez souscrire à un abonnement Pro à partir de 29€/mois."
       },
       {
+        q: "J'ai un abonnement Pro Annuel avec 500 crédits. Que se passe-t-il si je les utilise tous ?",
+        a: "Avec l'abonnement Pro Annuel, vous recevez 500 crédits pour l'année. Si vous les épuisez avant la fin de l'année, vous pouvez acheter des crédits supplémentaires via nos packs (de 1 à 100 crédits). Vous conservez tous vos avantages PRO (50 photos, badge, stats) jusqu'à la fin de votre abonnement. À la prochaine échéance, vos 500 crédits seront de nouveau crédités."
+      },
+      {
         q: "Puis-je cumuler l'essai PRO avec le code LANCEMENT ?",
-        a: "Oui ! Si vous êtes professionnel et utilisez le code LANCEMENT, vous cumulez : 10 crédits (essai PRO) + 20 annonces gratuites (offre lancement) + 50 points fidélité. C'est l'offre la plus avantageuse !"
+        a: "Oui ! Si vous êtes professionnel et utilisez le code LANCEMENT, vous cumulez : 10 crédits (essai PRO) + 20 annonces gratuites (offre lancement) + 50 points fidélité. C'est l'offre la plus avantageuse ! Note : les crédits offerts expirent 30 jours après l'inscription."
       }
     ]
   },
