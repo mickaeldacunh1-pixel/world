@@ -27,6 +27,8 @@ const getCategoriesConfig = () => [
   { nameKey: 'categories.motos', slug: 'motos', icon: Bike, image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&h=400&fit=crop', count: 0, color: 'from-green-500 to-teal-500' },
   { nameKey: 'categories.utilitaires', slug: 'utilitaires', icon: Truck, image: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&h=400&fit=crop', count: 0, color: 'from-purple-500 to-pink-500' },
   { nameKey: 'categories.accessoires', slug: 'accessoires', icon: Settings, image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&h=400&fit=crop', count: 0, color: 'from-yellow-500 to-orange-500' },
+  { nameKey: 'categories.collection', slug: 'collection', icon: Crown, image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&h=400&fit=crop', count: 0, color: 'from-amber-500 to-yellow-600' },
+  { nameKey: 'categories.engins', slug: 'engins', icon: Tractor, image: 'https://images.unsplash.com/photo-1605002968379-99eec1e9c59e?w=600&h=400&fit=crop', count: 0, color: 'from-lime-500 to-green-600' },
 ];
 
 // Features will be translated via t() function
