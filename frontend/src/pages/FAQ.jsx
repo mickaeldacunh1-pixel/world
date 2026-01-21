@@ -63,7 +63,7 @@ const faqs = [
       },
       {
         q: "Mes annonces gratuites ont-elles une date d'expiration ?",
-        a: "Non ! Une fois créditées sur votre compte, vos annonces gratuites n'expirent jamais. Utilisez-les quand vous le souhaitez."
+        a: "Oui, les annonces gratuites offertes à l'inscription (offre de lancement) expirent 30 jours après votre inscription. Utilisez-les rapidement ! Passé ce délai, les crédits non utilisés seront perdus. Les crédits achetés, eux, n'expirent pas."
       },
       {
         q: "Puis-je cumuler les annonces gratuites avec d'autres offres ?",
