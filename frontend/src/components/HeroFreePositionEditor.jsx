@@ -59,9 +59,9 @@ const DEFAULT_MOBILE_POSITIONS = {
   diag_button: { x: 50, y: 68, visible: true },
   radio_button: { x: 70, y: 68, visible: true },
   cta_buttons: { x: 50, y: 78, visible: true },
-  premium_buttons: { x: 50, y: 88, visible: false },
+  premium_buttons: { x: 50, y: 85, visible: true },
   stats: { x: 50, y: 94, visible: false },
-  promo_video: { x: 50, y: 85, visible: true },
+  promo_video: { x: 50, y: 75, visible: true },
 };
 
 // Composant élément draggable
