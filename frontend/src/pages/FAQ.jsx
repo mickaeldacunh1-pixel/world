@@ -171,7 +171,7 @@ const faqs = [
       },
       {
         q: "Comment acheter des crédits pour mes annonces ?",
-        a: "Rendez-vous sur la page Tarifs, choisissez le pack qui vous convient et procédez au paiement. Les crédits sont ajoutés instantanément à votre compte après confirmation du paiement. Les crédits n'ont pas de date d'expiration."
+        a: "Rendez-vous sur la page Tarifs, choisissez le pack qui vous convient et procédez au paiement. Les crédits sont ajoutés instantanément à votre compte après confirmation du paiement. Les crédits achetés n'ont pas de date d'expiration, contrairement aux crédits offerts à l'inscription qui expirent après 30 jours."
       },
       {
         q: "Quels moyens de paiement sont acceptés ?",
