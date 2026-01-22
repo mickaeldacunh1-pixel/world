@@ -12048,6 +12048,12 @@ async def startup_event():
     asyncio.create_task(process_abandoned_cart_reminders())
     logger.info("✅ Scheduler de relance panier abandonné activé")
     
+    # Lancer le scheduler de reversements automatiques si activé
+    auto_payout_enabled = os.environ.get('AUTO_PAYOUT_ENABLED', 'false').lower() == 'true'
+    if auto_payout_enabled:
+        asyncio.create_task(process_auto_payouts_scheduler())
+        logger.info("✅ Scheduler de reversements automatiques activé")
+    
     # Load Boxtal margin from database if exists
     boxtal_settings = await db.site_settings.find_one({"setting_type": "boxtal"})
     if boxtal_settings and "margin_percent" in boxtal_settings:
@@ -12060,6 +12066,34 @@ async def startup_event():
         logger.info(f"📦 Boxtal API configuré - Mode: {BOXTAL_MODE}, Marge: {BOXTAL_MARGIN_PERCENT}%")
     else:
         logger.warning("⚠️ Boxtal API non configuré (clés manquantes)")
+
+
+async def process_auto_payouts_scheduler():
+    """Scheduler pour traiter les reversements automatiques (tous les jours à 10h)"""
+    import asyncio
+    from datetime import datetime, time
+    
+    while True:
+        try:
+            now = datetime.now()
+            # Calculer le temps jusqu'à 10h demain
+            target_time = datetime.combine(now.date(), time(10, 0))
+            if now.time() >= time(10, 0):
+                target_time = datetime.combine(now.date() + timedelta(days=1), time(10, 0))
+            
+            wait_seconds = (target_time - now).total_seconds()
+            logger.info(f"💰 Prochain traitement des reversements dans {wait_seconds/3600:.1f}h")
+            
+            await asyncio.sleep(wait_seconds)
+            
+            # Traiter les reversements
+            logger.info("💰 Début du traitement automatique des reversements...")
+            result = await payout_service.process_auto_payouts()
+            logger.info(f"💰 Reversements traités: {result}")
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur scheduler reversements: {e}")
+            await asyncio.sleep(3600)  # Attendre 1h en cas d'erreur
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
