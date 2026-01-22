@@ -6451,12 +6451,22 @@ async def create_direct_checkout(
             "seller_name": seller.get("company_name") or seller.get("name", ""),
             "seller_email": seller.get("email", ""),
             "delivery_method": checkout_data.delivery_method,
+            # Informations de livraison Boxtal
+            "shipping_price": shipping_price,
+            "shipping_carrier": checkout_data.shipping_carrier,
+            "shipping_service": checkout_data.shipping_service,
+            "shipping_service_id": checkout_data.shipping_service_id,
+            # Point relais si applicable
+            "relay_id": checkout_data.relay_id,
+            "relay_name": checkout_data.relay_name,
+            # Total
+            "total_price": total_price,  # Prix article + frais de port
             "payment_method": "stripe_direct",
             "stripe_session_id": session.id,
             "status": "pending_payment",  # En attente de paiement
             "commission": commission,
             "commission_percent": commission_percent * 100,
-            "seller_amount": price - commission,  # Montant à reverser au vendeur
+            "seller_amount": price - commission,  # Montant à reverser au vendeur (hors frais de port)
             "payout_status": "pending",  # Statut du reversement
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
