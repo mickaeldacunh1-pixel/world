@@ -246,10 +246,10 @@ export default function Checkout() {
         
         // Ajouter les frais de livraison Boxtal si sélectionné
         if (deliveryMethod === 'boxtal' && selectedBoxtalCarrier) {
-          checkoutPayload.shipping_carrier = selectedBoxtalCarrier.carrier_name;
-          checkoutPayload.shipping_service = selectedBoxtalCarrier.service_name;
-          checkoutPayload.shipping_price = selectedBoxtalCarrier.price_ttc;
-          checkoutPayload.shipping_service_id = selectedBoxtalCarrier.service_id;
+          checkoutPayload.shipping_carrier = selectedBoxtalCarrier.carrier_name || selectedBoxtalCarrier.name;
+          checkoutPayload.shipping_service = selectedBoxtalCarrier.service_name || selectedBoxtalCarrier.delivery_type;
+          checkoutPayload.shipping_price = selectedBoxtalCarrier.price_ttc || selectedBoxtalCarrier.price;
+          checkoutPayload.shipping_service_id = selectedBoxtalCarrier.service_id || selectedBoxtalCarrier.id;
         }
         
         // Ajouter les frais Mondial Relay si sélectionné
