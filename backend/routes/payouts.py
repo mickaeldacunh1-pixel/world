@@ -2,9 +2,9 @@
 Routes pour la gestion des reversements vendeurs
 """
 
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, Request
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Callable
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,16 +13,23 @@ router = APIRouter(prefix="/api/payouts", tags=["payouts"])
 
 # Ces variables seront injectées par server.py
 db = None
-get_current_user = None
+_get_current_user_func = None
 payout_service = None
 
 
 def set_dependencies(_db, _get_current_user, _payout_service):
     """Injection des dépendances depuis server.py"""
-    global db, get_current_user, payout_service
+    global db, _get_current_user_func, payout_service
     db = _db
-    get_current_user = _get_current_user
+    _get_current_user_func = _get_current_user
     payout_service = _payout_service
+
+
+async def get_current_user_dep(request: Request):
+    """Wrapper pour appeler la fonction get_current_user injectée"""
+    if _get_current_user_func is None:
+        raise HTTPException(status_code=500, detail="Auth not configured")
+    return await _get_current_user_func(request)
 
 
 class PayoutRequest(BaseModel):
@@ -42,7 +49,7 @@ class BatchPayoutRequest(BaseModel):
 # ================== ADMIN ROUTES ==================
 
 @router.get("/pending")
-async def get_pending_payouts(current_user: dict = Depends(lambda: get_current_user)):
+async def get_pending_payouts(current_user: dict = Depends(get_current_user_dep)):
     """Récupérer tous les reversements en attente"""
     if not current_user.get("is_admin"):
         raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
