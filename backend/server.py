@@ -11067,33 +11067,32 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
         elif collection_date.weekday() == 5:  # Samedi
             collection_date += timedelta(days=2)
         
-        # Paramètres pour l'API V1 de cotation
-        # Format: https://www.boxtal.com/api/v1/cotation
+        # Paramètres pour l'API V1 de cotation (format envoimoinscher)
+        # Documentation: expediteur., destinataire., colis_1. avec underscore pour les colis
         params = {
             # Expéditeur
+            "expediteur.type": "entreprise",
             "expediteur.pays": request.sender_address.country,
             "expediteur.code_postal": request.sender_address.postal_code,
             "expediteur.ville": request.sender_address.city,
-            "expediteur.type": "entreprise",
             # Destinataire
+            "destinataire.type": "particulier",
             "destinataire.pays": request.receiver_address.country,
             "destinataire.code_postal": request.receiver_address.postal_code,
             "destinataire.ville": request.receiver_address.city,
-            "destinataire.type": "particulier",
-            # Colis
-            "colis.poids": weight_kg,
-            "colis.longueur": parcel.length,
-            "colis.largeur": parcel.width,
-            "colis.hauteur": parcel.height,
+            # Colis (format colis_1. avec underscore)
+            "colis_1.poids": weight_kg,
+            "colis_1.longueur": parcel.length,
+            "colis_1.largeur": parcel.width,
+            "colis_1.hauteur": parcel.height,
             # Options
             "collecte": collection_date.strftime("%Y-%m-%d"),
-            "type_envoi": "colis",
             "code_contenu": "10120",  # Pièces détachées auto
         }
         
         # Ajouter la valeur si présente (requis pour certains transporteurs)
         if parcel.value:
-            params["colis.valeur"] = parcel.value
+            params["colis_1.valeur"] = parcel.value
         
         headers = {
             "Authorization": f"Basic {encoded_credentials}",
