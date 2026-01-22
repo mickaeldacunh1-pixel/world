@@ -101,21 +101,68 @@ export default function AdminSales() {
   };
 
   const fetchSellerPayouts = async () => {
-    const response = await axios.get(`${API}/admin/sellers/payouts`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    setSellerPayouts(response.data.sellers);
+    try {
+      const response = await axios.get(`${API}/payouts/pending`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSellerPayouts(response.data.sellers || []);
+    } catch (error) {
+      console.error('Error fetching payouts:', error);
+      toast.error('Erreur lors du chargement des reversements');
+    }
   };
 
   const handleMarkPayout = async (orderId) => {
     try {
-      await axios.post(`${API}/admin/sales/${orderId}/mark-payout`, {}, {
+      // Trouver le vendeur associé à cette commande
+      const order = sales.find(s => s.id === orderId);
+      if (!order) {
+        toast.error('Commande non trouvée');
+        return;
+      }
+      
+      const response = await axios.post(`${API}/payouts/process`, {
+        seller_id: order.seller_id,
+        order_ids: [orderId]
+      }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Reversement marqué comme effectué');
+      
+      if (response.data.method === 'stripe_connect') {
+        toast.success(`Reversement Stripe effectué: ${response.data.amount}€`);
+      } else if (response.data.method === 'bank_transfer') {
+        toast.success(`Demande de virement créée: ${response.data.amount}€`);
+      } else {
+        toast.success('Reversement traité');
+      }
+      
       fetchData();
+      fetchSellerPayouts();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur');
+      toast.error(error.response?.data?.detail || 'Erreur lors du reversement');
+    }
+  };
+
+  const handleProcessSellerPayout = async (sellerId) => {
+    try {
+      const response = await axios.post(`${API}/payouts/process`, {
+        seller_id: sellerId
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.data.method === 'stripe_connect') {
+        toast.success(`✅ Reversement Stripe Connect: ${response.data.amount?.toFixed(2)}€`);
+      } else if (response.data.method === 'bank_transfer') {
+        toast.success(`📋 Demande de virement bancaire créée: ${response.data.amount?.toFixed(2)}€`, {
+          description: 'À effectuer manuellement via votre banque'
+        });
+      }
+      
+      fetchData();
+      fetchSellerPayouts();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors du reversement');
     }
   };
 
@@ -125,14 +172,33 @@ export default function AdminSales() {
       return;
     }
     try {
-      const response = await axios.post(`${API}/admin/sales/batch-payout`, {
-        order_ids: selectedSales
+      // Grouper par vendeur
+      const sellerOrders = {};
+      selectedSales.forEach(orderId => {
+        const order = sales.find(s => s.id === orderId);
+        if (order) {
+          if (!sellerOrders[order.seller_id]) {
+            sellerOrders[order.seller_id] = [];
+          }
+          sellerOrders[order.seller_id].push(orderId);
+        }
+      });
+      
+      const sellerIds = Object.keys(sellerOrders);
+      const response = await axios.post(`${API}/payouts/process-batch`, {
+        seller_ids: sellerIds
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success(response.data.message);
+      
+      toast.success(response.data.message || `Traitement de ${sellerIds.length} vendeur(s) lancé`);
       setSelectedSales([]);
-      fetchData();
+      
+      // Rafraîchir après un délai pour laisser le temps au traitement
+      setTimeout(() => {
+        fetchData();
+        fetchSellerPayouts();
+      }, 2000);
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Erreur');
     }
