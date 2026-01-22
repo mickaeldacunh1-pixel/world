@@ -11219,7 +11219,7 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
                 "api_version": "v1",
                 "request": request.dict(),
                 "options": options,
-                "raw_response": data,
+                "raw_response": response.text[:5000],  # Stocker le XML brut (tronqué)
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "valid_until": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
             })
