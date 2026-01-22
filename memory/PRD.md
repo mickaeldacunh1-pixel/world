@@ -1,144 +1,76 @@
-# World Auto Pro - PRD (Product Requirements Document)
+# WorldAutoFrance - Marketplace Pièces Auto
 
-## Projet
-Marketplace automobile full-stack pour l'achat/vente de pièces détachées, véhicules et accessoires.
+## Statut Actuel
+**Date**: 22 janvier 2026
+**État**: Production ✅
 
-## Stack Technique
-- **Frontend**: React + TailwindCSS + Shadcn/UI
-- **Backend**: FastAPI (Python)
-- **Database**: MongoDB
-- **Déploiement**: Docker Compose sur VPS Hostinger (4Go RAM, 1 CPU + 2Go swap)
+## Fonctionnalités Complétées
 
-## Fonctionnalités Principales
+### Session actuelle (22/01/2026)
+- ✅ **Intégration Boxtal API V1** - Devis de livraison fonctionnels
+  - URL corrigée: `https://www.envoimoinscher.com/api/v1`
+  - Parser XML implémenté
+  - 37+ transporteurs disponibles (Mondial Relay, Chronopost, UPS, FedEx, DHL, etc.)
+  - Marge commerciale 15% appliquée
 
-### Authentification & Utilisateurs
-- Inscription/Connexion JWT
-- Rôles: user, seller, admin, pro
-- Profil utilisateur avec adresse, téléphone, IBAN
+### Sessions précédentes
+- ✅ Bouton "offre de lancement" visible sur mobile
+- ✅ Gestion des radios (CRUD) dans l'admin
+- ✅ Catégories "Rare & Collection" et "Engins" sur la page d'accueil
+- ✅ Traductions 8 langues (fr, en, de, es, it, nl, pt, sv)
+- ✅ Alias `wabuild` pour déploiement simplifié
+- ✅ Widget Mondial Relay
+- ✅ Lecteur vidéo promotionnel
+- ✅ Pagination
+- ✅ Estimateur frais de port
+- ✅ Expiration crédits offerts
 
-### Annonces
-- CRUD complet
-- Upload images Cloudinary
-- Catégories multiples (pièces, voitures, motos, utilitaires, accessoires)
-- Statuts: active, reserved, sold, draft
+## Prochaines Tâches (Backlog)
 
-### Paiements
-- **Stripe Direct**: Paiement CB via compte plateforme
-- **Stripe Connect**: Paiement direct au vendeur
-- **Contact Direct**: Réservation + paiement hors plateforme
-- Commission: 5% (min 0.50€, max 15€)
-- Reversements: 2x/mois (1er et 15)
-- Page Admin `/admin/ventes` pour gestion
+### P1 - Priorité Haute
+- [ ] Traduction complète du site (pages About, Newsletter, admin, légales)
+- [ ] Upload direct Cloudinary pour vidéos dans l'éditeur Hero
 
-### Livraison
-- Remise en main propre
-- Colissimo, Chronopost
-- **Mondial Relay**: Widget jQuery (Code: CC23S7ZB)
-- **Boxtal**: API multi-transporteurs (mode simulation actif, production en attente)
+### P2 - Priorité Moyenne
+- [ ] Refactorisation du monolithe `server.py`
+- [ ] Automatisation des reversements vendeurs
 
-### Crédits & Abonnements
-- Crédits offerts à l'inscription: **expirent après 30 jours**
-- Crédits achetés: **n'expirent pas**
-- Packs: 1 à 100 crédits
-- Abonnements Pro: Mensuel (30 crédits) à Annuel (500 crédits)
+### P3 - Améliorations
+- [ ] Erreurs Sentry "Network Error AxiosError" (non priorisé)
 
-### Assistant IA "Tobi"
-- Chat IA sécurisé (auth requise)
-- Accès conditionné par crédits ou annonce active
-
-### Internationalisation
-- i18next / react-i18next
-- FR, EN supportés
-
-### Hero Section
-- Mode standard et mode "position libre" (drag & drop)
-- Vidéo de fond optionnelle
-- Lecteur vidéo promo positionnable
-
-## Intégrations 3rd Party
-- Stripe (paiements)
-- Cloudinary (images/vidéos)
-- Mondial Relay (points relais)
-- Boxtal (multi-transporteurs) - EN ATTENTE PRODUCTION
-- Google reCAPTCHA v3
-- Emergent LLM Key (Tobi)
-
----
-
-## Changelog
-
-### 2026-01-20
-- ✅ Crédits offerts expirent après 30 jours
-- ✅ FAQ mise à jour (Stripe Direct, reversements, expiration crédits)
-- ✅ Sitemap Content-Type corrigé (application/xml)
-- ✅ Forfait Vidéo Étendue 1€ ajouté au backend
-- ✅ Route modification annonce corrigée
-- ✅ Scroll pagination corrigé
-- ✅ Estimation livraison corrigée (ID string vs ObjectId)
-- ✅ Boutons pricing traductions corrigées
-- ⏳ Boxtal: ticket support ouvert (erreur 502)
-
-### 2026-01-19
-- ✅ Lecteur vidéo promo Hero (déplaçable)
-- ✅ Espace blanc Hero corrigé
-- ✅ Mondial Relay CSP corrigée
-- ✅ Boxtal mode simulation fonctionnel
-- ✅ Webhook Boxtal créé
-- ✅ Swap 2Go ajouté au VPS
-- ✅ .gitignore nettoyé
-
----
-
-## Backlog
-
-### P0 - Critique
-- ⏳ Boxtal mode production (attente réponse support)
-
-### P1 - Important
-- Traduction pages: `About.jsx`, `Newsletter.jsx`, `FAQ.jsx` interface
-- Bouton upload Cloudinary pour vidéos promo
-
-### P2 - Amélioration
-- Reversements automatiques programmés
-- Traduire pages admin et légales
-- Refactoriser `server.py` (>10000 lignes)
-
----
-
-## Architecture Fichiers Clés
+## Architecture
 
 ```
 /app/
 ├── backend/
-│   ├── server.py          # API FastAPI principale
-│   └── .env               # Config (MONGO_URL, STRIPE_KEY, BOXTAL_*, etc.)
+│   ├── server.py        # API FastAPI (monolithe)
+│   ├── routes/          # Routes modulaires
+│   └── .env             # Configuration (Boxtal, Stripe, etc.)
 ├── frontend/
-│   ├── public/index.html  # Scripts jQuery/MR
-│   ├── nginx.conf         # Config nginx avec CSP
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── HeroFreePosition.jsx
-│   │   │   ├── HeroFreePositionEditor.jsx
-│   │   │   ├── MondialRelayPicker.jsx
-│   │   │   └── BoxtalPicker.jsx
-│   │   ├── pages/
-│   │   │   ├── Home.jsx
-│   │   │   ├── Checkout.jsx
-│   │   │   ├── FAQ.jsx
-│   │   │   ├── Listings.jsx
-│   │   │   └── AdminSales.jsx
-│   │   └── i18n/locales/
-│   └── .env               # REACT_APP_BACKEND_URL
-├── docker-compose.yml
-└── wabuild.sh
+│   │   ├── components/  # Composants React
+│   │   ├── pages/       # Pages
+│   │   └── i18n/        # Traductions
+│   └── .env
+└── memory/
+    └── PRD.md
 ```
 
-## Credentials Production (VPS)
-- Mondial Relay: Code Enseigne `CC23S7ZB`, Clé `5etShiYU`
-- Boxtal: App ID `app-7f579a44-ed18-40a6-8feb-b924396302d2`
-- Stripe: Clé dans `backend/.env`
-
-## Commande de déploiement
-```bash
-cd /var/www/worldauto && git pull origin main && docker-compose up -d --build --remove-orphans
+## Configuration Boxtal
+```env
+BOXTAL_APP_ID=app-7f579a44-ed18-40a6-8feb-b924396302d2
+BOXTAL_ACCESS_KEY=CK05W1WNPLJ23IKPXS5M92MPQJTTZX4FTHLP4ZAK
+BOXTAL_SECRET_KEY=820931e6-f881-4e1b-b0c9-2bf651e633f0
+BOXTAL_API_URL=https://api.boxtal.com
+BOXTAL_API_V1_URL=https://www.envoimoinscher.com/api/v1
+BOXTAL_MODE=production
+BOXTAL_MARGIN_PERCENT=15
 ```
+
+## Intégrations Tierces
+- Stripe (paiements)
+- Boxtal/Envoimoinscher (livraison)
+- Mondial Relay (points relais)
+- Cloudinary (médias)
+- Google reCAPTCHA
+- i18next (traductions)
