@@ -235,16 +235,32 @@ export default function Checkout() {
       // Choisir l'endpoint selon le mode de paiement
       if (paymentMethod === 'stripe') {
         // Paiement Stripe Direct - via la plateforme
+        const checkoutPayload = {
+          listing_id: cartItems[0].id, // Pour l'instant, un article à la fois pour Stripe
+          delivery_method: deliveryMethod,
+          buyer_address: shippingData.buyer_address,
+          buyer_city: shippingData.buyer_city,
+          buyer_postal: shippingData.buyer_postal,
+          buyer_phone: shippingData.buyer_phone,
+        };
+        
+        // Ajouter les frais de livraison Boxtal si sélectionné
+        if (deliveryMethod === 'boxtal' && selectedBoxtalCarrier) {
+          checkoutPayload.shipping_carrier = selectedBoxtalCarrier.carrier_name;
+          checkoutPayload.shipping_service = selectedBoxtalCarrier.service_name;
+          checkoutPayload.shipping_price = selectedBoxtalCarrier.price_ttc;
+          checkoutPayload.shipping_service_id = selectedBoxtalCarrier.service_id;
+        }
+        
+        // Ajouter les frais Mondial Relay si sélectionné
+        if (deliveryMethod === 'mondial_relay' && selectedRelay) {
+          checkoutPayload.relay_id = selectedRelay.id;
+          checkoutPayload.relay_name = selectedRelay.name;
+        }
+        
         const response = await axios.post(
           `${API}/stripe/direct/checkout`,
-          {
-            listing_id: cartItems[0].id, // Pour l'instant, un article à la fois pour Stripe
-            delivery_method: deliveryMethod,
-            buyer_address: shippingData.buyer_address,
-            buyer_city: shippingData.buyer_city,
-            buyer_postal: shippingData.buyer_postal,
-            buyer_phone: shippingData.buyer_phone,
-          },
+          checkoutPayload,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
