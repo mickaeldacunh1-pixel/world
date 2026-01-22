@@ -6,55 +6,35 @@
 
 ## Fonctionnalités Complétées
 
-### Session actuelle (22/01/2026)
-- ✅ **Intégration Boxtal API V1** - Devis de livraison fonctionnels
-  - URL corrigée: `https://www.envoimoinscher.com/api/v1`
-  - Parser XML implémenté
-  - 37+ transporteurs disponibles (Mondial Relay, Chronopost, UPS, FedEx, DHL, etc.)
-  - Marge commerciale 15% appliquée
+### Session 22/01/2026
+- ✅ **Intégration Boxtal API V1** - Devis de livraison fonctionnels (37+ transporteurs)
+- ✅ **Frais de port inclus dans Stripe** - Le total affiché et facturé inclut maintenant les frais Boxtal
+- ✅ **Système de reversements automatiques** - Nouveau module complet créé
+- ✅ **Correction BoxtalPicker** - Sélection de transporteur fonctionnelle
 
 ### Sessions précédentes
 - ✅ Bouton "offre de lancement" visible sur mobile
 - ✅ Gestion des radios (CRUD) dans l'admin
 - ✅ Catégories "Rare & Collection" et "Engins" sur la page d'accueil
-- ✅ Traductions 8 langues (fr, en, de, es, it, nl, pt, sv)
-- ✅ Alias `wabuild` pour déploiement simplifié
-- ✅ Widget Mondial Relay
-- ✅ Lecteur vidéo promotionnel
-- ✅ Pagination
-- ✅ Estimateur frais de port
-- ✅ Expiration crédits offerts
+- ✅ Traductions 8 langues
+- ✅ Widget Mondial Relay, lecteur vidéo, pagination, etc.
 
-## Prochaines Tâches (Backlog)
+## Nouveaux Modules Créés
 
-### P1 - Priorité Haute
-- [ ] Traduction complète du site (pages About, Newsletter, admin, légales)
-- [ ] Upload direct Cloudinary pour vidéos dans l'éditeur Hero
+### Service de Reversements (`/app/backend/services/payout_service.py`)
+- Reversements Stripe Connect automatiques
+- Virements bancaires semi-automatiques
+- Scheduler quotidien (optionnel)
+- Configuration: `AUTO_PAYOUT_ENABLED`, `PAYOUT_DELAY_DAYS`, `MIN_PAYOUT_AMOUNT`
 
-### P2 - Priorité Moyenne
-- [ ] Refactorisation du monolithe `server.py`
-- [ ] Automatisation des reversements vendeurs
-
-### P3 - Améliorations
-- [ ] Erreurs Sentry "Network Error AxiosError" (non priorisé)
-
-## Architecture
-
-```
-/app/
-├── backend/
-│   ├── server.py        # API FastAPI (monolithe)
-│   ├── routes/          # Routes modulaires
-│   └── .env             # Configuration (Boxtal, Stripe, etc.)
-├── frontend/
-│   ├── src/
-│   │   ├── components/  # Composants React
-│   │   ├── pages/       # Pages
-│   │   └── i18n/        # Traductions
-│   └── .env
-└── memory/
-    └── PRD.md
-```
+### Routes Reversements (`/app/backend/routes/payouts.py`)
+- `GET /api/payouts/pending` - Reversements en attente
+- `POST /api/payouts/process` - Traiter un reversement
+- `POST /api/payouts/process-batch` - Traitement en lot
+- `GET /api/payouts/bank-transfers/pending` - Virements en attente
+- `POST /api/payouts/bank-transfers/confirm` - Confirmer virement
+- `GET /api/payouts/history` - Historique
+- `GET /api/payouts/my-payouts` - Mes reversements (vendeur)
 
 ## Configuration Boxtal
 ```env
@@ -67,10 +47,15 @@ BOXTAL_MODE=production
 BOXTAL_MARGIN_PERCENT=15
 ```
 
-## Intégrations Tierces
-- Stripe (paiements)
-- Boxtal/Envoimoinscher (livraison)
-- Mondial Relay (points relais)
-- Cloudinary (médias)
-- Google reCAPTCHA
-- i18next (traductions)
+## Prochaines Tâches (Backlog)
+
+### P1 - Priorité Haute
+- [ ] Traduction complète du site (About, Newsletter, admin, légales)
+- [ ] Upload direct Cloudinary pour vidéos dans l'éditeur Hero
+
+### P2 - Priorité Moyenne  
+- [ ] Refactorisation du monolithe `server.py` (12000+ lignes)
+- [ ] Interface admin pour les reversements
+
+### P3 - Améliorations
+- [ ] Erreurs Sentry "Network Error AxiosError"
