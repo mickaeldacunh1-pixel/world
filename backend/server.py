@@ -11106,7 +11106,7 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
         boxtal_v1_base = os.environ.get('BOXTAL_API_V1_URL', 'https://www.envoimoinscher.com/api/v1')
         api_v1_url = f"{boxtal_v1_base}/cotation"
         
-        async with httpx.AsyncClient(timeout=30.0) as http_client:
+        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True, http2=False) as http_client:
             response = await http_client.get(
                 api_v1_url,
                 params=params,
