@@ -11041,72 +11041,133 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
             "valid_until": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
         }
     
-    # Production mode - call real Boxtal API
+    # Production mode - call real Boxtal API V1
     try:
-        token = await get_boxtal_token()
+        import base64
+        
+        creds = await get_boxtal_credentials()
+        access_key = creds["access_key"]
+        secret_key = creds["secret_key"]
+        
+        if not access_key or not secret_key:
+            raise HTTPException(status_code=500, detail="Boxtal credentials not configured")
+        
+        # API V1 utilise Basic Auth directement sur chaque requête
+        credentials = f"{access_key}:{secret_key}"
+        encoded_credentials = base64.b64encode(credentials.encode()).decode()
+        
+        # Préparer le premier colis (API V1 gère un colis à la fois)
+        parcel = request.parcels[0]
+        weight_kg = parcel.weight / 1000 if parcel.weight > 100 else parcel.weight
+        
+        # Date de collecte (demain ou après-demain si weekend)
+        collection_date = datetime.now() + timedelta(days=1)
+        if collection_date.weekday() == 6:  # Dimanche
+            collection_date += timedelta(days=1)
+        elif collection_date.weekday() == 5:  # Samedi
+            collection_date += timedelta(days=2)
+        
+        # Paramètres pour l'API V1 de cotation
+        # Format: https://www.boxtal.com/api/v1/cotation
+        params = {
+            # Expéditeur
+            "expediteur.pays": request.sender_address.country,
+            "expediteur.code_postal": request.sender_address.postal_code,
+            "expediteur.ville": request.sender_address.city,
+            "expediteur.type": "entreprise",
+            # Destinataire
+            "destinataire.pays": request.receiver_address.country,
+            "destinataire.code_postal": request.receiver_address.postal_code,
+            "destinataire.ville": request.receiver_address.city,
+            "destinataire.type": "particulier",
+            # Colis
+            "colis.poids": weight_kg,
+            "colis.longueur": parcel.length,
+            "colis.largeur": parcel.width,
+            "colis.hauteur": parcel.height,
+            # Options
+            "collecte": collection_date.strftime("%Y-%m-%d"),
+            "type_envoi": "colis",
+            "code_contenu": "10120",  # Pièces détachées auto
+        }
+        
+        # Ajouter la valeur si présente (requis pour certains transporteurs)
+        if parcel.value:
+            params["colis.valeur"] = parcel.value
         
         headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json"
+            "Authorization": f"Basic {encoded_credentials}",
+            "Accept": "application/json"
         }
         
-        # Format request for Boxtal API - Pour les devis, on n'a besoin que des infos de base
-        # L'API Boxtal v3 utilise from/to avec zipCode/country pour les cotations
-        payload = {
-            "from": {
-                "zipCode": request.sender_address.postal_code,
-                "city": request.sender_address.city,
-                "country": request.sender_address.country
-            },
-            "to": {
-                "zipCode": request.receiver_address.postal_code,
-                "city": request.receiver_address.city,
-                "country": request.receiver_address.country
-            },
-            "parcels": [{
-                "weight": p.weight / 1000 if p.weight > 100 else p.weight,  # Ensure weight is in kg
-                "length": p.length,
-                "width": p.width,
-                "height": p.height
-            } for p in request.parcels]
-        }
+        # URL de l'API V1 Boxtal
+        api_v1_url = "https://www.boxtal.com/api/v1/cotation"
         
         async with httpx.AsyncClient(timeout=30.0) as http_client:
-            response = await http_client.post(
-                f"{BOXTAL_API_URL}/v3/shipping/quote",
-                headers=headers,
-                json=payload
+            response = await http_client.get(
+                api_v1_url,
+                params=params,
+                headers=headers
             )
+            
+            logger.info(f"Boxtal API V1 response: {response.status_code}")
+            
+            if response.status_code == 401:
+                logger.error(f"Boxtal auth error: {response.text}")
+                raise HTTPException(status_code=401, detail="Boxtal authentication failed - check API V1 credentials")
+            
+            if response.status_code == 403:
+                logger.error(f"Boxtal forbidden: {response.text}")
+                raise HTTPException(status_code=403, detail="Boxtal access denied - API V1 may not be activated")
             
             if response.status_code != 200:
                 logger.error(f"Boxtal quote error: {response.status_code} - {response.text}")
                 raise HTTPException(status_code=response.status_code, detail=f"Boxtal error: {response.text}")
             
-            data = response.json()
-            quote_id = data.get("id", f"BOX-{uuid.uuid4().hex[:12].upper()}")
+            # Parser la réponse (peut être XML ou JSON selon l'API V1)
+            try:
+                data = response.json()
+            except:
+                # Si c'est du XML, on log l'erreur
+                logger.error(f"Boxtal returned non-JSON response: {response.text[:500]}")
+                raise HTTPException(status_code=500, detail="Boxtal returned invalid response format")
             
-            # Parse and format options with margin
+            quote_id = f"BOX-{uuid.uuid4().hex[:12].upper()}"
+            
+            # Parser les offres de l'API V1
+            # Le format V1 est différent du V3
             options = []
-            for offer in data.get("offers", []):
-                base_price_ht = float(offer.get("price", {}).get("tax_exclusive", 0))
-                base_price_ttc = float(offer.get("price", {}).get("tax_inclusive", 0))
+            offers = data if isinstance(data, list) else data.get("offers", data.get("cotation", []))
+            
+            if isinstance(offers, dict):
+                offers = [offers]
+            
+            for offer in offers:
+                # Adapter selon le format réel de l'API V1
+                base_price_ht = float(offer.get("prix", {}).get("ht", offer.get("price_ht", offer.get("prix_ht", 0))))
+                base_price_ttc = float(offer.get("prix", {}).get("ttc", offer.get("price_ttc", offer.get("prix_ttc", base_price_ht * 1.2))))
+                
+                carrier_name = offer.get("operateur", {}).get("nom", offer.get("carrier", offer.get("transporteur", "Transporteur")))
+                service_name = offer.get("service", {}).get("nom", offer.get("service_name", offer.get("service", "Standard")))
+                
                 options.append({
-                    "service_id": offer.get("id"),
-                    "carrier_name": offer.get("carrier", {}).get("name"),
-                    "carrier_logo": offer.get("carrier", {}).get("logo"),
-                    "service_name": offer.get("service", {}).get("name"),
-                    "delivery_time_min": offer.get("delivery", {}).get("min_days", 1),
-                    "delivery_time_max": offer.get("delivery", {}).get("max_days", 5),
+                    "service_id": offer.get("operateur", {}).get("code", offer.get("operator_code", str(uuid.uuid4())[:8])),
+                    "carrier_name": carrier_name,
+                    "carrier_logo": offer.get("operateur", {}).get("logo", ""),
+                    "service_name": service_name,
+                    "delivery_time_min": int(offer.get("delai", {}).get("min", offer.get("delivery_min", 2))),
+                    "delivery_time_max": int(offer.get("delai", {}).get("max", offer.get("delivery_max", 5))),
                     "price_ht_base": base_price_ht,
                     "price_ht": apply_shipping_margin(base_price_ht),
                     "price_ttc": apply_shipping_margin(base_price_ttc),
-                    "insurance_available": offer.get("insurance_available", False)
+                    "insurance_available": offer.get("assurance_disponible", False)
                 })
             
             # Store quote
             await db.shipping_quotes.insert_one({
                 "quote_id": quote_id,
                 "mode": "production",
+                "api_version": "v1",
                 "request": request.dict(),
                 "options": options,
                 "raw_response": data,
