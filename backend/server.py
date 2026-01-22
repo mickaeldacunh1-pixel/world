@@ -1271,6 +1271,10 @@ async def get_current_user_optional(request: Request) -> Optional[dict]:
     except:
         return None
 
+# Injecter get_current_user dans les routes payouts
+from routes.payouts import set_dependencies as set_payout_auth
+set_payout_auth(db, get_current_user, payout_service)
+
 # ================== AUTH ROUTES ==================
 
 @api_router.post("/auth/register")
