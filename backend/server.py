@@ -6322,6 +6322,14 @@ class DirectCheckoutRequest(BaseModel):
     buyer_city: Optional[str] = None
     buyer_postal: Optional[str] = None
     buyer_phone: Optional[str] = None
+    # Frais de livraison Boxtal
+    shipping_carrier: Optional[str] = None
+    shipping_service: Optional[str] = None
+    shipping_price: Optional[float] = None
+    shipping_service_id: Optional[str] = None
+    # Point relais
+    relay_id: Optional[str] = None
+    relay_name: Optional[str] = None
 
 @api_router.post("/stripe/direct/checkout")
 async def create_direct_checkout(
