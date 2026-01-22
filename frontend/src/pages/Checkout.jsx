@@ -653,7 +653,13 @@ export default function Checkout() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Frais de livraison</span>
-                    <span className="text-sm">À définir avec vendeur</span>
+                    {deliveryMethod === 'boxtal' && selectedBoxtalCarrier ? (
+                      <span className="font-medium text-green-600">{shippingCost.toLocaleString('fr-FR')} €</span>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">
+                        {deliveryMethod === 'hand_delivery' ? 'Gratuit' : 'À définir'}
+                      </span>
+                    )}
                   </div>
                 </div>
                 
@@ -661,7 +667,7 @@ export default function Checkout() {
                   <div className="flex justify-between items-center mb-4">
                     <span className="font-semibold text-lg">Total</span>
                     <span className="font-heading text-2xl font-bold text-accent">
-                      {totalPrice.toLocaleString('fr-FR')} €
+                      {grandTotal.toLocaleString('fr-FR')} €
                     </span>
                   </div>
                   
@@ -680,7 +686,7 @@ export default function Checkout() {
                         {paymentMethod === 'stripe' ? (
                           <>
                             <CreditCard className="w-5 h-5 mr-2" />
-                            Payer {totalPrice.toLocaleString('fr-FR')} €
+                            Payer {grandTotal.toLocaleString('fr-FR')} €
                           </>
                         ) : (
                           <>
