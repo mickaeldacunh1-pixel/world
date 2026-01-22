@@ -613,13 +613,23 @@ export default function AdminSales() {
                     <Button 
                       className="w-full mt-4 bg-green-600 hover:bg-green-700"
                       onClick={() => handleProcessSellerPayout(seller.seller_id)}
-                        } catch (error) {
-                          toast.error('Erreur');
-                        }
-                      }}
                     >
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Marquer tout comme versé ({seller.total_pending?.toFixed(2)} €)
+                      {seller.has_stripe_connect ? (
+                        <>
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          Payer via Stripe ({seller.total_pending?.toFixed(2)} €)
+                        </>
+                      ) : seller.has_bank_details ? (
+                        <>
+                          <Building className="w-4 h-4 mr-2" />
+                          Créer demande virement ({seller.total_pending?.toFixed(2)} €)
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Traiter reversement ({seller.total_pending?.toFixed(2)} €)
+                        </>
+                      )}
                     </Button>
                   </CardContent>
                 </Card>
