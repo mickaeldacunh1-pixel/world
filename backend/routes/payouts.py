@@ -63,12 +63,14 @@ async def get_pending_payouts(current_user: dict = Depends(get_current_user_dep)
         if seller_id not in sellers:
             seller = await db.users.find_one(
                 {"id": seller_id}, 
-                {"_id": 0, "name": 1, "email": 1, "company_name": 1, "iban": 1, "bic": 1, "stripe_account_id": 1}
+                {"_id": 0, "name": 1, "email": 1, "company_name": 1, "iban": 1, "bic": 1, "stripe_account_id": 1, "account_holder": 1}
             )
             sellers[seller_id] = {
                 "seller_id": seller_id,
+                "_id": seller_id,  # Compatibilité avec le frontend existant
                 "seller": seller,
                 "total_amount": 0,
+                "total_pending": 0,  # Alias pour le frontend
                 "orders_count": 0,
                 "orders": [],
                 "has_stripe_connect": bool(seller.get("stripe_account_id") if seller else False),
@@ -76,11 +78,13 @@ async def get_pending_payouts(current_user: dict = Depends(get_current_user_dep)
             }
         
         sellers[seller_id]["total_amount"] += order.get("seller_amount", 0)
+        sellers[seller_id]["total_pending"] += order.get("seller_amount", 0)
         sellers[seller_id]["orders_count"] += 1
         sellers[seller_id]["orders"].append({
             "id": order.get("id"),
             "listing_title": order.get("listing_title"),
             "seller_amount": order.get("seller_amount"),
+            "commission": order.get("commission"),
             "paid_at": order.get("paid_at")
         })
     
