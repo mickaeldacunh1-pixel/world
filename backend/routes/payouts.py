@@ -92,7 +92,7 @@ async def get_pending_payouts(current_user: dict = Depends(get_current_user_dep)
 
 
 @router.post("/process")
-async def process_payout(request: PayoutRequest, current_user: dict = Depends(lambda: get_current_user)):
+async def process_payout(request: PayoutRequest, current_user: dict = Depends(get_current_user_dep)):
     """Traiter le reversement pour un vendeur spécifique"""
     if not current_user.get("is_admin"):
         raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
@@ -115,7 +115,7 @@ async def process_payout(request: PayoutRequest, current_user: dict = Depends(la
 async def process_batch_payouts(
     request: BatchPayoutRequest, 
     background_tasks: BackgroundTasks,
-    current_user: dict = Depends(lambda: get_current_user)
+    current_user: dict = Depends(get_current_user_dep)
 ):
     """Traiter les reversements pour plusieurs vendeurs en arrière-plan"""
     if not current_user.get("is_admin"):
@@ -147,7 +147,7 @@ async def process_batch_payouts(
 
 
 @router.get("/bank-transfers/pending")
-async def get_pending_bank_transfers(current_user: dict = Depends(lambda: get_current_user)):
+async def get_pending_bank_transfers(current_user: dict = Depends(get_current_user_dep)):
     """Récupérer les virements bancaires en attente de confirmation"""
     if not current_user.get("is_admin"):
         raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
@@ -159,7 +159,7 @@ async def get_pending_bank_transfers(current_user: dict = Depends(lambda: get_cu
 @router.post("/bank-transfers/confirm")
 async def confirm_bank_transfer(
     request: ConfirmBankTransferRequest, 
-    current_user: dict = Depends(lambda: get_current_user)
+    current_user: dict = Depends(get_current_user_dep)
 ):
     """Confirmer qu'un virement bancaire a été effectué"""
     if not current_user.get("is_admin"):
@@ -180,7 +180,7 @@ async def confirm_bank_transfer(
 @router.post("/auto-process")
 async def trigger_auto_payouts(
     background_tasks: BackgroundTasks,
-    current_user: dict = Depends(lambda: get_current_user)
+    current_user: dict = Depends(get_current_user_dep)
 ):
     """Déclencher le traitement automatique de tous les reversements éligibles"""
     if not current_user.get("is_admin"):
@@ -195,7 +195,7 @@ async def trigger_auto_payouts(
 async def get_payout_history(
     seller_id: Optional[str] = None,
     limit: int = 50,
-    current_user: dict = Depends(lambda: get_current_user)
+    current_user: dict = Depends(get_current_user_dep)
 ):
     """Récupérer l'historique des reversements"""
     # Les vendeurs ne peuvent voir que leurs propres reversements
@@ -207,7 +207,7 @@ async def get_payout_history(
 
 
 @router.get("/stats")
-async def get_payout_stats(current_user: dict = Depends(lambda: get_current_user)):
+async def get_payout_stats(current_user: dict = Depends(get_current_user_dep)):
     """Statistiques des reversements"""
     if not current_user.get("is_admin"):
         raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
@@ -263,7 +263,7 @@ async def get_payout_stats(current_user: dict = Depends(lambda: get_current_user
 # ================== SELLER ROUTES ==================
 
 @router.get("/my-payouts")
-async def get_my_payouts(current_user: dict = Depends(lambda: get_current_user)):
+async def get_my_payouts(current_user: dict = Depends(get_current_user_dep)):
     """Récupérer mes reversements (pour vendeur)"""
     history = await payout_service.get_payout_history(current_user["id"], 50)
     pending = await payout_service.get_seller_pending_total(current_user["id"])
