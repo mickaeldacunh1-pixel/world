@@ -6359,9 +6359,10 @@ async def create_direct_checkout(
     
     # Calculer les montants
     price = float(listing["price"])
-    total_amount_cents = int(price * 100)
+    shipping_price = float(checkout_data.shipping_price or 0)  # Frais de livraison Boxtal
+    total_price = price + shipping_price  # Total avec frais de port
     
-    # Commission de la plateforme (5% avec min 0.50€ et max 15€)
+    # Commission de la plateforme (5% avec min 0.50€ et max 15€) - sur le prix de l'article seulement
     commission_percent = 0.05
     commission = price * commission_percent
     commission = max(0.50, min(15.0, commission))  # Min 0.50€, Max 15€
@@ -6372,21 +6373,42 @@ async def create_direct_checkout(
     cancel_url = f"{origin}/panier?payment_cancelled=true"
     
     try:
-        # Créer la session Stripe Checkout
-        session = stripe.checkout.Session.create(
-            payment_method_types=["card"],
-            line_items=[{
+        # Construire les line_items pour Stripe
+        line_items = [{
+            "price_data": {
+                "currency": "eur",
+                "unit_amount": int(price * 100),
+                "product_data": {
+                    "name": listing["title"],
+                    "description": f"Vendu par {seller.get('company_name') or seller.get('name', 'Vendeur')}",
+                    "images": listing.get("images", [])[:1] if listing.get("images") else [],
+                },
+            },
+            "quantity": 1,
+        }]
+        
+        # Ajouter les frais de livraison comme ligne séparée si présents
+        if shipping_price > 0:
+            shipping_description = f"{checkout_data.shipping_carrier or 'Transporteur'}"
+            if checkout_data.shipping_service:
+                shipping_description += f" - {checkout_data.shipping_service}"
+            
+            line_items.append({
                 "price_data": {
                     "currency": "eur",
-                    "unit_amount": total_amount_cents,
+                    "unit_amount": int(shipping_price * 100),
                     "product_data": {
-                        "name": listing["title"],
-                        "description": f"Vendu par {seller.get('company_name') or seller.get('name', 'Vendeur')}",
-                        "images": listing.get("images", [])[:1] if listing.get("images") else [],
+                        "name": "Frais de livraison",
+                        "description": shipping_description,
                     },
                 },
                 "quantity": 1,
-            }],
+            })
+        
+        # Créer la session Stripe Checkout
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=line_items,
             mode="payment",
             success_url=success_url,
             cancel_url=cancel_url,
@@ -6398,6 +6420,8 @@ async def create_direct_checkout(
                 "seller_id": listing["seller_id"],
                 "delivery_method": checkout_data.delivery_method,
                 "commission": str(commission),
+                "shipping_price": str(shipping_price),
+                "shipping_carrier": checkout_data.shipping_carrier or "",
             },
             payment_intent_data={
                 "metadata": {
