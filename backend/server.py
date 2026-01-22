@@ -11127,43 +11127,89 @@ async def get_boxtal_quotes(request: BoxtalQuoteRequest):
                 logger.error(f"Boxtal quote error: {response.status_code} - {response.text}")
                 raise HTTPException(status_code=response.status_code, detail=f"Boxtal error: {response.text}")
             
-            # Parser la réponse (peut être XML ou JSON selon l'API V1)
+            # Parser la réponse XML de l'API V1
             try:
-                data = response.json()
-            except:
-                # Si c'est du XML, on log l'erreur
-                logger.error(f"Boxtal returned non-JSON response: {response.text[:500]}")
-                raise HTTPException(status_code=500, detail="Boxtal returned invalid response format")
+                root = ET.fromstring(response.text)
+            except ET.ParseError as e:
+                logger.error(f"Boxtal XML parse error: {e} - {response.text[:500]}")
+                raise HTTPException(status_code=500, detail="Boxtal returned invalid XML response")
+            
+            # Vérifier si c'est une erreur
+            if root.tag == 'error':
+                error_code = root.find('code')
+                error_msg = root.find('message')
+                error_text = f"{error_code.text if error_code is not None else 'unknown'}: {error_msg.text if error_msg is not None else 'unknown error'}"
+                logger.error(f"Boxtal API error: {error_text}")
+                raise HTTPException(status_code=400, detail=f"Boxtal: {error_text}")
             
             quote_id = f"BOX-{uuid.uuid4().hex[:12].upper()}"
             
-            # Parser les offres de l'API V1
-            # Le format V1 est différent du V3
+            # Parser les offres de l'API V1 (format XML)
             options = []
-            offers = data if isinstance(data, list) else data.get("offers", data.get("cotation", []))
-            
-            if isinstance(offers, dict):
-                offers = [offers]
+            offers = root.findall('.//offer')
             
             for offer in offers:
-                # Adapter selon le format réel de l'API V1
-                base_price_ht = float(offer.get("prix", {}).get("ht", offer.get("price_ht", offer.get("prix_ht", 0))))
-                base_price_ttc = float(offer.get("prix", {}).get("ttc", offer.get("price_ttc", offer.get("prix_ttc", base_price_ht * 1.2))))
+                # Extraire les informations de l'opérateur
+                operator = offer.find('operator')
+                operator_code = operator.find('code').text if operator is not None and operator.find('code') is not None else "UNKNOWN"
+                carrier_name = operator.find('label').text if operator is not None and operator.find('label') is not None else "Transporteur"
+                carrier_logo = operator.find('logo').text if operator is not None and operator.find('logo') is not None else ""
                 
-                carrier_name = offer.get("operateur", {}).get("nom", offer.get("carrier", offer.get("transporteur", "Transporteur")))
-                service_name = offer.get("service", {}).get("nom", offer.get("service_name", offer.get("service", "Standard")))
+                # Extraire les informations du service
+                service = offer.find('service')
+                service_code = service.find('code').text if service is not None and service.find('code') is not None else ""
+                service_name = service.find('label').text if service is not None and service.find('label') is not None else "Standard"
+                
+                # Extraire les prix
+                price = offer.find('price')
+                base_price_ht = float(price.find('tax-exclusive').text) if price is not None and price.find('tax-exclusive') is not None else 0
+                base_price_ttc = float(price.find('tax-inclusive').text) if price is not None and price.find('tax-inclusive') is not None else base_price_ht * 1.2
+                
+                # Extraire les délais de livraison depuis collection et delivery
+                collection = offer.find('collection')
+                delivery = offer.find('delivery')
+                
+                collection_date = collection.find('date').text if collection is not None and collection.find('date') is not None else None
+                delivery_date = delivery.find('date').text if delivery is not None and delivery.find('date') is not None else None
+                
+                # Calculer les délais en jours
+                delivery_min = 2
+                delivery_max = 5
+                if collection_date and delivery_date:
+                    try:
+                        from datetime import datetime as dt
+                        col_dt = dt.strptime(collection_date, "%Y-%m-%d")
+                        del_dt = dt.strptime(delivery_date, "%Y-%m-%d")
+                        days_diff = (del_dt - col_dt).days
+                        delivery_min = max(1, days_diff)
+                        delivery_max = max(delivery_min, days_diff + 1)
+                    except:
+                        pass
+                
+                # Extraire le type de livraison
+                delivery_type = ""
+                if delivery is not None:
+                    delivery_type_elem = delivery.find('type')
+                    if delivery_type_elem is not None:
+                        delivery_type = delivery_type_elem.find('label').text if delivery_type_elem.find('label') is not None else ""
+                
+                # Vérifier si assurance disponible
+                insurance_available = offer.find('.//option[@code="assurance"]') is not None or offer.find('.//option/code[.="assurance"]') is not None
                 
                 options.append({
-                    "service_id": offer.get("operateur", {}).get("code", offer.get("operator_code", str(uuid.uuid4())[:8])),
+                    "service_id": f"{operator_code}-{service_code}",
                     "carrier_name": carrier_name,
-                    "carrier_logo": offer.get("operateur", {}).get("logo", ""),
+                    "carrier_logo": carrier_logo,
                     "service_name": service_name,
-                    "delivery_time_min": int(offer.get("delai", {}).get("min", offer.get("delivery_min", 2))),
-                    "delivery_time_max": int(offer.get("delai", {}).get("max", offer.get("delivery_max", 5))),
+                    "service_code": service_code,
+                    "delivery_type": delivery_type,
+                    "delivery_time_min": delivery_min,
+                    "delivery_time_max": delivery_max,
+                    "delivery_date": delivery_date,
                     "price_ht_base": base_price_ht,
                     "price_ht": apply_shipping_margin(base_price_ht),
                     "price_ttc": apply_shipping_margin(base_price_ttc),
-                    "insurance_available": offer.get("assurance_disponible", False)
+                    "insurance_available": insurance_available
                 })
             
             # Store quote
