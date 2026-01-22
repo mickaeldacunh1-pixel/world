@@ -298,7 +298,9 @@ export default function Checkout() {
   };
 
   const totalPrice = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
-  const shippingCost = deliveryMethod === 'boxtal' && selectedBoxtalCarrier ? selectedBoxtalCarrier.price_ttc : 0;
+  const shippingCost = deliveryMethod === 'boxtal' && selectedBoxtalCarrier 
+    ? (selectedBoxtalCarrier.price_ttc || selectedBoxtalCarrier.price || 0) 
+    : 0;
   const grandTotal = totalPrice + shippingCost;
 
   if (loading) {
