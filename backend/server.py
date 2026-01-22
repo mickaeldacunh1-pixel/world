@@ -715,6 +715,13 @@ from routes.radio import router as radio_router, set_db as set_radio_db
 set_radio_db(db)
 app.include_router(radio_router)
 
+# Import and setup payout routes
+from services.payout_service import init_payout_service, get_payout_service
+from routes.payouts import router as payouts_router, set_dependencies as set_payout_deps
+payout_service = init_payout_service(db)
+set_payout_deps(db, None, payout_service)  # get_current_user sera set après sa définition
+app.include_router(payouts_router)
+
 # ================== MODELS ==================
 
 class UserCreate(BaseModel):
