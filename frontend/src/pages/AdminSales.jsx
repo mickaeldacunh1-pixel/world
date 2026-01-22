@@ -580,6 +580,16 @@ export default function AdminSales() {
                         </p>
                       </div>
                     )}
+                    
+                    {/* Badge Stripe Connect */}
+                    {seller.has_stripe_connect && (
+                      <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-4">
+                        <p className="text-sm text-purple-800 flex items-center gap-2">
+                          <CreditCard className="w-4 h-4" />
+                          <strong>Stripe Connect activé</strong> - Reversement automatique disponible
+                        </p>
+                      </div>
+                    )}
 
                     <div className="space-y-2">
                       {seller.orders.map((order) => (
@@ -596,28 +606,13 @@ export default function AdminSales() {
                               (comm: {order.commission?.toFixed(2)} €)
                             </p>
                           </div>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => handleMarkPayout(order.id)}
-                          >
-                            <CheckCircle className="w-3 h-3 mr-1" />
-                            Versé
-                          </Button>
                         </div>
                       ))}
                     </div>
 
                     <Button 
                       className="w-full mt-4 bg-green-600 hover:bg-green-700"
-                      onClick={async () => {
-                        const orderIds = seller.orders.map(o => o.id);
-                        try {
-                          await axios.post(`${API}/admin/sales/batch-payout`, { order_ids: orderIds }, {
-                            headers: { Authorization: `Bearer ${token}` }
-                          });
-                          toast.success('Tous les reversements marqués comme effectués');
-                          fetchData();
+                      onClick={() => handleProcessSellerPayout(seller.seller_id)}
                         } catch (error) {
                           toast.error('Erreur');
                         }
