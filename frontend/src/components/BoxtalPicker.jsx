@@ -62,8 +62,9 @@ export default function BoxtalPicker({
       // L'API renvoie "options" pour les transporteurs
       const carriers = response.data.options || response.data.quotes || [];
       if (carriers.length > 0) {
-        // Transformer le format pour le composant
+        // Garder le format original de l'API + ajouter des champs utiles
         const formattedCarriers = carriers.map(c => ({
+          ...c,  // Garder toutes les données originales
           id: c.service_id,
           name: c.carrier_name,
           logo: c.carrier_logo,
