@@ -27,6 +27,11 @@ const menuItems = [
     path: '/admin/paiements'
   },
   { 
+    label: 'Utilisateurs', 
+    icon: Users, 
+    path: '/admin/utilisateurs'
+  },
+  { 
     label: 'Actualités', 
     icon: Newspaper, 
     path: '/admin/actualites'
