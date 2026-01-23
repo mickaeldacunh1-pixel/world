@@ -92,13 +92,13 @@ export default function AdminUsers() {
   const handleBlockUser = async (userId, block = true) => {
     setActionLoading(true);
     try {
-      await axios.post(`${API}/admin/users/${userId}/${block ? 'block' : 'unblock'}`, {}, {
+      await axios.post(`${API}/admin/users/${userId}/${block ? 'ban' : 'unban'}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success(block ? 'Utilisateur bloqué' : 'Utilisateur débloqué');
       fetchUsers();
       if (selectedUser?.id === userId) {
-        setSelectedUser({ ...selectedUser, status: block ? 'blocked' : 'active' });
+        setSelectedUser({ ...selectedUser, is_banned: block });
       }
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Erreur lors de l\'action');
