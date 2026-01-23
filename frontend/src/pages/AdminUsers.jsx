@@ -306,7 +306,7 @@ export default function AdminUsers() {
                           >
                             <Eye className="w-4 h-4" />
                           </Button>
-                          {u.status === 'blocked' ? (
+                          {u.is_banned ? (
                             <Button
                               variant="ghost"
                               size="sm"
