@@ -110,6 +110,7 @@ function AppContent() {
           <Route index element={<AdminDashboard />} />
           <Route path="ventes" element={<AdminSales />} />
           <Route path="paiements" element={<AdminPayments />} />
+          <Route path="utilisateurs" element={<AdminUsers />} />
           <Route path="parametres" element={<AdminSettings />} />
           <Route path="actualites" element={<AdminUpdates />} />
           <Route path="signalements" element={<AdminReports />} />
