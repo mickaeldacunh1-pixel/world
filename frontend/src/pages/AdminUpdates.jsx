@@ -48,6 +48,10 @@ export default function AdminUpdates() {
   const [activeTab, setActiveTab] = useState('updates');
   const fileInputRef = useRef(null);
 
+  const isAdmin = user?.email === 'contact@worldautofrance.com' || 
+                  user?.email === 'admin@worldautofrance.com' || 
+                  user?.is_admin;
+
   const [formData, setFormData] = useState({
     title: '',
     version: '',
@@ -65,10 +69,12 @@ export default function AdminUpdates() {
   });
 
   useEffect(() => {
-    fetchUpdates();
-    fetchSubscribers();
-    fetchNewsletterLogs();
-  }, []);
+    if (isAdmin) {
+      fetchUpdates();
+      fetchSubscribers();
+      fetchNewsletterLogs();
+    }
+  }, [isAdmin]);
 
   const fetchUpdates = async () => {
     try {
