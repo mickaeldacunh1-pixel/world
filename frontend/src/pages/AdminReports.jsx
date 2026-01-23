@@ -173,12 +173,12 @@ export default function AdminReports() {
             <div className="flex flex-wrap gap-4">
               <div className="flex-1 min-w-[150px]">
                 <label className="text-sm font-medium mb-1 block">Statut</label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <Select value={statusFilter || "all"} onValueChange={(v) => setStatusFilter(v === "all" ? "" : v)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Tous les statuts" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Tous les statuts</SelectItem>
+                    <SelectItem value="all">Tous les statuts</SelectItem>
                     <SelectItem value="pending">En attente</SelectItem>
                     <SelectItem value="reviewed">En cours</SelectItem>
                     <SelectItem value="resolved">Résolu</SelectItem>
@@ -188,12 +188,12 @@ export default function AdminReports() {
               </div>
               <div className="flex-1 min-w-[150px]">
                 <label className="text-sm font-medium mb-1 block">Type</label>
-                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <Select value={typeFilter || "all"} onValueChange={(v) => setTypeFilter(v === "all" ? "" : v)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Tous les types" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Tous les types</SelectItem>
+                    <SelectItem value="all">Tous les types</SelectItem>
                     <SelectItem value="listing">Annonces</SelectItem>
                     <SelectItem value="user">Utilisateurs</SelectItem>
                   </SelectContent>
