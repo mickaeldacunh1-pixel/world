@@ -55,10 +55,12 @@ export default function AdminReports() {
       const response = await axios.get(`${API}/reports?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setReports(response.data.reports);
-      setStats(response.data.stats);
+      setReports(response.data.reports || []);
+      setStats(response.data.stats || { total: 0, pending: 0 });
     } catch (error) {
+      console.error('Error fetching reports:', error);
       toast.error('Erreur lors du chargement des signalements');
+      setReports([]);
     } finally {
       setLoading(false);
     }
