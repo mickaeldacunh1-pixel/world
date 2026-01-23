@@ -27,24 +27,9 @@ const menuItems = [
     path: '/admin/paiements'
   },
   { 
-    label: 'Annonces', 
-    icon: Package, 
-    path: '/admin/annonces'
-  },
-  { 
-    label: 'Utilisateurs', 
-    icon: Users, 
-    path: '/admin/utilisateurs'
-  },
-  { 
     label: 'Actualités', 
     icon: Newspaper, 
     path: '/admin/actualites'
-  },
-  { 
-    label: 'Radios', 
-    icon: Radio, 
-    path: '/admin/radios'
   },
   { 
     label: 'Signalements', 
