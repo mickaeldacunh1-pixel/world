@@ -7171,7 +7171,7 @@ async def get_reports(
     current_user: dict = Depends(get_current_user)
 ):
     """Récupérer les signalements (admin uniquement)"""
-    if current_user["email"] != ADMIN_EMAIL:
+    if not is_user_admin(current_user):
         raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
     
     query = {}
