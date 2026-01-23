@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 import { 
   CreditCard, DollarSign, TrendingUp, Calendar, RefreshCw,
   CheckCircle, Clock, XCircle, AlertCircle, ArrowUpRight,
-  Download, Filter, Search, ChevronLeft, ChevronRight, Eye
+  Download, Filter, Search, ChevronLeft, ChevronRight, Eye, Shield
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
