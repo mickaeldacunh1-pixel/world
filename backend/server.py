@@ -3820,8 +3820,8 @@ async def checkout_cart(checkout: CartCheckout, background_tasks: BackgroundTask
     
     for listing_id in checkout.listing_ids:
         try:
-            # Get listing - accepter active ou reserved
-            listing = await db.listings.find_one({"id": listing_id, "status": {"$in": ["active", "reserved"]}}, {"_id": 0})
+            # Get listing - seulement active
+            listing = await db.listings.find_one({"id": listing_id, "status": "active"}, {"_id": 0})
             if not listing:
                 errors.append({"listing_id": listing_id, "error": "Annonce non trouvée ou déjà vendue"})
                 continue
@@ -6342,7 +6342,7 @@ async def create_direct_checkout(
     if not listing:
         raise HTTPException(status_code=404, detail="Annonce non trouvée")
     
-    if listing.get("status") not in ["active", "reserved"]:
+    if listing.get("status") != "active":
         raise HTTPException(status_code=400, detail="Cette annonce n'est plus disponible")
     
     # Vérifier que l'acheteur n'est pas le vendeur
