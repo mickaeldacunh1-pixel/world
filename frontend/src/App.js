@@ -105,9 +105,6 @@ function AppContent() {
       <Navbar />
       <main className="flex-1">
         <Routes>
-      <Navbar />
-      <main className="flex-1">
-        <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/annonces" element={<Listings />} />
           <Route path="/annonces/:category" element={<Listings />} />
