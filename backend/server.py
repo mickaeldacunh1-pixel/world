@@ -10747,7 +10747,7 @@ async def get_sellers_pending_payouts(current_user: dict = Depends(get_current_u
 @api_router.get("/admin/users/stats")
 async def get_admin_users_stats(current_user: dict = Depends(get_current_user)):
     """Statistiques des utilisateurs"""
-    if not current_user.get("is_admin"):
+    if not is_user_admin(current_user):
         raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
     
     total = await db.users.count_documents({})
