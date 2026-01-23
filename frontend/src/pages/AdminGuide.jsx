@@ -9,7 +9,11 @@ export default function AdminGuide() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  if (!user?.is_admin) {
+  const isAdmin = user?.email === 'contact@worldautofrance.com' || 
+                  user?.email === 'admin@worldautofrance.com' || 
+                  user?.is_admin;
+
+  if (!isAdmin) {
     navigate('/');
     return null;
   }
