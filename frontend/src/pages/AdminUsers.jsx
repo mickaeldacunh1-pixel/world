@@ -381,7 +381,7 @@ export default function AdminUsers() {
                       {selectedUser.is_admin && (
                         <Badge className="bg-purple-100 text-purple-800">Admin</Badge>
                       )}
-                      {selectedUser.status === 'blocked' ? (
+                      {selectedUser.is_banned ? (
                         <Badge className="bg-red-100 text-red-800">Bloqué</Badge>
                       ) : (
                         <Badge className="bg-green-100 text-green-800">Actif</Badge>
