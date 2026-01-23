@@ -39,12 +39,12 @@ export default function AdminReports() {
                   user?.is_admin;
 
   useEffect(() => {
-    if (isAdmin) {
+    if (user && token && isAdmin) {
       fetchReports();
-    } else {
+    } else if (user && !isAdmin) {
       setLoading(false);
     }
-  }, [statusFilter, typeFilter, isAdmin]);
+  }, [user, token, statusFilter, typeFilter]);
 
   const fetchReports = async () => {
     try {
