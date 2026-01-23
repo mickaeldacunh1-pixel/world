@@ -41,6 +41,8 @@ export default function AdminReports() {
   useEffect(() => {
     if (isAdmin) {
       fetchReports();
+    } else {
+      setLoading(false);
     }
   }, [statusFilter, typeFilter, isAdmin]);
 
