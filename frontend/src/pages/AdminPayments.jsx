@@ -163,6 +163,22 @@ export default function AdminPayments() {
     });
   };
 
+  // Blocage si pas admin
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-secondary/30 flex items-center justify-center">
+        <Card className="p-8 text-center">
+          <Shield className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold mb-2">Accès réservé</h2>
+          <p className="text-muted-foreground mb-4">Cette page est réservée aux administrateurs.</p>
+          <Link to="/">
+            <Button className="bg-accent hover:bg-accent/90">Retour à l'accueil</Button>
+          </Link>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background py-8" data-testid="admin-payments-page">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
