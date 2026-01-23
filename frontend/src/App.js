@@ -86,6 +86,7 @@ const ProtectedRoute = ({ children }) => {
 function AppContent() {
   const location = useLocation();
   const isWidget = location.pathname === '/widget';
+  const isAdmin = location.pathname.startsWith('/admin');
   
   // Le widget est rendu sans navbar/footer
   if (isWidget) {
@@ -95,6 +96,25 @@ function AppContent() {
           <Route path="/widget" element={<Widget />} />
         </Routes>
       </div>
+    );
+  }
+  
+  // L'admin a son propre layout avec sidebar
+  if (isAdmin) {
+    return (
+      <Routes>
+        <Route path="/admin" element={
+          <ProtectedRoute><AdminLayout /></ProtectedRoute>
+        }>
+          <Route index element={<AdminDashboard />} />
+          <Route path="ventes" element={<AdminSales />} />
+          <Route path="paiements" element={<AdminPayments />} />
+          <Route path="parametres" element={<AdminSettings />} />
+          <Route path="actualites" element={<AdminUpdates />} />
+          <Route path="signalements" element={<AdminReports />} />
+          <Route path="guide-ventes" element={<AdminGuide />} />
+        </Route>
+      </Routes>
     );
   }
   
