@@ -89,8 +89,8 @@ export default function Checkout() {
         items.map(async (item) => {
           try {
             const response = await axios.get(`${API}/listings/${item.id}`);
-            // Accepter les annonces active OU reserved (réservée par cet utilisateur)
-            const isAvailable = response.data.status === 'active' || response.data.status === 'reserved';
+            // Seulement les annonces actives sont disponibles
+            const isAvailable = response.data.status === 'active';
             return { ...item, ...response.data, available: isAvailable };
           } catch {
             return { ...item, available: false };
