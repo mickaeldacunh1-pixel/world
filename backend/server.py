@@ -10812,6 +10812,10 @@ async def get_admin_users(
         {"_id": 0, "password": 0}
     ).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     
+    # Ajouter le compteur d'annonces pour chaque utilisateur
+    for u in users:
+        u["listings_count"] = await db.listings.count_documents({"seller_id": u["id"]})
+    
     return {
         "users": users,
         "total": total,
