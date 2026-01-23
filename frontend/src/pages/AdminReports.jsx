@@ -34,7 +34,9 @@ export default function AdminReports() {
   const [adminNotes, setAdminNotes] = useState('');
   const [updating, setUpdating] = useState(false);
 
-  const isAdmin = user?.email === 'contact@worldautofrance.com' || user?.email === 'admin@worldautofrance.com';
+  const isAdmin = user?.email === 'contact@worldautofrance.com' || 
+                  user?.email === 'admin@worldautofrance.com' || 
+                  user?.is_admin;
 
   useEffect(() => {
     if (isAdmin) {
