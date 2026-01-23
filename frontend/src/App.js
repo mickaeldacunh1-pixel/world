@@ -169,6 +169,9 @@ function AppContent() {
           <Route path="/admin/guide-ventes" element={
             <ProtectedRoute><AdminGuide /></ProtectedRoute>
           } />
+          <Route path="/admin/utilisateurs" element={
+            <ProtectedRoute><AdminUsers /></ProtectedRoute>
+          } />
           <Route path="/profil" element={
             <ProtectedRoute><Profile /></ProtectedRoute>
           } />
