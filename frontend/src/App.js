@@ -150,9 +150,6 @@ function AppContent() {
             <ProtectedRoute><Promote /></ProtectedRoute>
           } />
           <Route path="/diagnostic" element={<Diagnostic />} />
-          <Route path="/profil" element={
-            <ProtectedRoute><Profile /></ProtectedRoute>
-          } />
           <Route path="/admin/parametres" element={
             <ProtectedRoute><AdminSettings /></ProtectedRoute>
           } />
@@ -170,6 +167,9 @@ function AppContent() {
           } />
           <Route path="/admin/guide-ventes" element={
             <ProtectedRoute><AdminGuide /></ProtectedRoute>
+          } />
+          <Route path="/profil" element={
+            <ProtectedRoute><Profile /></ProtectedRoute>
           } />
           <Route path="/panier" element={<Cart />} />
           <Route path="/checkout" element={
@@ -202,6 +202,7 @@ function AppContent() {
         </Routes>
       </main>
       <Footer />
+      {/* Tobi flottant supprimé - utiliser /tobi-chat à la place */}
       <RadioPlayer />
       <CompareWidget />
       <Toaster position="top-right" richColors />
