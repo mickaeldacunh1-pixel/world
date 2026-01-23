@@ -395,7 +395,7 @@ export default function AdminSales() {
                       <SelectValue placeholder="Statut paiement" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Tous</SelectItem>
+                      <SelectItem value="all">Tous</SelectItem>
                       <SelectItem value="pending_payment">En attente</SelectItem>
                       <SelectItem value="paid">Payé</SelectItem>
                       <SelectItem value="shipped">Expédié</SelectItem>
@@ -409,7 +409,7 @@ export default function AdminSales() {
                       <SelectValue placeholder="Statut reversement" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Tous</SelectItem>
+                      <SelectItem value="all">Tous</SelectItem>
                       <SelectItem value="pending">En attente</SelectItem>
                       <SelectItem value="completed">Effectué</SelectItem>
                     </SelectContent>
