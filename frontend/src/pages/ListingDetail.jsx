@@ -281,6 +281,10 @@ export default function ListingDetail() {
     });
     
     localStorage.setItem('worldauto_cart', JSON.stringify(cart));
+    
+    // Déclencher l'événement pour mettre à jour la navbar
+    window.dispatchEvent(new Event('cartUpdated'));
+    
     toast.success(t('listingDetail.added_to_cart'));
   };
 
