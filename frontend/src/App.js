@@ -34,6 +34,8 @@ import AdminReports from "./pages/AdminReports";
 import AdminPayments from "./pages/AdminPayments";
 import AdminSales from "./pages/AdminSales";
 import AdminGuide from "./pages/AdminGuide";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminLayout from "./components/AdminLayout";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
