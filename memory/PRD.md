@@ -1,10 +1,13 @@
 # WorldAutoFrance - Marketplace Pièces Auto
 
 ## Statut Actuel
-**Date**: 22 janvier 2026
+**Date**: 23 janvier 2026
 **État**: Production ✅
 
 ## Fonctionnalités Complétées
+
+### Session 23/01/2026
+- ✅ **Correction bug "reserved"** - Les annonces ne sont plus marquées "reserved" lors de l'ajout au panier ou du checkout. L'annonce reste "active" jusqu'à confirmation manuelle du vendeur ou paiement Stripe confirmé.
 
 ### Session 22/01/2026
 - ✅ **Intégration Boxtal API V1** - Devis de livraison fonctionnels (37+ transporteurs)
