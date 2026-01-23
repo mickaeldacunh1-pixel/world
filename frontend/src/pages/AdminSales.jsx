@@ -55,13 +55,17 @@ export default function AdminSales() {
   const [showDetail, setShowDetail] = useState(false);
   const [activeTab, setActiveTab] = useState('sales'); // 'sales' or 'payouts'
 
+  const isAdmin = user?.email === 'contact@worldautofrance.com' || 
+                  user?.email === 'admin@worldautofrance.com' || 
+                  user?.is_admin;
+
   useEffect(() => {
-    if (!user?.is_admin) {
+    if (!isAdmin) {
       navigate('/');
       return;
     }
     fetchData();
-  }, [user, page, filters]);
+  }, [user, isAdmin, page, filters]);
 
   const fetchData = async () => {
     try {
