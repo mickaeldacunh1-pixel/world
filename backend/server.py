@@ -303,6 +303,11 @@ def send_new_order_buyer_email(buyer_email: str, buyer_name: str, order: dict):
     send_email(buyer_email, f"Commande confirmée - WA-{order['id'][:8].upper()}", html)
 
 ADMIN_EMAIL = "contact@worldautofrance.com"
+ADMIN_EMAILS = ["contact@worldautofrance.com", "admin@worldautofrance.com"]
+
+def is_user_admin(user: dict) -> bool:
+    """Vérifie si l'utilisateur est admin par email ou flag is_admin"""
+    return user.get("is_admin") or user.get("email") in ADMIN_EMAILS
 
 def send_new_order_admin_email(order: dict, buyer_info: dict, seller_info: dict):
     """Email à l'administrateur : notification de nouvelle commande"""
