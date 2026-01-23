@@ -10889,6 +10889,28 @@ async def remove_admin(user_id: str, current_user: dict = Depends(get_current_us
     
     return {"success": True, "message": "Droits admin retirés"}
 
+@api_router.post("/admin/fix-reserved-listings")
+async def fix_reserved_listings(current_user: dict = Depends(get_current_user)):
+    """Remettre toutes les annonces 'reserved' en 'active'"""
+    if not is_user_admin(current_user):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    # Compter les annonces reserved
+    count_before = await db.listings.count_documents({"status": "reserved"})
+    
+    # Remettre en active
+    result = await db.listings.update_many(
+        {"status": "reserved"},
+        {"$set": {"status": "active"}, "$unset": {"reserved_by": "", "reserved_at": ""}}
+    )
+    
+    return {
+        "success": True,
+        "message": f"{result.modified_count} annonces remises en ligne",
+        "count_before": count_before,
+        "count_fixed": result.modified_count
+    }
+
 # ================== ROOT ==================
 
 @api_router.get("/")
