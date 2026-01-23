@@ -40,6 +40,8 @@ const statusConfig = {
 
 export default function AdminPayments() {
   const { t } = useTranslation();
+  const { user, token } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,13 +55,26 @@ export default function AdminPayments() {
   const [detailOpen, setDetailOpen] = useState(false);
   const [refundLoading, setRefundLoading] = useState(false);
 
-  useEffect(() => {
-    fetchStats();
-  }, []);
+  const isAdmin = user?.email === 'contact@worldautofrance.com' || 
+                  user?.email === 'admin@worldautofrance.com' || 
+                  user?.is_admin;
 
   useEffect(() => {
-    fetchTransactions();
-  }, [page, statusFilter]);
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+    if (!isAdmin) {
+      return;
+    }
+    fetchStats();
+  }, [user, isAdmin]);
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchTransactions();
+    }
+  }, [page, statusFilter, isAdmin]);
 
   const fetchStats = async () => {
     setStatsLoading(true);
