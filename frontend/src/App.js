@@ -152,6 +152,9 @@ function AppContent() {
             <ProtectedRoute><Promote /></ProtectedRoute>
           } />
           <Route path="/diagnostic" element={<Diagnostic />} />
+          <Route path="/admin" element={
+            <ProtectedRoute><AdminDashboard /></ProtectedRoute>
+          } />
           <Route path="/admin/parametres" element={
             <ProtectedRoute><AdminSettings /></ProtectedRoute>
           } />
