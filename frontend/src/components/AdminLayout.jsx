@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
-  LayoutDashboard, ShoppingCart, CreditCard, Package, Users, 
-  Newspaper, Settings, Radio, AlertTriangle, ChevronLeft, ChevronRight,
+  LayoutDashboard, ShoppingCart, CreditCard, 
+  Newspaper, Settings, AlertTriangle, ChevronLeft, ChevronRight,
   BookOpen, Menu, X, LogOut, Home
 } from 'lucide-react';
 import { Button } from './ui/button';
