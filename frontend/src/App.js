@@ -100,29 +100,11 @@ function AppContent() {
   }
   
   return (
-    <Routes>
-      {/* Routes Admin avec leur propre layout */}
-      <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
-        <Route index element={<AdminDashboard />} />
-        <Route path="ventes" element={<AdminSales />} />
-        <Route path="paiements" element={<AdminPayments />} />
-        <Route path="utilisateurs" element={<AdminUsers />} />
-        <Route path="parametres" element={<AdminSettings />} />
-        <Route path="actualites" element={<AdminUpdates />} />
-        <Route path="signalements" element={<AdminReports />} />
-        <Route path="guide-ventes" element={<AdminGuide />} />
-      </Route>
-      
-      {/* Routes publiques avec Navbar/Footer */}
-      <Route path="/*" element={<PublicLayout />} />
-    </Routes>
-  );
-}
-
-function PublicLayout() {
-  return (
     <div className="min-h-screen flex flex-col bg-background">
       <ScrollToTop />
+      <Navbar />
+      <main className="flex-1">
+        <Routes>
       <Navbar />
       <main className="flex-1">
         <Routes>
