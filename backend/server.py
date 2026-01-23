@@ -10779,7 +10779,7 @@ async def get_admin_users(
     current_user: dict = Depends(get_current_user)
 ):
     """Liste des utilisateurs avec pagination et filtres"""
-    if not current_user.get("is_admin"):
+    if not is_user_admin(current_user):
         raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
     
     query = {}
