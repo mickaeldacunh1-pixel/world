@@ -172,24 +172,6 @@ function AppContent() {
             <ProtectedRoute><Promote /></ProtectedRoute>
           } />
           <Route path="/diagnostic" element={<Diagnostic />} />
-          <Route path="/admin/parametres" element={
-            <ProtectedRoute><AdminSettings /></ProtectedRoute>
-          } />
-          <Route path="/admin/actualites" element={
-            <ProtectedRoute><AdminUpdates /></ProtectedRoute>
-          } />
-          <Route path="/admin/signalements" element={
-            <ProtectedRoute><AdminReports /></ProtectedRoute>
-          } />
-          <Route path="/admin/paiements" element={
-            <ProtectedRoute><AdminPayments /></ProtectedRoute>
-          } />
-          <Route path="/admin/ventes" element={
-            <ProtectedRoute><AdminSales /></ProtectedRoute>
-          } />
-          <Route path="/admin/guide-ventes" element={
-            <ProtectedRoute><AdminGuide /></ProtectedRoute>
-          } />
           <Route path="/profil" element={
             <ProtectedRoute><Profile /></ProtectedRoute>
           } />
