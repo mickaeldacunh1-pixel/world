@@ -350,7 +350,7 @@ export default function AdminUsers() {
       <Dialog open={showDetail} onOpenChange={setShowDetail}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Détails de l'utilisateur</DialogTitle>
+            <DialogTitle>Détails de l&apos;utilisateur</DialogTitle>
           </DialogHeader>
           {selectedUser && (
             <div className="space-y-4">
