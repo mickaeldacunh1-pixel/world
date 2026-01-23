@@ -3860,10 +3860,7 @@ async def checkout_cart(checkout: CartCheckout, background_tasks: BackgroundTask
             
             await db.orders.insert_one(order_doc)
             
-            # NE PAS marquer l'annonce comme vendue immédiatement
-            # L'annonce reste "active" jusqu'à confirmation manuelle du vendeur
-            # Le vendeur pourra marquer comme "sold" après réception du paiement
-            await db.listings.update_one({"id": listing_id}, {"$set": {"status": "reserved"}})
+            # L'annonce reste "active" - le vendeur marquera comme "sold" après paiement confirmé
             
             # Send notification emails
             if seller:
