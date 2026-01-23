@@ -418,7 +418,7 @@ export default function AdminUsers() {
                 )}
 
                 <div className="flex gap-2 pt-4 border-t">
-                  {selectedUser.status === 'blocked' ? (
+                  {selectedUser.is_banned ? (
                     <Button
                       onClick={() => handleBlockUser(selectedUser.id, false)}
                       disabled={actionLoading}
