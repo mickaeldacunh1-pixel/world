@@ -10857,7 +10857,7 @@ async def unban_user(user_id: str, current_user: dict = Depends(get_current_user
 @api_router.post("/admin/users/{user_id}/make-admin")
 async def make_admin(user_id: str, current_user: dict = Depends(get_current_user)):
     """Donner les droits admin à un utilisateur"""
-    if not current_user.get("is_admin"):
+    if not is_user_admin(current_user):
         raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
     
     result = await db.users.update_one(
