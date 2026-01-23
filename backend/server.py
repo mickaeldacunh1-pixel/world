@@ -10744,6 +10744,153 @@ async def get_sellers_pending_payouts(current_user: dict = Depends(get_current_u
     
     return {"sellers": results}
 
+# ================== ADMIN USERS ==================
+
+@api_router.get("/admin/users/stats")
+async def get_admin_users_stats(current_user: dict = Depends(get_current_user)):
+    """Statistiques des utilisateurs"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    total = await db.users.count_documents({})
+    pro = await db.users.count_documents({"is_pro": True})
+    particuliers = await db.users.count_documents({"is_pro": {"$ne": True}})
+    banned = await db.users.count_documents({"is_banned": True})
+    admins = await db.users.count_documents({"is_admin": True})
+    
+    # Nouveaux ce mois
+    from datetime import datetime, timezone
+    first_day = datetime.now(timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    new_this_month = await db.users.count_documents({"created_at": {"$gte": first_day.isoformat()}})
+    
+    return {
+        "total": total,
+        "pro": pro,
+        "particuliers": particuliers,
+        "banned": banned,
+        "admins": admins,
+        "new_this_month": new_this_month
+    }
+
+@api_router.get("/admin/users")
+async def get_admin_users(
+    page: int = 1,
+    limit: int = 20,
+    filter: str = None,
+    search: str = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Liste des utilisateurs avec pagination et filtres"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    query = {}
+    
+    # Filtres
+    if filter == "pro":
+        query["is_pro"] = True
+    elif filter == "particulier":
+        query["is_pro"] = {"$ne": True}
+    elif filter == "banned":
+        query["is_banned"] = True
+    elif filter == "admin":
+        query["is_admin"] = True
+    
+    # Recherche
+    if search:
+        query["$or"] = [
+            {"name": {"$regex": search, "$options": "i"}},
+            {"email": {"$regex": search, "$options": "i"}},
+            {"company_name": {"$regex": search, "$options": "i"}},
+            {"phone": {"$regex": search, "$options": "i"}}
+        ]
+    
+    skip = (page - 1) * limit
+    total = await db.users.count_documents(query)
+    total_pages = (total + limit - 1) // limit
+    
+    users = await db.users.find(
+        query,
+        {"_id": 0, "password": 0}
+    ).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+    
+    return {
+        "users": users,
+        "total": total,
+        "page": page,
+        "total_pages": total_pages
+    }
+
+@api_router.post("/admin/users/{user_id}/ban")
+async def ban_user(user_id: str, current_user: dict = Depends(get_current_user)):
+    """Bannir un utilisateur"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    if user_id == current_user["id"]:
+        raise HTTPException(status_code=400, detail="Vous ne pouvez pas vous bannir vous-même")
+    
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"is_banned": True, "banned_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    
+    return {"success": True, "message": "Utilisateur banni"}
+
+@api_router.post("/admin/users/{user_id}/unban")
+async def unban_user(user_id: str, current_user: dict = Depends(get_current_user)):
+    """Débannir un utilisateur"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"is_banned": False}, "$unset": {"banned_at": ""}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    
+    return {"success": True, "message": "Utilisateur débanni"}
+
+@api_router.post("/admin/users/{user_id}/make-admin")
+async def make_admin(user_id: str, current_user: dict = Depends(get_current_user)):
+    """Donner les droits admin à un utilisateur"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"is_admin": True}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    
+    return {"success": True, "message": "Droits admin accordés"}
+
+@api_router.post("/admin/users/{user_id}/remove-admin")
+async def remove_admin(user_id: str, current_user: dict = Depends(get_current_user)):
+    """Retirer les droits admin à un utilisateur"""
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    if user_id == current_user["id"]:
+        raise HTTPException(status_code=400, detail="Vous ne pouvez pas retirer vos propres droits admin")
+    
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"is_admin": False}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    
+    return {"success": True, "message": "Droits admin retirés"}
+
 # ================== ROOT ==================
 
 @api_router.get("/")
