@@ -14,7 +14,7 @@ import { Badge } from '../components/ui/badge';
 import { 
   Save, ArrowLeft, Plus, Trash2, Edit2, Loader2, 
   Rocket, Wrench, Bug, Sparkles, Calendar, Image, Upload,
-  AlertCircle, Users, Mail, Send, History, ExternalLink
+  AlertCircle, Users, Mail, Send, History, ExternalLink, Shield
 } from 'lucide-react';
 import SEO from '../components/SEO';
 
