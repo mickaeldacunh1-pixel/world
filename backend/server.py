@@ -7202,7 +7202,7 @@ async def update_report(
     current_user: dict = Depends(get_current_user)
 ):
     """Mettre à jour un signalement (admin uniquement)"""
-    if current_user["email"] != ADMIN_EMAIL:
+    if not is_user_admin(current_user):
         raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
     
     if status not in ["pending", "reviewed", "resolved", "dismissed"]:
