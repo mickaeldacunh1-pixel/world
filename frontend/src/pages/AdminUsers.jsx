@@ -289,7 +289,7 @@ export default function AdminUsers() {
                         )}
                       </TableCell>
                       <TableCell>
-                        {u.status === 'blocked' ? (
+                        {u.is_banned ? (
                           <Badge className="bg-red-100 text-red-800">Bloqué</Badge>
                         ) : (
                           <Badge className="bg-green-100 text-green-800">Actif</Badge>
