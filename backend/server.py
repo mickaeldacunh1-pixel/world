@@ -6470,11 +6470,7 @@ async def create_direct_checkout(
         
         await db.orders.insert_one(order_doc)
         
-        # Marquer l'annonce comme réservée
-        await db.listings.update_one(
-            {"id": listing["id"]},
-            {"$set": {"status": "reserved", "reserved_by": current_user["id"], "reserved_at": datetime.now(timezone.utc).isoformat()}}
-        )
+        # L'annonce reste "active" jusqu'à paiement confirmé via webhook Stripe
         
         return {
             "checkout_url": session.url,
