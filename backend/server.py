@@ -10822,7 +10822,7 @@ async def get_admin_users(
 @api_router.post("/admin/users/{user_id}/ban")
 async def ban_user(user_id: str, current_user: dict = Depends(get_current_user)):
     """Bannir un utilisateur"""
-    if not current_user.get("is_admin"):
+    if not is_user_admin(current_user):
         raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
     
     if user_id == current_user["id"]:
