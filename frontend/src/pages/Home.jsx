@@ -775,17 +775,20 @@ export default function Home() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
             {[
-              { nameKey: 'home.parts.headlights', subcategory: 'phares', image: 'https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=200&h=150&fit=crop' },
-              { nameKey: 'home.parts.bumpers', subcategory: 'pare-chocs', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=150&fit=crop' },
-              { nameKey: 'home.parts.engines', subcategory: 'moteurs', image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=200&h=150&fit=crop' },
-              { nameKey: 'home.parts.braking', subcategory: 'freinage', image: 'https://images.unsplash.com/photo-1558618047-f4e68a95a13b?w=200&h=150&fit=crop' },
-              { nameKey: 'home.parts.transmission', subcategory: 'transmission', image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=200&h=150&fit=crop' },
-              { nameKey: 'home.parts.electronics', subcategory: 'electronique', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=150&fit=crop' },
-              { nameKey: 'home.parts.bodywork', subcategory: 'carrosserie', image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&h=150&fit=crop' },
-              { nameKey: 'home.parts.suspension', subcategory: 'suspension', image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=200&h=150&fit=crop' },
-              { nameKey: 'home.parts.exhaust', subcategory: 'echappement', image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=200&h=150&fit=crop' },
-              { nameKey: 'home.parts.interior', subcategory: 'interieur', image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&h=150&fit=crop' },
-            ].map((part) => (
+              { nameKey: 'home.parts.headlights', subcategory: 'optique', defaultImage: 'https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.bumpers', subcategory: 'carrosserie', defaultImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.engines', subcategory: 'moteur', defaultImage: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.braking', subcategory: 'freinage', defaultImage: 'https://images.unsplash.com/photo-1558618047-f4e68a95a13b?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.transmission', subcategory: 'transmission', defaultImage: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.electronics', subcategory: 'electricite', defaultImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.bodywork', subcategory: 'carrosserie', defaultImage: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.suspension', subcategory: 'suspension', defaultImage: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.exhaust', subcategory: 'echappement', defaultImage: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.interior', subcategory: 'interieur', defaultImage: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&h=150&fit=crop' },
+            ].map((part) => {
+              const imageKey = `pieces_${part.subcategory}`;
+              const imageUrl = subcatImages[imageKey] || part.defaultImage;
+              return (
               <Link
                 key={part.subcategory}
                 to={`/annonces/pieces?subcategory=${part.subcategory}`}
@@ -793,11 +796,11 @@ export default function Home() {
               >
                 <div className="aspect-[4/3] overflow-hidden">
                   <img
-                    src={part.image}
+                    src={imageUrl}
                     alt={t(part.nameKey)}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     onError={(e) => {
-                      e.target.src = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=200&h=150&fit=crop';
+                      e.target.src = part.defaultImage;
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -808,7 +811,7 @@ export default function Home() {
                   </h3>
                 </div>
               </Link>
-            ))}
+            );})}
           </div>
 
           <div className="text-center mt-8">
