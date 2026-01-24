@@ -3137,7 +3137,37 @@ async def get_listing(listing_id: str):
     avg_rating = sum(r.get("rating", 0) for r in reviews) / len(reviews) if reviews else 5
     listing["seller_is_verified"] = sold_count >= 5 and avg_rating >= 4.0
     
+    # Get active viewers count (last 5 minutes)
+    five_min_ago = datetime.now(timezone.utc) - timedelta(minutes=5)
+    viewers_count = await db.listing_viewers.count_documents({
+        "listing_id": listing_id,
+        "last_seen": {"$gte": five_min_ago}
+    })
+    listing["active_viewers"] = viewers_count
+    
     return listing
+
+@api_router.post("/listings/{listing_id}/view")
+async def track_listing_view(listing_id: str, request: Request):
+    """Track a viewer on a listing for social proof"""
+    # Get visitor ID from header or generate one
+    visitor_id = request.headers.get("X-Visitor-ID", str(uuid.uuid4()))
+    
+    # Upsert viewer record
+    await db.listing_viewers.update_one(
+        {"listing_id": listing_id, "visitor_id": visitor_id},
+        {"$set": {"last_seen": datetime.now(timezone.utc)}},
+        upsert=True
+    )
+    
+    # Get current viewer count
+    five_min_ago = datetime.now(timezone.utc) - timedelta(minutes=5)
+    viewers_count = await db.listing_viewers.count_documents({
+        "listing_id": listing_id,
+        "last_seen": {"$gte": five_min_ago}
+    })
+    
+    return {"viewers": viewers_count}
 
 @api_router.get("/my-listings")
 async def get_my_listings(current_user: dict = Depends(get_current_user)):
