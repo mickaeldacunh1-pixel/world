@@ -166,6 +166,7 @@ export default function Home() {
   const [heroSettings, setHeroSettings] = useState(DEFAULT_HERO);
   const [referralData, setReferralData] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [subcatImages, setSubcatImages] = useState({});
 
   // Get translated categories and features
   const categories = getCategoriesConfig();
@@ -182,6 +183,14 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error fetching hero settings:', error);
+    }
+
+    // Fetch subcategory images
+    try {
+      const response = await axios.get(`${API}/subcategory-images${cacheBuster}`);
+      setSubcatImages(response.data || {});
+    } catch (error) {
+      console.error('Error fetching subcategory images:', error);
     }
 
     // Fetch category stats
