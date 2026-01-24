@@ -57,6 +57,7 @@ export default function ListingDetail() {
   const [reportDescription, setReportDescription] = useState('');
   const [reportLoading, setReportLoading] = useState(false);
   const [videoCallLoading, setVideoCallLoading] = useState(false);
+  const [activeViewers, setActiveViewers] = useState(0);
 
   const REPORT_REASONS = [
     { value: 'spam', label: t('listingDetail.report_reason_spam') },
@@ -67,6 +68,34 @@ export default function ListingDetail() {
     { value: 'duplicate', label: t('listingDetail.report_reason_duplicate') },
     { value: 'other', label: t('listingDetail.report_reason_other') }
   ];
+
+  // Track viewer and refresh count periodically
+  useEffect(() => {
+    if (!id) return;
+    
+    // Get or create visitor ID
+    let visitorId = localStorage.getItem('visitor_id');
+    if (!visitorId) {
+      visitorId = crypto.randomUUID();
+      localStorage.setItem('visitor_id', visitorId);
+    }
+    
+    const trackView = async () => {
+      try {
+        const response = await axios.post(`${API}/listings/${id}/view`, {}, {
+          headers: { 'X-Visitor-ID': visitorId }
+        });
+        setActiveViewers(response.data.viewers || 0);
+      } catch (error) {
+        console.error('Error tracking view:', error);
+      }
+    };
+    
+    trackView();
+    const interval = setInterval(trackView, 30000); // Refresh every 30 seconds
+    
+    return () => clearInterval(interval);
+  }, [id]);
 
   const handleVideoCall = async () => {
     if (!user) {
