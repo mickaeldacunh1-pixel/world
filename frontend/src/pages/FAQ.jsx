@@ -509,7 +509,7 @@ const faqs = [
       },
       {
         q: "À quelle fréquence sont effectués les reversements ?",
-        a: "Les reversements aux vendeurs sont effectués 2 fois par mois (le 1er et le 15 de chaque mois). Pour les vendeurs PRO, les reversements sont également effectués 2 fois par mois. Vous recevez une notification par email à chaque reversement effectué."
+        a: "Pour les particuliers, les reversements sont effectués 2 fois par mois (le 1er et le 15). Pour les vendeurs PRO, les reversements sont automatiques chaque semaine (tous les lundis). Vous recevez une notification par email à chaque reversement effectué."
       },
       {
         q: "Comment configurer mon IBAN ?",
