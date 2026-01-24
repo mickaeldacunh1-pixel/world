@@ -12,6 +12,36 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-32',
+    date: '2026-01-24',
+    version: '6.1.0',
+    title: '🛠️ Corrections Admin & Améliorations SEO',
+    category: 'fix',
+    items: [
+      { type: 'fix', text: '🔧 Pages admin (signalements, paiements, utilisateurs) : correction des pages blanches' },
+      { type: 'fix', text: '🛒 Panier : mise à jour instantanée du compteur dans la navbar' },
+      { type: 'fix', text: '🗺️ Sitemap : correction des IDs d\'annonces (UUID au lieu de ObjectId)' },
+      { type: 'fix', text: '🖼️ Images sous-catégories : chargement depuis la base de données' },
+      { type: 'improvement', text: '🔐 Vérification admin unifiée : support email + flag is_admin' },
+    ]
+  },
+  {
+    id: 'static-new-31',
+    date: '2026-01-23',
+    version: '6.0.0',
+    title: '🎛️ Dashboard Admin Unifié & Reversements PRO',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🎛️ Dashboard admin unifié : /admin avec accès à toutes les sections' },
+      { type: 'new', text: '👥 Gestion des utilisateurs : bloquer/débloquer, voir les détails, compter les annonces' },
+      { type: 'new', text: '💸 Reversements automatiques hebdomadaires pour les vendeurs PRO (tous les lundis)' },
+      { type: 'new', text: '📊 Onglet "Reversements par vendeur" dans l\'admin ventes' },
+      { type: 'fix', text: '🔄 Correction bug "reserved" : les annonces restent actives jusqu\'à confirmation de vente' },
+      { type: 'fix', text: '💳 Frais de port Boxtal inclus dans le paiement Stripe' },
+      { type: 'improvement', text: '📦 Intégration Boxtal V1 fonctionnelle pour les devis de livraison' },
+    ]
+  },
+  {
     id: 'static-new-30',
     date: '2026-01-19',
     version: '5.9.0',
