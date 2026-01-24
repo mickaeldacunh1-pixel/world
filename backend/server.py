@@ -10253,7 +10253,9 @@ async def sitemap_xml():
     
     # Ajouter les annonces
     for listing in listings:
-        listing_id = str(listing["_id"])
+        listing_id = listing.get("id")
+        if not listing_id:
+            continue
         lastmod = listing.get("updated_at") or listing.get("created_at", datetime.now(timezone.utc).isoformat())
         if isinstance(lastmod, datetime):
             lastmod = lastmod.strftime('%Y-%m-%d')
