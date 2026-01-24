@@ -10223,7 +10223,7 @@ async def sitemap_xml():
     # Récupérer les annonces actives (limité aux 1000 plus récentes pour performance)
     listings = await db.listings.find(
         {"status": "active"},
-        {"_id": 1, "updated_at": 1, "created_at": 1}
+        {"_id": 0, "id": 1, "updated_at": 1, "created_at": 1}
     ).sort("created_at", -1).limit(1000).to_list(1000)
     
     # Récupérer les catégories
