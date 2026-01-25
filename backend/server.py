@@ -3304,6 +3304,90 @@ async def check_favorite(listing_id: str, current_user: dict = Depends(get_curre
     favorite = await db.favorites.find_one({"user_id": current_user["id"], "listing_id": listing_id})
     return {"is_favorite": favorite is not None}
 
+# ================== WISHLIST PARTAGEABLE ==================
+
+@api_router.post("/wishlist/share")
+async def create_shared_wishlist(current_user: dict = Depends(get_current_user)):
+    """Créer un lien de partage de wishlist"""
+    # Récupérer les favoris de l'utilisateur
+    favorites = await db.favorites.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(100)
+    
+    if not favorites:
+        raise HTTPException(status_code=400, detail="Vous n'avez aucun favori à partager")
+    
+    listing_ids = [f["listing_id"] for f in favorites]
+    
+    # Créer ou mettre à jour le lien de partage
+    share_id = hashlib.md5(f"{current_user['id']}-wishlist".encode()).hexdigest()[:12]
+    
+    wishlist_doc = {
+        "id": share_id,
+        "user_id": current_user["id"],
+        "user_name": current_user.get("name", "Utilisateur"),
+        "listing_ids": listing_ids,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "views": 0
+    }
+    
+    await db.shared_wishlists.update_one(
+        {"user_id": current_user["id"]},
+        {"$set": wishlist_doc},
+        upsert=True
+    )
+    
+    return {
+        "share_id": share_id,
+        "share_url": f"{SITE_URL}/wishlist/{share_id}",
+        "items_count": len(listing_ids)
+    }
+
+@api_router.get("/wishlist/shared/{share_id}")
+async def get_shared_wishlist(share_id: str):
+    """Récupérer une wishlist partagée"""
+    wishlist = await db.shared_wishlists.find_one({"id": share_id}, {"_id": 0})
+    
+    if not wishlist:
+        raise HTTPException(status_code=404, detail="Wishlist non trouvée ou expirée")
+    
+    # Incrémenter le compteur de vues
+    await db.shared_wishlists.update_one(
+        {"id": share_id},
+        {"$inc": {"views": 1}}
+    )
+    
+    # Récupérer les annonces
+    listings = await db.listings.find(
+        {"id": {"$in": wishlist["listing_ids"]}, "status": "active"},
+        {"_id": 0}
+    ).to_list(100)
+    
+    return {
+        "share_id": share_id,
+        "user_name": wishlist.get("user_name", "Utilisateur"),
+        "items_count": len(listings),
+        "listings": listings,
+        "created_at": wishlist.get("created_at"),
+        "views": wishlist.get("views", 0)
+    }
+
+@api_router.get("/wishlist/my-share")
+async def get_my_shared_wishlist(current_user: dict = Depends(get_current_user)):
+    """Récupérer le lien de partage de ma wishlist"""
+    wishlist = await db.shared_wishlists.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    
+    if not wishlist:
+        return {"has_share": False}
+    
+    return {
+        "has_share": True,
+        "share_id": wishlist["id"],
+        "share_url": f"{SITE_URL}/wishlist/{wishlist['id']}",
+        "items_count": len(wishlist.get("listing_ids", [])),
+        "views": wishlist.get("views", 0),
+        "updated_at": wishlist.get("updated_at")
+    }
+
 # ================== SEARCH HISTORY ROUTES ==================
 
 @api_router.post("/search-history")
