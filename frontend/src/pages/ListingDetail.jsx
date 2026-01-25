@@ -484,6 +484,16 @@ export default function ListingDetail() {
 
             {/* Social proof badges */}
             <div className="flex flex-wrap gap-2 mt-2">
+              {(listing?.quantity || 0) === 1 && (
+                <Badge variant="outline" className="border-red-400 text-red-600 bg-red-50 animate-pulse">
+                  ⚠️ Dernière pièce disponible !
+                </Badge>
+              )}
+              {(listing?.quantity || 0) > 1 && (listing?.quantity || 0) <= 3 && (
+                <Badge variant="outline" className="border-amber-400 text-amber-600 bg-amber-50">
+                  📦 Plus que {listing.quantity} en stock
+                </Badge>
+              )}
               {(listing?.views || 0) >= 10 && (
                 <Badge variant="outline" className="border-orange-400 text-orange-600 bg-orange-50">
                   🔥 Populaire • {listing.views} vues
