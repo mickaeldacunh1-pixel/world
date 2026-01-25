@@ -147,6 +147,7 @@ function AppContent() {
           } />
           <Route path="/vendeur/:sellerId" element={<SellerProfile />} />
           <Route path="/acheteur/:buyerId" element={<BuyerProfile />} />
+          <Route path="/wishlist/:shareId" element={<SharedWishlist />} />
           <Route path="/encheres" element={<Auctions />} />
           <Route path="/fidelite" element={<Loyalty />} />
           <Route path="/promouvoir" element={
