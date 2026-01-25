@@ -161,7 +161,7 @@ export default function CreateBundle() {
                 ) : myListings.length === 0 ? (
                   <Card className="p-6 text-center bg-yellow-50 border-yellow-200">
                     <p className="text-yellow-800">
-                      Vous n'avez pas d'annonces actives. Publiez au moins 2 annonces pour créer un lot.
+                      Vous n&apos;avez pas d&apos;annonces actives. Publiez au moins 2 annonces pour créer un lot.
                     </p>
                     <Link to="/deposer">
                       <Button className="mt-4" variant="outline">Publier une annonce</Button>
