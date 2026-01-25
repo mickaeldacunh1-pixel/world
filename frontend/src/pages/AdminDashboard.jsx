@@ -16,6 +16,8 @@ export default function AdminDashboard() {
   const { user, token } = useAuth();
   const [migrating, setMigrating] = useState(false);
   const [migrationResult, setMigrationResult] = useState(null);
+  const [fixingReserved, setFixingReserved] = useState(false);
+  const [reservedResult, setReservedResult] = useState(null);
 
   const isAdmin = user?.email === 'contact@worldautofrance.com' || 
                   user?.email === 'admin@worldautofrance.com' || 
@@ -33,6 +35,21 @@ export default function AdminDashboard() {
       toast.error(error.response?.data?.detail || 'Erreur lors de la migration');
     } finally {
       setMigrating(false);
+    }
+  };
+
+  const fixReservedListings = async () => {
+    setFixingReserved(true);
+    try {
+      const response = await axios.post(`${API}/admin/fix-reserved-listings`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setReservedResult(response.data);
+      toast.success(`✅ ${response.data.count_fixed} annonces remises en ligne`);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la correction');
+    } finally {
+      setFixingReserved(false);
     }
   };
 
