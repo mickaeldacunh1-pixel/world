@@ -931,9 +931,51 @@ export default function CreateListing() {
                     )}
                   </div>
 
-                  {/* Compatible Models */}
+                  {/* Compatible Models - Suggestions based on selected brands */}
                   <div className="space-y-2">
                     <Label htmlFor="compatible_models">{t('createListing.compatible_models_label')}</Label>
+                    
+                    {/* Quick model suggestions based on selected brands */}
+                    {formData.compatible_brands.length > 0 && (
+                      <div className="space-y-3 mb-3">
+                        {formData.compatible_brands.map(brand => (
+                          modelsByBrand[brand] && (
+                            <div key={brand} className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                              <p className="text-xs font-semibold text-blue-800 mb-2">{brand} - Modèles populaires :</p>
+                              <div className="flex flex-wrap gap-1">
+                                {modelsByBrand[brand].map(model => {
+                                  const fullModel = `${brand} ${model}`;
+                                  const isSelected = formData.compatible_models.includes(model) || formData.compatible_models.includes(fullModel);
+                                  return (
+                                    <button
+                                      key={model}
+                                      type="button"
+                                      onClick={() => {
+                                        const currentModels = formData.compatible_models ? formData.compatible_models.split(',').map(m => m.trim()).filter(m => m) : [];
+                                        if (isSelected) {
+                                          const filtered = currentModels.filter(m => m !== model && m !== fullModel);
+                                          handleChange('compatible_models', filtered.join(', '));
+                                        } else {
+                                          handleChange('compatible_models', [...currentModels, `${brand} ${model}`].join(', '));
+                                        }
+                                      }}
+                                      className={`px-2 py-0.5 rounded text-xs transition-colors ${
+                                        isSelected
+                                          ? 'bg-blue-600 text-white'
+                                          : 'bg-white hover:bg-blue-100 text-blue-700 border border-blue-200'
+                                      }`}
+                                    >
+                                      {model}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )
+                        ))}
+                      </div>
+                    )}
+                    
                     <Input
                       id="compatible_models"
                       placeholder={t('createListing.compatible_models_placeholder')}
@@ -941,6 +983,9 @@ export default function CreateListing() {
                       onChange={(e) => handleChange('compatible_models', e.target.value)}
                       data-testid="compatible-models-input"
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Sélectionnez les modèles suggérés ci-dessus ou saisissez manuellement (séparés par des virgules)
+                    </p>
                   </div>
 
                   {/* Compatible Years */}
