@@ -489,11 +489,6 @@ export default function ListingDetail() {
                   🔥 Dernière pièce disponible !
                 </Badge>
               )}
-              {activeViewers > 1 && (
-                <Badge variant="outline" className="border-orange-400 text-orange-600">
-                  👀 {activeViewers} personnes regardent cette annonce
-                </Badge>
-              )}
               {(listing?.views || 0) > 50 && (
                 <Badge variant="outline" className="border-blue-400 text-blue-600">
                   🔥 Populaire ({listing.views} vues)
