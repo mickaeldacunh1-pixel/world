@@ -79,6 +79,13 @@ export default function AdminDashboard() {
       color: 'bg-blue-500'
     },
     {
+      title: 'Annonces',
+      description: 'Gérer les annonces, changer les statuts',
+      icon: Package,
+      link: '/admin/annonces',
+      color: 'bg-purple-500'
+    },
+    {
       title: 'Utilisateurs',
       description: 'Gérer les comptes, bloquer/débloquer',
       icon: Users,
