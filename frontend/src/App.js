@@ -200,6 +200,9 @@ function AppContent() {
           } />
           <Route path="/lots" element={<Bundles />} />
           <Route path="/lot/:id" element={<BundleDetail />} />
+          <Route path="/creer-lot" element={
+            <ProtectedRoute><CreateBundle /></ProtectedRoute>
+          } />
           <Route path="/videos" element={<Videos />} />
           <Route path="/stories" element={<StoriesPage />} />
           <Route path="/tobi" element={<TobiChat />} />
