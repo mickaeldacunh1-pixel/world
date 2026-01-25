@@ -1,13 +1,21 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Card, CardContent } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { toast } from 'sonner';
+import axios from 'axios';
 import { 
   Settings, Users, ShoppingCart, Flag, CreditCard, 
-  Newspaper, BookOpen, Shield, Package, TrendingUp
+  Newspaper, BookOpen, Shield, Package, TrendingUp, Wrench, Loader2, CheckCircle
 } from 'lucide-react';
 
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  const [migrating, setMigrating] = useState(false);
+  const [migrationResult, setMigrationResult] = useState(null);
 
   const isAdmin = user?.email === 'contact@worldautofrance.com' || 
                   user?.email === 'admin@worldautofrance.com' || 
