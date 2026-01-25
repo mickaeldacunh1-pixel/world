@@ -17,9 +17,6 @@ from .moderation_service import (
     check_suspicious_patterns,
 )
 
-# Note: cloudinary_service est préparé mais pas importé ici pour éviter les conflits
-# Il sera activé lors de la migration complète des routes d'upload
-
 __all__ = [
     # Email
     'send_email',
