@@ -5200,6 +5200,22 @@ DEFAULT_HERO_SETTINGS = {
     "category_accessoires_image": "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=600&h=400&fit=crop",
 }
 
+@api_router.get("/settings")
+async def get_general_settings():
+    """Récupérer les paramètres généraux du site"""
+    settings = await db.settings.find_one({"type": "general"}, {"_id": 0})
+    if settings:
+        return settings
+    # Retourner des paramètres par défaut
+    return {
+        "site_name": "WorldAutoFrance",
+        "contact_email": "contact@worldautofrance.com",
+        "contact_phone": "",
+        "address": "",
+        "primary_color": "#E63946",
+        "secondary_color": "#1E3A5F"
+    }
+
 @api_router.get("/settings/hero")
 async def get_hero_settings():
     """Récupérer les paramètres du hero"""
