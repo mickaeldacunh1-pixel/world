@@ -221,7 +221,7 @@ export default function AdminUpdates() {
       const formDataUpload = new FormData();
       formDataUpload.append('file', file);
       
-      const response = await axios.post(`${API}/upload-image`, formDataUpload, {
+      const response = await axios.post(`${API}/upload/image`, formDataUpload, {
         headers: { 
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
