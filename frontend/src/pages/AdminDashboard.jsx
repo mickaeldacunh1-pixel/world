@@ -21,6 +21,21 @@ export default function AdminDashboard() {
                   user?.email === 'admin@worldautofrance.com' || 
                   user?.is_admin;
 
+  const runQuantityMigration = async () => {
+    setMigrating(true);
+    try {
+      const response = await axios.post(`${API}/admin/migrate/add-quantity`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMigrationResult(response.data);
+      toast.success(`✅ ${response.data.count_updated} annonces mises à jour avec quantity=1`);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la migration');
+    } finally {
+      setMigrating(false);
+    }
+  };
+
   if (!isAdmin) {
     return (
       <div className="min-h-screen bg-secondary/30 flex items-center justify-center">
