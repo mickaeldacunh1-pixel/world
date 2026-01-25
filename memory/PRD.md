@@ -1,10 +1,14 @@
 # WorldAutoFrance - Marketplace Pièces Auto
 
 ## Statut Actuel
-**Date**: 25 janvier 2026
+**Date**: 26 janvier 2026
 **État**: Production ✅
 
 ## Fonctionnalités Complétées
+
+### Session 26/01/2026
+- ✅ **P0 - Bug Upload Corrigé** - Validation utilisateur confirmée
+- ✅ **P1 - Historique des prix restauré** - Correction de la clé API (`history` → `timeline`) dans l'endpoint `/api/listings/{id}/price-history`
 
 ### Session 25/01/2026
 - ✅ **P0 - Champ Quantity** - Ajouté au modèle ListingCreate et formulaires
