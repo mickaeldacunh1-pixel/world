@@ -123,6 +123,7 @@ export default function EditListing() {
         compatible_years: listing.compatible_years || '',
         oem_reference: listing.oem_reference || '',
         aftermarket_reference: listing.aftermarket_reference || '',
+        quantity: listing.quantity?.toString() || '1',
       });
       
       setImages(listing.images || []);
