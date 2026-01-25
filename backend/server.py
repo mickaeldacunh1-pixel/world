@@ -2428,7 +2428,9 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
         # Marquer si c'est une annonce gratuite promo
         "is_promo_free": free_ads > 0,
         # Liaison entrepôt PRO
-        "warehouse_item_id": listing.warehouse_item_id
+        "warehouse_item_id": listing.warehouse_item_id,
+        # Quantité disponible
+        "quantity": listing.quantity
     }
     
     await db.listings.insert_one(listing_doc)
