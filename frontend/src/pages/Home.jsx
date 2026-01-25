@@ -778,7 +778,7 @@ export default function Home() {
               { nameKey: 'home.parts.headlights', subcategory: 'optique', defaultImage: 'https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=200&h=150&fit=crop' },
               { nameKey: 'home.parts.bumpers', subcategory: 'carrosserie', defaultImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=150&fit=crop' },
               { nameKey: 'home.parts.engines', subcategory: 'moteur', defaultImage: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=200&h=150&fit=crop' },
-              { nameKey: 'home.parts.braking', subcategory: 'freinage', defaultImage: 'https://images.unsplash.com/photo-1558618047-f4e68a95a13b?w=200&h=150&fit=crop' },
+              { nameKey: 'home.parts.braking', subcategory: 'freinage', defaultImage: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=200&h=150&fit=crop' },
               { nameKey: 'home.parts.transmission', subcategory: 'transmission', defaultImage: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=200&h=150&fit=crop' },
               { nameKey: 'home.parts.electronics', subcategory: 'electricite', defaultImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=150&fit=crop' },
               { nameKey: 'home.parts.bodywork', subcategory: 'carrosserie', defaultImage: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&h=150&fit=crop' },
