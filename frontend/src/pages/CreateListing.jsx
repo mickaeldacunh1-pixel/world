@@ -90,6 +90,8 @@ export default function CreateListing() {
     // Confiance & Traçabilité
     part_origin: '',
     vehicle_mileage: '',
+    // Quantité disponible
+    quantity: '1',
   });
 
   // Options de livraison disponibles
