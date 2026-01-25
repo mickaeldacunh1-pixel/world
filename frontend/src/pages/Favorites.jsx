@@ -7,15 +7,17 @@ import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { Heart, Trash2, MapPin, Eye } from 'lucide-react';
+import { Heart, Trash2, MapPin, Eye, Share2, Copy, Loader2 } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Favorites() {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [shareLink, setShareLink] = useState(null);
+  const [sharingLoading, setSharingLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
