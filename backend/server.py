@@ -5919,6 +5919,11 @@ async def get_car_brands():
     """Retourne la liste des marques automobiles"""
     return CAR_BRANDS
 
+@api_router.get("/car-brands")
+async def get_car_brands_alias():
+    """Alias pour /brands - compatibilité frontend"""
+    return CAR_BRANDS
+
 @api_router.get("/pricing")
 async def get_pricing():
     return PRICING_PACKAGES
