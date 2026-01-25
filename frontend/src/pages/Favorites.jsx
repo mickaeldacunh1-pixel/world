@@ -122,10 +122,65 @@ export default function Favorites() {
               {t('favorites.count', '{{count}} annonce(s) sauvegardée(s)', { count: favorites.length })}
             </p>
           </div>
-          <Link to="/alertes">
-            <Button variant="outline">{t('alerts.manage', 'Gérer mes alertes')}</Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            {/* Bouton de partage */}
+            {favorites.length > 0 && (
+              <div className="flex items-center gap-2">
+                {shareLink?.has_share ? (
+                  <Button
+                    variant="outline"
+                    onClick={copyShareLink}
+                    className="border-green-500 text-green-600 hover:bg-green-50"
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copier le lien
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleShare}
+                    disabled={sharingLoading}
+                    className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
+                  >
+                    {sharingLoading ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Share2 className="w-4 h-4 mr-2" />
+                    )}
+                    Partager ma wishlist
+                  </Button>
+                )}
+              </div>
+            )}
+            <Link to="/alertes">
+              <Button variant="outline">{t('alerts.manage', 'Gérer mes alertes')}</Button>
+            </Link>
+          </div>
         </div>
+
+        {/* Info partage si lien créé */}
+        {shareLink?.has_share && (
+          <Card className="mb-6 p-4 bg-gradient-to-r from-pink-50 to-purple-50 border-pink-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Share2 className="w-5 h-5 text-pink-500" />
+                <div>
+                  <p className="font-medium text-sm">Votre wishlist est partageable !</p>
+                  <p className="text-xs text-muted-foreground">
+                    {shareLink.views || 0} vue(s) • {favorites.length} article(s)
+                  </p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={copyShareLink}
+              >
+                <Copy className="w-4 h-4 mr-1" />
+                Copier
+              </Button>
+            </div>
+          </Card>
+        )}
 
         {favorites.length === 0 ? (
           <Card className="p-12 text-center">
