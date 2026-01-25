@@ -76,7 +76,7 @@ export default function ListingDetail() {
     // Get or create visitor ID
     let visitorId = localStorage.getItem('visitor_id');
     if (!visitorId) {
-      visitorId = crypto.randomUUID();
+      visitorId = 'v_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
       localStorage.setItem('visitor_id', visitorId);
     }
     
@@ -87,7 +87,8 @@ export default function ListingDetail() {
         });
         setActiveViewers(response.data.viewers || 0);
       } catch (error) {
-        console.error('Error tracking view:', error);
+        // Silently fail - don't break the page
+        console.log('View tracking unavailable');
       }
     };
     
