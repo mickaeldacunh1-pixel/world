@@ -11074,6 +11074,74 @@ async def migrate_add_quantity(current_user: dict = Depends(get_current_user)):
         "count_updated": result.modified_count
     }
 
+# ================== ADMIN LISTINGS ==================
+
+@api_router.get("/admin/listings")
+async def admin_get_listings(
+    status: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Récupérer toutes les annonces pour l'admin"""
+    if not is_user_admin(current_user):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    query = {}
+    if status:
+        query["status"] = status
+    
+    cursor = db.listings.find(query, {"_id": 0}).sort("created_at", -1)
+    listings = await cursor.to_list(500)
+    return listings
+
+@api_router.put("/admin/listings/{listing_id}/status")
+async def admin_update_listing_status(
+    listing_id: str,
+    status_update: dict,
+    current_user: dict = Depends(get_current_user)
+):
+    """Modifier le statut d'une annonce (admin)"""
+    if not is_user_admin(current_user):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    new_status = status_update.get("status")
+    if new_status not in ["active", "reserved", "sold", "inactive"]:
+        raise HTTPException(status_code=400, detail="Statut invalide")
+    
+    listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    old_status = listing.get("status")
+    
+    # Mettre à jour le statut
+    update_data = {"status": new_status}
+    
+    # Si on remet en active, supprimer les infos de réservation
+    if new_status == "active":
+        await db.listings.update_one(
+            {"id": listing_id},
+            {"$set": update_data, "$unset": {"reserved_by": "", "reserved_at": ""}}
+        )
+    else:
+        await db.listings.update_one({"id": listing_id}, {"$set": update_data})
+    
+    # Logger l'action admin
+    await db.admin_logs.insert_one({
+        "action": "listing_status_change",
+        "admin_id": current_user["id"],
+        "admin_email": current_user["email"],
+        "listing_id": listing_id,
+        "old_status": old_status,
+        "new_status": new_status,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    })
+    
+    return {
+        "success": True,
+        "message": f"Statut modifié de '{old_status}' à '{new_status}'",
+        "listing_id": listing_id
+    }
+
 # ================== ROOT ==================
 
 @api_router.get("/")
