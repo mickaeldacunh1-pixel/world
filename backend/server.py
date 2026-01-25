@@ -1135,6 +1135,7 @@ class ListingResponse(BaseModel):
     has_warranty: bool = False
     warranty_duration: Optional[int] = None
     is_promo_free: bool = False
+    quantity: int = 1  # Quantité disponible
 
 # Modèles pour les commandes et bordereaux
 class OrderCreate(BaseModel):
