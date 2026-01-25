@@ -15,31 +15,34 @@ class TestP0QuantityField:
     """P0: Test quantity field on listings and API response"""
     
     def test_listings_api_returns_quantity_field(self):
-        """Verify /api/listings returns quantity field"""
+        """Verify /api/listings returns quantity field in paginated response"""
         response = requests.get(f"{BASE_URL}/api/listings?limit=5")
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         
         data = response.json()
-        assert isinstance(data, list), "Response should be a list"
+        # API returns paginated response with 'listings' key
+        assert "listings" in data, "Response should have 'listings' key"
+        assert isinstance(data["listings"], list), "listings should be a list"
         
-        if len(data) > 0:
-            listing = data[0]
+        if len(data["listings"]) > 0:
+            listing = data["listings"][0]
             # Verify quantity field exists
-            assert "quantity" in listing or listing.get("quantity") is not None, \
+            assert "quantity" in listing, \
                 f"Listing should have quantity field. Keys: {listing.keys()}"
-            print(f"✅ Listing has quantity field: {listing.get('quantity', 'N/A')}")
+            print(f"✅ Listing has quantity field: {listing.get('quantity')}")
+            print(f"✅ Listing has views field: {listing.get('views')}")
     
     def test_listing_detail_returns_quantity(self):
         """Verify /api/listings/{id} returns quantity field"""
-        # First get a listing ID
+        # First get a listing ID from paginated response
         response = requests.get(f"{BASE_URL}/api/listings?limit=1")
         assert response.status_code == 200
         
         data = response.json()
-        if len(data) == 0:
+        if len(data.get("listings", [])) == 0:
             pytest.skip("No listings available for testing")
         
-        listing_id = data[0]["id"]
+        listing_id = data["listings"][0]["id"]
         
         # Get listing detail
         detail_response = requests.get(f"{BASE_URL}/api/listings/{listing_id}")
@@ -48,6 +51,7 @@ class TestP0QuantityField:
         listing = detail_response.json()
         # Check quantity field
         quantity = listing.get("quantity")
+        assert quantity is not None, "Listing detail should have quantity field"
         print(f"✅ Listing detail has quantity: {quantity}")
         
         # Verify views field for "Populaire" badge
@@ -73,11 +77,12 @@ class TestP0QuantityField:
         print(f"   - quantity: {quantity}")
         print(f"   - views: {views}")
         
-        # Check badge conditions
-        if quantity == 1:
-            print("   - Should show 'Dernière pièce disponible' badge")
-        if views >= 10:
-            print("   - Should show 'Populaire' badge")
+        # Verify badge conditions
+        assert quantity == 1, f"Expected quantity=1, got {quantity}"
+        assert views >= 10, f"Expected views>=10, got {views}"
+        
+        print("   ✅ Should show 'Dernière pièce disponible' badge (quantity=1)")
+        print("   ✅ Should show 'Populaire' badge (views>=10)")
 
 
 class TestP1BundlesAPI:
@@ -200,13 +205,15 @@ class TestHealthAndBasics:
         print("✅ API is healthy")
     
     def test_listings_endpoint(self):
-        """Test listings endpoint works"""
+        """Test listings endpoint works with pagination"""
         response = requests.get(f"{BASE_URL}/api/listings")
         assert response.status_code == 200
         
         data = response.json()
-        assert isinstance(data, list)
-        print(f"✅ /api/listings returns {len(data)} listings")
+        assert "listings" in data, "Response should have 'listings' key"
+        assert "total" in data, "Response should have 'total' key"
+        assert isinstance(data["listings"], list)
+        print(f"✅ /api/listings returns {len(data['listings'])} listings (total: {data['total']})")
 
 
 if __name__ == "__main__":
