@@ -10,12 +10,15 @@
 - ✅ **P0 - Champ Quantity** - Ajouté au modèle ListingCreate et formulaires
 - ✅ **P0 - Badge "Dernière pièce"** - Affiche ⚠️ sur annonces avec quantity=1 (clignotant)
 - ✅ **P0 - Badge "Stock limité"** - Affiche 📦 quand 2-3 pièces en stock
-- ✅ **P0 - Migration annonces** - Toutes les annonces existantes ont quantity=1
+- ✅ **P0 - Migration annonces** - Bouton dans /admin > Outils & Migrations
 - ✅ **P1 - Interface Bundles** - Page /creer-lot pour créer des lots groupés
 - ✅ **P1 - Lots vendeur** - Sélection multiple d'annonces, calcul remise automatique
 - ✅ **P2 - Wishlist partageable** - API /api/wishlist/share et /api/wishlist/shared/{shareId}
 - ✅ **P2 - Page wishlist partagée** - /wishlist/{shareId} avec affichage public
 - ✅ **P2 - Bouton de partage** - Dans /favoris avec copie du lien
+- ✅ **Interface compatibilité améliorée** - Suggestions de modèles par marque (BMW, Peugeot, Renault, etc.)
+- ✅ **Suggestions années** - Boutons rapides pour plages d'années (2020-2025, 2015-2020, etc.)
+- ✅ **Historique des prix** - Affichage sur page annonce avec timeline et % de baisse/hausse
 
 ### Session 24/01/2026
 - ✅ **Badge "Populaire"** - Affiche le nombre de vues sur les annonces (🔥 Populaire si 10+ vues)
