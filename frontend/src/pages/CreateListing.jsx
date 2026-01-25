@@ -730,7 +730,7 @@ export default function CreateListing() {
                     data-testid="quantity-input"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Nombre de pièces identiques disponibles. Si = 1, le badge "Dernière pièce" s'affichera.
+                    Nombre de pièces identiques disponibles. Si = 1, le badge &quot;Dernière pièce&quot; s&apos;affichera.
                   </p>
                 </div>
               </div>
