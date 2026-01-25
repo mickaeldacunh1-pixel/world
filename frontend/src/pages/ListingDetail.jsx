@@ -113,12 +113,25 @@ export default function ListingDetail() {
       if (response.data.seller_stripe_connected) {
         setSellerStripeConnected(true);
       }
+      // Fetch price history
+      fetchPriceHistory();
     } catch (error) {
       console.error('Error fetching listing:', error);
       toast.error(t('listingDetail.listing_not_found'));
       navigate('/annonces');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPriceHistory = async () => {
+    try {
+      const response = await axios.get(`${API}/listings/${id}/price-history`);
+      if (response.data.timeline && response.data.timeline.length > 1) {
+        setPriceHistory(response.data.timeline);
+      }
+    } catch (error) {
+      console.error('Error fetching price history:', error);
     }
   };
 
