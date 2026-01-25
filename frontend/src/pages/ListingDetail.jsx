@@ -521,6 +521,76 @@ export default function ListingDetail() {
               )}
             </div>
 
+            {/* Price History */}
+            {priceHistory.length > 1 && (
+              <Card className="p-4 border-green-100 bg-gradient-to-r from-green-50 to-emerald-50">
+                <button 
+                  onClick={() => setShowPriceHistory(!showPriceHistory)}
+                  className="w-full flex items-center justify-between"
+                  data-testid="price-history-toggle"
+                >
+                  <div className="flex items-center gap-2">
+                    <History className="w-5 h-5 text-green-600" />
+                    <span className="font-semibold text-green-800">Historique des prix</span>
+                    {(() => {
+                      const initialPrice = priceHistory[0]?.price || 0;
+                      const currentPrice = listing?.price || 0;
+                      const diff = initialPrice - currentPrice;
+                      const percent = initialPrice > 0 ? Math.round((diff / initialPrice) * 100) : 0;
+                      if (diff > 0) {
+                        return (
+                          <Badge className="bg-green-500 text-white ml-2">
+                            <TrendingDown className="w-3 h-3 mr-1" />
+                            -{percent}% ({diff.toLocaleString('fr-FR')} €)
+                          </Badge>
+                        );
+                      } else if (diff < 0) {
+                        return (
+                          <Badge className="bg-red-500 text-white ml-2">
+                            <TrendingUp className="w-3 h-3 mr-1" />
+                            +{Math.abs(percent)}%
+                          </Badge>
+                        );
+                      }
+                      return null;
+                    })()}
+                  </div>
+                  <ChevronRight className={`w-5 h-5 text-green-600 transition-transform ${showPriceHistory ? 'rotate-90' : ''}`} />
+                </button>
+                
+                {showPriceHistory && (
+                  <div className="mt-4 space-y-2">
+                    {priceHistory.map((entry, index) => (
+                      <div 
+                        key={index} 
+                        className={`flex items-center justify-between py-2 ${index < priceHistory.length - 1 ? 'border-b border-green-100' : ''}`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground">
+                            {new Date(entry.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </span>
+                          {entry.type === 'initial' && (
+                            <Badge variant="outline" className="text-xs">Prix initial</Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`font-bold ${index === priceHistory.length - 1 ? 'text-accent' : 'text-muted-foreground'}`}>
+                            {entry.price?.toLocaleString('fr-FR')} €
+                          </span>
+                          {entry.old_price && entry.old_price > entry.price && (
+                            <TrendingDown className="w-4 h-4 text-green-500" />
+                          )}
+                          {entry.old_price && entry.old_price < entry.price && (
+                            <TrendingUp className="w-4 h-4 text-red-500" />
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </Card>
+            )}
+
             {/* Shipping info */}
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">📦 {t('listingDetail.shipping_label')} :</span>
