@@ -36,9 +36,7 @@
 - ✅ **Sitemap dynamique** - Utilise les bons IDs (UUID)
 
 ## Prochaines Tâches (Backlog)
-1. **Refactorisation server.py** - Diviser le monolithe backend en modules séparés
-2. **Notifications push** - Alerter les utilisateurs des nouvelles offres
-3. **Chat en temps réel** - Communication acheteur/vendeur améliorée
+1. **Refactorisation server.py** - Diviser le monolithe backend en modules séparés (routes, models, services)
 
 ## Liens Admin
 - /admin - Dashboard principal
