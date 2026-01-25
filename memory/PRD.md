@@ -36,9 +36,9 @@
 - ✅ **Sitemap dynamique** - Utilise les bons IDs (UUID)
 
 ## Prochaines Tâches (Backlog)
-1. **Interface de compatibilité véhicule améliorée** - UI plus claire pour la sélection de compatibilité
-2. **Historique de prix** - Afficher l'évolution du prix sur la page annonce
-3. **Refactorisation server.py** - Diviser le monolithe en modules séparés
+1. **Refactorisation server.py** - Diviser le monolithe backend en modules séparés
+2. **Notifications push** - Alerter les utilisateurs des nouvelles offres
+3. **Chat en temps réel** - Communication acheteur/vendeur améliorée
 
 ## Liens Admin
 - /admin - Dashboard principal
