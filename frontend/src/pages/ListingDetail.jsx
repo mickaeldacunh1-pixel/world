@@ -57,6 +57,8 @@ export default function ListingDetail() {
   const [reportDescription, setReportDescription] = useState('');
   const [reportLoading, setReportLoading] = useState(false);
   const [videoCallLoading, setVideoCallLoading] = useState(false);
+  const [priceHistory, setPriceHistory] = useState([]);
+  const [showPriceHistory, setShowPriceHistory] = useState(false);
 
   const REPORT_REASONS = [
     { value: 'spam', label: t('listingDetail.report_reason_spam') },
