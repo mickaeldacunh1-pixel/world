@@ -483,15 +483,15 @@ export default function ListingDetail() {
             </div>
 
             {/* Social proof badges */}
-            <div className="flex flex-wrap gap-2">
-              {listing?.quantity === 1 && (
-                <Badge className="bg-red-500 text-white animate-pulse">
-                  🔥 Dernière pièce disponible !
+            <div className="flex flex-wrap gap-2 mt-2">
+              {(listing?.views || 0) >= 10 && (
+                <Badge variant="outline" className="border-orange-400 text-orange-600 bg-orange-50">
+                  🔥 Populaire • {listing.views} vues
                 </Badge>
               )}
-              {(listing?.views || 0) > 50 && (
-                <Badge variant="outline" className="border-blue-400 text-blue-600">
-                  🔥 Populaire ({listing.views} vues)
+              {(listing?.views || 0) < 10 && (listing?.views || 0) > 0 && (
+                <Badge variant="outline" className="border-gray-300 text-gray-600">
+                  👀 {listing.views} vues
                 </Badge>
               )}
             </div>
