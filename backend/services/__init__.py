@@ -16,14 +16,9 @@ from .moderation_service import (
     check_forbidden_words,
     check_suspicious_patterns,
 )
-from .cloudinary_service import (
-    upload_image,
-    upload_video,
-    delete_image,
-    delete_video,
-    VIDEO_FREE_LIMIT,
-    VIDEO_EXTENDED_LIMIT,
-)
+
+# Note: cloudinary_service est préparé mais pas importé ici pour éviter les conflits
+# Il sera activé lors de la migration complète des routes d'upload
 
 __all__ = [
     # Email
@@ -41,11 +36,4 @@ __all__ = [
     'sanitize_text',
     'check_forbidden_words',
     'check_suspicious_patterns',
-    # Cloudinary
-    'upload_image',
-    'upload_video',
-    'delete_image',
-    'delete_video',
-    'VIDEO_FREE_LIMIT',
-    'VIDEO_EXTENDED_LIMIT',
 ]
