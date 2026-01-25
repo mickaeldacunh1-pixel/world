@@ -1,5 +1,5 @@
-const CACHE_NAME = 'world-auto-v2';
-const STATIC_CACHE = 'world-auto-static-v2';
+const CACHE_NAME = 'world-auto-v3';
+const STATIC_CACHE = 'world-auto-static-v3';
 
 // Only cache static assets, NEVER API calls
 const urlsToCache = [
