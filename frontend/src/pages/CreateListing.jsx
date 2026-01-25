@@ -991,6 +991,25 @@ export default function CreateListing() {
                   {/* Compatible Years */}
                   <div className="space-y-2">
                     <Label htmlFor="compatible_years">{t('createListing.compatible_years_label')}</Label>
+                    
+                    {/* Quick year range suggestions */}
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {['2020-2025', '2015-2020', '2010-2015', '2005-2010', '2000-2005', '1990-2000'].map(range => (
+                        <button
+                          key={range}
+                          type="button"
+                          onClick={() => handleChange('compatible_years', range)}
+                          className={`px-3 py-1 rounded-full text-xs transition-colors ${
+                            formData.compatible_years === range
+                              ? 'bg-accent text-white'
+                              : 'bg-secondary hover:bg-secondary/80'
+                          }`}
+                        >
+                          {range}
+                        </button>
+                      ))}
+                    </div>
+                    
                     <Input
                       id="compatible_years"
                       placeholder={t('createListing.compatible_years_placeholder')}
@@ -998,6 +1017,9 @@ export default function CreateListing() {
                       onChange={(e) => handleChange('compatible_years', e.target.value)}
                       data-testid="compatible-years-input"
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Ex: 2015-2020 ou 2018, 2019, 2020
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
