@@ -79,6 +79,7 @@ export default function EditListing() {
     compatible_years: '',
     oem_reference: '',
     aftermarket_reference: '',
+    quantity: '1',
   });
 
   useEffect(() => {
