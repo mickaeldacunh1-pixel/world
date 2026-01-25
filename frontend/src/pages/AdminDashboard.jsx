@@ -149,6 +149,47 @@ export default function AdminDashboard() {
             </Link>
           ))}
         </div>
+
+        {/* Section Outils & Migrations */}
+        <div className="mt-10">
+          <h2 className="font-heading text-xl font-bold mb-4 flex items-center gap-2">
+            <Wrench className="w-5 h-5 text-accent" />
+            Outils & Migrations
+          </h2>
+          <Card className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold">Migration Quantité</h3>
+                <p className="text-sm text-muted-foreground">
+                  Ajoute quantity=1 à toutes les annonces sans ce champ pour activer le badge "Dernière pièce"
+                </p>
+                {migrationResult && (
+                  <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
+                    <CheckCircle className="w-4 h-4" />
+                    {migrationResult.count_updated} annonces mises à jour
+                  </p>
+                )}
+              </div>
+              <Button
+                onClick={runQuantityMigration}
+                disabled={migrating}
+                className="bg-accent hover:bg-accent/90"
+              >
+                {migrating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Migration...
+                  </>
+                ) : (
+                  <>
+                    <Package className="w-4 h-4 mr-2" />
+                    Lancer la migration
+                  </>
+                )}
+              </Button>
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   );
