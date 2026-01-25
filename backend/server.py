@@ -957,6 +957,8 @@ class ListingCreate(BaseModel):
     warranty_duration: Optional[int] = None  # Durée garantie en mois (3, 6, 12)
     # Liaison avec entrepôt PRO
     warehouse_item_id: Optional[str] = None  # ID de l'article entrepôt à lier
+    # Quantité disponible
+    quantity: int = 1  # Quantité disponible pour le badge "Dernière pièce"
 
 # Options de garantie World Auto
 WARRANTY_OPTIONS = {
