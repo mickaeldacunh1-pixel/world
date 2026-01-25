@@ -1,16 +1,39 @@
 # WorldAutoFrance - Marketplace Pièces Auto
 
 ## Statut Actuel
-**Date**: 23 janvier 2026
+**Date**: 24 janvier 2026
 **État**: Production ✅
 
 ## Fonctionnalités Complétées
 
-### Session 23/01/2026
-- ✅ **Correction bug "reserved"** - Les annonces ne sont plus marquées "reserved" lors de l'ajout au panier ou du checkout. L'annonce reste "active" jusqu'à confirmation manuelle du vendeur.
-- ✅ **Correction pages admin blanches** - Ajout de vérifications admin manquantes dans AdminPayments.jsx, AdminUpdates.jsx et AdminReports.jsx. Les pages affichent maintenant "Accès réservé" au lieu d'une page blanche.
+### Session 24/01/2026
+- ✅ **Badge "Populaire"** - Affiche le nombre de vues sur les annonces (🔥 Populaire si 10+ vues)
+- ✅ **Correction Service Worker** - Les vidéos Cloudinary et ressources externes ne sont plus bloquées
+- ✅ **Correction images Unsplash 404** - Remplacement des images mortes (freinage, engins)
+- ✅ **FAQ mise à jour** - Reversements PRO hebdomadaires (tous les lundis)
+- ✅ **Page Nouveautés** - Ajout versions 6.0.0 et 6.1.0
 
-### Session 22/01/2026
+### Session 23/01/2026
+- ✅ **Dashboard admin unifié** - /admin avec accès à toutes les sections
+- ✅ **Gestion des utilisateurs** - /admin/utilisateurs (bloquer/débloquer, compteur annonces)
+- ✅ **Correction pages admin blanches** - Vérification admin par email + is_admin
+- ✅ **Correction bug "reserved"** - Annonces restent actives jusqu'à confirmation
+- ✅ **Correction bug panier** - Mise à jour instantanée navbar
+- ✅ **Sitemap dynamique** - Utilise les bons IDs (UUID)
+
+## Prochaines Tâches (À faire)
+1. **Offres groupées vendeur** - Packs de pièces avec remise
+2. **Wishlist partageable** - Partager sa liste de favoris
+3. **Champ "quantity"** - Ajouter au formulaire pour badge "Dernière pièce"
+
+## Liens Admin
+- /admin - Dashboard principal
+- /admin/parametres - Paramètres du site
+- /admin/utilisateurs - Gestion utilisateurs
+- /admin/ventes - Ventes & Reversements
+- /admin/signalements - Modération
+- /admin/paiements - Historique paiements
+- /admin/actualites - Newsletter
 - ✅ **Intégration Boxtal API V1** - Devis de livraison fonctionnels (37+ transporteurs)
 - ✅ **Frais de port inclus dans Stripe** - Le total affiché et facturé inclut maintenant les frais Boxtal
 - ✅ **Système de reversements automatiques** - Nouveau module complet créé
