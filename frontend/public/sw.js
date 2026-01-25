@@ -35,6 +35,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
+  // NEVER intercept external resources (Cloudinary, Unsplash, etc.)
+  if (!url.hostname.includes('worldautofrance.com') && 
+      !url.hostname.includes('localhost')) {
+    return; // Let browser handle it normally
+  }
+  
   // For HTML pages - always fetch fresh, fallback to cache
   if (event.request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
