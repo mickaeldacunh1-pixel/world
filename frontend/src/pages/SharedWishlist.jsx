@@ -111,7 +111,7 @@ export default function SharedWishlist() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                        Pas d'image
+                        Pas d&apos;image
                       </div>
                     )}
                     {listing.quantity === 1 && (
