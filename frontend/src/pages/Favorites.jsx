@@ -22,6 +22,7 @@ export default function Favorites() {
   useEffect(() => {
     if (user) {
       fetchFavorites();
+      fetchShareLink();
     }
   }, [user]);
 
@@ -33,6 +34,48 @@ export default function Favorites() {
       console.error('Error fetching favorites:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchShareLink = async () => {
+    try {
+      const response = await axios.get(`${API}/wishlist/my-share`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data.has_share) {
+        setShareLink(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching share link:', error);
+    }
+  };
+
+  const handleShare = async () => {
+    setSharingLoading(true);
+    try {
+      const response = await axios.post(`${API}/wishlist/share`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setShareLink({
+        has_share: true,
+        share_url: response.data.share_url,
+        items_count: response.data.items_count
+      });
+      
+      // Copier le lien
+      await navigator.clipboard.writeText(response.data.share_url);
+      toast.success('🔗 Lien copié ! Partagez votre wishlist avec vos proches.');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors du partage');
+    } finally {
+      setSharingLoading(false);
+    }
+  };
+
+  const copyShareLink = async () => {
+    if (shareLink?.share_url) {
+      await navigator.clipboard.writeText(shareLink.share_url);
+      toast.success('Lien copié !');
     }
   };
 
