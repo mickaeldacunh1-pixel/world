@@ -10968,6 +10968,28 @@ async def fix_reserved_listings(current_user: dict = Depends(get_current_user)):
         "count_fixed": result.modified_count
     }
 
+@api_router.post("/admin/migrate/add-quantity")
+async def migrate_add_quantity(current_user: dict = Depends(get_current_user)):
+    """Ajouter quantity: 1 à toutes les annonces qui n'ont pas ce champ"""
+    if not is_user_admin(current_user):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    # Compter les annonces sans quantity
+    count_before = await db.listings.count_documents({"quantity": {"$exists": False}})
+    
+    # Ajouter quantity: 1 aux annonces qui n'ont pas ce champ
+    result = await db.listings.update_many(
+        {"quantity": {"$exists": False}},
+        {"$set": {"quantity": 1}}
+    )
+    
+    return {
+        "success": True,
+        "message": f"{result.modified_count} annonces mises à jour avec quantity: 1",
+        "count_before": count_before,
+        "count_updated": result.modified_count
+    }
+
 # ================== ROOT ==================
 
 @api_router.get("/")
