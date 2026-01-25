@@ -45,7 +45,7 @@ export default function AdminDashboard() {
           <p className="text-muted-foreground mb-4">Cette page est réservée aux administrateurs.</p>
           <Link to="/">
             <button className="bg-accent text-white px-4 py-2 rounded hover:bg-accent/90">
-              Retour à l'accueil
+              Retour à l&apos;accueil
             </button>
           </Link>
         </Card>
@@ -161,7 +161,7 @@ export default function AdminDashboard() {
               <div>
                 <h3 className="font-semibold">Migration Quantité</h3>
                 <p className="text-sm text-muted-foreground">
-                  Ajoute quantity=1 à toutes les annonces sans ce champ pour activer le badge "Dernière pièce"
+                  Ajoute quantity=1 à toutes les annonces sans ce champ pour activer le badge &quot;Dernière pièce&quot;
                 </p>
                 {migrationResult && (
                   <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
