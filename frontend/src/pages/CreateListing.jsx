@@ -427,6 +427,7 @@ export default function CreateListing() {
         year: formData.year ? parseInt(formData.year) : null,
         mileage: formData.mileage ? parseInt(formData.mileage) : null,
         vehicle_mileage: formData.vehicle_mileage ? parseInt(formData.vehicle_mileage) : null,
+        quantity: formData.quantity ? parseInt(formData.quantity) : 1,
         compatible_models,
         images: imageUrls,
         video_url: videoUrl || null,
