@@ -1,10 +1,21 @@
 # WorldAutoFrance - Marketplace Pièces Auto
 
 ## Statut Actuel
-**Date**: 24 janvier 2026
+**Date**: 25 janvier 2026
 **État**: Production ✅
 
 ## Fonctionnalités Complétées
+
+### Session 25/01/2026
+- ✅ **P0 - Champ Quantity** - Ajouté au modèle ListingCreate et formulaires
+- ✅ **P0 - Badge "Dernière pièce"** - Affiche ⚠️ sur annonces avec quantity=1 (clignotant)
+- ✅ **P0 - Badge "Stock limité"** - Affiche 📦 quand 2-3 pièces en stock
+- ✅ **P0 - Migration annonces** - Toutes les annonces existantes ont quantity=1
+- ✅ **P1 - Interface Bundles** - Page /creer-lot pour créer des lots groupés
+- ✅ **P1 - Lots vendeur** - Sélection multiple d'annonces, calcul remise automatique
+- ✅ **P2 - Wishlist partageable** - API /api/wishlist/share et /api/wishlist/shared/{shareId}
+- ✅ **P2 - Page wishlist partagée** - /wishlist/{shareId} avec affichage public
+- ✅ **P2 - Bouton de partage** - Dans /favoris avec copie du lien
 
 ### Session 24/01/2026
 - ✅ **Badge "Populaire"** - Affiche le nombre de vues sur les annonces (🔥 Populaire si 10+ vues)
@@ -21,10 +32,10 @@
 - ✅ **Correction bug panier** - Mise à jour instantanée navbar
 - ✅ **Sitemap dynamique** - Utilise les bons IDs (UUID)
 
-## Prochaines Tâches (À faire)
-1. **Offres groupées vendeur** - Packs de pièces avec remise
-2. **Wishlist partageable** - Partager sa liste de favoris
-3. **Champ "quantity"** - Ajouter au formulaire pour badge "Dernière pièce"
+## Prochaines Tâches (Backlog)
+1. **Interface de compatibilité véhicule améliorée** - UI plus claire pour la sélection de compatibilité
+2. **Historique de prix** - Afficher l'évolution du prix sur la page annonce
+3. **Refactorisation server.py** - Diviser le monolithe en modules séparés
 
 ## Liens Admin
 - /admin - Dashboard principal
