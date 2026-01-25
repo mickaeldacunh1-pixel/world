@@ -94,6 +94,29 @@ export default function CreateListing() {
     quantity: '1',
   });
 
+  // Modèles populaires par marque
+  const modelsByBrand = {
+    'Audi': ['A3', 'A4', 'A5', 'A6', 'Q3', 'Q5', 'Q7', 'TT', 'RS3', 'RS4'],
+    'BMW': ['Série 1', 'Série 3', 'Série 5', 'X1', 'X3', 'X5', 'M3', 'M5', 'E36', 'E46', 'E90'],
+    'Citroën': ['C3', 'C4', 'C5', 'Berlingo', 'DS3', 'DS4', 'Picasso', 'Saxo', 'Xsara'],
+    'Dacia': ['Sandero', 'Duster', 'Logan', 'Lodgy', 'Spring', 'Jogger'],
+    'Fiat': ['500', 'Panda', 'Punto', 'Tipo', 'Doblo', 'Ducato'],
+    'Ford': ['Fiesta', 'Focus', 'Mondeo', 'Kuga', 'Puma', 'Mustang', 'Transit'],
+    'Honda': ['Civic', 'Accord', 'CR-V', 'Jazz', 'HR-V', 'NSX'],
+    'Hyundai': ['i10', 'i20', 'i30', 'Tucson', 'Kona', 'Santa Fe'],
+    'Kia': ['Picanto', 'Rio', 'Ceed', 'Sportage', 'Sorento', 'Stinger'],
+    'Mercedes': ['Classe A', 'Classe C', 'Classe E', 'GLA', 'GLC', 'GLE', 'AMG'],
+    'Nissan': ['Micra', 'Qashqai', 'Juke', 'X-Trail', 'Leaf', '350Z', 'GT-R'],
+    'Opel': ['Corsa', 'Astra', 'Insignia', 'Mokka', 'Grandland', 'Zafira'],
+    'Peugeot': ['208', '308', '508', '2008', '3008', '5008', 'Partner', '106', '206', '306'],
+    'Renault': ['Clio', 'Megane', 'Captur', 'Kadjar', 'Scenic', 'Twingo', 'Kangoo', 'Trafic'],
+    'Seat': ['Ibiza', 'Leon', 'Arona', 'Ateca', 'Tarraco'],
+    'Skoda': ['Fabia', 'Octavia', 'Superb', 'Kodiaq', 'Karoq'],
+    'Toyota': ['Yaris', 'Corolla', 'Auris', 'RAV4', 'C-HR', 'Supra', 'Hilux'],
+    'Volkswagen': ['Polo', 'Golf', 'Passat', 'Tiguan', 'T-Roc', 'Touran', 'Transporter'],
+    'Volvo': ['V40', 'V60', 'XC40', 'XC60', 'XC90', 'S60']
+  };
+
   // Options de livraison disponibles
   const shippingOptions = [
     { value: 'hand_delivery', labelKey: 'createListing.shipping_hand_delivery', icon: '🤝', descKey: 'createListing.shipping_hand_delivery_desc' },
