@@ -16,6 +16,14 @@ from .moderation_service import (
     check_forbidden_words,
     check_suspicious_patterns,
 )
+from .cloudinary_service import (
+    upload_image,
+    upload_video,
+    delete_image,
+    delete_video,
+    VIDEO_FREE_LIMIT,
+    VIDEO_EXTENDED_LIMIT,
+)
 
 __all__ = [
     # Email
@@ -33,4 +41,11 @@ __all__ = [
     'sanitize_text',
     'check_forbidden_words',
     'check_suspicious_patterns',
+    # Cloudinary
+    'upload_image',
+    'upload_video',
+    'delete_image',
+    'delete_video',
+    'VIDEO_FREE_LIMIT',
+    'VIDEO_EXTENDED_LIMIT',
 ]
