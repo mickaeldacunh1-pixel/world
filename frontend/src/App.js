@@ -63,6 +63,7 @@ import StoriesPage from "./pages/StoriesPage";
 import TobiAgent from "./pages/TobiAgent";
 import TobiChat from "./pages/TobiChat";
 import Warehouse from "./pages/Warehouse";
+import SharedWishlist from "./pages/SharedWishlist";
 import "./App.css";
 
 // Composant pour scroller en haut à chaque changement de page
