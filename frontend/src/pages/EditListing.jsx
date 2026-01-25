@@ -178,7 +178,7 @@ export default function EditListing() {
         const formData = new FormData();
         formData.append('file', file);
         
-        const response = await axios.post(`${API}/upload-image`, formData, {
+        const response = await axios.post(`${API}/upload/image`, formData, {
           headers: { 
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${token}`
