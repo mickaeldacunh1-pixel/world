@@ -36,7 +36,9 @@
 - ✅ **Sitemap dynamique** - Utilise les bons IDs (UUID)
 
 ## Prochaines Tâches (Backlog)
-1. **Refactorisation server.py** - Diviser le monolithe backend en modules séparés (routes, models, services)
+1. **Refactorisation server.py** - En cours (voir REFACTORING_GUIDE.md)
+   - ✅ services/cloudinary_service.py créé
+   - 🔄 Prochaine étape : routes/listings.py
 
 ## Liens Admin
 - /admin - Dashboard principal
