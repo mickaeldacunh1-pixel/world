@@ -206,6 +206,42 @@ export default function AdminDashboard() {
               </Button>
             </div>
           </Card>
+
+          {/* Fix Reserved Listings */}
+          <Card className="p-6 mt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold">Corriger annonces réservées</h3>
+                <p className="text-sm text-muted-foreground">
+                  Remet toutes les annonces avec statut &quot;reserved&quot; en &quot;active&quot; (en stock)
+                </p>
+                {reservedResult && (
+                  <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
+                    <CheckCircle className="w-4 h-4" />
+                    {reservedResult.count_fixed} annonces remises en ligne
+                  </p>
+                )}
+              </div>
+              <Button
+                onClick={fixReservedListings}
+                disabled={fixingReserved}
+                variant="outline"
+                className="border-orange-500 text-orange-600 hover:bg-orange-50"
+              >
+                {fixingReserved ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Correction...
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    Remettre en stock
+                  </>
+                )}
+              </Button>
+            </div>
+          </Card>
         </div>
       </div>
     </div>
