@@ -344,6 +344,24 @@ export default function EditListing() {
                 </div>
               </div>
 
+              {/* Quantity */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="quantity">Quantité disponible</Label>
+                  <Input
+                    id="quantity"
+                    type="number"
+                    min="1"
+                    placeholder="1"
+                    value={formData.quantity}
+                    onChange={(e) => handleChange('quantity', e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Si = 1, le badge "Dernière pièce" s'affichera.
+                  </p>
+                </div>
+              </div>
+
               {/* Commission Simulator */}
               {formData.price && parseFloat(formData.price) > 0 && (
                 <CommissionSimulator 
