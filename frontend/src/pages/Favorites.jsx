@@ -62,9 +62,14 @@ export default function Favorites() {
         items_count: response.data.items_count
       });
       
-      // Copier le lien
-      await navigator.clipboard.writeText(response.data.share_url);
-      toast.success('🔗 Lien copié ! Partagez votre wishlist avec vos proches.');
+      // Copier le lien (avec fallback si clipboard non disponible)
+      try {
+        await navigator.clipboard.writeText(response.data.share_url);
+        toast.success('🔗 Lien copié ! Partagez votre wishlist avec vos proches.');
+      } catch (clipboardError) {
+        // Clipboard non disponible, mais partage réussi
+        toast.success('🔗 Wishlist partagée ! Copiez le lien pour le partager.');
+      }
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Erreur lors du partage');
     } finally {
@@ -74,8 +79,12 @@ export default function Favorites() {
 
   const copyShareLink = async () => {
     if (shareLink?.share_url) {
-      await navigator.clipboard.writeText(shareLink.share_url);
-      toast.success('Lien copié !');
+      try {
+        await navigator.clipboard.writeText(shareLink.share_url);
+        toast.success('Lien copié !');
+      } catch (error) {
+        toast.info('Copiez le lien manuellement : ' + shareLink.share_url);
+      }
     }
   };
 
