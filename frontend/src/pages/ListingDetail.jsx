@@ -482,6 +482,20 @@ export default function ListingDetail() {
               {listing.price?.toLocaleString('fr-FR')} €
             </div>
 
+            {/* Social proof badges */}
+            <div className="flex flex-wrap gap-2">
+              {listing?.quantity === 1 && (
+                <Badge className="bg-red-500 text-white animate-pulse">
+                  🔥 Dernière pièce disponible !
+                </Badge>
+              )}
+              {(listing?.views || 0) > 50 && (
+                <Badge variant="outline" className="border-blue-400 text-blue-600">
+                  🔥 Populaire ({listing.views} vues)
+                </Badge>
+              )}
+            </div>
+
             {/* Shipping info */}
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">📦 {t('listingDetail.shipping_label')} :</span>
