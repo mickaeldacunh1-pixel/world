@@ -3243,7 +3243,7 @@ async def get_price_history(listing_id: str):
         "listing_id": listing_id,
         "current_price": listing.get("price"),
         "initial_price": listing.get("price") if not history else history[0]["old_price"],
-        "history": timeline,
+        "timeline": timeline,
         "total_changes": len(history)
     }
 
