@@ -68,38 +68,6 @@ export default function ListingDetail() {
     { value: 'other', label: t('listingDetail.report_reason_other') }
   ];
 
-  // Track viewer and refresh count periodically
-  useEffect(() => {
-    if (!id || !listing) return;
-    
-    // Get or create visitor ID
-    let visitorId = localStorage.getItem('visitor_id');
-    if (!visitorId) {
-      visitorId = 'v_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-      localStorage.setItem('visitor_id', visitorId);
-    }
-    
-    const trackView = async () => {
-      try {
-        const response = await axios.post(`${API}/listings/${id}/view`, {}, {
-          headers: { 'X-Visitor-ID': visitorId }
-        });
-        setActiveViewers(response.data.viewers || 0);
-      } catch (error) {
-        // Silently fail - don't break the page
-      }
-    };
-    
-    // Initial track after a short delay
-    const timeout = setTimeout(trackView, 1000);
-    const interval = setInterval(trackView, 30000);
-    
-    return () => {
-      clearTimeout(timeout);
-      clearInterval(interval);
-    };
-  }, [id, listing]);
-
   const handleVideoCall = async () => {
     if (!user) {
       toast.error(t('listingDetail.login_to_video'));
