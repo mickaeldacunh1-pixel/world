@@ -219,6 +219,7 @@ export default function EditListing() {
         shipping_cost: formData.shipping_cost ? parseFloat(formData.shipping_cost) : null,
         year: formData.year ? parseInt(formData.year) : null,
         mileage: formData.mileage ? parseInt(formData.mileage) : null,
+        quantity: formData.quantity ? parseInt(formData.quantity) : 1,
         compatible_models,
         images: images,
       }, {
