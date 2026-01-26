@@ -266,6 +266,42 @@ export default function AdminDashboard() {
               </Button>
             </div>
           </Card>
+
+          {/* Migration Seller Country */}
+          <Card className="p-6 mt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold">Migration Pays Vendeur</h3>
+                <p className="text-sm text-muted-foreground">
+                  Ajoute seller_country=&quot;France&quot; aux annonces sans ce champ pour le filtre par pays
+                </p>
+                {countryMigrationResult && (
+                  <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
+                    <CheckCircle className="w-4 h-4" />
+                    {countryMigrationResult.count_updated} annonces mises à jour
+                  </p>
+                )}
+              </div>
+              <Button
+                onClick={runCountryMigration}
+                disabled={migratingCountry}
+                variant="outline"
+                className="border-blue-500 text-blue-600 hover:bg-blue-50"
+              >
+                {migratingCountry ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Migration...
+                  </>
+                ) : (
+                  <>
+                    <Flag className="w-4 h-4 mr-2" />
+                    Migrer pays
+                  </>
+                )}
+              </Button>
+            </div>
+          </Card>
         </div>
       </div>
     </div>
