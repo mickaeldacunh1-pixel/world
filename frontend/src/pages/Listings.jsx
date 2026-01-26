@@ -626,6 +626,127 @@ export default function Listings() {
                   </Select>
                 </div>
 
+                {/* Filtres véhicule donneur - Section collapsible */}
+                <details className="border rounded-lg p-3 bg-blue-50/30">
+                  <summary className="cursor-pointer font-medium text-sm flex items-center gap-2">
+                    🚗 Véhicule donneur
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full ml-auto">Avancé</span>
+                  </summary>
+                  <div className="mt-3 space-y-3">
+                    {/* Type de carburant */}
+                    <div>
+                      <label className="text-xs font-medium mb-1 block">Carburant</label>
+                      <Select value={fuelType || "all"} onValueChange={(v) => setFuelType(v === "all" ? "" : v)}>
+                        <SelectTrigger className="h-8 text-sm">
+                          <SelectValue placeholder="Tous" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Tous</SelectItem>
+                          {fuelTypes.map((ft) => (
+                            <SelectItem key={ft.value} value={ft.value}>{ft.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Boîte de vitesses */}
+                    <div>
+                      <label className="text-xs font-medium mb-1 block">Boîte de vitesses</label>
+                      <Select value={gearbox || "all"} onValueChange={(v) => setGearbox(v === "all" ? "" : v)}>
+                        <SelectTrigger className="h-8 text-sm">
+                          <SelectValue placeholder="Toutes" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Toutes</SelectItem>
+                          {gearboxTypes.map((gt) => (
+                            <SelectItem key={gt.value} value={gt.value}>{gt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Type de carrosserie */}
+                    <div>
+                      <label className="text-xs font-medium mb-1 block">Carrosserie</label>
+                      <Select value={bodyType || "all"} onValueChange={(v) => setBodyType(v === "all" ? "" : v)}>
+                        <SelectTrigger className="h-8 text-sm">
+                          <SelectValue placeholder="Toutes" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Toutes</SelectItem>
+                          {bodyTypes.map((bt) => (
+                            <SelectItem key={bt.value} value={bt.value}>{bt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Couleur du véhicule */}
+                    <div>
+                      <label className="text-xs font-medium mb-1 block">Couleur</label>
+                      <Select value={vehicleColor || "all"} onValueChange={(v) => setVehicleColor(v === "all" ? "" : v)}>
+                        <SelectTrigger className="h-8 text-sm">
+                          <SelectValue placeholder="Toutes" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Toutes</SelectItem>
+                          {vehicleColors.map((vc) => (
+                            <SelectItem key={vc.value} value={vc.value}>{vc.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Roues motrices */}
+                    <div>
+                      <label className="text-xs font-medium mb-1 block">Transmission</label>
+                      <Select value={driveType || "all"} onValueChange={(v) => setDriveType(v === "all" ? "" : v)}>
+                        <SelectTrigger className="h-8 text-sm">
+                          <SelectValue placeholder="Toutes" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Toutes</SelectItem>
+                          {driveTypes.map((dt) => (
+                            <SelectItem key={dt.value} value={dt.value}>{dt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Position du volant */}
+                    <div>
+                      <label className="text-xs font-medium mb-1 block">Volant</label>
+                      <Select value={steeringSide || "all"} onValueChange={(v) => setSteeringSide(v === "all" ? "" : v)}>
+                        <SelectTrigger className="h-8 text-sm">
+                          <SelectValue placeholder="Tous" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Tous</SelectItem>
+                          {steeringSides.map((ss) => (
+                            <SelectItem key={ss.value} value={ss.value}>{ss.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* VIN disponible */}
+                    <div>
+                      <label className="text-xs font-medium mb-1 block">Numéro VIN</label>
+                      <Select value={vinAvailable || "all"} onValueChange={(v) => setVinAvailable(v === "all" ? "" : v)}>
+                        <SelectTrigger className="h-8 text-sm">
+                          <SelectValue placeholder="Tous" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Tous</SelectItem>
+                          {vinOptions.map((vo) => (
+                            <SelectItem key={vo.value} value={vo.value}>{vo.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </details>
+
                 {/* Sort */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">{t('common.sort')}</label>
