@@ -230,6 +230,7 @@ export default function Listings() {
     if (subcategory) params.set('subcategory', subcategory);
     if (compatibleBrand) params.set('compatible_brand', compatibleBrand);
     if (region) params.set('region', region);
+    if (country) params.set('country', country);
     if (oemReference) params.set('oem_reference', oemReference);
     if (search) params.set('search', search);
     if (minPrice) params.set('min_price', minPrice);
