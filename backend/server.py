@@ -3052,6 +3052,7 @@ async def get_listings(
     condition: Optional[str] = None,
     postal_code: Optional[str] = None,
     region: Optional[str] = None,
+    country: Optional[str] = None,
     search: Optional[str] = None,
     compatible_brand: Optional[str] = None,
     oem_reference: Optional[str] = None,
