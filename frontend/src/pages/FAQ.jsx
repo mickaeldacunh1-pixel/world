@@ -146,6 +146,18 @@ const faqs = [
       {
         q: "Pourquoi mon annonce a été refusée ?",
         a: "Une annonce peut être refusée si elle ne respecte pas nos conditions : contenu inapproprié, informations incomplètes, photos de mauvaise qualité, ou produit interdit à la vente. Contactez-nous pour plus de détails."
+      },
+      {
+        q: "Comment fonctionne la gestion du stock (quantité) ?",
+        a: "Vous pouvez indiquer la quantité disponible pour chaque annonce. Des badges s'affichent automatiquement : '⚠️ Dernière pièce disponible !' si quantity=1, '📦 Plus que X en stock' si 2-3 pièces. Cela crée un sentiment d'urgence et encourage les acheteurs à agir rapidement."
+      },
+      {
+        q: "Qu'est-ce que l'historique des prix ?",
+        a: "Si vous modifiez le prix de votre annonce, l'historique des changements est conservé et affiché aux acheteurs. Ils peuvent voir si le prix a baissé (badge vert avec le % de réduction) ou augmenté. Cela renforce la transparence et peut encourager l'achat quand le prix baisse."
+      },
+      {
+        q: "Comment créer un lot de pièces (bundle) ?",
+        a: "Rendez-vous sur la page 'Créer un lot' depuis votre tableau de bord. Sélectionnez plusieurs de vos annonces actives, définissez un prix de lot avec remise, et publiez. Les acheteurs pourront acheter le lot complet à prix réduit."
       }
     ]
   },
