@@ -959,6 +959,16 @@ class ListingCreate(BaseModel):
     warehouse_item_id: Optional[str] = None  # ID de l'article entrepôt à lier
     # Quantité disponible
     quantity: int = 1  # Quantité disponible pour le badge "Dernière pièce"
+    # Caractéristiques véhicule donneur
+    fuel_type: Optional[str] = None  # diesel, essence, essence_gpl, hybride, electrique
+    gearbox: Optional[str] = None  # manuel, automatique
+    vehicle_color: Optional[str] = None  # Couleur du véhicule donneur
+    color_code: Optional[str] = None  # Code couleur constructeur
+    body_type: Optional[str] = None  # berline, break, suv, coupe, etc.
+    drive_type: Optional[str] = None  # avant, arriere, 4x4
+    steering_side: Optional[str] = None  # gauche, droite
+    vin_available: bool = False  # VIN disponible ou non
+    vin_number: Optional[str] = None  # Numéro VIN si disponible
 
 # Options de garantie World Auto
 WARRANTY_OPTIONS = {
