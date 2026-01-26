@@ -261,6 +261,7 @@ export default function Listings() {
     setSubcategory('');
     setCompatibleBrand('');
     setRegion('');
+    setCountry('');
     setOemReference('');
     setMinPrice('');
     setMaxPrice('');
