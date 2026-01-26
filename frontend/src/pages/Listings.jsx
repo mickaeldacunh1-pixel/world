@@ -96,6 +96,7 @@ export default function Listings() {
   const [compatibleModel, setCompatibleModel] = useState(searchParams.get('model') || '');
   const [compatibleYear, setCompatibleYear] = useState(searchParams.get('year') || '');
   const [region, setRegion] = useState(searchParams.get('region') || '');
+  const [country, setCountry] = useState(searchParams.get('country') || '');
   const [oemReference, setOemReference] = useState(searchParams.get('oem_reference') || '');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
