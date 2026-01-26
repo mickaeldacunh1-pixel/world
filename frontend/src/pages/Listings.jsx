@@ -166,7 +166,7 @@ export default function Listings() {
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [category, page, sort, subcategory, compatibleBrand, region, oemReference]);
+  }, [category, page, sort, subcategory, compatibleBrand, region, country, oemReference]);
 
   const fetchSubcategories = async () => {
     try {
