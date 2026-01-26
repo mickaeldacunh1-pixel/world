@@ -2442,7 +2442,17 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
         # Liaison entrepôt PRO
         "warehouse_item_id": listing.warehouse_item_id,
         # Quantité disponible
-        "quantity": listing.quantity
+        "quantity": listing.quantity,
+        # Caractéristiques véhicule donneur
+        "fuel_type": listing.fuel_type,
+        "gearbox": listing.gearbox,
+        "vehicle_color": listing.vehicle_color,
+        "color_code": listing.color_code,
+        "body_type": listing.body_type,
+        "drive_type": listing.drive_type,
+        "steering_side": listing.steering_side,
+        "vin_available": listing.vin_available,
+        "vin_number": listing.vin_number
     }
     
     await db.listings.insert_one(listing_doc)
