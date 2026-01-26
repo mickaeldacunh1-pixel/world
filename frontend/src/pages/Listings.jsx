@@ -153,6 +153,60 @@ export default function Listings() {
     { value: 'corse', label: 'Corse' },
   ];
 
+  // Options filtres véhicule donneur
+  const fuelTypes = [
+    { value: 'diesel', label: 'Diesel' },
+    { value: 'essence', label: 'Essence' },
+    { value: 'essence_gpl', label: 'Essence / GPL' },
+    { value: 'hybride', label: 'Hybride' },
+    { value: 'electrique', label: 'Électrique' },
+  ];
+
+  const gearboxTypes = [
+    { value: 'manuel', label: 'Manuel' },
+    { value: 'automatique', label: 'Automatique' },
+  ];
+
+  const vehicleColors = [
+    { value: 'noir', label: 'Noir' },
+    { value: 'blanc', label: 'Blanc' },
+    { value: 'gris', label: 'Gris' },
+    { value: 'bleu', label: 'Bleu' },
+    { value: 'rouge', label: 'Rouge' },
+    { value: 'vert', label: 'Vert' },
+    { value: 'jaune', label: 'Jaune' },
+    { value: 'orange', label: 'Orange' },
+    { value: 'marron', label: 'Marron' },
+    { value: 'violet', label: 'Violet' },
+  ];
+
+  const bodyTypes = [
+    { value: 'berline', label: 'Berline' },
+    { value: 'break', label: 'Break' },
+    { value: 'hayon', label: 'Voiture à hayon' },
+    { value: 'suv', label: 'SUV' },
+    { value: 'coupe', label: 'Coupé' },
+    { value: 'cabriolet', label: 'Cabriolet' },
+    { value: 'monospace', label: 'Monospace' },
+    { value: 'utilitaire', label: 'Utilitaire' },
+  ];
+
+  const driveTypes = [
+    { value: 'avant', label: 'Traction avant' },
+    { value: 'arriere', label: 'Propulsion arrière' },
+    { value: '4x4', label: '4 roues motrices' },
+  ];
+
+  const steeringSides = [
+    { value: 'gauche', label: 'Gauche (LHD)' },
+    { value: 'droite', label: 'Droite (RHD)' },
+  ];
+
+  const vinOptions = [
+    { value: 'true', label: 'VIN disponible' },
+    { value: 'false', label: 'VIN non disponible' },
+  ];
+
   useEffect(() => {
     if (category === 'pieces' || category === 'accessoires') {
       fetchSubcategories();
