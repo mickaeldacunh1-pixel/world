@@ -11083,6 +11083,28 @@ async def migrate_add_quantity(current_user: dict = Depends(get_current_user)):
         "count_updated": result.modified_count
     }
 
+@api_router.post("/admin/migrate/add-seller-country")
+async def migrate_add_seller_country(current_user: dict = Depends(get_current_user)):
+    """Ajouter seller_country: France à toutes les annonces qui n'ont pas ce champ"""
+    if not is_user_admin(current_user):
+        raise HTTPException(status_code=403, detail="Accès réservé aux administrateurs")
+    
+    # Compter les annonces sans seller_country
+    count_before = await db.listings.count_documents({"seller_country": {"$exists": False}})
+    
+    # Ajouter seller_country: "France" aux annonces qui n'ont pas ce champ
+    result = await db.listings.update_many(
+        {"seller_country": {"$exists": False}},
+        {"$set": {"seller_country": "France"}}
+    )
+    
+    return {
+        "success": True,
+        "message": f"{result.modified_count} annonces mises à jour avec seller_country: France",
+        "count_before": count_before,
+        "count_updated": result.modified_count
+    }
+
 # ================== ADMIN LISTINGS ==================
 
 @api_router.get("/admin/listings")
