@@ -3086,7 +3086,7 @@ async def get_listings(
     if region:
         query["region"] = region
     if country:
-        query["country"] = country
+        query["seller_country"] = {"$regex": country, "$options": "i"}
     if compatible_brand:
         query["compatible_brands"] = compatible_brand
     if oem_reference:
