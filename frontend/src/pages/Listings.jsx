@@ -216,7 +216,7 @@ export default function Listings() {
 
   useEffect(() => {
     fetchListings();
-  }, [category, page, sort, subcategory, compatibleBrand, region, country, oemReference]);
+  }, [category, page, sort, subcategory, compatibleBrand, region, country, oemReference, fuelType, gearbox, vehicleColor, bodyType, driveType, steeringSide, vinAvailable]);
 
   // Auto-refresh listings when component mounts or tab becomes visible
   useEffect(() => {
@@ -228,7 +228,7 @@ export default function Listings() {
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [category, page, sort, subcategory, compatibleBrand, region, country, oemReference]);
+  }, [category, page, sort, subcategory, compatibleBrand, region, country, oemReference, fuelType, gearbox, vehicleColor, bodyType, driveType, steeringSide, vinAvailable]);
 
   const fetchSubcategories = async () => {
     try {
