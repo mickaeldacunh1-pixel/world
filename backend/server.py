@@ -3117,6 +3117,21 @@ async def get_listings(
         query["seller_country"] = {"$regex": country, "$options": "i"}
     if compatible_brand:
         query["compatible_brands"] = compatible_brand
+    # Filtres véhicule donneur
+    if fuel_type:
+        query["fuel_type"] = fuel_type
+    if gearbox:
+        query["gearbox"] = gearbox
+    if vehicle_color:
+        query["vehicle_color"] = vehicle_color
+    if body_type:
+        query["body_type"] = body_type
+    if drive_type:
+        query["drive_type"] = drive_type
+    if steering_side:
+        query["steering_side"] = steering_side
+    if vin_available is not None:
+        query["vin_available"] = vin_available
     if oem_reference:
         query["$or"] = query.get("$or", []) + [
             {"oem_reference": {"$regex": oem_reference, "$options": "i"}},
