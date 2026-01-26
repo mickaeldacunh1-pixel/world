@@ -259,6 +259,14 @@ export default function Listings() {
       if (region) params.set('region', region);
       if (country) params.set('country', country);
       if (oemReference) params.set('oem_reference', oemReference);
+      // Filtres véhicule donneur
+      if (fuelType) params.set('fuel_type', fuelType);
+      if (gearbox) params.set('gearbox', gearbox);
+      if (vehicleColor) params.set('vehicle_color', vehicleColor);
+      if (bodyType) params.set('body_type', bodyType);
+      if (driveType) params.set('drive_type', driveType);
+      if (steeringSide) params.set('steering_side', steeringSide);
+      if (vinAvailable) params.set('vin_available', vinAvailable);
       if (search) params.set('search', search);
       if (minPrice) params.set('min_price', minPrice);
       if (maxPrice) params.set('max_price', maxPrice);
