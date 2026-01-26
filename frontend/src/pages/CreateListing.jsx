@@ -1146,6 +1146,141 @@ export default function CreateListing() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Caractéristiques véhicule donneur */}
+                  <div className="mt-6 p-4 border rounded-lg bg-blue-50/50">
+                    <h4 className="font-medium mb-4 flex items-center gap-2">
+                      🚗 Véhicule donneur (optionnel)
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Améliore la recherche</span>
+                    </h4>
+                    <p className="text-xs text-muted-foreground mb-4">
+                      Ces informations aident les acheteurs à trouver la pièce compatible avec leur véhicule
+                    </p>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {/* Type de carburant */}
+                      <div className="space-y-2">
+                        <Label>Type de carburant</Label>
+                        <Select value={formData.fuel_type} onValueChange={(v) => handleChange('fuel_type', v)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {fuelTypes.map(ft => (
+                              <SelectItem key={ft.value} value={ft.value}>{ft.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Boîte de vitesses */}
+                      <div className="space-y-2">
+                        <Label>Boîte de vitesses</Label>
+                        <Select value={formData.gearbox} onValueChange={(v) => handleChange('gearbox', v)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {gearboxTypes.map(gt => (
+                              <SelectItem key={gt.value} value={gt.value}>{gt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Type de carrosserie */}
+                      <div className="space-y-2">
+                        <Label>Type de carrosserie</Label>
+                        <Select value={formData.body_type} onValueChange={(v) => handleChange('body_type', v)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {bodyTypes.map(bt => (
+                              <SelectItem key={bt.value} value={bt.value}>{bt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Couleur du véhicule */}
+                      <div className="space-y-2">
+                        <Label>Couleur du véhicule</Label>
+                        <Select value={formData.vehicle_color} onValueChange={(v) => handleChange('vehicle_color', v)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {vehicleColors.map(vc => (
+                              <SelectItem key={vc.value} value={vc.value}>{vc.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Code couleur */}
+                      <div className="space-y-2">
+                        <Label>Code couleur</Label>
+                        <Input
+                          placeholder="Ex: LY9T, 9H..."
+                          value={formData.color_code}
+                          onChange={(e) => handleChange('color_code', e.target.value)}
+                        />
+                      </div>
+
+                      {/* Roues motrices */}
+                      <div className="space-y-2">
+                        <Label>Roues motrices</Label>
+                        <Select value={formData.drive_type} onValueChange={(v) => handleChange('drive_type', v)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {driveTypes.map(dt => (
+                              <SelectItem key={dt.value} value={dt.value}>{dt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Position du volant */}
+                      <div className="space-y-2">
+                        <Label>Position du volant</Label>
+                        <Select value={formData.steering_side} onValueChange={(v) => handleChange('steering_side', v)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {steeringSides.map(ss => (
+                              <SelectItem key={ss.value} value={ss.value}>{ss.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* VIN */}
+                      <div className="space-y-2 col-span-2">
+                        <Label className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={formData.vin_available}
+                            onChange={(e) => handleChange('vin_available', e.target.checked)}
+                            className="rounded"
+                          />
+                          Numéro VIN disponible
+                        </Label>
+                        {formData.vin_available && (
+                          <Input
+                            placeholder="Ex: WVWZZZ3CZWE123456"
+                            value={formData.vin_number}
+                            onChange={(e) => handleChange('vin_number', e.target.value.toUpperCase())}
+                            className="font-mono"
+                            maxLength={17}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
