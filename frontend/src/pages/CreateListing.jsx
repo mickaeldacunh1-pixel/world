@@ -92,6 +92,16 @@ export default function CreateListing() {
     vehicle_mileage: '',
     // Quantité disponible
     quantity: '1',
+    // Caractéristiques véhicule donneur
+    fuel_type: '',        // Type de carburant
+    gearbox: '',          // Type de boîte de vitesses
+    vehicle_color: '',    // Couleur du véhicule
+    color_code: '',       // Code couleur
+    body_type: '',        // Type de carrosserie
+    drive_type: '',       // Roues motrices
+    steering_side: '',    // Position du volant
+    vin_available: false, // VIN disponible
+    vin_number: '',       // Numéro VIN
   });
 
   // Modèles populaires par marque
