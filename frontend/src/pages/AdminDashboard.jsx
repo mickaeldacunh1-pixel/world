@@ -18,6 +18,8 @@ export default function AdminDashboard() {
   const [migrationResult, setMigrationResult] = useState(null);
   const [fixingReserved, setFixingReserved] = useState(false);
   const [reservedResult, setReservedResult] = useState(null);
+  const [migratingCountry, setMigratingCountry] = useState(false);
+  const [countryMigrationResult, setCountryMigrationResult] = useState(null);
 
   const isAdmin = user?.email === 'contact@worldautofrance.com' || 
                   user?.email === 'admin@worldautofrance.com' || 
