@@ -524,6 +524,22 @@ export default function Listings() {
                   </Select>
                 </div>
 
+                {/* Country */}
+                <div>
+                  <label className="text-sm font-medium mb-2 block">{t('listings.filter_country')}</label>
+                  <Select value={country || "all"} onValueChange={(v) => setCountry(v === "all" ? "" : v)}>
+                    <SelectTrigger data-testid="filter-country">
+                      <SelectValue placeholder={t('listings.all_countries')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{t('listings.all_countries')}</SelectItem>
+                      {countries.map((c) => (
+                        <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 {/* Sort */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">{t('common.sort')}</label>
