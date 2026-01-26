@@ -2417,6 +2417,7 @@ async def create_listing(listing: ListingCreate, background_tasks: BackgroundTas
         "seller_id": current_user["id"],
         "seller_name": current_user["name"],
         "seller_is_pro": current_user.get("is_professional", False),
+        "seller_country": current_user.get("country", "France"),
         "status": "active",
         "views": 0,
         "created_at": datetime.now(timezone.utc).isoformat(),
