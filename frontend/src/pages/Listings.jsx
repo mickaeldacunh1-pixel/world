@@ -344,6 +344,14 @@ export default function Listings() {
     setMinPrice('');
     setMaxPrice('');
     setCondition('');
+    // Reset filtres véhicule donneur
+    setFuelType('');
+    setGearbox('');
+    setVehicleColor('');
+    setBodyType('');
+    setDriveType('');
+    setSteeringSide('');
+    setVinAvailable('');
     setSort('recent');
     setPage(1);
     fetchListings(true);
