@@ -3084,6 +3084,8 @@ async def get_listings(
         query["postal_code"] = {"$regex": f"^{postal_code[:2]}"}
     if region:
         query["region"] = region
+    if country:
+        query["country"] = country
     if compatible_brand:
         query["compatible_brands"] = compatible_brand
     if oem_reference:
