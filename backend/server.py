@@ -3077,6 +3077,14 @@ async def get_listings(
     search: Optional[str] = None,
     compatible_brand: Optional[str] = None,
     oem_reference: Optional[str] = None,
+    # Filtres véhicule donneur
+    fuel_type: Optional[str] = None,
+    gearbox: Optional[str] = None,
+    vehicle_color: Optional[str] = None,
+    body_type: Optional[str] = None,
+    drive_type: Optional[str] = None,
+    steering_side: Optional[str] = None,
+    vin_available: Optional[bool] = None,
     sort: str = "recent",
     page: int = 1,
     limit: int = 20
