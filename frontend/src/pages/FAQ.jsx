@@ -51,19 +51,19 @@ const faqs = [
     questions: [
       {
         q: "Qu'est-ce que l'offre de lancement ?",
-        a: "Pour célébrer notre lancement, nous offrons les 1000 premières annonces gratuitement ! Chaque nouvel inscrit via notre lien spécial reçoit jusqu'à 20 annonces gratuites. C'est notre façon de vous remercier de faire partie des premiers utilisateurs de World Auto Pro."
+        a: "Pour célébrer notre lancement, nous offrons les 1000 premières annonces gratuitement ! Chaque nouvel inscrit reçoit automatiquement jusqu'à 20 annonces gratuites. C'est notre façon de vous remercier de faire partie des premiers utilisateurs de World Auto Pro."
       },
       {
         q: "Comment profiter des 20 annonces gratuites ?",
-        a: "Inscrivez-vous en utilisant notre lien spécial avec le code promo LANCEMENT. Vos 20 annonces gratuites seront automatiquement créditées sur votre compte dès l'inscription. Aucun code à entrer, c'est automatique !"
+        a: "Inscrivez-vous simplement sur World Auto Pro. Vos 20 annonces gratuites seront automatiquement créditées sur votre compte dès l'inscription. C'est automatique, rien à faire !"
       },
       {
         q: "L'offre est-elle limitée ?",
-        a: "Oui, l'offre est limitée aux 1000 premières annonces gratuites distribuées au total. Chaque utilisateur peut recevoir jusqu'à 20 annonces gratuites. Une fois ce quota atteint, l'offre prendra fin automatiquement. Ne tardez pas !"
+        a: "Oui, l'offre est limitée aux 1000 premières annonces gratuites distribuées au total. Chaque utilisateur peut recevoir jusqu'à 20 annonces gratuites. Une fois ce quota global atteint, l'offre prendra fin automatiquement. Ne tardez pas !"
       },
       {
         q: "Mes annonces gratuites ont-elles une date d'expiration ?",
-        a: "Oui, les annonces gratuites offertes à l'inscription (offre de lancement) expirent 30 jours après votre inscription. Utilisez-les rapidement ! Passé ce délai, les crédits non utilisés seront perdus. Les crédits achetés, eux, n'expirent pas."
+        a: "Oui, les annonces gratuites offertes à l'inscription expirent 30 jours après votre inscription. Utilisez-les rapidement ! Passé ce délai, les crédits non utilisés seront perdus. Les crédits achetés, eux, n'expirent pas."
       },
       {
         q: "Puis-je cumuler les annonces gratuites avec d'autres offres ?",
