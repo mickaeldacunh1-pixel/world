@@ -154,7 +154,7 @@ export default function Listings() {
 
   useEffect(() => {
     fetchListings();
-  }, [category, page, sort, subcategory, compatibleBrand, region, oemReference]);
+  }, [category, page, sort, subcategory, compatibleBrand, region, country, oemReference]);
 
   // Auto-refresh listings when component mounts or tab becomes visible
   useEffect(() => {
