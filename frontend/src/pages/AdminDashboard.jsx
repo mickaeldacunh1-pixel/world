@@ -55,6 +55,21 @@ export default function AdminDashboard() {
     }
   };
 
+  const runCountryMigration = async () => {
+    setMigratingCountry(true);
+    try {
+      const response = await axios.post(`${API}/admin/migrate/add-seller-country`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCountryMigrationResult(response.data);
+      toast.success(`✅ ${response.data.count_updated} annonces mises à jour avec seller_country`);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la migration');
+    } finally {
+      setMigratingCountry(false);
+    }
+  };
+
   if (!isAdmin) {
     return (
       <div className="min-h-screen bg-secondary/30 flex items-center justify-center">
