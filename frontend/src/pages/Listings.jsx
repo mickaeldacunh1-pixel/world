@@ -105,6 +105,14 @@ export default function Listings() {
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
   const [shouldScroll, setShouldScroll] = useState(false);
+  // Filtres véhicule donneur
+  const [fuelType, setFuelType] = useState(searchParams.get('fuel_type') || '');
+  const [gearbox, setGearbox] = useState(searchParams.get('gearbox') || '');
+  const [vehicleColor, setVehicleColor] = useState(searchParams.get('vehicle_color') || '');
+  const [bodyType, setBodyType] = useState(searchParams.get('body_type') || '');
+  const [driveType, setDriveType] = useState(searchParams.get('drive_type') || '');
+  const [steeringSide, setSteeringSide] = useState(searchParams.get('steering_side') || '');
+  const [vinAvailable, setVinAvailable] = useState(searchParams.get('vin_available') || '');
   
   // Scroll en haut quand la page change et le contenu est chargé
   useEffect(() => {
