@@ -116,6 +116,18 @@ export default function Listings() {
   // Get available models based on selected brand
   const availableModels = compatibleBrand ? CAR_MODELS_BY_BRAND[compatibleBrand] || [] : [];
 
+  const countries = [
+    { value: 'france', label: 'France' },
+    { value: 'belgique', label: 'Belgique' },
+    { value: 'suisse', label: 'Suisse' },
+    { value: 'allemagne', label: 'Allemagne' },
+    { value: 'pays-bas', label: 'Pays-Bas' },
+    { value: 'italie', label: 'Italie' },
+    { value: 'espagne', label: 'Espagne' },
+    { value: 'portugal', label: 'Portugal' },
+    { value: 'suede', label: 'Suède' },
+  ];
+
   const regions = [
     { value: 'ile-de-france', label: 'Île-de-France' },
     { value: 'auvergne-rhone-alpes', label: 'Auvergne-Rhône-Alpes' },
