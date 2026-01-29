@@ -10558,15 +10558,15 @@ async def seo_listing_page(listing_id: str):
     </script>
     
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        header { border-bottom: 2px solid #1E3A5F; padding-bottom: 10px; margin-bottom: 20px; }
-        h1 { color: #1E3A5F; }
-        .price { font-size: 24px; color: #F97316; font-weight: bold; }
-        .details { background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0; }
-        .details p { margin: 8px 0; }
-        .cta { display: inline-block; background: #F97316; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-        img { max-width: 100%; border-radius: 8px; }
-        footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px; }
+        body {{ font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }}
+        header {{ border-bottom: 2px solid #1E3A5F; padding-bottom: 10px; margin-bottom: 20px; }}
+        h1 {{ color: #1E3A5F; }}
+        .price {{ font-size: 24px; color: #F97316; font-weight: bold; }}
+        .details {{ background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0; }}
+        .details p {{ margin: 8px 0; }}
+        .cta {{ display: inline-block; background: #F97316; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }}
+        img {{ max-width: 100%; border-radius: 8px; }}
+        footer {{ margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px; }}
     </style>
 </head>
 <body>
