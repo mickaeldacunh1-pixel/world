@@ -10557,20 +10557,25 @@ async def seo_listing_page(listing_id: str):
     }}
     </script>
     
-    <!-- Redirection vers la vraie page après chargement -->
-    <script>
-        window.location.href = "{SITE_URL}/annonce/{listing_id}";
-    </script>
-    <noscript>
-        <meta http-equiv="refresh" content="0;url={SITE_URL}/annonce/{listing_id}">
-    </noscript>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        header { border-bottom: 2px solid #1E3A5F; padding-bottom: 10px; margin-bottom: 20px; }
+        h1 { color: #1E3A5F; }
+        .price { font-size: 24px; color: #F97316; font-weight: bold; }
+        .details { background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .details p { margin: 8px 0; }
+        .cta { display: inline-block; background: #F97316; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+        img { max-width: 100%; border-radius: 8px; }
+        footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px; }
+    </style>
 </head>
 <body>
     <header>
-        <h1>World Auto France</h1>
+        <h1>🚗 World Auto France</h1>
         <nav>
             <a href="{SITE_URL}">Accueil</a> |
-            <a href="{SITE_URL}/annonces">Annonces</a> |
+            <a href="{SITE_URL}/annonces">Toutes les annonces</a> |
+            <a href="{SITE_URL}/annonces/pieces">Pièces détachées</a> |
             <a href="{SITE_URL}/tarifs">Tarifs</a>
         </nav>
     </header>
@@ -10578,24 +10583,41 @@ async def seo_listing_page(listing_id: str):
     <main>
         <article>
             <h1>{title}</h1>
-            <p><strong>Prix:</strong> {price}€</p>
-            <p><strong>État:</strong> {condition}</p>
-            <p><strong>Catégorie:</strong> {category_fr}</p>
-            <p><strong>Localisation:</strong> {location}</p>
-            <p><strong>Vendeur:</strong> {seller_name}</p>
-            <p><strong>Date:</strong> {created_at}</p>
+            
+            <p class="price">{price} €</p>
+            
+            <img src="{main_image}" alt="{title}" width="600">
+            
+            <div class="details">
+                <p><strong>État :</strong> {condition}</p>
+                <p><strong>Catégorie :</strong> {category_fr}</p>
+                <p><strong>Localisation :</strong> {location}</p>
+                <p><strong>Vendeur :</strong> {seller_name}</p>
+                <p><strong>Publié le :</strong> {created_at}</p>
+            </div>
             
             <h2>Description</h2>
             <p>{listing.get("description", "")}</p>
             
-            <a href="{SITE_URL}/annonce/{listing_id}">Voir l'annonce complète</a>
+            <a href="{SITE_URL}/annonce/{listing_id}" class="cta">Voir l'annonce complète</a>
+            
+            <h2>Autres annonces similaires</h2>
+            <ul>
+                <li><a href="{SITE_URL}/annonces/{category}">Voir toutes les annonces {category_fr}</a></li>
+                <li><a href="{SITE_URL}/annonces">Parcourir toutes les annonces</a></li>
+            </ul>
         </article>
     </main>
     
     <footer>
-        <p>© 2026 World Auto France - Marketplace de pièces détachées automobiles</p>
-        <a href="{SITE_URL}/cgu">CGU</a> |
-        <a href="{SITE_URL}/mentions-legales">Mentions légales</a>
+        <p>© 2026 World Auto France - La marketplace n°1 de pièces détachées automobiles en France</p>
+        <p>
+            <a href="{SITE_URL}/cgu">Conditions générales</a> |
+            <a href="{SITE_URL}/mentions-legales">Mentions légales</a> |
+            <a href="{SITE_URL}/confidentialite">Politique de confidentialité</a> |
+            <a href="{SITE_URL}/faq">FAQ</a> |
+            <a href="{SITE_URL}/contact">Contact</a>
+        </p>
     </footer>
 </body>
 </html>"""
