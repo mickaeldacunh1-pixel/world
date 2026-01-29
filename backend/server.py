@@ -10466,6 +10466,142 @@ async def sitemap_xml():
         headers={"Cache-Control": "public, max-age=3600"}  # Cache 1 heure
     )
 
+# ================== SEO: PRE-RENDERING POUR CRAWLERS ==================
+
+@app.get("/seo/annonce/{listing_id}", response_class=HTMLResponse)
+async def seo_listing_page(listing_id: str):
+    """
+    Page HTML pré-rendue pour les crawlers Google.
+    Contient les meta tags dynamiques pour chaque annonce.
+    """
+    listing = await db.listings.find_one({"id": listing_id, "status": "active"}, {"_id": 0})
+    
+    if not listing:
+        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+    
+    title = listing.get("title", "Annonce")
+    description = listing.get("description", "")[:160]
+    price = listing.get("price", 0)
+    condition = listing.get("condition", "")
+    location = listing.get("location", "")
+    category = listing.get("category", "pieces")
+    images = listing.get("images", [])
+    main_image = images[0] if images else "https://worldautofrance.com/og-image.jpg"
+    seller_name = listing.get("seller_name", "")
+    created_at = listing.get("created_at", "")[:10] if listing.get("created_at") else ""
+    
+    # Catégories en français
+    category_names = {
+        "pieces": "Pièces Détachées",
+        "voitures": "Voitures",
+        "motos": "Motos & Scooters",
+        "utilitaires": "Utilitaires",
+        "accessoires": "Accessoires",
+        "engins": "Engins Agricoles",
+        "rare": "Collection & Rare"
+    }
+    category_fr = category_names.get(category, "Pièces Détachées")
+    
+    # Construire le HTML SEO-friendly
+    html = f"""<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{title} - {price}€ - World Auto France</title>
+    <meta name="description" content="{description}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{SITE_URL}/annonce/{listing_id}">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="product">
+    <meta property="og:url" content="{SITE_URL}/annonce/{listing_id}">
+    <meta property="og:title" content="{title} - {price}€">
+    <meta property="og:description" content="{description}">
+    <meta property="og:image" content="{main_image}">
+    <meta property="og:site_name" content="World Auto France">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="product:price:amount" content="{price}">
+    <meta property="product:price:currency" content="EUR">
+    <meta property="product:condition" content="{condition}">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{title} - {price}€">
+    <meta name="twitter:description" content="{description}">
+    <meta name="twitter:image" content="{main_image}">
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {{
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "{title}",
+        "description": "{description}",
+        "image": "{main_image}",
+        "offers": {{
+            "@type": "Offer",
+            "price": "{price}",
+            "priceCurrency": "EUR",
+            "availability": "https://schema.org/InStock",
+            "itemCondition": "https://schema.org/UsedCondition",
+            "seller": {{
+                "@type": "Person",
+                "name": "{seller_name}"
+            }}
+        }},
+        "brand": {{
+            "@type": "Brand",
+            "name": "World Auto France"
+        }}
+    }}
+    </script>
+    
+    <!-- Redirection vers la vraie page après chargement -->
+    <script>
+        window.location.href = "{SITE_URL}/annonce/{listing_id}";
+    </script>
+    <noscript>
+        <meta http-equiv="refresh" content="0;url={SITE_URL}/annonce/{listing_id}">
+    </noscript>
+</head>
+<body>
+    <header>
+        <h1>World Auto France</h1>
+        <nav>
+            <a href="{SITE_URL}">Accueil</a> |
+            <a href="{SITE_URL}/annonces">Annonces</a> |
+            <a href="{SITE_URL}/tarifs">Tarifs</a>
+        </nav>
+    </header>
+    
+    <main>
+        <article>
+            <h1>{title}</h1>
+            <p><strong>Prix:</strong> {price}€</p>
+            <p><strong>État:</strong> {condition}</p>
+            <p><strong>Catégorie:</strong> {category_fr}</p>
+            <p><strong>Localisation:</strong> {location}</p>
+            <p><strong>Vendeur:</strong> {seller_name}</p>
+            <p><strong>Date:</strong> {created_at}</p>
+            
+            <h2>Description</h2>
+            <p>{listing.get("description", "")}</p>
+            
+            <a href="{SITE_URL}/annonce/{listing_id}">Voir l'annonce complète</a>
+        </article>
+    </main>
+    
+    <footer>
+        <p>© 2026 World Auto France - Marketplace de pièces détachées automobiles</p>
+        <a href="{SITE_URL}/cgu">CGU</a> |
+        <a href="{SITE_URL}/mentions-legales">Mentions légales</a>
+    </footer>
+</body>
+</html>"""
+    
+    return HTMLResponse(content=html)
+
 @app.get("/robots.txt", response_class=PlainTextResponse)
 async def robots_txt():
     """Generate robots.txt for SEO"""
