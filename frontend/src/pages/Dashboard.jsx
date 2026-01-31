@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
@@ -21,6 +21,26 @@ export default function Dashboard() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [exportingPdf, setExportingPdf] = useState(false);
+  const conversionTracked = useRef(false);
+
+  // Google Ads conversion tracking - exécuté une seule fois après inscription
+  useEffect(() => {
+    if (!conversionTracked.current && typeof window.gtag === 'function') {
+      // Vérifier si c'est une nouvelle inscription (compte créé il y a moins de 5 minutes)
+      if (user?.created_at) {
+        const createdAt = new Date(user.created_at);
+        const now = new Date();
+        const diffMinutes = (now - createdAt) / (1000 * 60);
+        
+        if (diffMinutes < 5) {
+          window.gtag('event', 'conversion', {
+            'send_to': 'AW-17916289997/EoqVCLixlu8bEM3Hk99C'
+          });
+          conversionTracked.current = true;
+        }
+      }
+    }
+  }, [user]);
 
   // Dynamic status labels from translations
   const statusLabels = {
