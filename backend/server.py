@@ -10490,6 +10490,10 @@ async def seo_listing_page(listing_id: str):
     seller_name = listing.get("seller_name", "")
     created_at = listing.get("created_at", "")[:10] if listing.get("created_at") else ""
     
+    # Date de validité du prix (30 jours à partir d'aujourd'hui)
+    from datetime import datetime, timedelta
+    price_valid_until = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d")
+    
     # Catégories en français
     category_names = {
         "pieces": "Pièces Détachées",
