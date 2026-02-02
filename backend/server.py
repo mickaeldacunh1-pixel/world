@@ -11163,11 +11163,23 @@ async def get_admin_users(
     for u in users:
         u["listings_count"] = await db.listings.count_documents({"seller_id": u["id"]})
     
+    # Calculer les stats
+    total_all = await db.users.count_documents({})
+    active_count = await db.users.count_documents({"is_banned": {"$ne": True}})
+    blocked_count = await db.users.count_documents({"is_banned": True})
+    pro_count = await db.users.count_documents({"is_professional": True})
+    
     return {
         "users": users,
         "total": total,
         "page": page,
-        "total_pages": total_pages
+        "pages": total_pages,
+        "stats": {
+            "total": total_all,
+            "active": active_count,
+            "blocked": blocked_count,
+            "pro": pro_count
+        }
     }
 
 @api_router.post("/admin/users/{user_id}/ban")
