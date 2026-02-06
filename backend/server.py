@@ -10650,6 +10650,107 @@ async def seo_listing_page(listing_id: str):
     
     return HTMLResponse(content=html)
 
+@app.get("/seo/annonces", response_class=HTMLResponse)
+async def seo_listings_page():
+    """
+    Page HTML pré-rendue pour les crawlers Google - Liste des annonces.
+    """
+    # Récupérer quelques annonces pour afficher
+    listings = await db.listings.find(
+        {"status": "active"},
+        {"_id": 0, "id": 1, "title": 1, "price": 1, "category": 1, "images": 1}
+    ).sort("created_at", -1).limit(20).to_list(20)
+    
+    total_listings = await db.listings.count_documents({"status": "active"})
+    
+    # Générer la liste HTML des annonces
+    listings_html = ""
+    for l in listings:
+        img = l.get("images", [""])[0] if l.get("images") else ""
+        listings_html += f"""
+        <li>
+            <a href="{SITE_URL}/annonce/{l['id']}">
+                <strong>{l.get('title', 'Annonce')}</strong> - {l.get('price', 0)}€
+            </a>
+        </li>"""
+    
+    html = f"""<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Annonces Pièces Auto Occasion - World Auto France</title>
+    <meta name="description" content="Découvrez {total_listings} annonces de pièces détachées automobiles d'occasion. Moteurs, carrosserie, freinage et plus. Livraison partout en France.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{SITE_URL}/annonces">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{SITE_URL}/annonces">
+    <meta property="og:title" content="Annonces Pièces Auto Occasion - World Auto France">
+    <meta property="og:description" content="Découvrez {total_listings} annonces de pièces détachées automobiles d'occasion.">
+    <meta property="og:image" content="{SITE_URL}/og-image.jpg">
+    <meta property="og:site_name" content="World Auto France">
+    <meta property="og:locale" content="fr_FR">
+    
+    <style>
+        body {{ font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }}
+        header {{ border-bottom: 2px solid #1E3A5F; padding-bottom: 10px; margin-bottom: 20px; }}
+        h1 {{ color: #1E3A5F; }}
+        .count {{ font-size: 18px; color: #F97316; margin-bottom: 20px; }}
+        ul {{ list-style: none; padding: 0; }}
+        li {{ padding: 10px; border-bottom: 1px solid #eee; }}
+        li a {{ text-decoration: none; color: #333; }}
+        li a:hover {{ color: #F97316; }}
+        .categories {{ display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }}
+        .categories a {{ background: #f5f5f5; padding: 8px 16px; border-radius: 20px; text-decoration: none; color: #333; }}
+        footer {{ margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px; }}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🚗 World Auto France</h1>
+        <nav>
+            <a href="{SITE_URL}">Accueil</a> |
+            <a href="{SITE_URL}/annonces">Toutes les annonces</a> |
+            <a href="{SITE_URL}/tarifs">Tarifs</a> |
+            <a href="{SITE_URL}/inscription">S'inscrire</a>
+        </nav>
+    </header>
+    
+    <main>
+        <h1>Annonces Pièces Détachées Automobiles</h1>
+        <p class="count">{total_listings} annonces disponibles</p>
+        
+        <div class="categories">
+            <a href="{SITE_URL}/annonces/pieces">Pièces détachées</a>
+            <a href="{SITE_URL}/annonces/voitures">Voitures</a>
+            <a href="{SITE_URL}/annonces/motos">Motos & Scooters</a>
+            <a href="{SITE_URL}/annonces/utilitaires">Utilitaires</a>
+            <a href="{SITE_URL}/annonces/accessoires">Accessoires</a>
+        </div>
+        
+        <h2>Dernières annonces</h2>
+        <ul>
+            {listings_html}
+        </ul>
+        
+        <p><a href="{SITE_URL}/annonces">Voir toutes les annonces →</a></p>
+    </main>
+    
+    <footer>
+        <p>© 2026 World Auto France - La marketplace n°1 de pièces détachées automobiles en France</p>
+        <p>
+            <a href="{SITE_URL}/cgu">Conditions générales</a> |
+            <a href="{SITE_URL}/mentions-legales">Mentions légales</a> |
+            <a href="{SITE_URL}/faq">FAQ</a>
+        </p>
+    </footer>
+</body>
+</html>"""
+    
+    return HTMLResponse(content=html)
+
 @app.get("/robots.txt", response_class=PlainTextResponse)
 async def robots_txt():
     """Generate robots.txt for SEO"""
