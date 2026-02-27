@@ -3169,6 +3169,130 @@ async def get_listings(
         "pages": (total + limit - 1) // limit
     }
 
+
+@api_router.get("/listings/filter-counts")
+async def get_filter_counts(
+    category: Optional[str] = None,
+    subcategory: Optional[str] = None,
+    compatible_brand: Optional[str] = None,
+    region: Optional[str] = None,
+    country: Optional[str] = None,
+    search: Optional[str] = None,
+    oem_reference: Optional[str] = None,
+    condition: Optional[str] = None,
+    fuel_type: Optional[str] = None,
+    gearbox: Optional[str] = None,
+    vehicle_color: Optional[str] = None,
+    body_type: Optional[str] = None,
+    drive_type: Optional[str] = None,
+    steering_side: Optional[str] = None,
+):
+    """Récupère les compteurs pour chaque option de filtre"""
+    
+    # Build base query with current filters
+    base_query = {"status": "active"}
+    
+    if category:
+        base_query["category"] = category
+    if subcategory:
+        base_query["subcategory"] = subcategory
+    if compatible_brand:
+        base_query["compatible_brands"] = compatible_brand
+    if region:
+        base_query["region"] = region
+    if country:
+        base_query["seller_country"] = {"$regex": country, "$options": "i"}
+    if search:
+        base_query["$or"] = [
+            {"title": {"$regex": search, "$options": "i"}},
+            {"description": {"$regex": search, "$options": "i"}},
+            {"oem_reference": {"$regex": search, "$options": "i"}},
+        ]
+    if oem_reference:
+        base_query["$or"] = base_query.get("$or", []) + [
+            {"oem_reference": {"$regex": oem_reference, "$options": "i"}},
+            {"aftermarket_reference": {"$regex": oem_reference, "$options": "i"}}
+        ]
+    
+    # Count for each filter option using aggregation
+    counts = {}
+    
+    # Fuel type counts
+    fuel_pipeline = [
+        {"$match": {**base_query, "fuel_type": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$group": {"_id": "$fuel_type", "count": {"$sum": 1}}}
+    ]
+    fuel_results = await db.listings.aggregate(fuel_pipeline).to_list(100)
+    counts["fuel_type"] = {r["_id"]: r["count"] for r in fuel_results}
+    
+    # Gearbox counts
+    gearbox_pipeline = [
+        {"$match": {**base_query, "gearbox": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$group": {"_id": "$gearbox", "count": {"$sum": 1}}}
+    ]
+    gearbox_results = await db.listings.aggregate(gearbox_pipeline).to_list(100)
+    counts["gearbox"] = {r["_id"]: r["count"] for r in gearbox_results}
+    
+    # Vehicle color counts
+    color_pipeline = [
+        {"$match": {**base_query, "vehicle_color": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$group": {"_id": "$vehicle_color", "count": {"$sum": 1}}}
+    ]
+    color_results = await db.listings.aggregate(color_pipeline).to_list(100)
+    counts["vehicle_color"] = {r["_id"]: r["count"] for r in color_results}
+    
+    # Body type counts
+    body_pipeline = [
+        {"$match": {**base_query, "body_type": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$group": {"_id": "$body_type", "count": {"$sum": 1}}}
+    ]
+    body_results = await db.listings.aggregate(body_pipeline).to_list(100)
+    counts["body_type"] = {r["_id"]: r["count"] for r in body_results}
+    
+    # Drive type counts
+    drive_pipeline = [
+        {"$match": {**base_query, "drive_type": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$group": {"_id": "$drive_type", "count": {"$sum": 1}}}
+    ]
+    drive_results = await db.listings.aggregate(drive_pipeline).to_list(100)
+    counts["drive_type"] = {r["_id"]: r["count"] for r in drive_results}
+    
+    # Steering side counts
+    steering_pipeline = [
+        {"$match": {**base_query, "steering_side": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$group": {"_id": "$steering_side", "count": {"$sum": 1}}}
+    ]
+    steering_results = await db.listings.aggregate(steering_pipeline).to_list(100)
+    counts["steering_side"] = {r["_id"]: r["count"] for r in steering_results}
+    
+    # Condition counts
+    condition_pipeline = [
+        {"$match": {**base_query, "condition": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$group": {"_id": "$condition", "count": {"$sum": 1}}}
+    ]
+    condition_results = await db.listings.aggregate(condition_pipeline).to_list(100)
+    counts["condition"] = {r["_id"]: r["count"] for r in condition_results}
+    
+    # Country counts
+    country_pipeline = [
+        {"$match": {**base_query, "seller_country": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$group": {"_id": "$seller_country", "count": {"$sum": 1}}}
+    ]
+    country_results = await db.listings.aggregate(country_pipeline).to_list(100)
+    counts["country"] = {r["_id"]: r["count"] for r in country_results}
+    
+    # Region counts
+    region_pipeline = [
+        {"$match": {**base_query, "region": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$group": {"_id": "$region", "count": {"$sum": 1}}}
+    ]
+    region_results = await db.listings.aggregate(region_pipeline).to_list(100)
+    counts["region"] = {r["_id"]: r["count"] for r in region_results}
+    
+    return counts
+
+
+
 @api_router.get("/listings/{listing_id}")
 async def get_listing(listing_id: str):
     listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
