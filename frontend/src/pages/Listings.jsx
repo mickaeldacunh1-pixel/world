@@ -610,9 +610,15 @@ export default function Listings() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">{t('listings.all_conditions')}</SelectItem>
-                      <SelectItem value="neuf">{t('listing.new')}</SelectItem>
-                      <SelectItem value="occasion">{t('listing.used')}</SelectItem>
-                      <SelectItem value="reconditionne">{t('listing.reconditioned')}</SelectItem>
+                      <SelectItem value="neuf">
+                        {t('listing.new')} {filterCounts.condition?.neuf ? `(${filterCounts.condition.neuf})` : ''}
+                      </SelectItem>
+                      <SelectItem value="occasion">
+                        {t('listing.used')} {filterCounts.condition?.occasion ? `(${filterCounts.condition.occasion})` : ''}
+                      </SelectItem>
+                      <SelectItem value="reconditionne">
+                        {t('listing.reconditioned')} {filterCounts.condition?.reconditionne ? `(${filterCounts.condition.reconditionne})` : ''}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -627,7 +633,9 @@ export default function Listings() {
                     <SelectContent>
                       <SelectItem value="all">{t('listings.all_regions')}</SelectItem>
                       {regions.map((r) => (
-                        <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                        <SelectItem key={r.value} value={r.value}>
+                          {r.label} {filterCounts.region?.[r.value] ? `(${filterCounts.region[r.value]})` : ''}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -643,7 +651,9 @@ export default function Listings() {
                     <SelectContent>
                       <SelectItem value="all">{t('listings.all_countries')}</SelectItem>
                       {countries.map((c) => (
-                        <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                        <SelectItem key={c.value} value={c.value}>
+                          {c.label} {filterCounts.country?.[c.value] ? `(${filterCounts.country[c.value]})` : ''}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
