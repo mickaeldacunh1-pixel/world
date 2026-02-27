@@ -666,7 +666,9 @@ export default function Listings() {
                         <SelectContent>
                           <SelectItem value="all">Tous</SelectItem>
                           {fuelTypes.map((ft) => (
-                            <SelectItem key={ft.value} value={ft.value}>{ft.label}</SelectItem>
+                            <SelectItem key={ft.value} value={ft.value}>
+                              {ft.label} {filterCounts.fuel_type?.[ft.value] ? `(${filterCounts.fuel_type[ft.value]})` : ''}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -682,7 +684,9 @@ export default function Listings() {
                         <SelectContent>
                           <SelectItem value="all">Toutes</SelectItem>
                           {gearboxTypes.map((gt) => (
-                            <SelectItem key={gt.value} value={gt.value}>{gt.label}</SelectItem>
+                            <SelectItem key={gt.value} value={gt.value}>
+                              {gt.label} {filterCounts.gearbox?.[gt.value] ? `(${filterCounts.gearbox[gt.value]})` : ''}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -698,7 +702,9 @@ export default function Listings() {
                         <SelectContent>
                           <SelectItem value="all">Toutes</SelectItem>
                           {bodyTypes.map((bt) => (
-                            <SelectItem key={bt.value} value={bt.value}>{bt.label}</SelectItem>
+                            <SelectItem key={bt.value} value={bt.value}>
+                              {bt.label} {filterCounts.body_type?.[bt.value] ? `(${filterCounts.body_type[bt.value]})` : ''}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -714,7 +720,9 @@ export default function Listings() {
                         <SelectContent>
                           <SelectItem value="all">Toutes</SelectItem>
                           {vehicleColors.map((vc) => (
-                            <SelectItem key={vc.value} value={vc.value}>{vc.label}</SelectItem>
+                            <SelectItem key={vc.value} value={vc.value}>
+                              {vc.label} {filterCounts.vehicle_color?.[vc.value] ? `(${filterCounts.vehicle_color[vc.value]})` : ''}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
