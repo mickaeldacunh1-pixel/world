@@ -415,6 +415,7 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
 
   const selectedElementData = selectedElement ? HERO_ELEMENTS.find(e => e.id === selectedElement) : null;
   const isEnabled = settings.hero_free_position_enabled === true;
+  const isDesktopOnly = settings.hero_free_position_desktop_only === true;
   
   const toggleFreePositionMode = async () => {
     const newEnabled = !isEnabled;
@@ -435,6 +436,25 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
     }
   };
 
+  const toggleDesktopOnly = async () => {
+    const newDesktopOnly = !isDesktopOnly;
+    const newSettings = {
+      ...settings,
+      hero_free_position_desktop_only: newDesktopOnly
+    };
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/settings/hero`, newSettings, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      onChange(newSettings);
+      toast.success(newDesktopOnly ? 'Mode libre activé uniquement sur Desktop' : 'Mode libre activé sur Desktop et Mobile');
+    } catch (error) {
+      toast.error(`Erreur: ${error.response?.data?.detail || error.message}`);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Toggle Mode */}
@@ -450,6 +470,22 @@ export default function HeroFreePositionEditor({ settings, onChange, onSave }) {
           <div className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${isEnabled ? 'translate-x-8' : 'translate-x-1'}`} />
         </button>
       </div>
+
+      {/* Option Desktop Only - visible uniquement si mode libre activé */}
+      {isEnabled && (
+        <div className="flex items-center justify-between p-4 bg-blue-500/10 rounded-lg border border-blue-500/30">
+          <div>
+            <p className="font-medium text-white">📱 Mode standard sur Mobile</p>
+            <p className="text-sm text-white/60">Le mode libre s'applique uniquement sur Desktop, Mobile garde le layout normal</p>
+          </div>
+          <button
+            onClick={toggleDesktopOnly}
+            className={`relative w-14 h-7 rounded-full transition-colors ${isDesktopOnly ? 'bg-blue-500' : 'bg-gray-600'}`}
+          >
+            <div className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${isDesktopOnly ? 'translate-x-8' : 'translate-x-1'}`} />
+          </button>
+        </div>
+      )}
       
       {!isEnabled && (
         <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-300 text-sm">
