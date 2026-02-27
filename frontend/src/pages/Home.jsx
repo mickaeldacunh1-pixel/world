@@ -154,6 +154,23 @@ const HERO_HEIGHT_CLASSES = {
   full: 'min-h-screen',
 };
 
+// Hook pour détecter si on est sur mobile
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  return isMobile;
+}
+
 export default function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate();
