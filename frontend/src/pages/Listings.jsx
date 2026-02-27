@@ -85,6 +85,7 @@ export default function Listings() {
   const [viewMode, setViewMode] = useState('grid');
   const [subcategories, setSubcategories] = useState({});
   const [carBrands, setCarBrands] = useState([]);
+  const [filterCounts, setFilterCounts] = useState({});
   
   // Search history hook
   const saveSearch = useSaveSearch();
