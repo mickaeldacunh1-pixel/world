@@ -250,6 +250,22 @@ export default function Listings() {
     }
   };
 
+  const fetchFilterCounts = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (category) params.set('category', category);
+      if (subcategory) params.set('subcategory', subcategory);
+      if (compatibleBrand) params.set('compatible_brand', compatibleBrand);
+      if (search) params.set('search', search);
+      if (oemReference) params.set('oem_reference', oemReference);
+      
+      const response = await axios.get(`${API}/listings/filter-counts?${params.toString()}`);
+      setFilterCounts(response.data);
+    } catch (error) {
+      console.error('Error fetching filter counts:', error);
+    }
+  };
+
   const fetchListings = async (resetPage = false) => {
     setLoading(true);
     try {
