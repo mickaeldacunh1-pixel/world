@@ -175,6 +175,7 @@ export default function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [oemSearch, setOemSearch] = useState('');
@@ -184,6 +185,11 @@ export default function Home() {
   const [referralData, setReferralData] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
   const [subcatImages, setSubcatImages] = useState({});
+
+  // Déterminer si on doit utiliser le mode libre
+  // Si hero_free_position_desktop_only est activé, on utilise le mode standard sur mobile
+  const useFreePositionMode = heroSettings.hero_free_position_enabled && 
+    !(heroSettings.hero_free_position_desktop_only && isMobile);
 
   // Get translated categories and features
   const categories = getCategoriesConfig();
