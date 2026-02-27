@@ -213,11 +213,17 @@ export default function Listings() {
       fetchSubcategories();
     }
     fetchCarBrands();
+    fetchFilterCounts();
   }, [category]);
 
   useEffect(() => {
     fetchListings();
   }, [category, page, sort, subcategory, compatibleBrand, region, country, oemReference, fuelType, gearbox, vehicleColor, bodyType, driveType, steeringSide, vinAvailable]);
+
+  // Update filter counts when main filters change
+  useEffect(() => {
+    fetchFilterCounts();
+  }, [category, subcategory, compatibleBrand, search, oemReference]);
 
   // Auto-refresh listings when component mounts or tab becomes visible
   useEffect(() => {
