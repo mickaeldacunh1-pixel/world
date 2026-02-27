@@ -738,7 +738,9 @@ export default function Listings() {
                         <SelectContent>
                           <SelectItem value="all">Toutes</SelectItem>
                           {driveTypes.map((dt) => (
-                            <SelectItem key={dt.value} value={dt.value}>{dt.label}</SelectItem>
+                            <SelectItem key={dt.value} value={dt.value}>
+                              {dt.label} {filterCounts.drive_type?.[dt.value] ? `(${filterCounts.drive_type[dt.value]})` : ''}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -754,7 +756,9 @@ export default function Listings() {
                         <SelectContent>
                           <SelectItem value="all">Tous</SelectItem>
                           {steeringSides.map((ss) => (
-                            <SelectItem key={ss.value} value={ss.value}>{ss.label}</SelectItem>
+                            <SelectItem key={ss.value} value={ss.value}>
+                              {ss.label} {filterCounts.steering_side?.[ss.value] ? `(${filterCounts.steering_side[ss.value]})` : ''}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
