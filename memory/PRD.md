@@ -1,7 +1,7 @@
 # World Auto France - Product Requirements Document
 
 ## Overview
-Marketplace de pièces automobiles d'occasion avec fonctionnalités e-commerce complètes.
+Marketplace de pièces automobiles et véhicules d'occasion (React/FastAPI/MongoDB).
 
 **URL Production**: https://worldautofrance.com
 
@@ -13,19 +13,30 @@ Marketplace de pièces automobiles d'occasion avec fonctionnalités e-commerce c
 - **Paiements**: Stripe
 - **Livraison**: Boxtal, Mondial Relay
 
-## Statut Actuel
+## Statut Actuel - 27 Février 2026
 
-### ✅ Résolu (27 Février 2026)
-- **Bug critique**: Site inaccessible (Error 111) - CORRIGÉ
-  - Cause: Configuration Nginx avec résolution DNS statique du backend
-  - Solution: Utilisation de variable `$backend_upstream` avec résolution dynamique DNS Docker (`127.0.0.11`)
-  - Fichier modifié: `/frontend/nginx.conf`
+### ✅ Résolu cette session
+1. **Bug critique** : Site inaccessible (Error 111) - CORRIGÉ
+   - Cause: Configuration Nginx avec résolution DNS statique du backend
+   - Solution: Variable `$backend_upstream` avec resolver Docker `127.0.0.11`
 
-### 🔶 À faire (P1)
-- Réactiver reCAPTCHA (actuellement désactivé dans `server.py`)
+2. **reCAPTCHA** : Réactivé et fonctionnel
+   - Code décommenté dans `server.py`
+   - `RECAPTCHA_ENABLED=true` dans `.env`
+
+3. **Compteurs sur filtres** : Implémenté
+   - Nouvel endpoint `/api/listings/filter-counts`
+   - Affichage "(X)" à côté des options de filtres
+
+4. **Hero Desktop/Mobile séparé** : Implémenté
+   - Nouvelle option `hero_free_position_desktop_only`
+   - Mode libre sur Desktop, mode standard sur Mobile
+   - À déployer avec `wabuild`
+
+### 🔶 En attente
+- Page Facebook : Compte trop récent, attendre 3-7 jours
 
 ### 📋 Backlog (P2)
-- Ajouter compteurs sur les filtres (ex: "Diesel (15)")
 - Refactorisation de `server.py`
 
 ## Intégrations Tierces
@@ -34,14 +45,16 @@ Marketplace de pièces automobiles d'occasion avec fonctionnalités e-commerce c
 - Cloudinary (Médias)
 - Mondial Relay (Points relais)
 - Google Ads (Suivi conversions)
-- Google reCAPTCHA (désactivé temporairement)
+- Google reCAPTCHA v3 (Sécurité inscription)
 
-## Fichiers Clés
-- `/frontend/nginx.conf` - Configuration proxy Nginx
-- `/backend/server.py` - API FastAPI principale
-- `/docker-compose.yml` - Orchestration Docker
+## Fichiers Clés Modifiés
+- `/frontend/nginx.conf` - Configuration proxy avec resolver Docker
+- `/backend/server.py` - Endpoint filter-counts, reCAPTCHA actif
+- `/frontend/src/pages/Home.jsx` - Hook useIsMobile, logique Hero
+- `/frontend/src/pages/Listings.jsx` - Affichage compteurs filtres
+- `/frontend/src/components/HeroFreePositionEditor.jsx` - Option desktop only
 
 ## Notes Techniques
-- Le resolver DNS Docker interne est `127.0.0.11`
-- Utiliser `docker-compose down && docker-compose up -d --build` pour les rebuilds complets
-- Ne pas utiliser `docker-compose restart` seul car ça ne rebuild pas les images
+- Resolver DNS Docker interne : `127.0.0.11`
+- Commande déploiement : `wabuild` ou `docker-compose down && docker-compose up -d --build`
+- Ne pas utiliser `docker-compose restart` seul (ne rebuild pas les images)
