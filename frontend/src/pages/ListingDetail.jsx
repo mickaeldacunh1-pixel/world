@@ -97,12 +97,30 @@ export default function ListingDetail() {
     }
   };
 
-  const handleBoost = async (duration) => {
-    if (!listing?.video_url) {
-      toast.error('Cette annonce n\'a pas de vidéo à booster');
-      return;
+  const handleBoost = async (optionId) => {
+    setBoostLoading(true);
+    try {
+      const response = await axios.post(
+        `${API}/promote/checkout`,
+        {
+          type: 'boost',
+          option_id: optionId,
+          listing_id: id
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.checkout_url) {
+        window.location.href = response.data.checkout_url;
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la création du paiement');
+    } finally {
+      setBoostLoading(false);
     }
-    
+  };
+
+  const handleVideoBoost = async (duration) => {
     setBoostLoading(true);
     try {
       const response = await axios.post(
@@ -864,64 +882,74 @@ export default function ListingDetail() {
                       {t('listingDetail.edit_listing')}
                     </Button>
                   </Link>
-                  {listing.video_url && (
-                    <Dialog open={showBoostDialog} onOpenChange={setShowBoostDialog}>
-                      <DialogTrigger asChild>
-                        <Button className="h-12 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white">
-                          <Rocket className="w-5 h-5 mr-2" />
-                          Booster
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-md">
-                        <DialogHeader>
-                          <DialogTitle className="flex items-center gap-2">
-                            <Rocket className="w-5 h-5 text-orange-500" />
-                            Booster cette annonce
-                          </DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4 mt-4">
-                          <p className="text-sm text-muted-foreground">
-                            Mettez votre vidéo en avant sur la page d'accueil !
-                          </p>
-                          <div className="grid grid-cols-2 gap-3">
-                            <button
-                              onClick={() => handleBoost('1h')}
-                              disabled={boostLoading}
-                              className="p-4 rounded-lg border-2 border-orange-200 hover:border-orange-500 transition-colors text-left"
-                            >
-                              <div className="flex items-center gap-2 mb-2">
-                                <Zap className="w-4 h-4 text-orange-500" />
-                                <span className="font-medium">1 heure</span>
-                              </div>
-                              <p className="text-xl font-bold text-orange-500">0,50€</p>
-                              <p className="text-xs text-muted-foreground">Visibilité express</p>
-                            </button>
-                            <button
-                              onClick={() => handleBoost('24h')}
-                              disabled={boostLoading}
-                              className="p-4 rounded-lg border-2 border-orange-500 bg-orange-50 hover:bg-orange-100 transition-colors text-left relative"
-                            >
-                              <div className="absolute -top-2 right-2 bg-yellow-400 text-yellow-900 text-xs px-2 py-0.5 rounded-full font-medium">
-                                -58%
-                              </div>
-                              <div className="flex items-center gap-2 mb-2">
-                                <Zap className="w-4 h-4 text-orange-500" />
-                                <span className="font-medium">24 heures</span>
-                              </div>
-                              <p className="text-xl font-bold text-orange-500">5€ <span className="text-sm line-through text-muted-foreground">12€</span></p>
-                              <p className="text-xs text-muted-foreground">Priorité max</p>
-                            </button>
-                          </div>
-                          {boostLoading && (
-                            <div className="flex items-center justify-center py-2">
-                              <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
-                              <span className="ml-2 text-sm">Redirection vers le paiement...</span>
+                  <Dialog open={showBoostDialog} onOpenChange={setShowBoostDialog}>
+                    <DialogTrigger asChild>
+                      <Button className="h-12 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white">
+                        <Rocket className="w-5 h-5 mr-2" />
+                        Booster
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                          <Rocket className="w-5 h-5 text-orange-500" />
+                          Booster cette annonce
+                        </DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4 mt-4">
+                        <p className="text-sm text-muted-foreground">
+                          Mettez votre annonce en avant dans les résultats de recherche !
+                        </p>
+                        <div className="grid grid-cols-3 gap-2">
+                          <button
+                            onClick={() => handleBoost('boost_24h')}
+                            disabled={boostLoading}
+                            className="p-3 rounded-lg border-2 border-orange-200 hover:border-orange-500 transition-colors text-center"
+                          >
+                            <Zap className="w-4 h-4 text-orange-500 mx-auto mb-1" />
+                            <span className="font-medium text-sm block">24h</span>
+                            <p className="text-lg font-bold text-orange-500">2,99€</p>
+                          </button>
+                          <button
+                            onClick={() => handleBoost('boost_7d')}
+                            disabled={boostLoading}
+                            className="p-3 rounded-lg border-2 border-orange-500 bg-orange-50 hover:bg-orange-100 transition-colors text-center relative"
+                          >
+                            <div className="absolute -top-2 right-0 bg-yellow-400 text-yellow-900 text-xs px-1 py-0.5 rounded-full font-medium">
+                              Top
                             </div>
-                          )}
+                            <Zap className="w-4 h-4 text-orange-500 mx-auto mb-1" />
+                            <span className="font-medium text-sm block">7 jours</span>
+                            <p className="text-lg font-bold text-orange-500">6,99€</p>
+                          </button>
+                          <button
+                            onClick={() => handleBoost('boost_30d')}
+                            disabled={boostLoading}
+                            className="p-3 rounded-lg border-2 border-orange-200 hover:border-orange-500 transition-colors text-center"
+                          >
+                            <Zap className="w-4 h-4 text-orange-500 mx-auto mb-1" />
+                            <span className="font-medium text-sm block">30 jours</span>
+                            <p className="text-lg font-bold text-orange-500">14,99€</p>
+                          </button>
                         </div>
-                      </DialogContent>
-                    </Dialog>
-                  )}
+                        {listing.video_url && (
+                          <div className="pt-3 border-t">
+                            <p className="text-xs text-muted-foreground mb-2">Boost Vidéo (page d'accueil)</p>
+                            <div className="flex gap-2">
+                              <button onClick={() => handleVideoBoost('1h')} disabled={boostLoading} className="flex-1 p-2 text-sm border rounded hover:bg-gray-50">1h - 0,50€</button>
+                              <button onClick={() => handleVideoBoost('24h')} disabled={boostLoading} className="flex-1 p-2 text-sm border rounded hover:bg-gray-50">24h - 5€</button>
+                            </div>
+                          </div>
+                        )}
+                        {boostLoading && (
+                          <div className="flex items-center justify-center py-2">
+                            <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
+                            <span className="ml-2 text-sm">Redirection vers le paiement...</span>
+                          </div>
+                        )}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               )}
               
