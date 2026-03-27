@@ -10,7 +10,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
 import { Skeleton } from '../components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2, Heart, ShoppingCart, CreditCard, Shield, ShieldCheck, Loader2, Flag, AlertTriangle, Video, Award, TrendingDown, TrendingUp, History } from 'lucide-react';
+import { MapPin, Eye, Calendar, User, MessageSquare, Phone, ChevronLeft, ChevronRight, Share2, Heart, ShoppingCart, CreditCard, Shield, ShieldCheck, Loader2, Flag, AlertTriangle, Video, Award, TrendingDown, TrendingUp, History, Rocket, Zap } from 'lucide-react';
 import SEO, { createProductSchema, createBreadcrumbSchema } from '../components/SEO';
 import ShareButtons from '../components/ShareButtons';
 import { VerificationBadge, WarrantyBadge, PartOriginBadge } from '../components/TrustBadge';
@@ -59,6 +59,8 @@ export default function ListingDetail() {
   const [videoCallLoading, setVideoCallLoading] = useState(false);
   const [priceHistory, setPriceHistory] = useState([]);
   const [showPriceHistory, setShowPriceHistory] = useState(false);
+  const [boostLoading, setBoostLoading] = useState(false);
+  const [showBoostDialog, setShowBoostDialog] = useState(false);
 
   const REPORT_REASONS = [
     { value: 'spam', label: t('listingDetail.report_reason_spam') },
@@ -92,6 +94,30 @@ export default function ListingDetail() {
       }
     } finally {
       setVideoCallLoading(false);
+    }
+  };
+
+  const handleBoost = async (duration) => {
+    if (!listing?.video_url) {
+      toast.error('Cette annonce n\'a pas de vidéo à booster');
+      return;
+    }
+    
+    setBoostLoading(true);
+    try {
+      const response = await axios.post(
+        `${API}/video/boost/checkout?listing_id=${id}&duration=${duration}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.checkout_url) {
+        window.location.href = response.data.checkout_url;
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la création du paiement');
+    } finally {
+      setBoostLoading(false);
     }
   };
 
@@ -832,11 +858,71 @@ export default function ListingDetail() {
                   </DialogContent>
                 </Dialog>
               ) : (
-                <Link to={`/annonce/${listing.id}/modifier`} className="flex-1">
-                  <Button className="w-full h-12" variant="outline">
-                    {t('listingDetail.edit_listing')}
-                  </Button>
-                </Link>
+                <div className="flex-1 flex gap-2">
+                  <Link to={`/annonce/${listing.id}/modifier`} className="flex-1">
+                    <Button className="w-full h-12" variant="outline">
+                      {t('listingDetail.edit_listing')}
+                    </Button>
+                  </Link>
+                  {listing.video_url && (
+                    <Dialog open={showBoostDialog} onOpenChange={setShowBoostDialog}>
+                      <DialogTrigger asChild>
+                        <Button className="h-12 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white">
+                          <Rocket className="w-5 h-5 mr-2" />
+                          Booster
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-md">
+                        <DialogHeader>
+                          <DialogTitle className="flex items-center gap-2">
+                            <Rocket className="w-5 h-5 text-orange-500" />
+                            Booster cette annonce
+                          </DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 mt-4">
+                          <p className="text-sm text-muted-foreground">
+                            Mettez votre vidéo en avant sur la page d'accueil !
+                          </p>
+                          <div className="grid grid-cols-2 gap-3">
+                            <button
+                              onClick={() => handleBoost('1h')}
+                              disabled={boostLoading}
+                              className="p-4 rounded-lg border-2 border-orange-200 hover:border-orange-500 transition-colors text-left"
+                            >
+                              <div className="flex items-center gap-2 mb-2">
+                                <Zap className="w-4 h-4 text-orange-500" />
+                                <span className="font-medium">1 heure</span>
+                              </div>
+                              <p className="text-xl font-bold text-orange-500">0,50€</p>
+                              <p className="text-xs text-muted-foreground">Visibilité express</p>
+                            </button>
+                            <button
+                              onClick={() => handleBoost('24h')}
+                              disabled={boostLoading}
+                              className="p-4 rounded-lg border-2 border-orange-500 bg-orange-50 hover:bg-orange-100 transition-colors text-left relative"
+                            >
+                              <div className="absolute -top-2 right-2 bg-yellow-400 text-yellow-900 text-xs px-2 py-0.5 rounded-full font-medium">
+                                -58%
+                              </div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <Zap className="w-4 h-4 text-orange-500" />
+                                <span className="font-medium">24 heures</span>
+                              </div>
+                              <p className="text-xl font-bold text-orange-500">5€ <span className="text-sm line-through text-muted-foreground">12€</span></p>
+                              <p className="text-xs text-muted-foreground">Priorité max</p>
+                            </button>
+                          </div>
+                          {boostLoading && (
+                            <div className="flex items-center justify-center py-2">
+                              <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
+                              <span className="ml-2 text-sm">Redirection vers le paiement...</span>
+                            </div>
+                          )}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  )}
+                </div>
               )}
               
               <ShareButtons 
