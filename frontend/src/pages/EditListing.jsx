@@ -9,7 +9,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { ArrowLeft, Upload, X, ImagePlus, Loader2, Save } from 'lucide-react';
+import { ArrowLeft, Upload, X, ImagePlus, Loader2, Save, Rocket, Zap } from 'lucide-react';
 import SEO from '../components/SEO';
 import CommissionSimulator from '../components/CommissionSimulator';
 
@@ -36,6 +36,8 @@ export default function EditListing() {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [uploadingImages, setUploadingImages] = useState(false);
+  const [boostLoading, setBoostLoading] = useState(false);
+  const [listing, setListing] = useState(null);
   const [images, setImages] = useState([]);
   const [piecesSubcategories, setPiecesSubcategories] = useState({});
   const [accessoiresSubcategories, setAccessoiresSubcategories] = useState({});
@@ -101,6 +103,8 @@ export default function EditListing() {
         navigate('/tableau-de-bord');
         return;
       }
+      
+      setListing(listing); // Garder une référence au listing complet
       
       setFormData({
         title: listing.title || '',
@@ -197,6 +201,30 @@ export default function EditListing() {
 
   const removeImage = (index) => {
     setImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleBoost = async (duration) => {
+    if (!listing?.video_url) {
+      toast.error('Cette annonce n\'a pas de vidéo à booster');
+      return;
+    }
+    
+    setBoostLoading(true);
+    try {
+      const response = await axios.post(
+        `${API}/video/boost/checkout?listing_id=${id}&duration=${duration}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.checkout_url) {
+        window.location.href = response.data.checkout_url;
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la création du paiement');
+    } finally {
+      setBoostLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -602,6 +630,75 @@ export default function EditListing() {
                   className="hidden"
                 />
               </div>
+
+              {/* Section Boost Vidéo */}
+              {listing?.video_url && (
+                <div className="bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-xl p-6 border border-orange-500/30">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Rocket className="w-5 h-5 text-orange-500" />
+                    <h3 className="font-semibold text-lg">Booster cette annonce</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Mettez votre vidéo en avant sur la page d'accueil pour plus de visibilité !
+                  </p>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Boost 1h */}
+                    <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg p-4 border border-orange-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Zap className="w-4 h-4 text-orange-500" />
+                        <span className="font-medium">Boost 1 heure</span>
+                      </div>
+                      <p className="text-2xl font-bold text-orange-500 mb-2">0,50€</p>
+                      <p className="text-xs text-muted-foreground mb-3">Visibilité express</p>
+                      <Button 
+                        type="button"
+                        onClick={() => handleBoost('1h')}
+                        disabled={boostLoading}
+                        className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                        size="sm"
+                      >
+                        {boostLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Booster 1h'}
+                      </Button>
+                    </div>
+                    
+                    {/* Boost 24h */}
+                    <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-lg p-4 border-2 border-orange-500 relative">
+                      <div className="absolute -top-2 right-2 bg-yellow-400 text-yellow-900 text-xs px-2 py-0.5 rounded-full font-medium">
+                        Meilleur choix
+                      </div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Zap className="w-4 h-4 text-orange-500" />
+                        <span className="font-medium">Boost 24 heures</span>
+                      </div>
+                      <p className="text-2xl font-bold text-orange-500 mb-1">5€ <span className="text-sm line-through text-muted-foreground">12€</span></p>
+                      <p className="text-xs text-muted-foreground mb-3">-58% • Priorité d'affichage</p>
+                      <Button 
+                        type="button"
+                        onClick={() => handleBoost('24h')}
+                        disabled={boostLoading}
+                        className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white"
+                        size="sm"
+                      >
+                        {boostLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Booster 24h'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Message si pas de vidéo */}
+              {!listing?.video_url && (
+                <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 border border-dashed border-gray-300">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Rocket className="w-5 h-5 text-gray-400" />
+                    <h3 className="font-semibold text-gray-500">Booster votre annonce</h3>
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    Ajoutez une vidéo à votre annonce pour pouvoir la booster sur la page d'accueil.
+                  </p>
+                </div>
+              )}
 
               {/* Submit */}
               <div className="flex gap-4">
