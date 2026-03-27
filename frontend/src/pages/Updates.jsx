@@ -14,7 +14,7 @@ const STATIC_UPDATES = [
   {
     id: 'static-new-33',
     date: '2026-03-27',
-    version: '6.2.0',
+    version: '6.3.0',
     title: '🔒 Sécurité & Boost Vidéo',
     category: 'feature',
     items: [
