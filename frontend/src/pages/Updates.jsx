@@ -12,6 +12,21 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-33',
+    date: '2026-03-27',
+    version: '6.2.0',
+    title: '🔒 Sécurité & Boost Vidéo',
+    category: 'feature',
+    items: [
+      { type: 'fix', text: '🔒 reCAPTCHA : correction de la vérification de sécurité à l\'inscription' },
+      { type: 'new', text: '🚀 Boost vidéo : boostez votre annonce directement depuis la page de modification ou de détail' },
+      { type: 'new', text: '🔢 Compteurs sur filtres : voyez le nombre d\'annonces pour chaque option de filtre (ex: "Diesel (15)")' },
+      { type: 'new', text: '📱 Hero Desktop/Mobile séparé : mode libre sur Desktop, mode standard sur Mobile' },
+      { type: 'fix', text: '💳 Stripe diagnostic IA : correction de la clé API pour les paiements' },
+      { type: 'fix', text: '🐳 Nginx Docker : résolution DNS dynamique pour éviter les crashs au démarrage' },
+    ]
+  },
+  {
     id: 'static-new-32',
     date: '2026-01-24',
     version: '6.1.0',
