@@ -172,6 +172,27 @@ export default function Pricing() {
       '🏷️ -58% vs tarif horaire',
       '⭐ Meilleur rapport',
     ],
+    // Listing boost
+    listing_boost_24h: [
+      'Durée : 24 heures',
+      'En tête des résultats',
+      'Badge "Boosté"',
+      'Toutes catégories',
+    ],
+    listing_boost_7d: [
+      'Durée : 7 jours',
+      'En tête des résultats',
+      'Badge "Boosté"',
+      'Visibilité prolongée',
+      '⭐ Populaire',
+    ],
+    listing_boost_30d: [
+      'Durée : 30 jours',
+      'En tête des résultats',
+      'Badge "Boosté"',
+      'Visibilité maximale',
+      '🏷️ Meilleur prix/jour',
+    ],
   };
 
   const handleBuyVideoPackage = async (packageType) => {
@@ -832,6 +853,121 @@ export default function Pricing() {
           </div>
           <p className="text-center text-sm text-muted-foreground mt-4">
             💡 {t('pricing.boost_tip')}
+          </p>
+        </div>
+
+        {/* Boost Annonce - Mise en avant dans les résultats */}
+        <div className="mb-8">
+          <h2 className="font-heading text-2xl font-bold mb-6 text-center">
+            🚀 Boost Annonce
+            <span className="block text-sm font-normal text-muted-foreground mt-1">Mettez votre annonce en tête des résultats</span>
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {/* Boost 24h */}
+            <Card className="relative card-hover border-2 border-orange-200 hover:border-orange-400" data-testid="package-listing-boost-24h">
+              <CardHeader>
+                <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mb-2">
+                  <Zap className="w-5 h-5 text-orange-500" />
+                </div>
+                <CardTitle className="font-heading">Boost 24h</CardTitle>
+                <CardDescription>Visibilité express</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black text-orange-500">2,99€</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.listing_boost_24h.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                  disabled
+                >
+                  {t('pricing.from_listing')}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* Boost 7 jours */}
+            <Card className="relative card-hover border-2 border-orange-500 bg-orange-50/50" data-testid="package-listing-boost-7d">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <Badge className="bg-orange-500 text-white">
+                  ⭐ Populaire
+                </Badge>
+              </div>
+              <CardHeader>
+                <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mb-2">
+                  <Zap className="w-5 h-5 text-white" />
+                </div>
+                <CardTitle className="font-heading">Boost 7 jours</CardTitle>
+                <CardDescription>Visibilité prolongée</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black text-orange-500">6,99€</span>
+                  <span className="text-sm text-muted-foreground ml-2">~1€/jour</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.listing_boost_7d.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                  disabled
+                >
+                  {t('pricing.from_listing')}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* Boost 30 jours */}
+            <Card className="relative card-hover border-2 border-orange-200 hover:border-orange-400" data-testid="package-listing-boost-30d">
+              <CardHeader>
+                <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mb-2">
+                  <Zap className="w-5 h-5 text-orange-500" />
+                </div>
+                <CardTitle className="font-heading">Boost 30 jours</CardTitle>
+                <CardDescription>Visibilité maximale</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6">
+                  <span className="text-4xl font-heading font-black text-orange-500">14,99€</span>
+                  <span className="text-sm text-muted-foreground ml-2">~0,50€/jour</span>
+                </div>
+                <ul className="space-y-3">
+                  {pricingFeatures.listing_boost_30d.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                  disabled
+                >
+                  {t('pricing.from_listing')}
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+          <p className="text-center text-sm text-muted-foreground mt-4">
+            💡 Boostez depuis votre annonce pour apparaître en premier dans les recherches
           </p>
         </div>
 

@@ -306,6 +306,14 @@ const faqs = [
         a: "Depuis votre annonce avec vidéo, vous pouvez activer le Boost Vidéo. Deux options : 1 heure (0,50€) ou 24 heures (5€). Votre vidéo sera diffusée dans le lecteur principal sur la page d'accueil, offrant une visibilité maximale."
       },
       {
+        q: "Comment booster mon annonce dans les résultats de recherche ?",
+        a: "Depuis la page de modification ou de détail de votre annonce, cliquez sur \"Booster\". Trois options sont disponibles : 24 heures (2,99€), 7 jours (6,99€) ou 30 jours (14,99€). Votre annonce apparaîtra en tête des résultats de recherche avec un badge \"Boosté\"."
+      },
+      {
+        q: "Quelle est la différence entre Boost Vidéo et Boost Annonce ?",
+        a: "Le Boost Vidéo affiche votre vidéo dans le lecteur principal de la page d'accueil (nécessite une vidéo). Le Boost Annonce met votre annonce en tête des résultats de recherche, sans nécessiter de vidéo. Vous pouvez utiliser les deux pour une visibilité maximale !"
+      },
+      {
         q: "Où puis-je voir toutes les annonces avec vidéo ?",
         a: "Rendez-vous sur la page Vidéos accessible depuis le menu principal. Vous y trouverez une galerie de toutes les annonces avec vidéo, avec des filtres par catégorie, tri et recherche."
       },
