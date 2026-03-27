@@ -8041,7 +8041,7 @@ async def purchase_diagnostic_credits(
 ):
     """Acheter des crédits de diagnostic via Stripe"""
     import stripe
-    stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
+    stripe.api_key = STRIPE_API_KEY
     
     if pack == "single":
         amount = int(DIAGNOSTIC_PRICING["single_price"] * 100)  # en centimes
