@@ -10601,7 +10601,23 @@ async def seo_listing_page(listing_id: str):
     listing = await db.listings.find_one({"id": listing_id, "status": "active"}, {"_id": 0})
     
     if not listing:
-        raise HTTPException(status_code=404, detail="Annonce non trouvée")
+        # Retourner une vraie page 404 HTML pour les crawlers
+        html_404 = """<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Annonce non trouvée - World Auto France</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Cette annonce n'existe plus ou a été supprimée.">
+</head>
+<body>
+    <h1>Annonce non trouvée</h1>
+    <p>Cette annonce n'existe plus ou a été supprimée.</p>
+    <p><a href="https://worldautofrance.com/annonces">Voir toutes les annonces</a></p>
+</body>
+</html>"""
+        return HTMLResponse(content=html_404, status_code=404)
     
     title = listing.get("title", "Annonce")
     description = listing.get("description", "")[:160]
