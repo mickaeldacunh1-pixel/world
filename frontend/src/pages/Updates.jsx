@@ -12,6 +12,19 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-34',
+    date: '2026-04-04',
+    version: '6.4.0',
+    title: '🌍 Ouverture Maghreb & Corrections',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🇩🇿🇹🇳🇲🇦 Algérie, Tunisie et Maroc : les vendeurs de ces pays peuvent maintenant créer des annonces' },
+      { type: 'fix', text: '🔒 Certificat SSL : renouvellement automatique configuré' },
+      { type: 'fix', text: '🔍 SEO : correction des erreurs 404 pour les annonces supprimées' },
+      { type: 'fix', text: '🖼️ Favicon et logo ajoutés pour éviter les erreurs 404' },
+    ]
+  },
+  {
     id: 'static-new-33',
     date: '2026-03-27',
     version: '6.3.0',

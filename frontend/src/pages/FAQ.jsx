@@ -29,7 +29,7 @@ const faqs = [
       },
       {
         q: "Quels pays sont autorisés pour vendre ?",
-        a: "Pour créer des annonces et vendre sur World Auto Pro, vous devez être situé dans l'un des pays suivants : France, Belgique, Suisse, Allemagne, Pays-Bas, Italie, Espagne, Portugal, Suède. Cette restriction garantit la qualité des transactions et la protection des acheteurs."
+        a: "Pour créer des annonces et vendre sur World Auto France, vous devez être situé dans l'un des pays suivants : France, Belgique, Suisse, Allemagne, Pays-Bas, Italie, Espagne, Portugal, Suède, Algérie, Tunisie, Maroc. Cette restriction garantit la qualité des transactions et la protection des acheteurs."
       },
       {
         q: "Pourquoi cette restriction pour les vendeurs ?",

@@ -765,7 +765,10 @@ ALLOWED_COUNTRIES = [
     "Italie",
     "Espagne",
     "Portugal",
-    "Suède"
+    "Suède",
+    "Algérie",
+    "Tunisie",
+    "Maroc"
 ]
 
 # ================== CONTENT MODERATION SYSTEM ==================
