@@ -10697,6 +10697,41 @@ async def seo_listing_page(listing_id: str):
             "seller": {{
                 "@type": "Person",
                 "name": "{seller_name}"
+            }},
+            "hasMerchantReturnPolicy": {{
+                "@type": "MerchantReturnPolicy",
+                "applicableCountry": "FR",
+                "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                "merchantReturnDays": 14,
+                "returnMethod": "https://schema.org/ReturnByMail",
+                "returnFees": "https://schema.org/ReturnShippingFees"
+            }},
+            "shippingDetails": {{
+                "@type": "OfferShippingDetails",
+                "shippingRate": {{
+                    "@type": "MonetaryAmount",
+                    "value": "5.00",
+                    "currency": "EUR"
+                }},
+                "shippingDestination": {{
+                    "@type": "DefinedRegion",
+                    "addressCountry": "FR"
+                }},
+                "deliveryTime": {{
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {{
+                        "@type": "QuantitativeValue",
+                        "minValue": 1,
+                        "maxValue": 3,
+                        "unitCode": "DAY"
+                    }},
+                    "transitTime": {{
+                        "@type": "QuantitativeValue",
+                        "minValue": 2,
+                        "maxValue": 5,
+                        "unitCode": "DAY"
+                    }}
+                }}
             }}
         }},
         "brand": {{
