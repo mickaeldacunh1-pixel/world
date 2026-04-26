@@ -2,6 +2,17 @@
 <html lang="fr">
     <head>
         <meta charset="utf-8" />
+        <!-- Canonical URL - dynamique -->
+        <link rel="canonical" href="https://worldautofrance.com/" />
+        <script>
+          // Set canonical URL dynamically
+          document.addEventListener('DOMContentLoaded', function() {
+            var canonical = document.querySelector('link[rel="canonical"]');
+            if (canonical) {
+              canonical.href = window.location.origin + window.location.pathname;
+            }
+          });
+        </script>
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon.ico" />
         <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
