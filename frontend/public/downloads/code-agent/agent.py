@@ -43,7 +43,7 @@ def get_version():
     return "1.0.0"
 
 VERSION = get_version()
-UPDATE_URL = "https://listing-enhancement.preview.emergentagent.com/downloads/code-agent"
+UPDATE_URL = os.getenv('UPDATE_URL', "https://worldautofrance.com/downloads/code-agent")
 VERSION_URL = f"{UPDATE_URL}/version.txt"
 ZIP_URL = f"{UPDATE_URL}.zip"
 
@@ -115,7 +115,7 @@ class Config:
     EMERGENT_API_KEY = os.getenv('EMERGENT_API_KEY', '')
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
     ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
-    DEFAULT_MODEL = os.getenv('DEFAULT_MODEL', 'gpt-4o')
+    DEFAULT_MODEL = os.getenv('DEFAULT_MODEL', 'gpt-5.4')
     PORT = int(os.getenv('PORT', 8888))
     PROJECT_PATH = os.getenv('PROJECT_PATH', os.getcwd())
 
@@ -276,6 +276,29 @@ class AgentTools:
             with open(full_path, 'w', encoding='utf-8') as f:
                 f.write(content)
             return {"success": True, "message": f"Fichier créé/modifié: {full_path}"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
+    def edit_file(path: str, old: str, new: str) -> Dict:
+        """Remplacer une portion EXACTE de texte dans un fichier (search/replace ciblé)."""
+        try:
+            full_path = os.path.join(config.PROJECT_PATH, path) if not os.path.isabs(path) else path
+            if not os.path.exists(full_path):
+                return {"success": False, "error": f"Fichier introuvable: {full_path}"}
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+            if not old:
+                return {"success": False, "error": "Paramètre 'old' (texte à remplacer) manquant."}
+            occurrences = content.count(old)
+            if occurrences == 0:
+                return {"success": False, "error": "Texte à remplacer introuvable. Vérifie l'indentation/espaces exacts."}
+            if occurrences > 1:
+                return {"success": False, "error": f"Le texte apparaît {occurrences} fois. Ajoute plus de contexte pour le rendre unique."}
+            content = content.replace(old, new, 1)
+            with open(full_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            return {"success": True, "message": f"✅ Fichier modifié: {full_path}"}
         except Exception as e:
             return {"success": False, "error": str(e)}
     
@@ -1723,76 +1746,64 @@ project_knowledge = ProjectKnowledge()
 class LLMClient:
     """Client pour communiquer avec les LLMs"""
     
-    SYSTEM_PROMPT = """Tu es Cody, le centre de commande de WorldAuto Pro.
+    SYSTEM_PROMPT = """Tu es Cody, l'agent de développement et le centre de commande de WorldAuto Pro (v4.0).
 
-🚨 RÈGLE ABSOLUE: UTILISE UNIQUEMENT LES OUTILS CI-DESSOUS. N'INVENTE JAMAIS DE PROCÉDURES !
+Tu es un VRAI agent autonome : tu peux appeler des outils, LIRE leurs résultats, puis enchaîner d'autres outils jusqu'à accomplir la tâche. Tu raisonnes étape par étape.
 
-📋 OUTILS DISPONIBLES:
+🔁 BOUCLE DE TRAVAIL :
+1. Analyse la demande de l'utilisateur.
+2. Appelle UN outil au format JSON exact (voir ci-dessous).
+3. Tu recevras le RÉSULTAT de l'outil dans le message suivant.
+4. Continue d'appeler des outils tant que c'est nécessaire (lecture → modification → vérification...).
+5. Quand la tâche est terminée, donne une réponse finale claire SANS appeler d'outil.
 
-🔍 DIAGNOSTIC & MONITORING:
-{"tool": "check_worldauto", "params": {}} → État du site, API, Docker
-{"tool": "security_scan", "params": {}} → Headers HTTP, SSL, endpoints
-{"tool": "performance_test", "params": {}} → Temps de réponse API
-{"tool": "full_diagnostic", "params": {}} → Santé + sécu + perf
-{"tool": "vps_monitoring", "params": {}} → CPU, RAM, disque du VPS
-{"tool": "analyze_errors", "params": {}} → Erreurs récentes dans les logs
-{"tool": "check_logs", "params": {}} → Logs Docker bruts
-{"tool": "recent_activity", "params": {}} → Activité récente du site
+📐 FORMAT D'APPEL (OBLIGATOIRE, JSON sur une ligne) :
+{"tool": "nom_outil", "params": {...}}
+Tu peux mettre une courte phrase d'explication avant l'appel.
 
-📊 STATS & DONNÉES:
-{"tool": "get_stats", "params": {}} → Stats utilisateurs, annonces, revenus
+📋 OUTILS DISPONIBLES :
 
-🚀 DÉPLOIEMENT:
-{"tool": "deploy_update", "params": {"service": "all"}} → Déployer tout
-{"tool": "deploy_update", "params": {"service": "frontend"}} → Frontend seul
-{"tool": "deploy_update", "params": {"service": "backend"}} → Backend seul
-{"tool": "deploy_update", "params": {"service": "restart"}} → Redémarrer
-
-💾 MAINTENANCE:
-{"tool": "db_backup", "params": {}} → Sauvegarder MongoDB
-{"tool": "cleanup_vps", "params": {}} → Nettoyer Docker/logs/cache
-
-👤 GESTION UTILISATEURS:
-{"tool": "manage_user", "params": {"action": "info", "email": "x@y.com"}}
-{"tool": "manage_user", "params": {"action": "block", "email": "x@y.com"}}
-{"tool": "manage_user", "params": {"action": "unblock", "email": "x@y.com"}}
-
-📦 GESTION ANNONCES:
-{"tool": "manage_listing", "params": {"action": "info", "listing_id": "123"}}
-{"tool": "manage_listing", "params": {"action": "delete", "listing_id": "123"}}
-
-🎁 PROMOS:
-{"tool": "manage_promo", "params": {"action": "list"}}
-{"tool": "manage_promo", "params": {"action": "check", "code": "LANCEMENT"}}
-
-📂 FICHIERS:
-{"tool": "read_file", "params": {"path": "/chemin"}}
-{"tool": "write_file", "params": {"path": "/chemin", "content": "..."}}
+📂 FICHIERS & CODE :
+{"tool": "read_file", "params": {"path": "chemin/fichier"}}
+{"tool": "write_file", "params": {"path": "chemin", "content": "contenu complet"}}
+{"tool": "edit_file", "params": {"path": "chemin", "old": "texte exact à remplacer", "new": "nouveau texte"}}
 {"tool": "list_files", "params": {"pattern": "**/*.py"}}
+{"tool": "search_in_files", "params": {"query": "texte"}}
+{"tool": "get_project_structure", "params": {}}
+{"tool": "scan_project", "params": {}}
 
-💻 COMMANDES:
-{"tool": "execute_command", "params": {"command": "ls"}} → PC local
-{"tool": "vps_command", "params": {"command": "docker ps"}} → VPS
+💻 COMMANDES :
+{"tool": "execute_command", "params": {"command": "ls -la"}}  → PC local
+{"tool": "vps_command", "params": {"command": "docker ps"}}   → VPS
 
-🧪 TEST API:
-{"tool": "test_api", "params": {"method": "GET", "endpoint": "/api/pricing"}}
+🔧 ENVIRONNEMENT :
+{"tool": "get_env_value", "params": {"key": "CLE"}}
+{"tool": "set_env_value", "params": {"key": "CLE", "value": "valeur"}}
 
-📸 CAPTURE:
-{"tool": "screenshot", "params": {"url": "https://worldautofrance.com"}}
+🔍 DIAGNOSTIC & MONITORING :
+{"tool": "check_worldauto", "params": {}}   {"tool": "security_scan", "params": {}}
+{"tool": "performance_test", "params": {}}  {"tool": "full_diagnostic", "params": {}}
+{"tool": "vps_monitoring", "params": {}}    {"tool": "analyze_errors", "params": {}}
+{"tool": "check_logs", "params": {}}        {"tool": "recent_activity", "params": {}}
 
-🎯 RACCOURCIS (comprends ces demandes):
-- "stats" ou "statistiques" → get_stats
-- "monitoring" ou "ressources" → vps_monitoring
-- "erreurs" ou "problèmes" → analyze_errors  
-- "déploie" ou "deploy" → deploy_update
-- "backup" ou "sauvegarde" → db_backup
-- "nettoie" ou "clean" → cleanup_vps
-- "promos" → manage_promo list
-- "activité" → recent_activity
+📊 STATS : {"tool": "get_stats", "params": {}}
 
-📝 FORMAT: Une phrase + l'outil JSON. C'est tout !
+🚀 DÉPLOIEMENT : {"tool": "deploy_update", "params": {"service": "all"}}  (all | frontend | backend | restart)
 
-⛔ INTERDIT: N'invente pas de procédures, n'exécute pas npm/pip.
+💾 MAINTENANCE : {"tool": "db_backup", "params": {}}  /  {"tool": "cleanup_vps", "params": {}}
+
+👤 UTILISATEURS : {"tool": "manage_user", "params": {"action": "info", "email": "x@y.com"}}
+📦 ANNONCES : {"tool": "manage_listing", "params": {"action": "info", "listing_id": "123"}}
+🎁 PROMOS : {"tool": "manage_promo", "params": {"action": "check", "code": "LANCEMENT"}}
+🧪 TEST API : {"tool": "test_api", "params": {"method": "GET", "endpoint": "/api/pricing"}}
+📸 CAPTURE : {"tool": "screenshot", "params": {"url": "https://worldautofrance.com"}}
+🧠 MÉMOIRE : {"tool": "add_note", "params": {"note": "info"}}  /  {"tool": "get_knowledge", "params": {}}
+
+🧩 RÈGLES :
+- Pour modifier un fichier existant, PRÉFÈRE edit_file (remplacement ciblé) plutôt que de tout réécrire avec write_file.
+- Avant de modifier un fichier, LIS-le (read_file) si tu n'es pas sûr de son contenu exact.
+- N'invente JAMAIS un résultat : appelle l'outil et attends son retour.
+- Réponses concises, en français, avec tableaux/emojis quand c'est utile.
 
 Réponds en français."""
 
@@ -1804,124 +1815,137 @@ Réponds en français."""
         """Obtenir l'historique depuis le gestionnaire de sessions"""
         return session_manager.get_history(self.session_id)
     
+    MAX_AGENT_STEPS = 8
+
     async def chat(self, message: str, model: str = None) -> str:
-        """Envoyer un message et obtenir une réponse"""
+        """Boucle agentique : Cody appelle des outils, LIT les résultats et continue jusqu'à finir."""
         model = model or config.DEFAULT_MODEL
-        
+
         # Ajouter le message utilisateur à l'historique persistant
         session_manager.add_message("user", message, self.session_id)
-        
-        # Determine which API to use
-        if config.EMERGENT_API_KEY:
-            response = await self._call_emergent(model)
-        elif 'claude' in model.lower() and config.ANTHROPIC_API_KEY:
-            response = await self._call_anthropic(model)
-        elif config.OPENAI_API_KEY:
-            response = await self._call_openai(model)
-        else:
-            response = "❌ Aucune clé API configurée. Configure EMERGENT_API_KEY, OPENAI_API_KEY ou ANTHROPIC_API_KEY dans le fichier .env"
-        
-        # Process any actions in the response FIRST
-        processed_response = await self._process_actions(response)
-        
-        # Ajouter la réponse TRAITÉE à l'historique persistant (avec les résultats des outils)
-        session_manager.add_message("assistant", processed_response, self.session_id)
-        
-        return processed_response
-    
-    async def _call_emergent(self, model: str) -> str:
-        """Appeler l'API Emergent via emergentintegrations"""
+
+        system = self._build_system_message()
         try:
-            from emergentintegrations.llm.chat import LlmChat, UserMessage
-            
-            # Map model names
-            if 'gpt-5' in model.lower() or 'gpt-4o' in model.lower():
-                provider, model_name = "openai", "gpt-4o"
-            elif 'gpt-4o-mini' in model.lower():
-                provider, model_name = "openai", "gpt-4o-mini"
-            elif 'claude' in model.lower():
-                provider, model_name = "anthropic", "claude-sonnet-4-20250514"
-            else:
-                provider, model_name = "openai", "gpt-4o"
-            
-            # Construire le contexte avec tout l'historique
-            history_context = ""
-            memory_reminder = ""
-            
-            if len(self.conversation_history) > 1:
-                history_context = "\n\n📜 HISTORIQUE DE LA SESSION PRÉCÉDENTE:\n"
-                for msg in self.conversation_history[:-1]:
-                    role = "👤 Utilisateur" if msg["role"] == "user" else "🤖 Cody"
-                    history_context += f"{role}: {msg['content'][:500]}...\n" if len(msg['content']) > 500 else f"{role}: {msg['content']}\n"
-                history_context += "\n---\n🆕 MESSAGE ACTUEL:\n"
-                
-                # Rappel de mémoire si c'est le premier message après redémarrage
-                memory_reminder = """
-⚠️ IMPORTANT: Tu as un historique de conversation ci-dessus. 
-Quand l'utilisateur te demande si tu te souviens, réponds OUI et résume les derniers échanges.
-"""
-            
-            # Ajouter un rappel des capacités si c'est une question sur les fonctionnalités
-            last_msg = self.conversation_history[-1]["content"] if self.conversation_history else ""
-            capabilities_reminder = ""
-            
-            # Détection de question sur la mémoire
-            memory_keywords = ["souviens", "rappel", "mémoire", "dernière session", "session précédente", "avant", "hier"]
-            if any(kw in last_msg.lower() for kw in memory_keywords) and len(self.conversation_history) > 1:
-                capabilities_reminder = f"""
-
-🧠 RAPPEL MÉMOIRE: Tu as {len(self.conversation_history) - 1} messages en mémoire de la session précédente.
-Réponds OUI tu te souviens et résume brièvement ce qui a été fait !
-"""
-            
-            keywords = ["fonctionnalit", "capacit", "peux-tu", "peux tu", "sais-tu", "sais tu", "mise a jour", "mise à jour", "version", "appris", "nouveau"]
-            if any(kw in last_msg.lower() for kw in keywords):
-                capabilities_reminder += """
-
-🔔 RAPPEL DE TES CAPACITÉS (Cody v2.3.1):
-
-📁 GESTION DE FICHIERS:
-- read_file: Lire un fichier
-- write_file: Écrire/créer un fichier  
-- list_files: Lister les fichiers
-- search_in_files: Chercher du texte
-
-⚙️ COMMANDES:
-- execute_command: Exécuter des commandes shell
-
-🔧 ENVIRONNEMENT:
-- get_env_value: Lire une variable .env
-- set_env_value: Modifier une variable .env
-
-🧠 MÉMOIRE PERSISTANTE:
-- scan_project: Scanner et mémoriser le projet
-- add_note: Mémoriser une info
-- get_knowledge: Voir ce que tu sais
-- Tu conserves l'historique entre les sessions !
-
-Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sais faire !
-"""
-            
-            # Create chat instance
-            chat = LlmChat(
-                api_key=config.EMERGENT_API_KEY,
-                session_id=self.session_id,
-                system_message=self.SYSTEM_PROMPT + memory_reminder + capabilities_reminder + history_context
-            ).with_model(provider, model_name)
-            
-            # Send current message
-            response = await chat.send_message(UserMessage(text=last_msg))
-            
-            return response
-            
-        except ImportError:
-            return "❌ Module emergentintegrations non installe. Lance: pip install emergentintegrations --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/"
+            runner = self._make_runner(model, system)
         except Exception as e:
-            return f"❌ Erreur: {str(e)}"
-    
-    async def _call_openai(self, model: str) -> str:
-        """Appeler l'API OpenAI directement"""
+            err = f"❌ Erreur d'initialisation: {e}"
+            session_manager.add_message("assistant", err, self.session_id)
+            return err
+
+        display_parts = []
+        next_input = message
+
+        for step in range(self.MAX_AGENT_STEPS):
+            raw = await runner(next_input)
+            if not isinstance(raw, str):
+                raw = str(raw)
+
+            calls = self._extract_tool_calls(raw)
+            text = self._strip_tool_calls(raw, calls)
+            if text.strip():
+                display_parts.append(text.strip())
+
+            if not calls:
+                break
+
+            results_blob = ""
+            for call in calls:
+                try:
+                    res = self._execute_tool(call["tool"], call["params"])
+                except Exception as e:
+                    res = {"success": False, "error": str(e)}
+                display_parts.append(self._format_tool_result(call["tool"], res))
+                results_blob += f"[Outil: {call['tool']}] →\n{json.dumps(res, ensure_ascii=False)[:3500]}\n\n"
+
+            if step == self.MAX_AGENT_STEPS - 1:
+                display_parts.append("⚠️ Limite d'étapes atteinte (8). Relance-moi pour continuer si besoin.")
+                break
+
+            next_input = (
+                "Voici les résultats des outils que tu viens d'appeler :\n\n"
+                f"{results_blob}"
+                "Analyse-les. Si la tâche est terminée, donne ta réponse finale claire SANS rappeler d'outil. "
+                "Sinon, appelle le prochain outil nécessaire."
+            )
+
+        final = "\n\n".join(p for p in display_parts if p).strip() or "✅ Terminé."
+        session_manager.add_message("assistant", final, self.session_id)
+        return final
+
+    def _resolve_model(self, model: str):
+        """Retourne (provider, model_name) pour emergentintegrations selon le modèle choisi."""
+        m = (model or "").lower()
+        if 'gemini' in m:
+            return "gemini", "gemini-3.1-pro-preview"
+        if 'claude' in m or 'sonnet' in m or 'opus' in m:
+            return "anthropic", "claude-sonnet-4-6"
+        if 'mini' in m:
+            return "openai", "gpt-5.4-mini"
+        return "openai", "gpt-5.4"
+
+    def _build_system_message(self) -> str:
+        """System prompt + contexte de l'historique persistant (mémoire entre sessions)."""
+        system = self.SYSTEM_PROMPT
+        history = self.conversation_history
+        prior = history[:-1] if history else []  # le dernier = message courant
+        if prior:
+            ctx = "\n\n📜 HISTORIQUE DE LA CONVERSATION (mémoire persistante) :\n"
+            for msg in prior[-20:]:
+                role = "👤 Utilisateur" if msg["role"] == "user" else "🤖 Cody"
+                content = msg["content"]
+                ctx += f"{role}: {content[:600]}\n" if len(content) > 600 else f"{role}: {content}\n"
+            ctx += "\n(Tu te souviens de ces échanges. Si on te demande, confirme et résume.)\n"
+            system += ctx
+        return system
+
+    def _make_runner(self, model: str, system: str):
+        """Construit une coroutine send(text)->str qui CONSERVE le contexte entre les étapes de la boucle."""
+        # 1) Voie Emergent (clé universelle) — recommandée
+        if config.EMERGENT_API_KEY:
+            from emergentintegrations.llm.chat import LlmChat, UserMessage
+            provider, model_name = self._resolve_model(model)
+            chat_obj = LlmChat(
+                api_key=config.EMERGENT_API_KEY,
+                session_id=f"{self.session_id}-{int(time.time())}",
+                system_message=system
+            ).with_model(provider, model_name)
+
+            async def send(text: str) -> str:
+                try:
+                    return await chat_obj.send_message(UserMessage(text=text))
+                except ImportError:
+                    return "❌ Module emergentintegrations manquant. Lance: pip install emergentintegrations --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/"
+                except Exception as e:
+                    return f"❌ Erreur LLM: {e}"
+            return send
+
+        # 2) Voie API directe (clé OpenAI/Anthropic perso) — on garde les messages localement
+        messages = [{"role": "system", "content": system}]
+
+        if 'claude' in model.lower() and config.ANTHROPIC_API_KEY:
+            async def send(text: str) -> str:
+                messages.append({"role": "user", "content": text})
+                reply = await self._call_anthropic_messages(messages)
+                messages.append({"role": "assistant", "content": reply})
+                return reply
+            return send
+
+        if config.OPENAI_API_KEY:
+            async def send(text: str) -> str:
+                messages.append({"role": "user", "content": text})
+                reply = await self._call_openai_messages(model, messages)
+                messages.append({"role": "assistant", "content": reply})
+                return reply
+            return send
+
+        async def send(text: str) -> str:
+            return "❌ Aucune clé API configurée. Ajoute EMERGENT_API_KEY, OPENAI_API_KEY ou ANTHROPIC_API_KEY dans le fichier .env"
+        return send
+
+    async def _call_openai_messages(self, model: str, messages: list) -> str:
+        """Appel direct OpenAI avec une liste de messages."""
         try:
+            valid = ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4.1', 'gpt-4.1-mini']
             async with httpx.AsyncClient(timeout=120) as client:
                 response = await client.post(
                     "https://api.openai.com/v1/chat/completions",
@@ -1930,26 +1954,27 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                         "Content-Type": "application/json"
                     },
                     json={
-                        "model": model if model in ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo'] else 'gpt-4o',
-                        "messages": [
-                            {"role": "system", "content": self.SYSTEM_PROMPT},
-                            *self.conversation_history
-                        ],
+                        "model": model if model in valid else 'gpt-4o',
+                        "messages": messages,
                         "max_tokens": 4096
                     }
                 )
-                
                 if response.status_code == 200:
-                    data = response.json()
-                    return data["choices"][0]["message"]["content"]
-                else:
-                    return f"❌ Erreur OpenAI: {response.status_code}"
+                    return response.json()["choices"][0]["message"]["content"]
+                return f"❌ Erreur OpenAI: {response.status_code} - {response.text[:200]}"
         except Exception as e:
             return f"❌ Erreur: {str(e)}"
-    
-    async def _call_anthropic(self, model: str) -> str:
-        """Appeler l'API Anthropic directement"""
+
+    async def _call_anthropic_messages(self, messages: list) -> str:
+        """Appel direct Anthropic avec une liste de messages."""
         try:
+            system = ""
+            conv = []
+            for m in messages:
+                if m["role"] == "system":
+                    system = m["content"]
+                else:
+                    conv.append(m)
             async with httpx.AsyncClient(timeout=120) as client:
                 response = await client.post(
                     "https://api.anthropic.com/v1/messages",
@@ -1961,289 +1986,128 @@ Tu dois répondre en mentionnant CES capacités quand on te demande ce que tu sa
                     json={
                         "model": "claude-sonnet-4-20250514",
                         "max_tokens": 4096,
-                        "system": self.SYSTEM_PROMPT,
-                        "messages": self.conversation_history
+                        "system": system,
+                        "messages": conv
                     }
                 )
-                
                 if response.status_code == 200:
-                    data = response.json()
-                    return data["content"][0]["text"]
-                else:
-                    return f"❌ Erreur Anthropic: {response.status_code}"
+                    return response.json()["content"][0]["text"]
+                return f"❌ Erreur Anthropic: {response.status_code} - {response.text[:200]}"
         except Exception as e:
             return f"❌ Erreur: {str(e)}"
-    
-    async def _process_actions(self, response: str) -> str:
-        """Traiter les actions dans la réponse"""
-        
-        # Pattern PRINCIPAL: {"tool": "...", "params": {...}} - LE PLUS IMPORTANT
-        tool_pattern = r'\{"tool":\s*"(\w+)",\s*"params":\s*(\{[^}]*\})\}'
-        for match in re.finditer(tool_pattern, response):
-            tool_name = match.group(1)
-            params_str = match.group(2)
-            original_text = match.group(0)
-            
+
+    def _extract_tool_calls(self, text: str) -> list:
+        """Extrait les appels {"tool": "...", "params": {...}} avec gestion des accolades imbriquées."""
+        calls = []
+        idx = 0
+        marker = '{"tool"'
+        while True:
+            start = text.find(marker, idx)
+            if start == -1:
+                break
+            depth = 0
+            end = -1
+            in_str = False
+            escape = False
+            for i in range(start, len(text)):
+                ch = text[i]
+                if escape:
+                    escape = False
+                    continue
+                if ch == '\\':
+                    escape = True
+                    continue
+                if ch == '"':
+                    in_str = not in_str
+                    continue
+                if in_str:
+                    continue
+                if ch == '{':
+                    depth += 1
+                elif ch == '}':
+                    depth -= 1
+                    if depth == 0:
+                        end = i
+                        break
+            if end == -1:
+                break
+            blob = text[start:end + 1]
             try:
-                params = json.loads(params_str) if params_str != '{}' else {}
-            except:
-                params = {}
-            
-            result = None
-            try:
-                if tool_name == 'read_file':
-                    result = tools.read_file(params.get('path', ''))
-                elif tool_name == 'write_file':
-                    result = tools.write_file(params.get('path', ''), params.get('content', ''))
-                elif tool_name == 'execute_command':
-                    result = tools.execute_command(params.get('command', ''))
-                elif tool_name == 'vps_command':
-                    result = tools.vps_command(params.get('command', ''))
-                elif tool_name == 'check_worldauto':
-                    result = tools.check_worldauto()
-                elif tool_name == 'security_scan':
-                    result = tools.security_scan()
-                elif tool_name == 'performance_test':
-                    result = tools.performance_test()
-                elif tool_name == 'check_logs':
-                    result = tools.check_logs()
-                elif tool_name == 'modify_hero':
-                    result = tools.modify_hero(params.get('title'), params.get('subtitle'), params.get('button_text'))
-                elif tool_name == 'full_diagnostic':
-                    result = tools.full_diagnostic()
-                elif tool_name == 'list_files':
-                    result = tools.list_files(params.get('pattern', '**/*'))
-                elif tool_name == 'search_in_files':
-                    result = tools.search_in_files(params.get('query', ''), params.get('file_pattern', '**/*'))
-                elif tool_name == 'get_project_structure':
-                    result = tools.get_project_structure()
-                elif tool_name == 'scan_project':
-                    result = tools.scan_project()
-                elif tool_name == 'get_env_value':
-                    result = tools.get_env_value(params.get('key', ''))
-                elif tool_name == 'set_env_value':
-                    result = tools.set_env_value(params.get('key', ''), params.get('value', ''))
-                elif tool_name == 'add_note':
-                    result = tools.add_note(params.get('note', ''))
-                elif tool_name == 'get_knowledge':
-                    result = tools.get_knowledge()
-                elif tool_name == 'screenshot':
-                    result = tools.screenshot(params.get('url', 'https://worldautofrance.com'))
-                elif tool_name == 'test_api':
-                    result = tools.test_api(params.get('method', 'GET'), params.get('endpoint', '/api/pricing'), params.get('data'))
-                elif tool_name == 'deploy':
-                    result = tools.deploy()
-                elif tool_name == 'backup_db':
-                    result = tools.backup_db()
-                elif tool_name == 'check_services':
-                    result = tools.check_services()
-                # Nouveaux outils v3.5.0
-                elif tool_name == 'get_stats':
-                    result = tools.get_stats()
-                elif tool_name == 'vps_monitoring':
-                    result = tools.vps_monitoring()
-                elif tool_name == 'manage_user':
-                    result = tools.manage_user(params.get('action', 'info'), params.get('email'), params.get('user_id'))
-                elif tool_name == 'manage_listing':
-                    result = tools.manage_listing(params.get('action', 'info'), params.get('listing_id'))
-                elif tool_name == 'deploy_update':
-                    result = tools.deploy_update(params.get('service', 'all'))
-                elif tool_name == 'analyze_errors':
-                    result = tools.analyze_errors()
-                elif tool_name == 'manage_promo':
-                    result = tools.manage_promo(params.get('action', 'list'), params.get('code'), params.get('discount'), params.get('max_uses'))
-                elif tool_name == 'cleanup_vps':
-                    result = tools.cleanup_vps()
-                elif tool_name == 'send_notification':
-                    result = tools.send_notification(params.get('type', 'email'), params.get('message', ''), params.get('target', 'all'))
-                elif tool_name == 'db_backup':
-                    result = tools.db_backup()
-                elif tool_name == 'recent_activity':
-                    result = tools.recent_activity()
-            except Exception as e:
-                result = {"success": False, "error": str(e)}
-            
-            if result:
-                # Affichage spécial pour les outils avec rapport formaté
-                tools_with_report = ['check_worldauto', 'security_scan', 'performance_test', 'full_diagnostic', 
-                                    'get_stats', 'vps_monitoring', 'manage_user', 'manage_listing', 
-                                    'deploy_update', 'analyze_errors', 'manage_promo', 'cleanup_vps',
-                                    'send_notification', 'db_backup', 'recent_activity']
-                if tool_name in tools_with_report and 'formatted_report' in result:
-                    result_str = result['formatted_report']
-                    # Ajouter une conclusion automatique basée sur le résultat
-                    if tool_name == 'check_worldauto':
-                        if result.get('all_ok'):
-                            result_str += "\n\n🎉 **Conclusion** : WorldAuto fonctionne parfaitement ! Tous les services API répondent correctement et le site est accessible. ✅"
-                        else:
-                            result_str += "\n\n⚠️ **Conclusion** : Des problèmes ont été détectés. Vérifie les points marqués ❌ ci-dessus."
-                    elif tool_name == 'security_scan':
-                        score = result.get('score', 0)
-                        if score >= 80:
-                            result_str += f"\n\n🎉 **Conclusion** : Sécurité correcte avec un score de {score}%. ✅"
-                        else:
-                            result_str += f"\n\n⚠️ **Conclusion** : Score de sécurité de {score}%. Des améliorations sont recommandées."
-                    elif tool_name == 'performance_test':
-                        result_str += "\n\n✅ **Test de performance terminé !**"
-                    elif tool_name == 'full_diagnostic':
-                        result_str += "\n\n✅ **Diagnostic complet terminé !**"
-                else:
-                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
-                response = response.replace(original_text, result_str, 1)
-                
-                # Supprimer les phrases inutiles qui restent après l'outil
-                cleanup_patterns = [
-                    r'Je vais maintenant analyser.*?📊',
-                    r'Laisse-moi analyser.*?\.',
-                    r'Analysons ces résultats.*?\.',
-                    r'Analysons les résultats.*?📊',
-                    r'Je te présenterai les résultats.*?📊',
-                    r'Voici les résultats dès que.*?\.',
-                    r'Cela nous permettra d\'identifier.*?\.',
-                    r'dès que le diagnostic sera terminé.*?📊',
-                    r'pour nous assurer que tout fonctionne.*?📊',
-                ]
-                for pattern in cleanup_patterns:
-                    response = re.sub(pattern, '', response, flags=re.IGNORECASE)
-        
-        # Pattern 2: Format avec balises ```action {"tool": "...", "params": {...}} ```
-        action_pattern = r'```action\s*\n?({.*?})\s*\n?```'
-        matches = re.findall(action_pattern, response, re.DOTALL)
-        
-        # Pattern 2: Format simplifié {"path": "..."} ou {"command": "..."} (sans balises)
-        simple_patterns = [
-            (r'\{"path":\s*"([^"]+)"\s*\}', 'read_file', 'path'),
-            (r'\{"command":\s*"([^"]+)"\s*\}', 'execute_command', 'command'),
-            (r'\{"pattern":\s*"([^"]+)"\s*\}', 'list_files', 'pattern'),
-            (r'\{"query":\s*"([^"]+)"[^}]*\}', 'search_in_files', 'query'),
-            (r'\{"key":\s*"([^"]+)"\s*\}', 'get_env_value', 'key'),
-            (r'\{"note":\s*"([^"]+)"\s*\}', 'add_note', 'note'),
-        ]
-        
-        # Pattern 3: Format avec nom d'outil sur ligne séparée (ex: "read_file\n{"path": "..."}")
-        tool_line_patterns = [
-            (r'read_file[\s\n]*\{"path":\s*"([^"]+)"\s*\}', 'read_file'),
-            (r'execute_command[\s\n]*\{"command":\s*"([^"]+)"\s*\}', 'execute_command'),
-            (r'list_files[\s\n]*\{"pattern":\s*"([^"]+)"\s*\}', 'list_files'),
-            (r'get_project_structure[\s\n]*(\{\s*\})?', 'get_project_structure'),
-            (r'scan_project[\s\n]*(\{\s*\})?', 'scan_project'),
-            (r'get_knowledge[\s\n]*(\{\s*\})?', 'get_knowledge'),
-        ]
-        
-        # Traiter le format avec nom d'outil sur ligne séparée
-        for pattern, tool_name in tool_line_patterns:
-            for match in re.finditer(pattern, response):
-                original_text = match.group(0)
-                match_value = match.group(1) if match.lastindex and match.lastindex >= 1 else None
-                
-                result = None
-                try:
-                    if tool_name == 'read_file' and match_value:
-                        result = tools.read_file(match_value)
-                    elif tool_name == 'execute_command' and match_value:
-                        result = tools.execute_command(match_value)
-                    elif tool_name == 'list_files' and match_value:
-                        result = tools.list_files(match_value)
-                    elif tool_name == 'get_project_structure':
-                        result = tools.get_project_structure()
-                    elif tool_name == 'scan_project':
-                        result = tools.scan_project()
-                    elif tool_name == 'get_knowledge':
-                        result = tools.get_knowledge()
-                except Exception as e:
-                    result = {"error": str(e)}
-                
-                if result:
-                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
-                    response = response.replace(original_text, result_str, 1)
-        
-        # Traiter le format simplifié
-        for pattern, tool_name, param_name in simple_patterns:
-            for match in re.finditer(pattern, response):
-                match_value = match.group(1)
-                original_text = match.group(0)
-                
-                result = None
-                if tool_name == 'read_file':
-                    result = tools.read_file(match_value)
-                elif tool_name == 'execute_command':
-                    result = tools.execute_command(match_value)
-                elif tool_name == 'list_files':
-                    result = tools.list_files(match_value)
-                elif tool_name == 'search_in_files':
-                    result = tools.search_in_files(match_value, '**/*')
-                elif tool_name == 'get_env_value':
-                    result = tools.get_env_value(match_value)
-                elif tool_name == 'add_note':
-                    result = tools.add_note(match_value)
-                
-                if result:
-                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
-                    response = response.replace(original_text, result_str, 1)
-        
-        # Traiter le format complet avec balises ```action```
-        for match in matches:
-            try:
-                action = json.loads(match)
-                tool_name = action.get('tool')
-                params = action.get('params', {})
-                
-                result = None
-                if tool_name == 'read_file':
-                    result = tools.read_file(params.get('path', ''))
-                elif tool_name == 'write_file':
-                    result = tools.write_file(params.get('path', ''), params.get('content', ''))
-                elif tool_name == 'execute_command':
-                    result = tools.execute_command(params.get('command', ''))
-                elif tool_name == 'list_files':
-                    result = tools.list_files(params.get('pattern', '**/*'))
-                elif tool_name == 'search_in_files':
-                    result = tools.search_in_files(params.get('query', ''), params.get('file_pattern', '**/*'))
-                elif tool_name == 'get_project_structure':
-                    result = tools.get_project_structure()
-                elif tool_name == 'scan_project':
-                    result = tools.scan_project()
-                elif tool_name == 'get_env_value':
-                    result = tools.get_env_value(params.get('key', ''))
-                elif tool_name == 'set_env_value':
-                    result = tools.set_env_value(params.get('key', ''), params.get('value', ''))
-                elif tool_name == 'add_note':
-                    result = tools.add_note(params.get('note', ''))
-                elif tool_name == 'get_knowledge':
-                    result = tools.get_knowledge()
-                elif tool_name == 'screenshot':
-                    result = tools.screenshot(params.get('url', 'https://worldautofrance.com'))
-                elif tool_name == 'test_api':
-                    result = tools.test_api(params.get('method', 'GET'), params.get('endpoint', '/api/pricing'), params.get('data'))
-                elif tool_name == 'deploy':
-                    result = tools.deploy()
-                elif tool_name == 'backup_db':
-                    result = tools.backup_db()
-                elif tool_name == 'check_services':
-                    result = tools.check_services()
-                elif tool_name == 'vps_command':
-                    result = tools.vps_command(params.get('command', ''))
-                elif tool_name == 'check_worldauto':
-                    result = tools.check_worldauto()
-                elif tool_name == 'security_scan':
-                    result = tools.security_scan()
-                elif tool_name == 'performance_test':
-                    result = tools.performance_test()
-                elif tool_name == 'check_logs':
-                    result = tools.check_logs()
-                elif tool_name == 'modify_hero':
-                    result = tools.modify_hero(params.get('title'), params.get('subtitle'), params.get('button_text'))
-                elif tool_name == 'full_diagnostic':
-                    result = tools.full_diagnostic()
-                
-                if result:
-                    result_str = f"\n\n📋 **Résultat de {tool_name}:**\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)[:3000]}\n```"
-                    response = response.replace(f'```action\n{match}\n```', result_str)
-                    response = response.replace(f'```action{match}```', result_str)
-            except json.JSONDecodeError:
+                obj = json.loads(blob)
+                if isinstance(obj, dict) and "tool" in obj:
+                    calls.append({
+                        "tool": obj.get("tool"),
+                        "params": obj.get("params", {}) or {},
+                        "raw": blob
+                    })
+            except Exception:
                 pass
-        
-        return response
+            idx = end + 1
+        return calls
+
+    def _strip_tool_calls(self, text: str, calls: list) -> str:
+        """Retire les blobs JSON d'outils du texte affiché et nettoie les espaces."""
+        cleaned = text
+        for call in calls:
+            cleaned = cleaned.replace(call["raw"], "")
+        cleaned = re.sub(r'```(?:action|json|tool)\s*```', '', cleaned)
+        cleaned = re.sub(r'\n{3,}', '\n\n', cleaned)
+        return cleaned.strip()
+
+    def _format_tool_result(self, tool_name: str, result) -> str:
+        """Formate le résultat d'un outil pour l'affichage."""
+        if isinstance(result, dict) and 'formatted_report' in result:
+            return result['formatted_report']
+        try:
+            payload = json.dumps(result, indent=2, ensure_ascii=False)[:3000]
+        except Exception:
+            payload = str(result)[:3000]
+        return f"📋 **Résultat de `{tool_name}` :**\n```json\n{payload}\n```"
+
+    def _execute_tool(self, tool_name: str, params: dict):
+        """Dispatch central de TOUS les outils (une seule source de vérité)."""
+        params = params or {}
+        dispatch = {
+            'read_file': lambda: tools.read_file(params.get('path', '')),
+            'write_file': lambda: tools.write_file(params.get('path', ''), params.get('content', '')),
+            'edit_file': lambda: tools.edit_file(params.get('path', ''), params.get('old', params.get('old_str', '')), params.get('new', params.get('new_str', ''))),
+            'execute_command': lambda: tools.execute_command(params.get('command', '')),
+            'vps_command': lambda: tools.vps_command(params.get('command', '')),
+            'check_worldauto': lambda: tools.check_worldauto(),
+            'security_scan': lambda: tools.security_scan(),
+            'performance_test': lambda: tools.performance_test(),
+            'check_logs': lambda: tools.check_logs(),
+            'modify_hero': lambda: tools.modify_hero(params.get('title'), params.get('subtitle'), params.get('button_text')),
+            'full_diagnostic': lambda: tools.full_diagnostic(),
+            'list_files': lambda: tools.list_files(params.get('pattern', '**/*')),
+            'search_in_files': lambda: tools.search_in_files(params.get('query', ''), params.get('file_pattern', '**/*')),
+            'get_project_structure': lambda: tools.get_project_structure(),
+            'scan_project': lambda: tools.scan_project(),
+            'get_env_value': lambda: tools.get_env_value(params.get('key', '')),
+            'set_env_value': lambda: tools.set_env_value(params.get('key', ''), params.get('value', '')),
+            'add_note': lambda: tools.add_note(params.get('note', '')),
+            'get_knowledge': lambda: tools.get_knowledge(),
+            'screenshot': lambda: tools.screenshot(params.get('url', 'https://worldautofrance.com')),
+            'test_api': lambda: tools.test_api(params.get('method', 'GET'), params.get('endpoint', '/api/pricing'), params.get('data')),
+            'deploy': lambda: tools.deploy(),
+            'backup_db': lambda: tools.backup_db(),
+            'check_services': lambda: tools.check_services(),
+            'get_stats': lambda: tools.get_stats(),
+            'vps_monitoring': lambda: tools.vps_monitoring(),
+            'manage_user': lambda: tools.manage_user(params.get('action', 'info'), params.get('email'), params.get('user_id')),
+            'manage_listing': lambda: tools.manage_listing(params.get('action', 'info'), params.get('listing_id')),
+            'deploy_update': lambda: tools.deploy_update(params.get('service', 'all')),
+            'analyze_errors': lambda: tools.analyze_errors(),
+            'manage_promo': lambda: tools.manage_promo(params.get('action', 'list'), params.get('code'), params.get('discount'), params.get('max_uses')),
+            'cleanup_vps': lambda: tools.cleanup_vps(),
+            'send_notification': lambda: tools.send_notification(params.get('type', 'email'), params.get('message', ''), params.get('target', 'all')),
+            'db_backup': lambda: tools.db_backup(),
+            'recent_activity': lambda: tools.recent_activity(),
+        }
+        fn = dispatch.get(tool_name)
+        if not fn:
+            return {"success": False, "error": f"Outil inconnu: {tool_name}"}
+        return fn()
     
     def clear_history(self):
         """Effacer l'historique de conversation"""
@@ -2827,9 +2691,10 @@ HTML_TEMPLATE = r'''
                 🧠 <span id="memoryCount">0</span>
             </div>
             <select class="model-select" id="modelSelect">
-                <option value="gpt-4o">GPT-4o</option>
-                <option value="gpt-4o-mini">GPT-4o Mini</option>
-                <option value="claude-sonnet">Claude Sonnet</option>
+                <option value="gpt-5.4">GPT-5.4 (OpenAI)</option>
+                <option value="gpt-5.4-mini">GPT-5.4 Mini (rapide)</option>
+                <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+                <option value="gemini-3.1-pro">Gemini 3.1 Pro</option>
             </select>
             <button class="header-btn" onclick="toggleNotif()" id="notifBtn" title="Activer/Desactiver les notifications">
                 <span>🔔</span>

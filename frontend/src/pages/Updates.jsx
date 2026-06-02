@@ -12,6 +12,20 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 // Fallback static updates (displayed if no dynamic updates exist)
 const STATIC_UPDATES = [
   {
+    id: 'static-new-35',
+    date: '2026-06-02',
+    version: '6.5.0',
+    title: '🤖 Agent Cody v4.0 : Vrai Agent Autonome',
+    category: 'feature',
+    items: [
+      { type: 'new', text: '🧠 Boucle agentique : Cody lit les résultats de ses outils et enchaîne plusieurs étapes (lecture → modification → vérification)' },
+      { type: 'new', text: '✏️ Nouvel outil edit_file : modifications ciblées du code (au lieu de tout réécrire)' },
+      { type: 'improvement', text: '⚡ Modèles IA mis à jour : GPT-5.4, GPT-5.4 Mini, Claude Sonnet 4.6, Gemini 3.1 Pro' },
+      { type: 'improvement', text: '🛠️ Détection des outils fiabilisée (gère le contenu JSON imbriqué sans bug)' },
+      { type: 'improvement', text: '🧹 Code interne nettoyé et dispatch des outils unifié' },
+    ]
+  },
+  {
     id: 'static-new-34',
     date: '2026-04-04',
     version: '6.4.0',
