@@ -19,6 +19,7 @@ const STATIC_UPDATES = [
     category: 'feature',
     items: [
       { type: 'new', text: '🌊 Réponses en streaming : Cody écrit en temps réel, token par token (effet "frappe en direct")' },
+      { type: 'new', text: '🧭 Panneau "Plan d\'action" : visualisez en direct les outils que Cody enchaîne (en cours / terminé)' },
       { type: 'new', text: '🧠 Boucle agentique : Cody lit les résultats de ses outils et enchaîne plusieurs étapes (lecture → modification → vérification)' },
       { type: 'new', text: '✏️ Nouvel outil edit_file : modifications ciblées du code (au lieu de tout réécrire)' },
       { type: 'new', text: '🔧 Nouvel outil git : status, diff, commit, push, pull directement depuis Cody' },

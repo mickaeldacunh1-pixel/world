@@ -2259,22 +2259,113 @@ Réponds en français."""
                     yield ("delta", f"❌ Erreur LLM: {e}")
             return stream
 
-        # Fallback non-streaming (clés perso OpenAI/Anthropic) : un seul bloc renvoyé
+        # Fallback STREAMING natif (clés perso OpenAI/Anthropic)
         messages = [{"role": "system", "content": system}]
         is_claude = 'claude' in model.lower() and bool(config.ANTHROPIC_API_KEY)
         has_openai = bool(config.OPENAI_API_KEY)
 
         async def stream(text: str):
             messages.append({"role": "user", "content": text})
+            full = []
             if is_claude:
-                reply = await self._call_anthropic_messages(messages)
+                async for chunk in self._stream_anthropic_messages(messages):
+                    full.append(chunk)
+                    yield ("delta", chunk)
             elif has_openai:
-                reply = await self._call_openai_messages(model, messages)
+                async for chunk in self._stream_openai_messages(model, messages):
+                    full.append(chunk)
+                    yield ("delta", chunk)
             else:
-                reply = "❌ Aucune clé API configurée. Ajoute EMERGENT_API_KEY, OPENAI_API_KEY ou ANTHROPIC_API_KEY dans le fichier .env"
-            messages.append({"role": "assistant", "content": reply})
-            yield ("delta", reply)
+                msg = "❌ Aucune clé API configurée. Ajoute EMERGENT_API_KEY, OPENAI_API_KEY ou ANTHROPIC_API_KEY dans le fichier .env"
+                full.append(msg)
+                yield ("delta", msg)
+            messages.append({"role": "assistant", "content": "".join(full)})
         return stream
+
+    async def _stream_openai_messages(self, model: str, messages: list):
+        """Streaming natif OpenAI (yield des morceaux de texte)."""
+        valid = ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4.1', 'gpt-4.1-mini']
+        payload = {
+            "model": model if model in valid else 'gpt-4o',
+            "messages": messages,
+            "max_tokens": 4096,
+            "stream": True
+        }
+        try:
+            async with httpx.AsyncClient(timeout=120) as client:
+                async with client.stream(
+                    "POST", "https://api.openai.com/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {config.OPENAI_API_KEY}",
+                        "Content-Type": "application/json"
+                    },
+                    json=payload
+                ) as resp:
+                    if resp.status_code != 200:
+                        body = await resp.aread()
+                        yield f"❌ Erreur OpenAI: {resp.status_code} - {body.decode(errors='ignore')[:200]}"
+                        return
+                    async for line in resp.aiter_lines():
+                        if not line or not line.startswith("data:"):
+                            continue
+                        data = line[5:].strip()
+                        if data == "[DONE]":
+                            break
+                        try:
+                            obj = json.loads(data)
+                            delta = obj["choices"][0]["delta"].get("content")
+                            if delta:
+                                yield delta
+                        except Exception:
+                            continue
+        except Exception as e:
+            yield f"❌ Erreur: {e}"
+
+    async def _stream_anthropic_messages(self, messages: list):
+        """Streaming natif Anthropic (yield des morceaux de texte)."""
+        system = ""
+        conv = []
+        for m in messages:
+            if m["role"] == "system":
+                system = m["content"]
+            else:
+                conv.append(m)
+        payload = {
+            "model": "claude-sonnet-4-20250514",
+            "max_tokens": 4096,
+            "system": system,
+            "messages": conv,
+            "stream": True
+        }
+        try:
+            async with httpx.AsyncClient(timeout=120) as client:
+                async with client.stream(
+                    "POST", "https://api.anthropic.com/v1/messages",
+                    headers={
+                        "x-api-key": config.ANTHROPIC_API_KEY,
+                        "Content-Type": "application/json",
+                        "anthropic-version": "2023-06-01"
+                    },
+                    json=payload
+                ) as resp:
+                    if resp.status_code != 200:
+                        body = await resp.aread()
+                        yield f"❌ Erreur Anthropic: {resp.status_code} - {body.decode(errors='ignore')[:200]}"
+                        return
+                    async for line in resp.aiter_lines():
+                        if not line or not line.startswith("data:"):
+                            continue
+                        data = line[5:].strip()
+                        try:
+                            obj = json.loads(data)
+                            if obj.get("type") == "content_block_delta":
+                                t = obj.get("delta", {}).get("text")
+                                if t:
+                                    yield t
+                        except Exception:
+                            continue
+        except Exception as e:
+            yield f"❌ Erreur: {e}"
 
     def clear_history(self):
         """Effacer l'historique de conversation"""
@@ -2851,6 +2942,55 @@ HTML_TEMPLATE = r'''
         @keyframes blink-cursor {
             to { visibility: hidden; }
         }
+        
+        .action-plan {
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 10px;
+            padding: 0.625rem 0.875rem;
+            margin-bottom: 0.75rem;
+            max-width: 420px;
+        }
+        .action-plan-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.5rem;
+        }
+        .action-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+            font-size: 0.8125rem;
+            color: var(--text-primary);
+        }
+        .action-step .step-icon {
+            width: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .action-step .step-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+        }
+        .action-step.running .step-name { color: var(--text-secondary); }
+        .mini-spinner {
+            width: 11px;
+            height: 11px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin-mini 0.7s linear infinite;
+        }
+        @keyframes spin-mini {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -3048,7 +3188,22 @@ HTML_TEMPLATE = r'''
             
             // Créer une bulle assistant vide qui se remplira en streaming
             const bubble = addMessage('assistant', '');
+            const wrapper = bubble.querySelector('.message-wrapper');
             const contentEl = bubble.querySelector('.content');
+            // Panneau "Plan d'action" (étapes en temps réel)
+            const planEl = document.createElement('div');
+            planEl.className = 'action-plan';
+            planEl.style.display = 'none';
+            wrapper.insertBefore(planEl, contentEl);
+            const steps = [];
+            function renderPlan() {
+                if (!steps.length) { planEl.style.display = 'none'; return; }
+                planEl.style.display = 'block';
+                planEl.innerHTML = '<div class="action-plan-title">🧭 Plan d\'action</div>' +
+                    steps.map(s => `<div class="action-step ${s.status}">` +
+                        `<span class="step-icon">${s.status === 'done' ? '✅' : '<span class="mini-spinner"></span>'}</span>` +
+                        `<span class="step-name">${s.tool}</span></div>`).join('');
+            }
             const CURSOR = '<span class="stream-cursor">▋</span>';
             let acc = '';
             contentEl.innerHTML = CURSOR;
@@ -3083,8 +3238,17 @@ HTML_TEMPLATE = r'''
                             contentEl.innerHTML = formatContent(acc) + CURSOR;
                             scrollToBottom();
                         } else if (ev.type === 'tool_start') {
+                            steps.push({ tool: ev.tool, status: 'running' });
+                            renderPlan();
                             showStatus('Cody exécute ' + ev.tool + '...');
                         } else if (ev.type === 'tool_result') {
+                            for (let i = steps.length - 1; i >= 0; i--) {
+                                if (steps[i].tool === ev.tool && steps[i].status === 'running') {
+                                    steps[i].status = 'done';
+                                    break;
+                                }
+                            }
+                            renderPlan();
                             acc += (acc ? '\n\n' : '') + ev.content;
                             contentEl.innerHTML = formatContent(acc) + CURSOR;
                             showStatus('Cody reflechit...');

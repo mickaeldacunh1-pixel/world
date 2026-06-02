@@ -63,10 +63,11 @@ Marketplace de pièces automobiles et véhicules d'occasion (React/FastAPI/Mongo
 Fichiers : `/app/frontend/public/downloads/code-agent/` (agent.py, version.txt, README.md, .env.example).
 Améliorations majeures de cette session :
 - **Boucle agentique** : Cody lit les résultats de ses outils et enchaîne plusieurs étapes (max 8). Avant, le résultat était juste injecté dans le texte sans que le LLM ne le voie.
-- **Streaming SSE** : endpoint `/api/chat/stream` (token par token) + UI mise à jour (curseur live, masquage du JSON d'outils via holdback).
+- **Streaming SSE** : endpoint `/api/chat/stream` (token par token) + UI (curseur live, masquage du JSON via holdback). Streaming natif aussi pour clés perso OpenAI/Anthropic (`_stream_openai_messages` / `_stream_anthropic_messages`).
+- **Panneau "Plan d'action"** : UI affiche en temps réel les outils enchaînés (en cours/terminé).
 - **Parsing d'outils fiabilisé** : analyseur à équilibrage d'accolades (gère le JSON imbriqué de write_file) ; dispatch unifié `_execute_tool`.
 - **Nouveaux outils** : `edit_file` (search/replace ciblé), `git_command` (status/diff/log/commit/push/pull).
 - **Modèles à jour** : gpt-5.4, gpt-5.4-mini, claude-sonnet-4-6, gemini-3.1-pro-preview (via emergentintegrations).
 - **Nettoyage** : ~415 lignes de code mort supprimées ; URL d'auto-update → worldautofrance.com.
 - Validé par py_compile + tests unitaires (extraction, edit_file, dispatch, résolution modèles) + tests E2E boucle agentique & streaming (runner simulé) + test SSE via Flask test_client.
-- Backlog : générer `code-agent.zip` au build pour l'auto-update ; streaming natif pour clés OpenAI/Anthropic perso.
+- Backlog : streaming natif pour clés OpenAI/Anthropic perso (FAIT) ; auto-update zip (FAIT, `build-cody-zip.sh`).
