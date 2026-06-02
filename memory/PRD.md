@@ -66,6 +66,9 @@ Améliorations majeures de cette session :
 - **Streaming SSE** : endpoint `/api/chat/stream` (token par token) + UI (curseur live, masquage du JSON via holdback). Streaming natif aussi pour clés perso OpenAI/Anthropic (`_stream_openai_messages` / `_stream_anthropic_messages`).
 - **Panneau "Plan d'action"** : UI affiche en temps réel les outils enchaînés (en cours/terminé).
 - **Auto-diagnostic** : endpoint `/api/self-check` + bouton "🩺 Tester" (clé API, modèle, ping LLM réel, dossier projet, accès VPS SSH, version/maj).
+- **Mémoire de projet enrichie** : `ProjectKnowledge.scan_project()` détecte type/frameworks/langages/commandes/fichiers clés/variables .env (NOMS seulement) + git ; `get_context()` injecté dans le system prompt ; auto-scan au 1er lancement (main()).
+- **Export Markdown** : endpoint `/api/export` + bouton "📜 Exporter" (télécharge la conversation).
+- **Auto-update zip dans Docker** : `frontend/Dockerfile` régénère `code-agent.zip` via `build-cody-zip.sh` (apk add zip bash) avant `yarn build`.
 - **Parsing d'outils fiabilisé** : analyseur à équilibrage d'accolades (gère le JSON imbriqué de write_file) ; dispatch unifié `_execute_tool`.
 - **Nouveaux outils** : `edit_file` (search/replace ciblé), `git_command` (status/diff/log/commit/push/pull).
 - **Modèles à jour** : gpt-5.4, gpt-5.4-mini, claude-sonnet-4-6, gemini-3.1-pro-preview (via emergentintegrations).

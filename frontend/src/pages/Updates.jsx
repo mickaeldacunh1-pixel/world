@@ -18,6 +18,8 @@ const STATIC_UPDATES = [
     title: '🤖 Agent Cody v4.0 : Vrai Agent Autonome',
     category: 'feature',
     items: [
+      { type: 'new', text: '🗂️ Mémoire de projet enrichie : Cody scanne ton repo (architecture, frameworks, commandes, variables) et s\'en souvient sans tout relire' },
+      { type: 'new', text: '📜 Bouton "Exporter" : télécharge la conversation au format Markdown' },
       { type: 'new', text: '🩺 Bouton "Tester ma config" : diagnostic instantané (clé API, modèle, connexion LLM, projet, VPS, version)' },
       { type: 'new', text: '🌊 Réponses en streaming : Cody écrit en temps réel, token par token (effet "frappe en direct")' },
       { type: 'new', text: '🧭 Panneau "Plan d\'action" : visualisez en direct les outils que Cody enchaîne (en cours / terminé)' },

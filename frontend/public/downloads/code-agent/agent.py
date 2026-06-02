@@ -1700,53 +1700,161 @@ class ProjectKnowledge:
             pass
     
     def scan_project(self) -> str:
-        """Scanner et mémoriser la structure du projet"""
-        import datetime
-        results = []
-        
-        # Détecter le type de projet
+        """Scanner et mémoriser EN PROFONDEUR la structure du projet."""
         project_path = Path(config.PROJECT_PATH)
-        
-        # Fichiers de config importants à chercher
+        results = []
+        name = project_path.name
+
         important_files = {
-            "backend/.env": "Configuration backend (variables d'environnement)",
-            "frontend/.env": "Configuration frontend",
-            ".env": "Configuration principale",
-            "docker-compose.yml": "Configuration Docker",
+            "backend/.env": "Config backend (.env)",
+            "frontend/.env": "Config frontend (.env)",
+            ".env": "Config principale (.env)",
+            "docker-compose.yml": "Orchestration Docker",
+            "Dockerfile": "Image Docker",
             "package.json": "Dépendances Node.js",
             "requirements.txt": "Dépendances Python",
             "backend/server.py": "Serveur backend principal",
-            "frontend/src/App.js": "Application React principale"
+            "backend/requirements.txt": "Dépendances backend Python",
+            "frontend/package.json": "Dépendances frontend",
+            "frontend/src/App.js": "App React principale",
+            "frontend/src/App.jsx": "App React principale",
+            "README.md": "Documentation",
         }
-        
         found_paths = {}
-        for rel_path, description in important_files.items():
-            full_path = project_path / rel_path
-            if full_path.exists():
-                found_paths[rel_path] = description
-                results.append(f"✅ {rel_path} - {description}")
-        
+        for rel_path, desc in important_files.items():
+            if (project_path / rel_path).exists():
+                found_paths[rel_path] = desc
+                results.append(f"✅ {rel_path} — {desc}")
         self._knowledge["important_paths"] = found_paths
-        
-        # Détecter le type de projet
-        if (project_path / "backend").exists() and (project_path / "frontend").exists():
+
+        frameworks = []
+        languages = set()
+        commands = {}
+        scripts = {}
+
+        def _read_json(rel):
+            try:
+                with open(project_path / rel, 'r', encoding='utf-8', errors='ignore') as f:
+                    return json.load(f)
+            except Exception:
+                return {}
+
+        for pj_rel in ["package.json", "frontend/package.json"]:
+            if (project_path / pj_rel).exists():
+                pj = _read_json(pj_rel)
+                if pj.get("name") and pj_rel == "package.json":
+                    name = pj["name"]
+                deps = {**pj.get("dependencies", {}), **pj.get("devDependencies", {})}
+                if "react" in deps: frameworks.append("React")
+                if "next" in deps: frameworks.append("Next.js")
+                if "vue" in deps: frameworks.append("Vue")
+                if "@craco/craco" in deps: frameworks.append("CRACO")
+                if "tailwindcss" in deps: frameworks.append("Tailwind")
+                if deps: languages.add("JavaScript/TypeScript")
+                if pj.get("scripts"):
+                    prefix = "frontend/" if pj_rel.startswith("frontend") else ""
+                    for sn, sc in pj["scripts"].items():
+                        scripts[f"{prefix}{sn}"] = sc
+
+        for req_rel in ["requirements.txt", "backend/requirements.txt"]:
+            if (project_path / req_rel).exists():
+                languages.add("Python")
+                try:
+                    txt = (project_path / req_rel).read_text(encoding='utf-8', errors='ignore').lower()
+                    if "fastapi" in txt: frameworks.append("FastAPI")
+                    if "flask" in txt: frameworks.append("Flask")
+                    if "django" in txt: frameworks.append("Django")
+                except Exception:
+                    pass
+
+        has_back = (project_path / "backend").exists()
+        has_front = (project_path / "frontend").exists()
+        has_docker = (project_path / "docker-compose.yml").exists()
+        if has_back and has_front:
             self._knowledge["project_type"] = "fullstack"
-            self._knowledge["commands"] = {
-                "restart_backend": "cd backend && docker-compose restart backend || sudo supervisorctl restart backend",
-                "restart_frontend": "cd frontend && npm start || yarn start",
-                "install_backend": "cd backend && pip install -r requirements.txt",
-                "install_frontend": "cd frontend && npm install || yarn install"
-            }
         elif (project_path / "package.json").exists():
             self._knowledge["project_type"] = "node"
-        elif (project_path / "requirements.txt").exists():
+        elif "Python" in languages:
             self._knowledge["project_type"] = "python"
-        
-        self._knowledge["last_scan"] = datetime.datetime.now().isoformat()
+        else:
+            self._knowledge["project_type"] = "inconnu"
+
+        if has_docker:
+            commands["build_deploy"] = "docker-compose up -d --build"
+            commands["restart"] = "docker-compose restart"
+            commands["logs"] = "docker-compose logs -f --tail=100"
+        if has_back:
+            commands["install_backend"] = "cd backend && pip install -r requirements.txt"
+        if has_front:
+            commands["install_frontend"] = "cd frontend && yarn install"
+            commands["build_frontend"] = "cd frontend && yarn build"
+        self._knowledge["commands"] = commands
+        self._knowledge["scripts"] = scripts
+
+        # Clés .env (NOMS uniquement, jamais les valeurs)
+        env_keys = {}
+        for env_rel in ["backend/.env", ".env", "frontend/.env"]:
+            ep = project_path / env_rel
+            if ep.exists():
+                keys = []
+                try:
+                    for line in ep.read_text(encoding='utf-8', errors='ignore').splitlines():
+                        line = line.strip()
+                        if line and not line.startswith("#") and "=" in line:
+                            keys.append(line.split("=", 1)[0].strip())
+                except Exception:
+                    pass
+                if keys:
+                    env_keys[env_rel] = keys
+        self._knowledge["env_keys"] = env_keys
+
+        # Git (branche + remote)
+        git_info = {}
+        try:
+            br = subprocess.run("git rev-parse --abbrev-ref HEAD", shell=True, capture_output=True,
+                                text=True, cwd=str(project_path), timeout=10)
+            if br.returncode == 0:
+                git_info["branch"] = br.stdout.strip()
+            rm = subprocess.run("git remote get-url origin", shell=True, capture_output=True,
+                                text=True, cwd=str(project_path), timeout=10)
+            if rm.returncode == 0:
+                git_info["remote"] = rm.stdout.strip()
+        except Exception:
+            pass
+        self._knowledge["git"] = git_info
+
+        self._knowledge["name"] = name
+        self._knowledge["frameworks"] = sorted(set(frameworks))
+        self._knowledge["languages"] = sorted(languages)
+        self._knowledge["last_scan"] = datetime.now().isoformat()
         self._save()
-        
+
         return "\n".join(results) if results else "Aucun fichier important trouvé"
-    
+
+    def get_context(self) -> str:
+        """Bloc compact de connaissance projet à injecter dans le system prompt."""
+        k = self._knowledge
+        if not k.get("last_scan"):
+            return ""
+        lines = ["\n\n🗂️ CONNAISSANCE DU PROJET (mémorisée, réutilise-la sans tout relire) :"]
+        if k.get("name"): lines.append(f"- Nom: {k['name']}")
+        if k.get("project_type"): lines.append(f"- Type: {k['project_type']}")
+        if k.get("frameworks"): lines.append(f"- Frameworks: {', '.join(k['frameworks'])}")
+        if k.get("languages"): lines.append(f"- Langages: {', '.join(k['languages'])}")
+        if k.get("git", {}).get("branch"): lines.append(f"- Branche Git: {k['git']['branch']}")
+        if k.get("commands"):
+            cmds = "; ".join(f"{n}=`{c}`" for n, c in list(k["commands"].items())[:6])
+            lines.append(f"- Commandes: {cmds}")
+        if k.get("important_paths"):
+            lines.append(f"- Fichiers clés: {', '.join(list(k['important_paths'].keys())[:10])}")
+        if k.get("env_keys"):
+            for ef, keys in k["env_keys"].items():
+                lines.append(f"- Variables {ef}: {', '.join(keys[:15])}")
+        if k.get("notes"):
+            recent = [n['text'] if isinstance(n, dict) else str(n) for n in k['notes'][-5:]]
+            lines.append("- Notes mémorisées: " + " | ".join(recent))
+        return "\n".join(lines)
+
     def get_env_path(self) -> str:
         """Retourne le chemin du fichier .env principal"""
         for path in ["backend/.env", ".env", "frontend/.env"]:
@@ -1758,7 +1866,7 @@ class ProjectKnowledge:
         """Ajouter une note/mémo"""
         self._knowledge.setdefault("notes", []).append({
             "text": note,
-            "date": datetime.datetime.now().isoformat()
+            "date": datetime.now().isoformat()
         })
         self._save()
     
@@ -1766,7 +1874,10 @@ class ProjectKnowledge:
         """Résumé des connaissances du projet"""
         k = self._knowledge
         lines = [
-            f"📁 Type de projet: {k.get('project_type', 'inconnu')}",
+            f"📁 Nom: {k.get('name', '?')}",
+            f"🏷️ Type: {k.get('project_type', 'inconnu')}",
+            f"🧩 Frameworks: {', '.join(k.get('frameworks', [])) or '—'}",
+            f"💬 Langages: {', '.join(k.get('languages', [])) or '—'}",
             f"📅 Dernier scan: {k.get('last_scan', 'jamais')}",
             f"📄 Fichiers importants: {len(k.get('important_paths', {}))}",
         ]
@@ -1923,8 +2034,15 @@ Réponds en français."""
         return "openai", "gpt-5.4"
 
     def _build_system_message(self) -> str:
-        """System prompt + contexte de l'historique persistant (mémoire entre sessions)."""
+        """System prompt + connaissance du projet + historique persistant (mémoire entre sessions)."""
         system = self.SYSTEM_PROMPT
+        # Connaissance du projet (architecture, commandes, conventions)
+        try:
+            project_ctx = project_knowledge.get_context()
+            if project_ctx:
+                system += project_ctx
+        except Exception:
+            pass
         history = self.conversation_history
         prior = history[:-1] if history else []  # le dernier = message courant
         if prior:
@@ -3019,6 +3137,9 @@ HTML_TEMPLATE = r'''
             <button class="header-btn" onclick="runSelfCheck()" id="diagBtn" title="Tester ma configuration">
                 <span>🩺</span> Tester
             </button>
+            <button class="header-btn" onclick="exportChat()" title="Exporter la conversation en Markdown">
+                <span>📜</span> Exporter
+            </button>
             <button class="header-btn" onclick="clearChat()">
                 <span>🗑️</span> Effacer
             </button>
@@ -3400,6 +3521,15 @@ HTML_TEMPLATE = r'''
             addMessage('assistant', 'Conversation effacee. Comment puis-je t aider ?');
         }
         
+        function exportChat() {
+            const a = document.createElement('a');
+            a.href = '/api/export';
+            a.download = 'conversation-cody.md';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+        
         async function runSelfCheck() {
             const diagBtn = document.getElementById('diagBtn');
             diagBtn.disabled = true;
@@ -3719,6 +3849,33 @@ def self_check():
 
     return jsonify(report)
 
+@app.route('/api/export', methods=['GET'])
+def export_chat():
+    """Exporte la conversation courante au format Markdown (téléchargement)."""
+    history = session_manager.get_history("default")
+    lines = [
+        f"# Conversation Cody — {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+        "",
+        f"*Projet : {config.PROJECT_PATH}*",
+        "",
+        "---",
+        ""
+    ]
+    for msg in history:
+        who = "👤 **Vous**" if msg["role"] == "user" else "🤖 **Cody**"
+        lines.append(f"### {who}")
+        lines.append("")
+        lines.append(msg["content"])
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+    md = "\n".join(lines)
+    return Response(
+        md,
+        mimetype='text/markdown',
+        headers={'Content-Disposition': 'attachment; filename="conversation-cody.md"'}
+    )
+
 @app.route('/api/clear', methods=['POST'])
 def clear():
     old_count = llm.get_history_length()
@@ -3884,6 +4041,19 @@ def main():
     
     console.print(f"[green]✓[/green] Projet: {config.PROJECT_PATH}")
     console.print(f"[green]✓[/green] Modèle: {config.DEFAULT_MODEL}")
+    
+    # Scan automatique du projet au démarrage (mémoire enrichie)
+    try:
+        last_scan = project_knowledge._knowledge.get("last_scan")
+        if not last_scan:
+            console.print("[dim]🗂️  Premier lancement : scan du projet en cours...[/dim]")
+            project_knowledge.scan_project()
+            console.print("[green]✓[/green] Projet scanné et mémorisé")
+        else:
+            console.print(f"[green]✓[/green] Connaissance projet chargée ({project_knowledge._knowledge.get('project_type', '?')})")
+    except Exception as e:
+        console.print(f"[dim]ℹ️ Scan projet ignoré ({e})[/dim]")
+    
     console.print(f"[green]✓[/green] Interface: http://localhost:{config.PORT}\n")
     
     # Open browser after short delay

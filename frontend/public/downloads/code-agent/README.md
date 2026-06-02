@@ -61,6 +61,8 @@ L'agent comprend le langage naturel. Exemples :
 | 🔧 Git intégré | status, diff, commit, push, pull depuis le chat |
 | 🌊 Streaming | Réponses affichées en temps réel, token par token |
 | 🩺 Auto-diagnostic | Bouton "Tester" : vérifie clé API, modèle, LLM, projet, VPS |
+| 🗂️ Mémoire projet | Scanne et mémorise architecture, frameworks, commandes, variables |
+| 📜 Export | Télécharge la conversation en Markdown |
 | 🔁 Boucle agentique | Enchaîne plusieurs outils en lisant leurs résultats |
 | 🔄 Multi-LLM | GPT-5.4, Claude Sonnet 4.6, Gemini 3.1 Pro selon tes besoins |
 
