@@ -58,6 +58,8 @@ L'agent comprend le langage naturel. Exemples :
 | 💬 Chat intelligent | Répond à tes questions de dev |
 | 📊 Analyse de projet | Comprend la structure de ton projet |
 | ✏️ Édition ciblée | Modifie une portion précise d'un fichier (edit_file) |
+| 🔧 Git intégré | status, diff, commit, push, pull depuis le chat |
+| 🌊 Streaming | Réponses affichées en temps réel, token par token |
 | 🔁 Boucle agentique | Enchaîne plusieurs outils en lisant leurs résultats |
 | 🔄 Multi-LLM | GPT-5.4, Claude Sonnet 4.6, Gemini 3.1 Pro selon tes besoins |
 

@@ -303,6 +303,42 @@ class AgentTools:
             return {"success": False, "error": str(e)}
     
     @staticmethod
+    def git_command(action: str = "status", message: str = None) -> Dict:
+        """Opérations Git dans le projet local (status, diff, log, commit, push, pull)."""
+        try:
+            action = (action or "status").lower()
+            cwd = config.PROJECT_PATH
+            if action == "status":
+                cmd = "git status --short --branch"
+            elif action == "diff":
+                cmd = "git diff"
+            elif action == "log":
+                cmd = "git log --oneline -10"
+            elif action == "pull":
+                cmd = "git pull"
+            elif action == "push":
+                cmd = "git push"
+            elif action in ("commit", "add"):
+                if not message:
+                    return {"success": False, "error": "Paramètre 'message' requis pour commit."}
+                safe = message.replace('"', '\\"')
+                cmd = f'git add -A && git commit -m "{safe}"'
+            else:
+                return {"success": False, "error": f"Action git inconnue: {action}. Utilise: status, diff, log, commit, push, pull"}
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=120, cwd=cwd)
+            output = result.stdout if result.stdout else result.stderr
+            return {
+                "success": result.returncode == 0,
+                "action": action,
+                "output": (output.strip() or "(aucune sortie)")[:3000],
+                "exit_code": result.returncode
+            }
+        except subprocess.TimeoutExpired:
+            return {"success": False, "error": "⏱️ Timeout git"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    @staticmethod
     def execute_command(command: str, timeout: int = 60) -> Dict:
         """Exécuter une commande shell localement"""
         try:
@@ -1776,6 +1812,9 @@ Tu peux mettre une courte phrase d'explication avant l'appel.
 {"tool": "execute_command", "params": {"command": "ls -la"}}  → PC local
 {"tool": "vps_command", "params": {"command": "docker ps"}}   → VPS
 
+🔧 GIT : {"tool": "git_command", "params": {"action": "status"}}  (status | diff | log | commit | push | pull)
+{"tool": "git_command", "params": {"action": "commit", "message": "ton message"}}
+
 🔧 ENVIRONNEMENT :
 {"tool": "get_env_value", "params": {"key": "CLE"}}
 {"tool": "set_env_value", "params": {"key": "CLE", "value": "valeur"}}
@@ -2072,6 +2111,7 @@ Réponds en français."""
             'write_file': lambda: tools.write_file(params.get('path', ''), params.get('content', '')),
             'edit_file': lambda: tools.edit_file(params.get('path', ''), params.get('old', params.get('old_str', '')), params.get('new', params.get('new_str', ''))),
             'execute_command': lambda: tools.execute_command(params.get('command', '')),
+            'git_command': lambda: tools.git_command(params.get('action', 'status'), params.get('message')),
             'vps_command': lambda: tools.vps_command(params.get('command', '')),
             'check_worldauto': lambda: tools.check_worldauto(),
             'security_scan': lambda: tools.security_scan(),
@@ -2109,6 +2149,133 @@ Réponds en français."""
             return {"success": False, "error": f"Outil inconnu: {tool_name}"}
         return fn()
     
+    async def chat_stream(self, message: str, model: str = None):
+        """Version STREAMING de la boucle agentique. Yield des événements SSE (text/tool_start/tool_result/done)."""
+        model = model or config.DEFAULT_MODEL
+        session_manager.add_message("user", message, self.session_id)
+        system = self._build_system_message()
+
+        try:
+            stream_runner = self._make_stream_runner(model, system)
+        except Exception as e:
+            err = f"❌ Erreur d'initialisation: {e}"
+            session_manager.add_message("assistant", err, self.session_id)
+            yield {"type": "text", "content": err}
+            yield {"type": "done", "history_count": self.get_history_length()}
+            return
+
+        display_parts = []
+        next_input = message
+
+        for step in range(self.MAX_AGENT_STEPS):
+            raw = ""
+            emitted_len = 0
+            suppress = False  # passe à True quand un appel d'outil JSON commence
+
+            async for kind, payload in stream_runner(next_input):
+                if kind != "delta":
+                    continue
+                raw += payload
+                if suppress:
+                    continue
+                idx = raw.find('{"tool"')
+                if idx == -1:
+                    # garder 6 caractères en réserve (au cas où le marqueur soit coupé entre 2 deltas)
+                    safe = len(raw) - 6
+                    if safe > emitted_len:
+                        chunk = raw[emitted_len:safe]
+                        emitted_len = safe
+                        yield {"type": "text", "content": chunk}
+                else:
+                    if idx > emitted_len:
+                        chunk = raw[emitted_len:idx]
+                        emitted_len = idx
+                        yield {"type": "text", "content": chunk}
+                    suppress = True
+
+            # flush du texte restant si aucun outil détecté
+            if not suppress and emitted_len < len(raw):
+                tail = raw[emitted_len:]
+                if tail.strip():
+                    yield {"type": "text", "content": tail}
+
+            calls = self._extract_tool_calls(raw)
+            clean_text = self._strip_tool_calls(raw, calls)
+            if clean_text.strip():
+                display_parts.append(clean_text.strip())
+
+            if not calls:
+                break
+
+            results_blob = ""
+            for call in calls:
+                yield {"type": "tool_start", "tool": call["tool"]}
+                try:
+                    res = self._execute_tool(call["tool"], call["params"])
+                except Exception as e:
+                    res = {"success": False, "error": str(e)}
+                formatted = self._format_tool_result(call["tool"], res)
+                display_parts.append(formatted)
+                yield {"type": "tool_result", "tool": call["tool"], "content": formatted}
+                results_blob += f"[Outil: {call['tool']}] →\n{json.dumps(res, ensure_ascii=False)[:3500]}\n\n"
+
+            if step == self.MAX_AGENT_STEPS - 1:
+                msg = "⚠️ Limite d'étapes atteinte (8). Relance-moi pour continuer si besoin."
+                display_parts.append(msg)
+                yield {"type": "text", "content": "\n\n" + msg}
+                break
+
+            next_input = (
+                "Voici les résultats des outils que tu viens d'appeler :\n\n"
+                f"{results_blob}"
+                "Analyse-les. Si la tâche est terminée, donne ta réponse finale claire SANS rappeler d'outil. "
+                "Sinon, appelle le prochain outil nécessaire."
+            )
+
+        final = "\n\n".join(p for p in display_parts if p).strip() or "✅ Terminé."
+        session_manager.add_message("assistant", final, self.session_id)
+        yield {"type": "done", "history_count": self.get_history_length()}
+
+    def _make_stream_runner(self, model: str, system: str):
+        """Runner STREAMING : renvoie une coroutine génératrice stream(text) qui yield ('delta', txt)."""
+        if config.EMERGENT_API_KEY:
+            from emergentintegrations.llm.chat import LlmChat, UserMessage, TextDelta, StreamDone
+            provider, model_name = self._resolve_model(model)
+            chat_obj = LlmChat(
+                api_key=config.EMERGENT_API_KEY,
+                session_id=f"{self.session_id}-{int(time.time())}",
+                system_message=system
+            ).with_model(provider, model_name)
+
+            async def stream(text: str):
+                try:
+                    async for ev in chat_obj.stream_message(UserMessage(text=text)):
+                        if isinstance(ev, TextDelta):
+                            if ev.content:
+                                yield ("delta", ev.content)
+                        elif isinstance(ev, StreamDone):
+                            break
+                except Exception as e:
+                    yield ("delta", f"❌ Erreur LLM: {e}")
+            return stream
+
+        # Fallback non-streaming (clés perso OpenAI/Anthropic) : un seul bloc renvoyé
+        messages = [{"role": "system", "content": system}]
+        is_claude = 'claude' in model.lower() and bool(config.ANTHROPIC_API_KEY)
+        has_openai = bool(config.OPENAI_API_KEY)
+
+        async def stream(text: str):
+            messages.append({"role": "user", "content": text})
+            if is_claude:
+                reply = await self._call_anthropic_messages(messages)
+            elif has_openai:
+                reply = await self._call_openai_messages(model, messages)
+            else:
+                reply = "❌ Aucune clé API configurée. Ajoute EMERGENT_API_KEY, OPENAI_API_KEY ou ANTHROPIC_API_KEY dans le fichier .env"
+            messages.append({"role": "assistant", "content": reply})
+            yield ("delta", reply)
+        return stream
+
     def clear_history(self):
         """Effacer l'historique de conversation"""
         session_manager.clear_history(self.session_id)
@@ -2674,6 +2841,16 @@ HTML_TEMPLATE = r'''
             .message.user .message-wrapper { max-width: 95%; }
             .project-path input { width: 150px; }
         }
+        
+        .stream-cursor {
+            display: inline-block;
+            color: var(--accent);
+            font-weight: 700;
+            animation: blink-cursor 1s steps(2, start) infinite;
+        }
+        @keyframes blink-cursor {
+            to { visibility: hidden; }
+        }
     </style>
 </head>
 <body>
@@ -2867,42 +3044,64 @@ HTML_TEMPLATE = r'''
             inputEl.value = '';
             inputEl.style.height = 'auto';
             sendBtn.disabled = true;
-            
-            // Show typing indicator and status bar
-            const typingEl = addTyping();
             showStatus('Cody reflechit...');
             
+            // Créer une bulle assistant vide qui se remplira en streaming
+            const bubble = addMessage('assistant', '');
+            const contentEl = bubble.querySelector('.content');
+            const CURSOR = '<span class="stream-cursor">▋</span>';
+            let acc = '';
+            contentEl.innerHTML = CURSOR;
+            
             try {
-                const response = await fetch('/api/chat', {
+                const response = await fetch('/api/chat/stream', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: message,
-                        model: modelSelect.value
-                    })
+                    body: JSON.stringify({ message: message, model: modelSelect.value })
                 });
                 
-                const data = await response.json();
-                typingEl.remove();
-                hideStatus();
-                addMessage('assistant', data.response);
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
                 
-                // Notification sonore + push
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    buffer += decoder.decode(value, { stream: true });
+                    const parts = buffer.split('\n\n');
+                    buffer = parts.pop();
+                    for (const part of parts) {
+                        const line = part.trim();
+                        if (!line.startsWith('data:')) continue;
+                        const jsonStr = line.slice(5).trim();
+                        if (!jsonStr) continue;
+                        let ev;
+                        try { ev = JSON.parse(jsonStr); } catch (e) { continue; }
+                        
+                        if (ev.type === 'text') {
+                            acc += ev.content;
+                            contentEl.innerHTML = formatContent(acc) + CURSOR;
+                            scrollToBottom();
+                        } else if (ev.type === 'tool_start') {
+                            showStatus('Cody exécute ' + ev.tool + '...');
+                        } else if (ev.type === 'tool_result') {
+                            acc += (acc ? '\n\n' : '') + ev.content;
+                            contentEl.innerHTML = formatContent(acc) + CURSOR;
+                            showStatus('Cody reflechit...');
+                            scrollToBottom();
+                        } else if (ev.type === 'done') {
+                            if (ev.history_count !== undefined) updateMemoryCount(ev.history_count);
+                        }
+                    }
+                }
+                
+                contentEl.innerHTML = formatContent(acc);  // retirer le curseur
+                hideStatus();
                 playNotification('Reponse prete !');
-                
-                // Update memory indicator
-                if (data.history_count !== undefined) {
-                    updateMemoryCount(data.history_count);
-                }
-                
-                // Speak the response if voice is enabled
-                if (voiceEnabled && data.response) {
-                    speakText(data.response);
-                }
+                if (voiceEnabled && acc) speakText(acc);
             } catch (error) {
-                typingEl.remove();
                 hideStatus();
-                addMessage('assistant', '❌ Erreur de connexion. Verifie que l agent est bien lance.');
+                contentEl.innerHTML = formatContent(acc) || '❌ Erreur de connexion. Verifie que l agent est bien lance.';
             }
             
             sendBtn.disabled = false;
@@ -2939,6 +3138,7 @@ HTML_TEMPLATE = r'''
             `;
             messagesEl.appendChild(div);
             scrollToBottom();
+            return div;
         }
         
         function addTyping() {
@@ -3213,6 +3413,34 @@ def chat():
         "response": response,
         "history_count": new_count
     })
+
+@app.route('/api/chat/stream', methods=['POST'])
+def chat_stream_endpoint():
+    """Streaming SSE de la réponse de Cody (token par token + événements d'outils)."""
+    import asyncio
+    data = request.json
+    message = data.get('message', '')
+    model = data.get('model', config.DEFAULT_MODEL)
+
+    def generate():
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        agen = llm.chat_stream(message, model)
+        try:
+            while True:
+                try:
+                    event = loop.run_until_complete(agen.__anext__())
+                except StopAsyncIteration:
+                    break
+                yield f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'text', 'content': f'❌ Erreur: {e}'}, ensure_ascii=False)}\n\n"
+            yield f"data: {json.dumps({'type': 'done'}, ensure_ascii=False)}\n\n"
+        finally:
+            loop.close()
+
+    return Response(generate(), mimetype='text/event-stream',
+                    headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no', 'Connection': 'keep-alive'})
 
 @app.route('/api/clear', methods=['POST'])
 def clear():

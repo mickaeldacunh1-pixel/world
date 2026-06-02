@@ -18,8 +18,10 @@ const STATIC_UPDATES = [
     title: '🤖 Agent Cody v4.0 : Vrai Agent Autonome',
     category: 'feature',
     items: [
+      { type: 'new', text: '🌊 Réponses en streaming : Cody écrit en temps réel, token par token (effet "frappe en direct")' },
       { type: 'new', text: '🧠 Boucle agentique : Cody lit les résultats de ses outils et enchaîne plusieurs étapes (lecture → modification → vérification)' },
       { type: 'new', text: '✏️ Nouvel outil edit_file : modifications ciblées du code (au lieu de tout réécrire)' },
+      { type: 'new', text: '🔧 Nouvel outil git : status, diff, commit, push, pull directement depuis Cody' },
       { type: 'improvement', text: '⚡ Modèles IA mis à jour : GPT-5.4, GPT-5.4 Mini, Claude Sonnet 4.6, Gemini 3.1 Pro' },
       { type: 'improvement', text: '🛠️ Détection des outils fiabilisée (gère le contenu JSON imbriqué sans bug)' },
       { type: 'improvement', text: '🧹 Code interne nettoyé et dispatch des outils unifié' },
