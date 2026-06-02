@@ -14,7 +14,7 @@ Testing the integration of 4 UX features:
 - `GET/POST/DELETE /api/search-history` - Search history
 
 ## Test Environment
-- Base URL: https://hotfix-nginx.preview.emergentagent.com/api
+- Base URL: https://listing-enhancement.preview.emergentagent.com/api
 - Test user: contact@worldautofrance.com (admin account exists)
 
 ## Backend Test Results

@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class AutoPiecesAPITester:
-    def __init__(self, base_url="https://hotfix-nginx.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://listing-enhancement.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.user_id = None
