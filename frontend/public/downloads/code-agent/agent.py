@@ -3016,6 +3016,9 @@ HTML_TEMPLATE = r'''
             <button class="header-btn" onclick="toggleNotif()" id="notifBtn" title="Activer/Desactiver les notifications">
                 <span>🔔</span>
             </button>
+            <button class="header-btn" onclick="runSelfCheck()" id="diagBtn" title="Tester ma configuration">
+                <span>🩺</span> Tester
+            </button>
             <button class="header-btn" onclick="clearChat()">
                 <span>🗑️</span> Effacer
             </button>
@@ -3397,6 +3400,34 @@ HTML_TEMPLATE = r'''
             addMessage('assistant', 'Conversation effacee. Comment puis-je t aider ?');
         }
         
+        async function runSelfCheck() {
+            const diagBtn = document.getElementById('diagBtn');
+            diagBtn.disabled = true;
+            showStatus('Diagnostic de configuration en cours...');
+            addMessage('user', '🩺 Tester ma configuration');
+            try {
+                const r = await fetch('/api/self-check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: modelSelect.value })
+                });
+                const data = await r.json();
+                let txt = '🩺 **Diagnostic de configuration**\n\n';
+                data.checks.forEach(c => {
+                    const icon = c.ok === true ? '✅' : (c.ok === false ? '❌' : 'ℹ️');
+                    txt += icon + ' **' + c.name + '** — ' + c.detail + '\n';
+                });
+                txt += '\n' + (data.ok
+                    ? '**✅ Tout est prêt, Cody est opérationnel !**'
+                    : '**⚠️ Des points nécessitent ton attention (voir les ❌ ci-dessus).**');
+                addMessage('assistant', txt);
+            } catch (e) {
+                addMessage('assistant', '❌ Diagnostic impossible : ' + e);
+            }
+            hideStatus();
+            diagBtn.disabled = false;
+        }
+        
         function toggleNotif() {
             notifEnabled = !notifEnabled;
             const notifBtn = document.getElementById('notifBtn');
@@ -3605,6 +3636,88 @@ def chat_stream_endpoint():
 
     return Response(generate(), mimetype='text/event-stream',
                     headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no', 'Connection': 'keep-alive'})
+
+@app.route('/api/self-check', methods=['POST'])
+def self_check():
+    """Diagnostic de configuration : clé API, modèle, projet, connexion LLM réelle, VPS, version."""
+    import asyncio
+    data = request.json or {}
+    model = data.get('model', config.DEFAULT_MODEL)
+    report = {"checks": [], "ok": True}
+
+    def add(name, ok, detail):
+        report["checks"].append({"name": name, "ok": ok, "detail": detail})
+        if ok is False:
+            report["ok"] = False
+
+    # 1. Clé API
+    provider_label = None
+    if config.EMERGENT_API_KEY:
+        provider_label = "Emergent"
+        add("Clé API", True, "Clé Emergent (universelle) détectée")
+    elif config.OPENAI_API_KEY:
+        provider_label = "OpenAI"
+        add("Clé API", True, "Clé OpenAI perso détectée")
+    elif config.ANTHROPIC_API_KEY:
+        provider_label = "Anthropic"
+        add("Clé API", True, "Clé Anthropic perso détectée")
+    else:
+        add("Clé API", False, "Aucune clé. Ajoute EMERGENT_API_KEY (ou OPENAI/ANTHROPIC) dans le fichier .env")
+
+    # 2. Modèle
+    prov, mname = llm._resolve_model(model)
+    add("Modèle", True, f"{model} → {prov}/{mname}")
+
+    # 3. Dossier projet
+    p = config.PROJECT_PATH
+    if os.path.isdir(p):
+        writable = os.access(p, os.W_OK)
+        add("Dossier projet", writable, p if writable else f"{p} (lecture seule !)")
+    else:
+        add("Dossier projet", False, f"Chemin invalide: {p}")
+
+    # 4. Connexion LLM (ping réel)
+    if provider_label:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            async def ping():
+                runner = llm._make_runner(model, "Tu es un assistant de test. Réponds uniquement: pong.")
+                return await runner("ping")
+            res = loop.run_until_complete(ping())
+            if res and not str(res).startswith("❌"):
+                add("Connexion LLM", True, f"Réponse reçue de {provider_label} ✓")
+            else:
+                add("Connexion LLM", False, str(res)[:200])
+        except Exception as e:
+            add("Connexion LLM", False, str(e)[:200])
+        finally:
+            loop.close()
+
+    # 5. Accès VPS SSH (optionnel)
+    try:
+        r = subprocess.run(
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=8 root@148.230.115.118 "echo ok"',
+            shell=True, capture_output=True, text=True, timeout=15
+        )
+        if r.returncode == 0 and 'ok' in r.stdout:
+            add("Accès VPS (SSH)", True, "Connexion SSH au VPS OK")
+        else:
+            add("Accès VPS (SSH)", None, "Non configuré (optionnel) — ssh-copy-id root@148.230.115.118")
+    except Exception:
+        add("Accès VPS (SSH)", None, "Non disponible (optionnel)")
+
+    # 6. Version
+    try:
+        nv = check_for_updates()
+        if nv:
+            add("Version", None, f"v{VERSION} — mise à jour v{nv} disponible")
+        else:
+            add("Version", True, f"v{VERSION} (à jour)")
+    except Exception:
+        add("Version", None, f"v{VERSION}")
+
+    return jsonify(report)
 
 @app.route('/api/clear', methods=['POST'])
 def clear():

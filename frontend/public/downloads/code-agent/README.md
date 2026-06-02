@@ -60,6 +60,7 @@ L'agent comprend le langage naturel. Exemples :
 | ✏️ Édition ciblée | Modifie une portion précise d'un fichier (edit_file) |
 | 🔧 Git intégré | status, diff, commit, push, pull depuis le chat |
 | 🌊 Streaming | Réponses affichées en temps réel, token par token |
+| 🩺 Auto-diagnostic | Bouton "Tester" : vérifie clé API, modèle, LLM, projet, VPS |
 | 🔁 Boucle agentique | Enchaîne plusieurs outils en lisant leurs résultats |
 | 🔄 Multi-LLM | GPT-5.4, Claude Sonnet 4.6, Gemini 3.1 Pro selon tes besoins |
 
